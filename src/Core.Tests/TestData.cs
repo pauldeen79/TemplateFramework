@@ -118,24 +118,6 @@ internal static class TestData
         public string TransformText() => _delegate();
     }
 
-    internal sealed class MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine : IMultipleContentBuilderTemplate, ITemplateContextContainer, ITemplateEngineContainer
-    {
-        private readonly Action<IMultipleContentBuilder, ITemplateContext, ITemplateEngine, ITemplateFactory> _delegate;
-
-        public MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine(ITemplateFactory childTemplateFactory,
-                                                                                  Action<IMultipleContentBuilder, ITemplateContext, ITemplateEngine, ITemplateFactory> @delegate)
-        {
-            ChildTemplateFactory = childTemplateFactory;
-            _delegate = @delegate;
-        }
-
-        public ITemplateContext Context { get; set; } = default!;
-        public ITemplateEngine TemplateEngine { get; set; } = default!;
-        public ITemplateFactory ChildTemplateFactory { get; }
-
-        public void Render(IMultipleContentBuilder builder) => _delegate(builder, Context, TemplateEngine, ChildTemplateFactory);
-    }
-
     /// <summary>
     /// Example of a ViewModel class without a public parameterless constructor. This one can't be initialized by the TemplateInitializer.
     /// </summary>

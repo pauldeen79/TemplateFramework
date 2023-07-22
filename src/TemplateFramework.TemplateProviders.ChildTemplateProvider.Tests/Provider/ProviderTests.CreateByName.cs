@@ -1,8 +1,8 @@
-﻿namespace TemplateFramework.Core.Tests;
+﻿namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests;
 
-public partial class TemplateFactoryTests
+public partial class ProviderTests
 {
-    public class CreateByName : TemplateFactoryTests
+    public class CreateByName : ProviderTests
     {
         [Fact]
         public void Throws_On_Null_Argument()
@@ -11,7 +11,7 @@ public partial class TemplateFactoryTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.CreateByName(name: null!))
+            sut.Invoking(x => x.Create(new CreateTemplateByNameRequest(name: null!)))
                .Should().Throw<ArgumentNullException>().WithParameterName("name");
         }
 
@@ -23,7 +23,7 @@ public partial class TemplateFactoryTests
             TemplateCreatorMock.Setup(x => x.SupportsName(It.IsAny<string>())).Returns(false);
 
             // Act & Assert
-            sut.Invoking(x => x.CreateByName("test"))
+            sut.Invoking(x => x.Create(new CreateTemplateByNameRequest("test")))
                .Should().Throw<NotSupportedException>().WithMessage("Name test is not supported");
         }
 
@@ -36,7 +36,7 @@ public partial class TemplateFactoryTests
             TemplateCreatorMock.Setup(x => x.CreateByName(It.IsAny<string>())).Returns(null!);
 
             // Act & Assert
-            sut.Invoking(x => x.CreateByName("test"))
+            sut.Invoking(x => x.Create(new CreateTemplateByNameRequest("test")))
                .Should().Throw<InvalidOperationException>().WithMessage("Child template creator returned a null instance");
         }
 
@@ -50,7 +50,7 @@ public partial class TemplateFactoryTests
             TemplateCreatorMock.Setup(x => x.CreateByName(It.IsAny<string>())).Returns(template);
 
             // Act
-            var result = sut.CreateByName("test");
+            var result = sut.Create(new CreateTemplateByNameRequest("test"));
 
             // Assert
             result.Should().BeSameAs(template);
