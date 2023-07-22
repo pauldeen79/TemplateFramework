@@ -42,7 +42,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\TemplateFramework.Core.csproj" />
-    <ProjectReference Include="..\TemplateFramework.TemplateProviders.ChildTemplateProvider\TemplateFramework.TemplateProviders.ChildTemplateProvider.csproj" />
+    <ProjectReference Include="..\TemplateProviders.ChildTemplateProvider\TemplateFramework.TemplateProviders.ChildTemplateProvider.csproj" />
   </ItemGroup>
 
 </Project>
