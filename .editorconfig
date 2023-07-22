@@ -134,6 +134,8 @@ dotnet_diagnostic.CA1707.severity = none
 dotnet_diagnostic.CA1508.severity = none
 # CA1822: Mark members as static (does not seem to work flawlessly)
 dotnet_diagnostic.CA1822.severity = none
+# Do not use CA1062 (validate public arguments) on extension methods
+dotnet_code_quality.CA1062.exclude_extension_method_this_parameter = true
 
 # SYSLIB1045 Use 'GeneratedRegexAttribute' to generate the regular expression implementation at compile-time.
 dotnet_diagnostic.SYSLIB1045.severity = none
