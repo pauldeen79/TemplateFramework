@@ -89,20 +89,17 @@ public class TemplateContext : ITemplateContext
 
     public bool IsRootContext => ParentContext is null;
 
-    public ITemplateContext CreateChildContext(object template,
-                                               object? model,
-                                               int? iterationNumber,
-                                               int? iterationCount)
+    public ITemplateContext CreateChildContext(IChildTemplateContext childContext)
     {
-        Guard.IsNotNull(template);
+        Guard.IsNotNull(childContext);
 
         return new TemplateContext
         (
-            template: template,
-            model: model,
+            template: childContext.Template,
+            model: childContext.Model,
             parentContext: this,
-            iterationNumber: iterationNumber,
-            iterationCount: iterationCount
+            iterationNumber: childContext.IterationNumber,
+            iterationCount: childContext.IterationCount
         );
     }
 

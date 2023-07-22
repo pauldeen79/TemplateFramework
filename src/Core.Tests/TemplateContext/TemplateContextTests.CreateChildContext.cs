@@ -5,14 +5,14 @@ public partial class TemplateContextTests
     public class CreateChildContext : TemplateContextTests
     {
         [Fact]
-        public void Throws_On_Null_Template()
+        public void Throws_On_Null_ChildContext()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act
-            sut.Invoking(x => x.CreateChildContext(template: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("template");
+            sut.Invoking(x => x.CreateChildContext(childContext: null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("childContext");
         }
 
         [Fact]
@@ -23,7 +23,7 @@ public partial class TemplateContextTests
             var template = new object();
 
             // Act
-            var childContext = sut.CreateChildContext(template: template);
+            var childContext = sut.CreateChildContext(new TemplateContext(template: template));
 
             // Assert
             childContext.Should().NotBeNull();
