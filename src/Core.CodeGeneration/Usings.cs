@@ -1,0 +1,9 @@
+﻿global using System.Diagnostics.CodeAnalysis;
+global using System.Reflection;
+global using System.Runtime.Loader;
+global using CommunityToolkit.Diagnostics;
+global using Microsoft.Extensions.DependencyInjection;
+global using TemplateFramework.Abstractions;
+global using TemplateFramework.Abstractions.CodeGeneration;
+global using TemplateFramework.Abstractions.Extensions;
+global using TemplateFramework.Core.Requests;
