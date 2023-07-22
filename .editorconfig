@@ -136,7 +136,8 @@ dotnet_diagnostic.CA1508.severity = none
 dotnet_diagnostic.CA1822.severity = none
 # Do not use CA1062 (validate public arguments) on extension methods
 dotnet_code_quality.CA1062.exclude_extension_method_this_parameter = true
-
+# CA1716: Rename namespace x so that it no longer conflicts with the reserved language keyword 'y'. Using a reserved keyword as the name of a namespace makes it harder for consumers in other languages to use the namespace.
+dotnet_diagnostic.CA1716.severity = none
 # SYSLIB1045 Use 'GeneratedRegexAttribute' to generate the regular expression implementation at compile-time.
 dotnet_diagnostic.SYSLIB1045.severity = none
 

@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.CodeGeneration;
+﻿namespace TemplateFramework.Shared;
 
 public class CustomAssemblyLoadContext : AssemblyLoadContext
 {

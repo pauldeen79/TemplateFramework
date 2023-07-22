@@ -15,11 +15,11 @@ public class Provider : ITemplateProvider
     {
         Guard.IsNotNull(request);
 
-        if (request is CreateTemplateByModelRequest createTemplateByModelRequest)
+        if (request is ChildTemplateByModelRequest createTemplateByModelRequest)
         {
             return CreateByModel(createTemplateByModelRequest.Model);
         }
-        else if (request is CreateTemplateByNameRequest createTemplateByNameRequest)
+        else if (request is ChildTemplateByNameRequest createTemplateByNameRequest)
         {
             return CreateByName(createTemplateByNameRequest.Name);
         }
@@ -49,5 +49,5 @@ public class Provider : ITemplateProvider
         return creator.CreateByName(name) ?? throw new InvalidOperationException("Child template creator returned a null instance");
     }
 
-    public bool Supports(ICreateTemplateRequest request) => request is CreateTemplateByModelRequest or CreateTemplateByNameRequest;
+    public bool Supports(ICreateTemplateRequest request) => request is ChildTemplateByModelRequest or ChildTemplateByNameRequest;
 }

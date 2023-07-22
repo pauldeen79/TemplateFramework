@@ -7,3 +7,4 @@ global using TemplateFramework.Abstractions;
 global using TemplateFramework.Abstractions.CodeGeneration;
 global using TemplateFramework.Abstractions.Extensions;
 global using TemplateFramework.Core.Requests;
+global using TemplateFramework.Shared;

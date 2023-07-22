@@ -1,11 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AnalysisLevel>latest-All</AnalysisLevel>
-    <PackageId>pauldeen79.TemplateFramework.Core.CodeGeneration</PackageId>
+    <PackageId>pauldeen79.TemplateFramework.TemplateProviders.CompiledTemplateProvider</PackageId>
     <RepositoryUrl>https://github.com/pauldeen79/TemplateFramework</RepositoryUrl>
   </PropertyGroup>
 
@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Core\TemplateFramework.Core.csproj" />
+    <ProjectReference Include="..\Abstractions\TemplateFramework.Abstractions.csproj" />
     <ProjectReference Include="..\TemplateFramework.Shared\TemplateFramework.Shared.csproj" />
   </ItemGroup>
 

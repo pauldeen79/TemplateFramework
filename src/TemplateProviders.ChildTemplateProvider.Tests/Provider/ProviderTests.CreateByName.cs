@@ -11,7 +11,7 @@ public partial class ProviderTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Create(new CreateTemplateByNameRequest(name: null!)))
+            sut.Invoking(x => x.Create(new ChildTemplateByNameRequest(name: null!)))
                .Should().Throw<ArgumentNullException>().WithParameterName("name");
         }
 
@@ -23,7 +23,7 @@ public partial class ProviderTests
             TemplateCreatorMock.Setup(x => x.SupportsName(It.IsAny<string>())).Returns(false);
 
             // Act & Assert
-            sut.Invoking(x => x.Create(new CreateTemplateByNameRequest("test")))
+            sut.Invoking(x => x.Create(new ChildTemplateByNameRequest("test")))
                .Should().Throw<NotSupportedException>().WithMessage("Name test is not supported");
         }
 
@@ -36,7 +36,7 @@ public partial class ProviderTests
             TemplateCreatorMock.Setup(x => x.CreateByName(It.IsAny<string>())).Returns(null!);
 
             // Act & Assert
-            sut.Invoking(x => x.Create(new CreateTemplateByNameRequest("test")))
+            sut.Invoking(x => x.Create(new ChildTemplateByNameRequest("test")))
                .Should().Throw<InvalidOperationException>().WithMessage("Child template creator returned a null instance");
         }
 
@@ -50,7 +50,7 @@ public partial class ProviderTests
             TemplateCreatorMock.Setup(x => x.CreateByName(It.IsAny<string>())).Returns(template);
 
             // Act
-            var result = sut.Create(new CreateTemplateByNameRequest("test"));
+            var result = sut.Create(new ChildTemplateByNameRequest("test"));
 
             // Assert
             result.Should().BeSameAs(template);

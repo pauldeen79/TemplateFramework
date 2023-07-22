@@ -24,9 +24,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemplateFramework.Console",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemplateFramework.Console.Tests", "src\Console.Tests\TemplateFramework.Console.Tests.csproj", "{9A0AF35E-799C-441F-96D7-55345C8AB456}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TemplateFramework.TemplateProviders.ChildTemplateProvider", "src\TemplateProviders.ChildTemplateProvider\TemplateFramework.TemplateProviders.ChildTemplateProvider.csproj", "{B1F11B1F-A9C5-48F7-B6FE-9263C940E63D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemplateFramework.TemplateProviders.ChildTemplateProvider", "src\TemplateProviders.ChildTemplateProvider\TemplateFramework.TemplateProviders.ChildTemplateProvider.csproj", "{B1F11B1F-A9C5-48F7-B6FE-9263C940E63D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests", "src\TemplateProviders.ChildTemplateProvider.Tests\TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests.csproj", "{901AEA61-652E-4536-8D81-C74F5578CB5B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests", "src\TemplateProviders.ChildTemplateProvider.Tests\TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests.csproj", "{901AEA61-652E-4536-8D81-C74F5578CB5B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemplateFramework.TemplateProviders.CompiledTemplateProvider", "src\TemplateProviders.CompiledTemplateProvider\TemplateFramework.TemplateProviders.CompiledTemplateProvider.csproj", "{D17B7EFC-9CF2-4FF2-8EDA-0FC0F769FC76}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemplateFramework.TemplateProviders.CompiledTemplateProvider.Tests", "src\TemplateProviders.CompiledTemplateProvider.Tests\TemplateFramework.TemplateProviders.CompiledTemplateProvider.Tests.csproj", "{D34441A3-B72A-4334-BBEE-13D0F62B3DC7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TemplateFramework.Shared", "src\TemplateFramework.Shared\TemplateFramework.Shared.csproj", "{1609C5B5-A2CD-4776-BF66-2B0C7427492A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,6 +80,18 @@ Global
 		{901AEA61-652E-4536-8D81-C74F5578CB5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{901AEA61-652E-4536-8D81-C74F5578CB5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{901AEA61-652E-4536-8D81-C74F5578CB5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D17B7EFC-9CF2-4FF2-8EDA-0FC0F769FC76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D17B7EFC-9CF2-4FF2-8EDA-0FC0F769FC76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D17B7EFC-9CF2-4FF2-8EDA-0FC0F769FC76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D17B7EFC-9CF2-4FF2-8EDA-0FC0F769FC76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D34441A3-B72A-4334-BBEE-13D0F62B3DC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D34441A3-B72A-4334-BBEE-13D0F62B3DC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D34441A3-B72A-4334-BBEE-13D0F62B3DC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D34441A3-B72A-4334-BBEE-13D0F62B3DC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1609C5B5-A2CD-4776-BF66-2B0C7427492A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1609C5B5-A2CD-4776-BF66-2B0C7427492A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1609C5B5-A2CD-4776-BF66-2B0C7427492A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1609C5B5-A2CD-4776-BF66-2B0C7427492A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
