@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Shared;
+﻿namespace TemplateFramework.Runtime;
 
 public class CustomAssemblyLoadContext : AssemblyLoadContext
 {

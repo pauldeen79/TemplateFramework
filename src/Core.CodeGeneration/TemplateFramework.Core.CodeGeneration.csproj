@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\TemplateFramework.Core.csproj" />
-    <ProjectReference Include="..\TemplateFramework.Shared\TemplateFramework.Shared.csproj" />
+    <ProjectReference Include="..\Runtime\TemplateFramework.Runtime.csproj" />
   </ItemGroup>
 
 </Project>
