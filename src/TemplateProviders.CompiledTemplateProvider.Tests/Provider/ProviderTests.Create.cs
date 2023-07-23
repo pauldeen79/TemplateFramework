@@ -39,5 +39,16 @@ public partial class ProviderTests
             instance.Should().NotBeNull();
             instance.GetType().FullName.Should().Be(GetType().FullName);
         }
+
+        [Fact]
+        public void Throws_On_Wrong_ClassName()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act & Assert
+            sut.Invoking(x => x.Create(new CreateCompiledTemplateRequest(GetType().Assembly.FullName!, "WrongName")))
+               .Should().Throw<NotSupportedException>();
+        }
     }
 }
