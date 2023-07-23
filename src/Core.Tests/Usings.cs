@@ -10,6 +10,7 @@ global using TemplateFramework.Abstractions.Requests;
 global using TemplateFramework.Abstractions.Templates;
 global using TemplateFramework.Core.Contracts;
 global using TemplateFramework.Core.Extensions;
+global using TemplateFramework.Core.Models;
 global using TemplateFramework.Core.Requests;
 global using TemplateFramework.Core.TemplateInitializers;
 global using TemplateFramework.Core.TemplateRenderers;

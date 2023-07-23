@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Core;
 
-internal sealed class ContentBuilder : IContentBuilder
+public sealed class ContentBuilder : IContentBuilder
 {
     public ContentBuilder() : this(new StringBuilder())
     {
@@ -17,5 +17,5 @@ internal sealed class ContentBuilder : IContentBuilder
 
     public StringBuilder Builder { get; }
 
-    public IContent Build() => new Content(Builder, SkipWhenFileExists, Filename);
+    public IContent Build() => new Content(Builder.ToString(), SkipWhenFileExists, Filename);
 }

@@ -9,4 +9,5 @@ public interface IMultipleContentBuilder
     void SaveLastGeneratedFiles(string lastGeneratedFilesPath);
     void DeleteLastGeneratedFiles(string lastGeneratedFilesPath, bool recurse);
     IContentBuilder AddContent(string filename, bool skipWhenFileExists, StringBuilder? builder);
+    IMultipleContent Build();
 }

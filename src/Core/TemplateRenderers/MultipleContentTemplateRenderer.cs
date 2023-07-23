@@ -42,7 +42,7 @@ public class MultipleContentTemplateRenderer : ITemplateRenderer
             var multipleContents = MultipleContentBuilder.FromString(builderResult);
             foreach (var content in multipleContents.Contents.Select(x => x.Build()))
             {
-                multipleContentBuilder.AddContent(content.Filename, content.SkipWhenFileExists, content.Builder);
+                multipleContentBuilder.AddContent(content.Filename, content.SkipWhenFileExists, new StringBuilder(content.Contents));
             }
         }
         else
