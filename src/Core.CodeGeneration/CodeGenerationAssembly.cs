@@ -19,49 +19,9 @@ public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
     {
         Guard.IsNotNull(settings);
 
-        var assembly = GetAssembly(settings);
+        var assembly = AssemblyHelper.GetAssembly(settings.AssemblyName, settings.CurrentDirectory);
 
         return GetOutputFromAssembly(assembly, settings);
-    }
-
-    [ExcludeFromCodeCoverage]
-    private static Assembly GetAssembly(ICodeGenerationAssemblySettings settings)
-    {
-        if (settings.AssemblyName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
-        {
-            // This is plug-in architecture that conforms to Microsoft's documentation.
-            var pluginLocation = Path.GetDirectoryName(settings.AssemblyName);
-            if (string.IsNullOrEmpty(pluginLocation))
-            {
-                throw new InvalidOperationException($"Could not get directory from assembly name {settings.AssemblyName}");
-            }
-
-            var context = new PluginLoadContext(pluginLocation);
-            return context.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(pluginLocation)));
-        }
-        else
-        {
-            // This is kind of quirk mode, with an assembly name.
-            // Works as long as you are using the same package reference on both sides. (the host program and hte plug-in assembly)
-            var context = new CustomAssemblyLoadContext("TemplateFramework.Core.CodeGeneration", true, () => new[] { settings.CurrentDirectory });
-            return LoadAssembly(context, settings);
-        }
-    }
-
-    private static Assembly LoadAssembly(AssemblyLoadContext context, ICodeGenerationAssemblySettings settings)
-    {
-        try
-        {
-            return context.LoadFromAssemblyName(new AssemblyName(settings.AssemblyName));
-        }
-        catch (Exception e) when (e.Message.StartsWith("The given assembly name was invalid.", StringComparison.InvariantCulture) || e.Message.EndsWith("The system cannot find the file specified.", StringComparison.InvariantCulture))
-        {
-            if (settings.AssemblyName.EndsWith(".dll", StringComparison.InvariantCultureIgnoreCase) && !Path.IsPathRooted(settings.AssemblyName))
-            {
-                return context.LoadFromAssemblyPath(Path.Combine(settings.CurrentDirectory, Path.GetFileName(settings.AssemblyName)));
-            }
-            return context.LoadFromAssemblyPath(settings.AssemblyName);
-        }
     }
 
     private string GetOutputFromAssembly(Assembly assembly, ICodeGenerationAssemblySettings settings)
@@ -83,7 +43,7 @@ public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
             .Select(t =>
             {
                 var instance = Activator.CreateInstance(t);
-                if (instance == null)
+                if (instance is null)
                 {
                     throw new InvalidOperationException($"Could not create instance of type {t.FullName}");
                 }
@@ -96,12 +56,12 @@ public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
 
     private static bool FilterIsValid(Type type, IEnumerable<string>? classNameFilter)
     {
-        if (classNameFilter == null)
+        if (classNameFilter is null)
         {
             return true;
         }
 
         var items = classNameFilter.ToArray();
-        return !items.Any() || Array.Find(items, x => x == type.FullName) != null;
+        return !items.Any() || Array.Find(items, x => x == type.FullName) is not null;
     }
 }

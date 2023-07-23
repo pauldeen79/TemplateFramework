@@ -9,7 +9,7 @@ public class SingleContentTemplateRenderer : ITemplateRenderer
         Guard.IsNotNull(request);
 
         var environment = request.GenerationEnvironment as StringBuilderEnvironment;
-        if (environment == null)
+        if (environment is null)
         {
             throw new NotSupportedException($"Type of GenerationEnvironment ({request.GenerationEnvironment?.GetType().FullName}) is not supported");
         }

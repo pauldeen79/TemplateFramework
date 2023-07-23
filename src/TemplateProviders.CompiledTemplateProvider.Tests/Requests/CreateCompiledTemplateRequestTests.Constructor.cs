@@ -35,5 +35,29 @@ public class CreateCompiledTemplateRequestTests
             this.Invoking(_ => new CreateCompiledTemplateRequest(GetType().Assembly.FullName!, className: string.Empty))
                 .Should().Throw<ArgumentException>().WithParameterName("className");
         }
+
+        [Fact]
+        public void Constructs_With_CurrentDirectory()
+        {
+            // Act
+            var instance = new CreateCompiledTemplateRequest(GetType().Assembly.FullName!, className: GetType().FullName!, Directory.GetCurrentDirectory());
+
+            // Assert
+            instance.AssemblyName.Should().Be(GetType().Assembly.FullName);
+            instance.ClassName.Should().Be(GetType().FullName);
+            instance.CurrentDirectory.Should().Be(Directory.GetCurrentDirectory());
+        }
+
+        [Fact]
+        public void Constructs_Without_CurrentDirectory()
+        {
+            // Act
+            var instance = new CreateCompiledTemplateRequest(GetType().Assembly.FullName!, className: GetType().FullName!);
+
+            // Assert
+            instance.AssemblyName.Should().Be(GetType().Assembly.FullName);
+            instance.ClassName.Should().Be(GetType().FullName);
+            instance.CurrentDirectory.Should().NotBeEmpty();
+        }
     }
 }

@@ -25,5 +25,19 @@ public partial class ProviderTests
             sut.Invoking(x => x.Create(request: new Mock<ICreateTemplateRequest>().Object))
                .Should().Throw<ArgumentException>().WithParameterName("request");
         }
+
+        [Fact]
+        public void Returns_Template_Instance_Correctly()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var instance = sut.Create(new CreateCompiledTemplateRequest(GetType().Assembly.FullName!, GetType().FullName!));
+
+            // Assert
+            instance.Should().NotBeNull();
+            instance.GetType().FullName.Should().Be(GetType().FullName);
+        }
     }
 }

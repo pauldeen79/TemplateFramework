@@ -38,7 +38,7 @@ public class DefaultTemplateInitializer : ITemplateInitializer
         foreach (var item in session.Where(x => x.Key != Constants.ModelKey))
         {
             var parameter = Array.Find(parameters, p => p.Name == item.Key);
-            if (parameter == null)
+            if (parameter is null)
             {
                 throw new NotSupportedException($"Unsupported template parameter: {item.Key}");
             }

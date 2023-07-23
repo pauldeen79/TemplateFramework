@@ -37,7 +37,7 @@ public partial class ProviderTests
             var sut = CreateSut();
 
             // Act
-            var result = sut.Supports(new CreateCompiledTemplateRequest(GetType().Assembly.FullName!, GetType().FullName!));
+            var result = sut.Supports(new CreateCompiledTemplateRequest(GetType().Assembly.FullName!, GetType().FullName!, string.Empty));
 
             // Assert
             result.Should().BeTrue();
