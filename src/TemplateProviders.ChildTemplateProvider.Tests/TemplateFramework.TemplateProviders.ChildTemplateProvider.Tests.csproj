@@ -45,4 +45,20 @@
     <ProjectReference Include="..\TemplateProviders.ChildTemplateProvider\TemplateFramework.TemplateProviders.ChildTemplateProvider.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Using Include="System.Text" />
+    <Using Include="FluentAssertions" />
+    <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="Moq" />
+    <Using Include="TemplateFramework.Abstractions" />
+    <Using Include="TemplateFramework.Abstractions.Infrastructure" />
+    <Using Include="TemplateFramework.Abstractions.Templates" />
+    <Using Include="TemplateFramework.Core" />
+    <Using Include="TemplateFramework.Core.Extensions" />
+    <Using Include="TemplateFramework.Core.Requests" />
+    <Using Include="TemplateFramework.TemplateProviders.ChildTemplateProvider.Extensions" />
+    <Using Include="TemplateFramework.TemplateProviders.ChildTemplateProvider.Requests" />
+    <Using Include="Xunit" />
+  </ItemGroup>
+
 </Project>

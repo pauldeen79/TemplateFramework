@@ -29,4 +29,10 @@
     <ProjectReference Include="..\Core\TemplateFramework.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Using Include="Moq" />
+    <Using Include="TemplateFramework.Abstractions.Extensions" />
+    <Using Include="Xunit" />
+  </ItemGroup>
+
 </Project>

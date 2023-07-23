@@ -19,4 +19,12 @@
     <ProjectReference Include="..\Runtime\TemplateFramework.Runtime.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Using Include="CommunityToolkit.Diagnostics" />
+    <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="TemplateFramework.Abstractions" />
+    <Using Include="TemplateFramework.Runtime" />
+    <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.Requests" />
+  </ItemGroup>
+
 </Project>

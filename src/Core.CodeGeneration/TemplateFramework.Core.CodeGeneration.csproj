@@ -19,4 +19,17 @@
     <ProjectReference Include="..\Runtime\TemplateFramework.Runtime.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Using Include="System.Diagnostics.CodeAnalysis" />
+    <Using Include="System.Reflection" />
+    <Using Include="System.Runtime.Loader" />
+    <Using Include="CommunityToolkit.Diagnostics" />
+    <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="TemplateFramework.Abstractions" />
+    <Using Include="TemplateFramework.Abstractions.CodeGeneration" />
+    <Using Include="TemplateFramework.Abstractions.Extensions" />
+    <Using Include="TemplateFramework.Core.Requests" />
+    <Using Include="TemplateFramework.Runtime" />
+  </ItemGroup>
+
 </Project>

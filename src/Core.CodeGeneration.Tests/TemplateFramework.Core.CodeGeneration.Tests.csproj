@@ -44,4 +44,17 @@
     <ProjectReference Include="..\Core.CodeGeneration\TemplateFramework.Core.CodeGeneration.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+     <Using Include="System.Text" />
+     <Using Include="FluentAssertions" />
+     <Using Include="Microsoft.Extensions.DependencyInjection" />
+     <Using Include="Moq" />
+     <Using Include="TemplateFramework.Abstractions" />
+     <Using Include="TemplateFramework.Abstractions.CodeGeneration" />
+     <Using Include="TemplateFramework.Abstractions.Requests" />
+     <Using Include="TemplateFramework.Core.CodeGeneration.Extensions" />
+     <Using Include="TemplateFramework.Core.Extensions" />
+     <Using Include="Xunit" />
+  </ItemGroup>
+
 </Project>

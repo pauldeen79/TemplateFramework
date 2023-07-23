@@ -18,4 +18,11 @@
     <ProjectReference Include="..\Abstractions\TemplateFramework.Abstractions.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Using Include="CommunityToolkit.Diagnostics" />
+    <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="TemplateFramework.Abstractions" />
+    <Using Include="TemplateFramework.TemplateProviders.ChildTemplateProvider.Requests" />
+  </ItemGroup>
+
 </Project>
