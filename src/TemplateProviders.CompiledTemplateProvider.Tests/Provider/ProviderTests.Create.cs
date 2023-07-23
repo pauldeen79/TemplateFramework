@@ -48,7 +48,7 @@ public partial class ProviderTests
 
             // Act & Assert
             sut.Invoking(x => x.Create(new CreateCompiledTemplateRequest(GetType().Assembly.FullName!, "WrongName")))
-               .Should().Throw<NotSupportedException>();
+               .Should().Throw<InvalidOperationException>();
         }
     }
 }

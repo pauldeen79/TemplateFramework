@@ -1,6 +1,4 @@
-﻿using TemplateFramework.Runtime;
-
-namespace TemplateFramework.TemplateProviders.CompiledTemplateProvider;
+﻿namespace TemplateFramework.TemplateProviders.CompiledTemplateProvider;
 
 public class Provider : ITemplateProvider
 {
@@ -16,7 +14,7 @@ public class Provider : ITemplateProvider
         var template = assembly.CreateInstance(createCompiledTemplateRequest.ClassName);
         if (template is null)
         {
-            throw new NotSupportedException($"Class [{createCompiledTemplateRequest.ClassName}] from assembly [{createCompiledTemplateRequest.AssemblyName}] could not be instanciated");
+            throw new InvalidOperationException($"Could not create instance of type {createCompiledTemplateRequest.ClassName}");
         }
 
         return template;
