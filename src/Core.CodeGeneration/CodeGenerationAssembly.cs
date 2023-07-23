@@ -18,18 +18,30 @@ public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
     public string Generate(ICodeGenerationAssemblySettings settings)
     {
         Guard.IsNotNull(settings);
-        
-        var context = new CustomAssemblyLoadContext("TemplateFramework.Core.CodeGeneration", true, () => new[] { settings.CurrentDirectory });
-        try
-        {
-            var assembly = LoadAssembly(context, settings);
 
-            return GetOutputFromAssembly(assembly, settings);
-        }
-        finally
+        AssemblyLoadContext context;
+        Assembly assembly;
+        if (settings.AssemblyName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
         {
-            context.Unload();
+            // This is plug-in architecture that conforms to Microsoft's documentation.
+            var pluginLocation = Path.GetDirectoryName(settings.AssemblyName);
+            if (string.IsNullOrEmpty(pluginLocation))
+            {
+                throw new InvalidOperationException($"Could not get directory from assembly name {settings.AssemblyName}");
+            }
+
+            context = new PluginLoadContext(pluginLocation);
+            assembly = context.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(pluginLocation)));
         }
+        else
+        {
+            // This is kind of quirk mode, with an assembly name.
+            // Works as long as you are using the same package reference on both sides. (the host program and hte plug-in assembly)
+            context = new CustomAssemblyLoadContext("TemplateFramework.Core.CodeGeneration", true, () => new[] { settings.CurrentDirectory });
+            assembly = LoadAssembly(context, settings);
+        }
+
+        return GetOutputFromAssembly(assembly, settings);
     }
 
     private static Assembly LoadAssembly(AssemblyLoadContext context, ICodeGenerationAssemblySettings settings)
