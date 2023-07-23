@@ -33,15 +33,15 @@ jobs:
         run: dotnet build --no-restore TemplateFramework.sln -c Release
       - name: Test
         run: dotnet test --no-restore TemplateFramework.sln -c Release -f net7.0
-  #    - name: Pack
-  #      if: matrix.os == 'ubuntu-latest'
-  #      run: dotnet pack TemplateFramework.sln -v normal -c Release -o ./artifacts --no-restore --include-symbols --include-source -p:PackageVersion=$GITHUB_RUN_ID
-  #    - name: Upload Artifact
-  #      if: matrix.os == 'ubuntu-latest'
-  #      uses: actions/upload-artifact@v2
-  #      with:
-  #        name: nupkg
-  #        path: ./artifacts/*.nupkg
+      - name: Pack
+        if: matrix.os == 'ubuntu-latest'
+        run: dotnet pack TemplateFramework.sln -v normal -c Release -o ./artifacts --no-restore --include-symbols --include-source -p:PackageVersion=$GITHUB_RUN_ID
+      - name: Upload Artifact
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v2
+        with:
+          name: nupkg
+          path: ./artifacts/*.nupkg
   #prerelease:
   #  needs: build
   #  if: github.ref == 'refs/heads/master'
@@ -84,10 +84,10 @@ jobs:
             curl -vX PUT -u "pauldeen79:${{ secrets.FEED_TOKEN }}" -F package=@$f https://nuget.pkg.github.com/pauldeen79/
           done
         shell: bash
-      - name: Push to NuGet Feed
-        run: |
-          for f in ./nupkg/*.nupkg
-          do
-            dotnet nuget push $f --source $NUGET_FEED --skip-duplicate --api-key $NUGET_KEY
-          done
-        shell: bash
+      #- name: Push to NuGet Feed
+      #  run: |
+      #    for f in ./nupkg/*.nupkg
+      #    do
+      #      dotnet nuget push $f --source $NUGET_FEED --skip-duplicate --api-key $NUGET_KEY
+      #    done
+      #  shell: bash
