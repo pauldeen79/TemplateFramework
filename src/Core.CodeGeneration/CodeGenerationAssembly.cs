@@ -18,34 +18,10 @@ public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
     public string Generate(ICodeGenerationAssemblySettings settings)
     {
         Guard.IsNotNull(settings);
-        
-        var context = new CustomAssemblyLoadContext("TemplateFramework.Core.CodeGeneration", true, () => new[] { settings.CurrentDirectory });
-        try
-        {
-            var assembly = LoadAssembly(context, settings);
 
-            return GetOutputFromAssembly(assembly, settings);
-        }
-        finally
-        {
-            context.Unload();
-        }
-    }
+        var assembly = AssemblyHelper.GetAssembly(settings.AssemblyName, settings.CurrentDirectory);
 
-    private static Assembly LoadAssembly(AssemblyLoadContext context, ICodeGenerationAssemblySettings settings)
-    {
-        try
-        {
-            return context.LoadFromAssemblyName(new AssemblyName(settings.AssemblyName));
-        }
-        catch (Exception e) when (e.Message.StartsWith("The given assembly name was invalid.", StringComparison.InvariantCulture) || e.Message.EndsWith("The system cannot find the file specified.", StringComparison.InvariantCulture))
-        {
-            if (settings.AssemblyName.EndsWith(".dll", StringComparison.InvariantCultureIgnoreCase) && !Path.IsPathRooted(settings.AssemblyName))
-            {
-                return context.LoadFromAssemblyPath(Path.Combine(settings.CurrentDirectory, Path.GetFileName(settings.AssemblyName)));
-            }
-            return context.LoadFromAssemblyPath(settings.AssemblyName);
-        }
+        return GetOutputFromAssembly(assembly, settings);
     }
 
     private string GetOutputFromAssembly(Assembly assembly, ICodeGenerationAssemblySettings settings)
@@ -64,16 +40,28 @@ public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
     private static IEnumerable<ICodeGenerationProvider> GetCodeGeneratorProviders(Assembly assembly, IEnumerable<string>? classNameFilter)
         => assembly.GetExportedTypes().Where(t => !t.IsAbstract && !t.IsInterface && Array.Exists(t.GetInterfaces(), i => i.FullName == typeof(ICodeGenerationProvider).FullName))
             .Where(t => FilterIsValid(t, classNameFilter))
-            .Select(t => new CodeGenerationProviderWrapper(Activator.CreateInstance(t)!));
+            .Select(t =>
+            {
+                var instance = Activator.CreateInstance(t);
+                if (instance is null)
+                {
+                    throw new InvalidOperationException($"Could not create instance of type {t.FullName}");
+                }
+                if (instance is not ICodeGenerationProvider provider)
+                {
+                    throw new InvalidOperationException($"Type {t.FullName} is not of type ICodeGenerationProvider");
+                }
+                return provider;
+            });
 
     private static bool FilterIsValid(Type type, IEnumerable<string>? classNameFilter)
     {
-        if (classNameFilter == null)
+        if (classNameFilter is null)
         {
             return true;
         }
 
         var items = classNameFilter.ToArray();
-        return !items.Any() || Array.Find(items, x => x == type.FullName) != null;
+        return !items.Any() || Array.Find(items, x => x == type.FullName) is not null;
     }
 }

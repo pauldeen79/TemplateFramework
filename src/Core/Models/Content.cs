@@ -1,13 +1,13 @@
 ﻿namespace TemplateFramework.Core.Models;
 
-internal sealed class Content : IContent
+public sealed class Content : IContent
 {
-    internal Content(StringBuilder builder, bool skipWhenFileExists, string? filename)
+    public Content(string contents, bool skipWhenFileExists, string? filename)
     {
-        Guard.IsNotNull(builder);
+        Guard.IsNotNull(contents);
         Guard.IsNotNullOrWhiteSpace(filename);
 
-        Builder = builder;
+        Contents = contents;
         SkipWhenFileExists = skipWhenFileExists;
         Filename = filename;
     }
@@ -16,5 +16,5 @@ internal sealed class Content : IContent
 
     public bool SkipWhenFileExists { get; }
 
-    public StringBuilder Builder { get; }
+    public string Contents { get; }
 }

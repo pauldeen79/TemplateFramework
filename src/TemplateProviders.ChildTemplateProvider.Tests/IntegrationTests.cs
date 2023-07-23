@@ -29,7 +29,7 @@ public class IntegrationTests
         var templateProvider = provider.GetRequiredService<ITemplateProvider>();
         var template = new TestData.MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine(templateProvider, (builder, context, engine, provider) =>
         {
-            var childTemplate = provider.Create(new CreateTemplateByNameRequest("MyTemplate"));
+            var childTemplate = provider.Create(new ChildTemplateByNameRequest("MyTemplate"));
             engine.Render(new RenderTemplateRequest(childTemplate, builder, context.CreateChildContext(new TemplateContext(childTemplate))));
         });
         var fileSystemMock = new Mock<IFileSystem>();

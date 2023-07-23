@@ -13,7 +13,7 @@ public partial class ProviderTests
             TemplateCreatorMock.Setup(x => x.CreateByModel(It.IsAny<object?>())).Returns(new object());
 
             // Act & Assert
-            sut.Invoking(x => x.Create(new CreateTemplateByModelRequest(null)))
+            sut.Invoking(x => x.Create(new ChildTemplateByModelRequest(null)))
                .Should().NotThrow();
         }
 
@@ -25,7 +25,7 @@ public partial class ProviderTests
             TemplateCreatorMock.Setup(x => x.SupportsModel(It.IsAny<object?>())).Returns(false);
 
             // Act & Assert
-            sut.Invoking(x => x.Create(new CreateTemplateByModelRequest(1)))
+            sut.Invoking(x => x.Create(new ChildTemplateByModelRequest(1)))
                .Should().Throw<NotSupportedException>().WithMessage("Model of type System.Int32 is not supported");
         }
 
@@ -37,7 +37,7 @@ public partial class ProviderTests
             TemplateCreatorMock.Setup(x => x.SupportsModel(It.IsAny<object?>())).Returns(false);
 
             // Act & Assert
-            sut.Invoking(x => x.Create(new CreateTemplateByModelRequest(null)))
+            sut.Invoking(x => x.Create(new ChildTemplateByModelRequest(null)))
                .Should().Throw<NotSupportedException>().WithMessage("Model of type  is not supported");
         }
 
@@ -50,7 +50,7 @@ public partial class ProviderTests
             TemplateCreatorMock.Setup(x => x.CreateByModel(It.IsAny<object?>())).Returns(null!);
 
             // Act & Assert
-            sut.Invoking(x => x.Create(new CreateTemplateByModelRequest(null!)))
+            sut.Invoking(x => x.Create(new ChildTemplateByModelRequest(null!)))
                .Should().Throw<InvalidOperationException>().WithMessage("Child template creator returned a null instance");
         }
 
@@ -64,7 +64,7 @@ public partial class ProviderTests
             TemplateCreatorMock.Setup(x => x.CreateByModel(It.IsAny<object?>())).Returns(template);
 
             // Act
-            var result = sut.Create(new CreateTemplateByModelRequest(1));
+            var result = sut.Create(new ChildTemplateByModelRequest(1));
 
             // Assert
             result.Should().BeSameAs(template);

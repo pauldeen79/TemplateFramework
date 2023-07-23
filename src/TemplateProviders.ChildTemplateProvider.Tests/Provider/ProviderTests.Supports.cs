@@ -37,7 +37,7 @@ public partial class ProviderTests
         {
             // Arrange
             var sut = CreateSut();
-            var request = new CreateTemplateByModelRequest(this);
+            var request = new ChildTemplateByModelRequest(this);
 
             // Act
             var result = sut.Supports(request);
@@ -51,7 +51,7 @@ public partial class ProviderTests
         {
             // Arrange
             var sut = CreateSut();
-            var request = new CreateTemplateByNameRequest(nameof(Returns_True_On_CreateTemplateByNameRequest));
+            var request = new ChildTemplateByNameRequest(nameof(Returns_True_On_CreateTemplateByNameRequest));
 
             // Act
             var result = sut.Supports(request);

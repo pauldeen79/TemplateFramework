@@ -1,8 +1,8 @@
 ﻿namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Requests;
 
-public class CreateTemplateByModelRequest : ICreateTemplateRequest
+public class ChildTemplateByModelRequest : ICreateTemplateRequest
 {
-    public CreateTemplateByModelRequest(object? model)
+    public ChildTemplateByModelRequest(object? model)
     {
         Model = model;
     }

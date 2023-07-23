@@ -22,6 +22,20 @@
   <ItemGroup>
     <ProjectReference Include="..\Core.CodeGeneration\TemplateFramework.Core.CodeGeneration.csproj" />
     <ProjectReference Include="..\Core\TemplateFramework.Core.csproj" />
+    <ProjectReference Include="..\TemplateProviders.CompiledTemplateProvider\TemplateFramework.TemplateProviders.CompiledTemplateProvider.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="System.Diagnostics.CodeAnalysis" />
+    <Using Include="CommunityToolkit.Diagnostics" />
+    <Using Include="McMaster.Extensions.CommandLineUtils" />
+    <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="TemplateFramework.Console.Commands" />
+    <Using Include="TemplateFramework.Console.Contracts" />
+    <Using Include="TemplateFramework.Console.Extensions" />
+    <Using Include="TemplateFramework.Core" />
+    <Using Include="TemplateFramework.Core.CodeGeneration.Extensions" />
+    <Using Include="TemplateFramework.Core.Extensions" />
   </ItemGroup>
 
 </Project>

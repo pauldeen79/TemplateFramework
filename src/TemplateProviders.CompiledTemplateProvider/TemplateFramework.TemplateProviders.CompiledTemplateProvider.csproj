@@ -1,11 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AnalysisLevel>latest-All</AnalysisLevel>
-    <PackageId>pauldeen79.TemplateFramework.Core.CodeGeneration</PackageId>
+    <PackageId>pauldeen79.TemplateFramework.TemplateProviders.CompiledTemplateProvider</PackageId>
     <RepositoryUrl>https://github.com/pauldeen79/TemplateFramework</RepositoryUrl>
   </PropertyGroup>
 
@@ -15,21 +15,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Core\TemplateFramework.Core.csproj" />
+    <ProjectReference Include="..\Abstractions\TemplateFramework.Abstractions.csproj" />
     <ProjectReference Include="..\Runtime\TemplateFramework.Runtime.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="System.Diagnostics.CodeAnalysis" />
-    <Using Include="System.Reflection" />
-    <Using Include="System.Runtime.Loader" />
     <Using Include="CommunityToolkit.Diagnostics" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
     <Using Include="TemplateFramework.Abstractions" />
-    <Using Include="TemplateFramework.Abstractions.CodeGeneration" />
-    <Using Include="TemplateFramework.Abstractions.Extensions" />
-    <Using Include="TemplateFramework.Core.Requests" />
     <Using Include="TemplateFramework.Runtime" />
+    <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.Requests" />
   </ItemGroup>
 
 </Project>

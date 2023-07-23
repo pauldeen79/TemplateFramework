@@ -4,5 +4,5 @@ public interface IContent
 {
     string Filename { get; }
     bool SkipWhenFileExists { get; }
-    StringBuilder Builder { get; }
+    string Contents { get; }
 }

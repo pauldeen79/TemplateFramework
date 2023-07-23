@@ -56,7 +56,7 @@ public class MultipleContentBuilder : IMultipleContentBuilder
                 _fileSystem.CreateDirectory(dir);
             }
 
-            var contents = content.Builder.ToString()?.NormalizeLineEndings() ?? string.Empty;
+            var contents = content.Contents.NormalizeLineEndings();
             Retry(() => _fileSystem.WriteAllText(path, contents, Encoding));
         }
     }
@@ -125,6 +125,8 @@ public class MultipleContentBuilder : IMultipleContentBuilder
 
     public IEnumerable<IContentBuilder> Contents => _contentList.AsReadOnly();
 
+    public IMultipleContent Build() => new MultipleContent(BasePath, Encoding, Contents.Select(x => x.Build()));
+
     public static MultipleContentBuilder FromString(string xml)
     {
         Guard.IsNotNullOrWhiteSpace(xml);
@@ -177,7 +179,7 @@ public class MultipleContentBuilder : IMultipleContentBuilder
             Contents = _contentList.Select(x => x.Build()).Select(x => new Contents
             {
                 Filename = x.Filename,
-                Lines = (x.Builder.ToString()?.NormalizeLineEndings() ?? string.Empty).Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList(),
+                Lines = x.Contents.NormalizeLineEndings().Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList(),
                 SkipWhenFileExists = x.SkipWhenFileExists
             }).ToList()
         };

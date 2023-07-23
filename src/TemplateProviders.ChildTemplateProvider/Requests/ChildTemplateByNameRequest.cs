@@ -1,8 +1,8 @@
 ﻿namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Requests;
 
-public class CreateTemplateByNameRequest : ICreateTemplateRequest
+public class ChildTemplateByNameRequest : ICreateTemplateRequest
 {
-    public CreateTemplateByNameRequest(string name)
+    public ChildTemplateByNameRequest(string name)
     {
         Guard.IsNotNullOrEmpty(name);
 

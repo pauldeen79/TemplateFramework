@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -13,7 +13,7 @@
     <IsOSX Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">true</IsOSX> 
     <IsLinux Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">true</IsLinux> 
   </PropertyGroup>
-
+    
   <PropertyGroup Condition="'$(IsWindows)'=='true'">
     <DefineConstants>Windows</DefineConstants>
   </PropertyGroup>
@@ -41,20 +41,24 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Core.CodeGeneration\TemplateFramework.Core.CodeGeneration.csproj" />
+    <ProjectReference Include="..\Core\TemplateFramework.Core.csproj" />
+    <ProjectReference Include="..\TemplateProviders.CompiledTemplateProvider\TemplateFramework.TemplateProviders.CompiledTemplateProvider.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-     <Using Include="System.Text" />
-     <Using Include="FluentAssertions" />
-     <Using Include="Microsoft.Extensions.DependencyInjection" />
-     <Using Include="Moq" />
-     <Using Include="TemplateFramework.Abstractions" />
-     <Using Include="TemplateFramework.Abstractions.CodeGeneration" />
-     <Using Include="TemplateFramework.Abstractions.Requests" />
-     <Using Include="TemplateFramework.Core.CodeGeneration.Extensions" />
-     <Using Include="TemplateFramework.Core.Extensions" />
-     <Using Include="Xunit" />
+    <Using Include="System.Text" />
+    <Using Include="FluentAssertions" />
+    <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="Moq" />
+    <Using Include="TemplateFramework.Abstractions" />
+    <Using Include="TemplateFramework.Abstractions.Infrastructure" />
+    <Using Include="TemplateFramework.Abstractions.Templates" />
+    <Using Include="TemplateFramework.Core" />
+    <Using Include="TemplateFramework.Core.Extensions" />
+    <Using Include="TemplateFramework.Core.Requests" />
+    <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.Extensions" />
+    <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.Requests" />
+    <Using Include="Xunit" />
   </ItemGroup>
 
 </Project>
