@@ -64,7 +64,19 @@ public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
     private static IEnumerable<ICodeGenerationProvider> GetCodeGeneratorProviders(Assembly assembly, IEnumerable<string>? classNameFilter)
         => assembly.GetExportedTypes().Where(t => !t.IsAbstract && !t.IsInterface && Array.Exists(t.GetInterfaces(), i => i.FullName == typeof(ICodeGenerationProvider).FullName))
             .Where(t => FilterIsValid(t, classNameFilter))
-            .Select(t => new CodeGenerationProviderWrapper(Activator.CreateInstance(t)!));
+            .Select(t =>
+            {
+                var instance = Activator.CreateInstance(t);
+                if (instance == null)
+                {
+                    throw new InvalidOperationException($"Could not create instance of type {t.FullName}");
+                }
+                if (instance is not ICodeGenerationProvider provider)
+                {
+                    throw new InvalidOperationException($"Type {t.FullName} is not of type ICodeGenerationProvider");
+                }
+                return provider;
+            });
 
     private static bool FilterIsValid(Type type, IEnumerable<string>? classNameFilter)
     {
