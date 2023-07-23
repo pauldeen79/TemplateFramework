@@ -19,8 +19,14 @@ public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
     {
         Guard.IsNotNull(settings);
 
-        AssemblyLoadContext context;
-        Assembly assembly;
+        var assembly = GetAssembly(settings);
+
+        return GetOutputFromAssembly(assembly, settings);
+    }
+
+    [ExcludeFromCodeCoverage]
+    private static Assembly GetAssembly(ICodeGenerationAssemblySettings settings)
+    {
         if (settings.AssemblyName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
         {
             // This is plug-in architecture that conforms to Microsoft's documentation.
@@ -30,18 +36,16 @@ public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
                 throw new InvalidOperationException($"Could not get directory from assembly name {settings.AssemblyName}");
             }
 
-            context = new PluginLoadContext(pluginLocation);
-            assembly = context.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(pluginLocation)));
+            var context = new PluginLoadContext(pluginLocation);
+            return context.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(pluginLocation)));
         }
         else
         {
             // This is kind of quirk mode, with an assembly name.
             // Works as long as you are using the same package reference on both sides. (the host program and hte plug-in assembly)
-            context = new CustomAssemblyLoadContext("TemplateFramework.Core.CodeGeneration", true, () => new[] { settings.CurrentDirectory });
-            assembly = LoadAssembly(context, settings);
+            var context = new CustomAssemblyLoadContext("TemplateFramework.Core.CodeGeneration", true, () => new[] { settings.CurrentDirectory });
+            return LoadAssembly(context, settings);
         }
-
-        return GetOutputFromAssembly(assembly, settings);
     }
 
     private static Assembly LoadAssembly(AssemblyLoadContext context, ICodeGenerationAssemblySettings settings)
