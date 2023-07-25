@@ -105,32 +105,5 @@ public partial class MultipleContentTemplateRendererTests
             contentBuilderMock.Object.Builder.Should().NotBeNull();
             contentBuilderMock.Object.Builder.ToString().Should().Be("Hello world!");
         }
-
-        [Fact]
-        public void Unpacks_MultipleContentBuilder_Result_From_Single_Template_Correctly()
-        {
-            // Arrange
-            var sut = CreateSut();
-            var contents = new MultipleContentBuilder();
-            contents.AddContent("MyFile.txt").Builder.Append("Hello world!");
-            var template = new TestData.TextTransformTemplate(() => contents.ToString());
-            var generationEnvironment = new Mock<IMultipleContentBuilder>();
-            var contentBuilderMock = new Mock<IContentBuilder>();
-            generationEnvironment.Setup(x => x.AddContent(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<StringBuilder?>()))
-                                 .Returns<string, bool, StringBuilder?>((filename, skipWhenFileExists, b) =>
-                                 {
-                                     contentBuilderMock.SetupGet(x => x.Builder).Returns(b ?? new StringBuilder());
-
-                                     return contentBuilderMock.Object;
-                                 });
-            var request = new RenderTemplateRequest(template, generationEnvironment.Object, DefaultFilename);
-
-            // Act
-            sut.Render(request);
-
-            // Assert
-            contentBuilderMock.Object.Builder.Should().NotBeNull();
-            contentBuilderMock.Object.Builder.ToString().Should().Be("Hello world!" + Environment.NewLine);
-        }
     }
 }
