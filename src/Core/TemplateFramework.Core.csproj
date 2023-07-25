@@ -42,8 +42,4 @@
       <Using Include="TemplateFramework.Core.TemplateRenderers" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Models\" />
-    </ItemGroup>
-
 </Project>
