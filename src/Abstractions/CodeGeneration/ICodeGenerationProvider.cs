@@ -2,15 +2,13 @@
 
 public interface ICodeGenerationProvider
 {
-    bool GenerateMultipleFiles { get; }
     bool SkipWhenFileExists { get; }
-    string BasePath { get; }
     string Path { get; }
     string DefaultFilename { get; }
     bool RecurseOnDeleteGeneratedFiles { get; }
     string LastGeneratedFilesFilename { get; }
 
-    void Initialize(bool generateMultipleFiles, bool skipWhenFileExists, string basePath);
+    void Initialize(bool skipWhenFileExists);
     object CreateGenerator();
     object? CreateAdditionalParameters();
     object? CreateModel();

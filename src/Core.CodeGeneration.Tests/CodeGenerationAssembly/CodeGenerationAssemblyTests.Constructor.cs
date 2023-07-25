@@ -8,16 +8,8 @@ public partial class CodeGenerationAssemblyTests
         public void Throws_On_Null_CodeGenerationEngine()
         {
             // Act & Assert
-            this.Invoking(_ => new CodeGenerationAssembly(codeGenerationEngine: null!, TemplateFileManagerFactoryMock.Object))
+            this.Invoking(_ => new CodeGenerationAssembly(codeGenerationEngine: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("codeGenerationEngine");
-        }
-
-        [Fact]
-        public void Throws_On_Null_TemplateFileManagerFactory()
-        {
-            // Act & Assert
-            this.Invoking(_ => new CodeGenerationAssembly(CodeGenerationEngineMock.Object, templateFileManagerFactory: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("templateFileManagerFactory");
         }
     }
 }

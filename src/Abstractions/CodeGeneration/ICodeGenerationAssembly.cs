@@ -2,5 +2,5 @@
 
 public interface ICodeGenerationAssembly
 {
-    string Generate(ICodeGenerationAssemblySettings settings);
+    void Generate(ICodeGenerationAssemblySettings settings, IMultipleContentBuilder generationEnvironment);
 }
