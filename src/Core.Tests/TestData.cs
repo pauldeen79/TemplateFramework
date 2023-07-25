@@ -21,7 +21,7 @@ internal static class TestData
         public override string ToString() => _delegate();
     }
 
-    internal sealed class Template : ITemplate
+    internal sealed class Template : IStringBuilderTemplate
     {
         private readonly Action<StringBuilder> _delegate;
 
@@ -30,7 +30,7 @@ internal static class TestData
         public void Render(StringBuilder builder) => _delegate(builder);
     }
 
-    internal sealed class TemplateWithModel<T> : ITemplate, IModelContainer<T>
+    internal sealed class TemplateWithModel<T> : IStringBuilderTemplate, IModelContainer<T>
     {
         public T? Model { get; set; } = default!;
 
@@ -41,7 +41,7 @@ internal static class TestData
         public void Render(StringBuilder builder) => _delegate(builder);
     }
 
-    internal sealed class TemplateWithViewModel<T> : ITemplate, IParameterizedTemplate
+    internal sealed class TemplateWithViewModel<T> : IStringBuilderTemplate, IParameterizedTemplate
     {
         public T? ViewModel { get; set; } = default!;
 

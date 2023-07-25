@@ -1,8 +1,8 @@
 ﻿namespace TemplateFramework.Core.Tests.TemplateRenderers;
 
-public partial class SingleContentTemplateRendererTests
+public partial class StringBuilderTemplateRendererTests
 {
-    public class Supports : SingleContentTemplateRendererTests
+    public class Supports : StringBuilderTemplateRendererTests
     {
         [Fact]
         public void Returns_True_When_GenerationEnvironment_Is_StringBuilder()

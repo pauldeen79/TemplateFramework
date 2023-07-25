@@ -7,7 +7,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IFileSystem, FileSystem>()
             .AddSingleton<ITemplateEngine, TemplateEngine>()
             .AddSingleton<ITemplateInitializer, DefaultTemplateInitializer>()
-            .AddSingleton<ITemplateRenderer, SingleContentTemplateRenderer>()
+            .AddSingleton<ITemplateRenderer, StringBuilderTemplateRenderer>()
             .AddSingleton<ITemplateRenderer, MultipleContentTemplateRenderer>()
             ;
 }

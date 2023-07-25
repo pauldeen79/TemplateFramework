@@ -1,7 +1,7 @@
 ﻿namespace TemplateFramework.Core.Tests.TemplateRenderers;
 
-public partial class SingleContentTemplateRendererTests
+public partial class StringBuilderTemplateRendererTests
 {
-    protected SingleContentTemplateRenderer CreateSut() => new();
+    protected StringBuilderTemplateRenderer CreateSut() => new();
     protected const string DefaultFilename = "MyFile.txt";
 }
