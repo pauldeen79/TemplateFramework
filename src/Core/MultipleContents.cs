@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Models;
+﻿namespace TemplateFramework.Core;
 
 [DataContract(Name = "MultipleContents", Namespace = "http://schemas.datacontract.org/2004/07/TemplateFramework")]
 internal sealed class MultipleContents

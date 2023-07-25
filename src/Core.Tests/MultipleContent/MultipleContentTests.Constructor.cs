@@ -24,12 +24,16 @@ public class MultipleContentTests
         public void Creates_Instance_Correctly()
         {
             // Act
-            var instance = new MultipleContent(TestData.BasePath, Encoding.Latin1, new[] { new Content("Contents", true, "Filename.txt") });
+            var contentMock = new Mock<IContent>();
+            contentMock.SetupGet(x => x.Filename).Returns("Filename.txt");
+            contentMock.SetupGet(x => x.Contents).Returns("Contents");
+            contentMock.SetupGet(x => x.SkipWhenFileExists).Returns(true);
+            var instance = new MultipleContent(TestData.BasePath, Encoding.Latin1, new[] { contentMock.Object });
 
             // Assert
             instance.BasePath.Should().Be(TestData.BasePath);
             instance.Encoding.Should().Be(Encoding.Latin1);
-            instance.Contents.Should().BeEquivalentTo(new[] { new Content("Contents", true, "Filename.txt") });
+            instance.Contents.Should().BeEquivalentTo(new[] { contentMock.Object });
         }
     }
 }

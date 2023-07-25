@@ -1,6 +1,6 @@
-﻿namespace TemplateFramework.Core.Models;
+﻿namespace TemplateFramework.Core;
 
-public sealed class Content : IContent
+internal sealed class Content : IContent
 {
     public Content(string contents, bool skipWhenFileExists, string? filename)
     {
