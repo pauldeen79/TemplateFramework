@@ -1,8 +1,8 @@
 ﻿namespace TemplateFramework.Core.Tests.TemplateRenderers;
 
-public partial class SingleContentTemplateRendererTests
+public partial class StringBuilderTemplateRendererTests
 {
-    public class Render : SingleContentTemplateRendererTests
+    public class Render : StringBuilderTemplateRendererTests
     {
         [Fact]
         public void Throws_When_Request_Is_Null()

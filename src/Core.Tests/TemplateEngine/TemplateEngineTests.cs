@@ -6,7 +6,7 @@ public partial class TemplateEngineTests
     protected Mock<IMultipleContentBuilder> MultipleContentBuilderMock { get; } = new();
     protected Mock<IMultipleContentBuilderContainer> MultipleContentBuilderContainerMock { get; } = new();
 
-    protected static readonly ITemplateRenderer[] DefaultTemplateRenderers = new ITemplateRenderer[] { new SingleContentTemplateRenderer(), new MultipleContentTemplateRenderer() };
+    protected static readonly ITemplateRenderer[] DefaultTemplateRenderers = new ITemplateRenderer[] { new StringBuilderTemplateRenderer(), new MultipleContentTemplateRenderer() };
 
     protected Mock<ITemplateInitializer> TemplateInitializerMock { get; } = new();
     protected Mock<ITemplateRenderer> TemplateRendererMock { get; } = new();

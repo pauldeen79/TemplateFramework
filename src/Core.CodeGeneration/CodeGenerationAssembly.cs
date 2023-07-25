@@ -3,38 +3,25 @@
 public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
 {
     private readonly ICodeGenerationEngine _codeGenerationEngine;
-    private readonly ITemplateFileManagerFactory _templateFileManagerFactory;
 
-    public CodeGenerationAssembly(ICodeGenerationEngine codeGenerationEngine,
-                                  ITemplateFileManagerFactory templateFileManagerFactory)
+    public CodeGenerationAssembly(ICodeGenerationEngine codeGenerationEngine)
     {
         Guard.IsNotNull(codeGenerationEngine);
-        Guard.IsNotNull(templateFileManagerFactory);
 
         _codeGenerationEngine = codeGenerationEngine;
-        _templateFileManagerFactory = templateFileManagerFactory;
     }
 
-    public string Generate(ICodeGenerationAssemblySettings settings)
+    public void Generate(ICodeGenerationAssemblySettings settings, IMultipleContentBuilder generationEnvironment)
     {
         Guard.IsNotNull(settings);
+        Guard.IsNotNull(generationEnvironment);
 
         var assembly = AssemblyHelper.GetAssembly(settings.AssemblyName, settings.CurrentDirectory);
 
-        return GetOutputFromAssembly(assembly, settings);
-    }
-
-    private string GetOutputFromAssembly(Assembly assembly, ICodeGenerationAssemblySettings settings)
-    {
-        var templateFileManager = _templateFileManagerFactory.Create();
-        templateFileManager.MultipleContentBuilder.BasePath = settings.BasePath;
-
         foreach (var codeGenerationProvider in GetCodeGeneratorProviders(assembly, settings.ClassNameFilter))
         {
-            _codeGenerationEngine.Generate(codeGenerationProvider, templateFileManager, settings);
+            _codeGenerationEngine.Generate(codeGenerationProvider, generationEnvironment, settings);
         }
-
-        return templateFileManager.MultipleContentBuilder.ToString()!;
     }
 
     private static IEnumerable<ICodeGenerationProvider> GetCodeGeneratorProviders(Assembly assembly, IEnumerable<string>? classNameFilter)
@@ -62,6 +49,7 @@ public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
         }
 
         var items = classNameFilter.ToArray();
+
         return !items.Any() || Array.Find(items, x => x == type.FullName) is not null;
     }
 }

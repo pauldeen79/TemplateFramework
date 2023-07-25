@@ -34,20 +34,7 @@ public class MultipleContentTemplateRenderer : ITemplateRenderer
 
         var stringBuilder = new StringBuilder();
         var singleRequest = new RenderTemplateRequest(request.Template, stringBuilder, request.DefaultFilename, request.AdditionalParameters, null); // note that additional parameters are currently ignored by the implemented class
-        new SingleContentTemplateRenderer().Render(singleRequest);
-        var builderResult = stringBuilder.ToString();
-
-        if (builderResult.Contains(@"<MultipleContents xmlns:i=""http://www.w3.org/2001/XMLSchema-instance"" xmlns=""http://schemas.datacontract.org/2004/07/TemplateFramework"">", StringComparison.InvariantCulture))
-        {
-            var multipleContents = MultipleContentBuilder.FromString(builderResult);
-            foreach (var content in multipleContents.Contents.Select(x => x.Build()))
-            {
-                multipleContentBuilder.AddContent(content.Filename, content.SkipWhenFileExists, new StringBuilder(content.Contents));
-            }
-        }
-        else
-        {
-            multipleContentBuilder.AddContent(request.DefaultFilename, false, new StringBuilder(builderResult));
-        }
+        new StringBuilderTemplateRenderer().Render(singleRequest);
+        multipleContentBuilder.AddContent(request.DefaultFilename, false, new StringBuilder((string?)stringBuilder.ToString()));
     }
 }

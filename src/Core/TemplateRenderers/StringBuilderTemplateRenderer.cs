@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Core.TemplateRenderers;
 
-public class SingleContentTemplateRenderer : ITemplateRenderer
+public class StringBuilderTemplateRenderer : ITemplateRenderer
 {
     public bool Supports(IGenerationEnvironment generationEnvironment) => generationEnvironment is StringBuilderEnvironment;
     
@@ -16,7 +16,7 @@ public class SingleContentTemplateRenderer : ITemplateRenderer
 
         var builder = environment.Builder;
 
-        if (request.Template is ITemplate typedTemplate)
+        if (request.Template is IStringBuilderTemplate typedTemplate)
         {
             typedTemplate.Render(builder);
         }

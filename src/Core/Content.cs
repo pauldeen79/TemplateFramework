@@ -2,7 +2,7 @@
 
 internal sealed class Content : IContent
 {
-    public Content(string contents, bool skipWhenFileExists, string? filename)
+    public Content(string contents, bool skipWhenFileExists, string filename)
     {
         Guard.IsNotNull(contents);
         Guard.IsNotNullOrWhiteSpace(filename);

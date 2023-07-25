@@ -17,11 +17,7 @@ internal static class TestData
 
 public sealed class MyGeneratorProvider : ICodeGenerationProvider
 {
-    public bool GenerateMultipleFiles { get; private set; }
-
     public bool SkipWhenFileExists { get; private set; }
-
-    public string BasePath { get; private set; } = "";
 
     public string Path { get; } = "";
 
@@ -37,11 +33,9 @@ public sealed class MyGeneratorProvider : ICodeGenerationProvider
 
     public object? CreateModel() => null;
 
-    public void Initialize(bool generateMultipleFiles, bool skipWhenFileExists, string basePath)
+    public void Initialize(bool skipWhenFileExists)
     {
-        GenerateMultipleFiles = generateMultipleFiles;
         SkipWhenFileExists = skipWhenFileExists;
-        BasePath = basePath;
     }
 }
 
