@@ -1,7 +1,7 @@
 ﻿namespace TemplateFramework.Core.Infrastructure;
 
 [ExcludeFromCodeCoverage]
-internal class FileSystem : IFileSystem
+internal sealed class FileSystem : IFileSystem
 {
     public void CreateDirectory(string path)
         => Directory.CreateDirectory(path);
