@@ -6,7 +6,7 @@ public partial class CodeGenerationEngineTests
     {
         public Generate()
         {
-            MultipleConentBuilderMock.Setup(x => x.ToString()).Returns("Output");
+            MultipleContentBuilderMock.Setup(x => x.ToString()).Returns("Output");
         }
 
         [Fact]
@@ -16,7 +16,7 @@ public partial class CodeGenerationEngineTests
             var sut = CreateSut();
 
             // Act
-            sut.Invoking(x => x.Generate(provider: null!, MultipleConentBuilderMock.Object, CodeGenerationSettingsMock.Object))
+            sut.Invoking(x => x.Generate(provider: null!, MultipleContentBuilderMock.Object, CodeGenerationSettingsMock.Object))
                .Should().Throw<ArgumentNullException>().WithParameterName("provider");
         }
 
@@ -27,7 +27,7 @@ public partial class CodeGenerationEngineTests
             var sut = CreateSut();
 
             // Act
-            sut.Invoking(x => x.Generate(CodeGenerationProviderMock.Object, MultipleConentBuilderMock.Object, settings: null!))
+            sut.Invoking(x => x.Generate(CodeGenerationProviderMock.Object, MultipleContentBuilderMock.Object, settings: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("settings");
         }
 
@@ -43,10 +43,10 @@ public partial class CodeGenerationEngineTests
             CodeGenerationSettingsMock.SetupGet(x => x.DryRun).Returns(false);
 
             // Act
-            sut.Generate(CodeGenerationProviderMock.Object, MultipleConentBuilderMock.Object, CodeGenerationSettingsMock.Object);
+            sut.Generate(CodeGenerationProviderMock.Object, MultipleContentBuilderMock.Object, CodeGenerationSettingsMock.Object);
 
             // Assert
-            MultipleConentBuilderMock.Verify(x => x.SaveAll(), Times.Once);
+            MultipleContentBuilderMock.Verify(x => x.SaveAll(), Times.Once);
         }
 
         [Fact]
@@ -60,10 +60,10 @@ public partial class CodeGenerationEngineTests
             CodeGenerationSettingsMock.SetupGet(x => x.DryRun).Returns(true);
 
             // Act
-            sut.Generate(CodeGenerationProviderMock.Object, MultipleConentBuilderMock.Object, CodeGenerationSettingsMock.Object);
+            sut.Generate(CodeGenerationProviderMock.Object, MultipleContentBuilderMock.Object, CodeGenerationSettingsMock.Object);
 
             // Assert
-            MultipleConentBuilderMock.Verify(x => x.SaveAll(), Times.Never);
+            MultipleContentBuilderMock.Verify(x => x.SaveAll(), Times.Never);
         }
 
         [Fact]
@@ -78,10 +78,10 @@ public partial class CodeGenerationEngineTests
             CodeGenerationSettingsMock.SetupGet(x => x.DryRun).Returns(false);
 
             // Act
-            sut.Generate(CodeGenerationProviderMock.Object, MultipleConentBuilderMock.Object, CodeGenerationSettingsMock.Object);
+            sut.Generate(CodeGenerationProviderMock.Object, MultipleContentBuilderMock.Object, CodeGenerationSettingsMock.Object);
 
             // Assert
-            MultipleConentBuilderMock.Verify(x => x.DeleteLastGeneratedFiles(Path.Combine(TestData.BasePath, "GeneratedFiles.txt"), false), Times.Once);
+            MultipleContentBuilderMock.Verify(x => x.DeleteLastGeneratedFiles(Path.Combine(TestData.BasePath, "GeneratedFiles.txt"), false), Times.Once);
         }
 
         [Fact]
@@ -96,10 +96,10 @@ public partial class CodeGenerationEngineTests
             CodeGenerationSettingsMock.SetupGet(x => x.DryRun).Returns(false);
 
             // Act
-            sut.Generate(CodeGenerationProviderMock.Object, MultipleConentBuilderMock.Object, CodeGenerationSettingsMock.Object);
+            sut.Generate(CodeGenerationProviderMock.Object, MultipleContentBuilderMock.Object, CodeGenerationSettingsMock.Object);
 
             // Assert
-            MultipleConentBuilderMock.Verify(x => x.DeleteLastGeneratedFiles(Path.Combine(TestData.BasePath, "GeneratedFiles.txt"), false), Times.Never);
+            MultipleContentBuilderMock.Verify(x => x.DeleteLastGeneratedFiles(Path.Combine(TestData.BasePath, "GeneratedFiles.txt"), false), Times.Never);
         }
 
         [Fact]
@@ -114,10 +114,10 @@ public partial class CodeGenerationEngineTests
             CodeGenerationSettingsMock.SetupGet(x => x.DryRun).Returns(false);
 
             // Act
-            sut.Generate(CodeGenerationProviderMock.Object, MultipleConentBuilderMock.Object, CodeGenerationSettingsMock.Object);
+            sut.Generate(CodeGenerationProviderMock.Object, MultipleContentBuilderMock.Object, CodeGenerationSettingsMock.Object);
 
             // Assert
-            MultipleConentBuilderMock.Verify(x => x.SaveLastGeneratedFiles(Path.Combine(TestData.BasePath, "GeneratedFiles.txt")), Times.Once);
+            MultipleContentBuilderMock.Verify(x => x.SaveLastGeneratedFiles(Path.Combine(TestData.BasePath, "GeneratedFiles.txt")), Times.Once);
         }
 
         [Fact]
@@ -132,10 +132,10 @@ public partial class CodeGenerationEngineTests
             CodeGenerationSettingsMock.SetupGet(x => x.DryRun).Returns(false);
 
             // Act
-            sut.Generate(CodeGenerationProviderMock.Object, MultipleConentBuilderMock.Object, CodeGenerationSettingsMock.Object);
+            sut.Generate(CodeGenerationProviderMock.Object, MultipleContentBuilderMock.Object, CodeGenerationSettingsMock.Object);
 
             // Assert
-            MultipleConentBuilderMock.Verify(x => x.SaveLastGeneratedFiles(Path.Combine(TestData.BasePath, "GeneratedFiles.txt")), Times.Never);
+            MultipleContentBuilderMock.Verify(x => x.SaveLastGeneratedFiles(Path.Combine(TestData.BasePath, "GeneratedFiles.txt")), Times.Never);
         }
 
         [Fact]
@@ -147,7 +147,7 @@ public partial class CodeGenerationEngineTests
             CodeGenerationProviderMock.Setup(x => x.CreateGenerator()).Returns(this);
 
             // Act
-            sut.Generate(CodeGenerationProviderMock.Object, MultipleConentBuilderMock.Object, CodeGenerationSettingsMock.Object);
+            sut.Generate(CodeGenerationProviderMock.Object, MultipleContentBuilderMock.Object, CodeGenerationSettingsMock.Object);
 
             // Assert
             TemplateEngineMock.Verify(x => x.Render(It.IsAny<IRenderTemplateRequest<object?>>()), Times.Once);
@@ -163,7 +163,7 @@ public partial class CodeGenerationEngineTests
             CodeGenerationProviderMock.Setup(x => x.CreateGenerator()).Returns(this);
 
             // Act
-            sut.Generate(CodeGenerationProviderMock.Object, MultipleConentBuilderMock.Object, CodeGenerationSettingsMock.Object);
+            sut.Generate(CodeGenerationProviderMock.Object, MultipleContentBuilderMock.Object, CodeGenerationSettingsMock.Object);
 
             // Assert
             TemplateEngineMock.Verify(x => x.Render(It.IsAny<IRenderTemplateRequest<object?>>()), Times.Once);

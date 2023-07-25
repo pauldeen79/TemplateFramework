@@ -6,7 +6,7 @@ public partial class CodeGenerationAssemblyTests
     {
         public Generate()
         {
-            MultipleConentBuilderMock.Setup(x => x.ToString()).Returns("Output");
+            MultipleContentBuilderMock.Setup(x => x.ToString()).Returns("Output");
         }
 
         [Fact]
@@ -16,7 +16,7 @@ public partial class CodeGenerationAssemblyTests
             var sut = CreateSut();
 
             // Act
-            sut.Generate(new CodeGenerationAssemblySettings(TestData.BasePath, TestData.GetAssemblyName(), currentDirectory: TestData.BasePath), MultipleConentBuilderMock.Object);
+            sut.Generate(new CodeGenerationAssemblySettings(TestData.BasePath, TestData.GetAssemblyName(), currentDirectory: TestData.BasePath), MultipleContentBuilderMock.Object);
 
             // Assert
             CodeGenerationEngineMock.Verify(x => x.Generate(It.IsAny<ICodeGenerationProvider>(), It.IsAny<IMultipleContentBuilder>(), It.IsAny<ICodeGenerationSettings>()), Times.Once);
@@ -29,7 +29,7 @@ public partial class CodeGenerationAssemblyTests
             var sut = CreateSut();
 
             // Act
-            sut.Generate(new CodeGenerationAssemblySettings(TestData.BasePath, TestData.GetAssemblyName(), currentDirectory: TestData.BasePath, classNameFilter: new[] { typeof(MyGeneratorProvider).FullName! }), MultipleConentBuilderMock.Object);
+            sut.Generate(new CodeGenerationAssemblySettings(TestData.BasePath, TestData.GetAssemblyName(), currentDirectory: TestData.BasePath, classNameFilter: new[] { typeof(MyGeneratorProvider).FullName! }), MultipleContentBuilderMock.Object);
 
             // Assert
             CodeGenerationEngineMock.Verify(x => x.Generate(It.IsAny<ICodeGenerationProvider>(), It.IsAny<IMultipleContentBuilder>(), It.IsAny<ICodeGenerationSettings>()), Times.Once);
@@ -42,7 +42,7 @@ public partial class CodeGenerationAssemblyTests
             var sut = CreateSut();
 
             // Act
-            sut.Generate(new CodeGenerationAssemblySettings(TestData.BasePath, TestData.GetAssemblyName(), currentDirectory: TestData.BasePath, classNameFilter: new[] { "WrongName" }), MultipleConentBuilderMock.Object);
+            sut.Generate(new CodeGenerationAssemblySettings(TestData.BasePath, TestData.GetAssemblyName(), currentDirectory: TestData.BasePath, classNameFilter: new[] { "WrongName" }), MultipleContentBuilderMock.Object);
 
             // Assert
             CodeGenerationEngineMock.Verify(x => x.Generate(It.IsAny<ICodeGenerationProvider>(), It.IsAny<IMultipleContentBuilder>(), It.IsAny<ICodeGenerationSettings>()), Times.Never);
