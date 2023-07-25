@@ -10,6 +10,29 @@ public partial class CodeGenerationAssemblyTests
         }
 
         [Fact]
+        public void Throws_On_Null_Settings()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act & Assert
+            sut.Invoking(x => x.Generate(settings: null!, MultipleContentBuilderMock.Object))
+               .Should().Throw<ArgumentNullException>().WithParameterName("settings");
+        }
+
+        [Fact]
+        public void Throws_On_Null_GenerationEnvironment()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var settings = new CodeGenerationAssemblySettings(TestData.BasePath, TestData.GetAssemblyName(), currentDirectory: TestData.BasePath);
+
+            // Act & Assert
+            sut.Invoking(x => x.Generate(settings, generationEnvironment: null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("generationEnvironment");
+        }
+
+        [Fact]
         public void Runs_All_CodeGenerators_In_Specified_Assembly()
         {
             // Arrange

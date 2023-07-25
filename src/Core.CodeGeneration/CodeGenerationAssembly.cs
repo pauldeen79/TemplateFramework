@@ -14,6 +14,7 @@ public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
     public void Generate(ICodeGenerationAssemblySettings settings, IMultipleContentBuilder generationEnvironment)
     {
         Guard.IsNotNull(settings);
+        Guard.IsNotNull(generationEnvironment);
 
         var assembly = AssemblyHelper.GetAssembly(settings.AssemblyName, settings.CurrentDirectory);
 
