@@ -17,44 +17,28 @@ public class CodeGenerationEngine : ICodeGenerationEngine
         Guard.IsNotNull(generationEnvironment);
         Guard.IsNotNull(settings);
 
-        var result = Initialize(provider, settings);
-
-        _templateEngine.Render(new RenderTemplateRequest<object?>(
-                                template: result.generator,
-                                builder: generationEnvironment,
-                                model: provider.CreateModel(),
-                                defaultFilename: provider.DefaultFilename,
-                                additionalParameters: result.additionalParameters,
-                                context: null));
-        
-        ProcessResult(provider, result.shouldSave, result.shouldUseLastGeneratedFiles, generationEnvironment);
-    }
-
-    private static (object generator, bool shouldSave, bool shouldUseLastGeneratedFiles, object? additionalParameters) Initialize(ICodeGenerationProvider provider, ICodeGenerationSettings settings)
-    {
         provider.Initialize(settings.SkipWhenFileExists);
 
-        return
-        (
-            provider.CreateGenerator(),
-            !settings.DryRun,
-            !string.IsNullOrEmpty(provider.LastGeneratedFilesFilename),
-            provider.CreateAdditionalParameters()
-        );
-    }
+        _templateEngine.Render(new RenderTemplateRequest<object?>(
+                               template: provider.CreateGenerator(),
+                               builder: generationEnvironment,
+                               model: provider.CreateModel(),
+                               defaultFilename: provider.DefaultFilename,
+                               additionalParameters: provider.CreateAdditionalParameters(),
+                               context: null));
 
-    private static void ProcessResult(ICodeGenerationProvider provider, bool shouldSave, bool shouldUseLastGeneratedFiles, IMultipleContentBuilder generationEnvironment)
-    {
-        if (shouldSave)
+        if (settings.DryRun)
         {
-            if (shouldUseLastGeneratedFiles)
-            {
-                var prefixedLastGeneratedFilesFilename = Path.Combine(provider.Path, provider.LastGeneratedFilesFilename);
-                generationEnvironment.DeleteLastGeneratedFiles(prefixedLastGeneratedFilesFilename, provider.RecurseOnDeleteGeneratedFiles);
-                generationEnvironment.SaveLastGeneratedFiles(prefixedLastGeneratedFilesFilename);
-            }
-
-            generationEnvironment.SaveAll();
+            return;
         }
+
+        if (!string.IsNullOrEmpty(provider.LastGeneratedFilesFilename))
+        {
+            var prefixedLastGeneratedFilesFilename = Path.Combine(provider.Path, provider.LastGeneratedFilesFilename);
+            generationEnvironment.DeleteLastGeneratedFiles(prefixedLastGeneratedFilesFilename, provider.RecurseOnDeleteGeneratedFiles);
+            generationEnvironment.SaveLastGeneratedFiles(prefixedLastGeneratedFilesFilename);
+        }
+
+        generationEnvironment.SaveAll();
     }
 }

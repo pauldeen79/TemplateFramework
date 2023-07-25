@@ -21,6 +21,17 @@ public partial class CodeGenerationEngineTests
         }
 
         [Fact]
+        public void Throws_On_Null_GenerationEnvironment()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            sut.Invoking(x => x.Generate(CodeGenerationProviderMock.Object, generationEnvironment: null, CodeGenerationSettingsMock.Object))
+               .Should().Throw<ArgumentNullException>().WithParameterName("generationEnvironment");
+        }
+
+        [Fact]
         public void Throws_On_Null_CodeGenerationSettings()
         {
             // Arrange
