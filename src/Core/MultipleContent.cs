@@ -1,12 +1,9 @@
 ﻿namespace TemplateFramework.Core;
 
-public class MultipleContent : IMultipleContent
+internal sealed class MultipleContent : IMultipleContent
 {
     public MultipleContent(string basePath, Encoding encoding, IEnumerable<IContent> contents)
     {
-        Guard.IsNotNull(basePath);
-        Guard.IsNotNull(contents);
-
         BasePath = basePath;
         Encoding = encoding;
         Contents = contents.ToList().AsReadOnly();
