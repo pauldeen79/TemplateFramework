@@ -32,7 +32,7 @@ public class IntegrationTests
             var childTemplate = provider.Create(new ChildTemplateByNameRequest("MyTemplate"));
             engine.Render(new RenderTemplateRequest(childTemplate, builder, context.CreateChildContext(new TemplateContext(childTemplate))));
         });
-        var generationEnvironment = new MultipleContentBuilder(TestData.BasePath);
+        var generationEnvironment = new MultipleContentBuilder();
 
         // Act
         sut.Render(new RenderTemplateRequest(template, generationEnvironment));

@@ -4,19 +4,10 @@ public class MultipleContentBuilder : IMultipleContentBuilder
 {
     private readonly List<IContentBuilder> _contentList;
 
-    public MultipleContentBuilder() : this(string.Empty)
+    public MultipleContentBuilder()
     {
-    }
-
-    public MultipleContentBuilder(string basePath)
-    {
-        Guard.IsNotNull(basePath);
-        
         _contentList = new List<IContentBuilder>();
-        BasePath = basePath;
     }
-
-    public string BasePath { get; set; }
 
     public IContentBuilder AddContent(string filename, bool skipWhenFileExists, StringBuilder? builder)
     {
@@ -36,5 +27,5 @@ public class MultipleContentBuilder : IMultipleContentBuilder
 
     public IEnumerable<IContentBuilder> Contents => _contentList.AsReadOnly();
 
-    public IMultipleContent Build() => new MultipleContent(BasePath, Contents.Select(x => x.Build()));
+    public IMultipleContent Build() => new MultipleContent(Contents.Select(x => x.Build()));
 }

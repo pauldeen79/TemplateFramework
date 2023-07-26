@@ -51,6 +51,7 @@
      <Using Include="Moq" />
      <Using Include="TemplateFramework.Abstractions" />
      <Using Include="TemplateFramework.Abstractions.CodeGeneration" />
+     <Using Include="TemplateFramework.Abstractions.Domains"/>
      <Using Include="TemplateFramework.Abstractions.Requests" />
      <Using Include="TemplateFramework.Core.CodeGeneration.Extensions" />
      <Using Include="TemplateFramework.Core.Extensions" />

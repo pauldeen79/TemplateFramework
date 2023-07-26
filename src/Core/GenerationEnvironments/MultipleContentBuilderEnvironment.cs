@@ -3,11 +3,11 @@
 public sealed class MultipleContentBuilderEnvironment : GenerationEnvironmentBase
 {
     public MultipleContentBuilderEnvironment(IMultipleContentBuilder builder)
-        : this(builder, new FileSystem())
+        : this(new FileSystem(), builder)
     {
     }
 
-    internal MultipleContentBuilderEnvironment(IMultipleContentBuilder builder, IFileSystem fileSystem)
+    internal MultipleContentBuilderEnvironment(IFileSystem fileSystem, IMultipleContentBuilder builder)
         : base(GenerationEnvironmentType.MultipleContentBuilder)
     {
         Guard.IsNotNull(builder);

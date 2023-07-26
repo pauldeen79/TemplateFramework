@@ -12,7 +12,7 @@ public class IntegrationTests
         var sut = provider.GetRequiredService<ITemplateEngine>();
 
         var template = new TestData.Template(builder => builder.Append("Hello world!"));
-        var generationEnvironment = new MultipleContentBuilder(TestData.BasePath);
+        var generationEnvironment = new MultipleContentBuilder();
 
         // Act
         sut.Render(new RenderTemplateRequest(template, generationEnvironment));

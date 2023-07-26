@@ -2,6 +2,5 @@
 
 public interface IMultipleContent
 {
-    string BasePath { get; }
     IReadOnlyCollection<IContent> Contents { get; }
 }

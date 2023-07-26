@@ -3,6 +3,7 @@
 public partial class StringBuilderEnvironmentTests
 {
     protected Mock<IFileSystem> FileSystemMock { get; } = new();
+    protected Mock<ICodeGenerationProvider> CodeGenerationProviderMock { get; } = new();
     protected StringBuilder Builder { get; } = new();
     
     protected StringBuilderEnvironment CreateSut() => new(FileSystemMock.Object, Builder);

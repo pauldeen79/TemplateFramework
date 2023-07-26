@@ -82,12 +82,13 @@ public partial class CodeGenerationEngineTests
             var sut = CreateSut();
             CodeGenerationProviderMock.SetupGet(x => x.DefaultFilename).Returns(string.Empty);
             CodeGenerationProviderMock.Setup(x => x.CreateGenerator()).Returns(this);
+            GenerationEnvironmentMock.SetupGet(x => x.Type).Returns(GenerationEnvironmentType.MultipleContentBuilder);
 
             // Act
             sut.Generate(CodeGenerationProviderMock.Object, GenerationEnvironmentMock.Object, CodeGenerationSettingsMock.Object);
 
             // Assert
-            TemplateEngineMock.Verify(x => x.Render(It.IsAny<IRenderTemplateRequest<object?>>()), Times.Once);
+            TemplateEngineMock.Verify(x => x.Render(It.Is<IRenderTemplateRequest<object?>>(x => x.GenerationEnvironment == GenerationEnvironmentMock.Object)), Times.Once);
         }
 
         [Fact]
@@ -98,12 +99,13 @@ public partial class CodeGenerationEngineTests
             CodeGenerationProviderMock.SetupGet(x => x.Path).Returns(TestData.BasePath);
             CodeGenerationProviderMock.SetupGet(x => x.DefaultFilename).Returns("MyFile.txt");
             CodeGenerationProviderMock.Setup(x => x.CreateGenerator()).Returns(this);
+            GenerationEnvironmentMock.SetupGet(x => x.Type).Returns(GenerationEnvironmentType.StringBuilder);
 
             // Act
             sut.Generate(CodeGenerationProviderMock.Object, GenerationEnvironmentMock.Object, CodeGenerationSettingsMock.Object);
 
             // Assert
-            TemplateEngineMock.Verify(x => x.Render(It.IsAny<IRenderTemplateRequest<object?>>()), Times.Once);
+            TemplateEngineMock.Verify(x => x.Render(It.Is<IRenderTemplateRequest<object?>>(x => x.GenerationEnvironment == GenerationEnvironmentMock.Object)), Times.Once);
         }
     }
 }
