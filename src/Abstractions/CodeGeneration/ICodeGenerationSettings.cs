@@ -2,5 +2,6 @@
 
 public interface ICodeGenerationSettings
 {
+    string BasePath { get; }
     bool DryRun { get; }
 }

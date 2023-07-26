@@ -25,6 +25,9 @@ public class CodeGenerationEngine : ICodeGenerationEngine
                                additionalParameters: provider.CreateAdditionalParameters(),
                                context: null));
 
-        generationEnvironment.Process(provider, settings.DryRun);
+        if (!settings.DryRun)
+        {
+            generationEnvironment.Process(provider, settings.BasePath);
+        }
     }
 }

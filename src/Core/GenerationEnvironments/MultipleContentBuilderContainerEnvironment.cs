@@ -3,32 +3,35 @@
 public sealed class MultipleContentBuilderContainerEnvironment : GenerationEnvironmentBase
 {
     public MultipleContentBuilderContainerEnvironment(IMultipleContentBuilderContainer container)
+        : this(container, new FileSystem())
+    {
+    }
+
+    internal MultipleContentBuilderContainerEnvironment(IMultipleContentBuilderContainer container, IFileSystem fileSystem)
         : base(GenerationEnvironmentType.MultipleContentBuilderContainer)
     {
         Guard.IsNotNull(container);
 
+        _fileSystem = fileSystem;
         Container = container;
     }
 
+    private readonly IFileSystem _fileSystem;
+
     public IMultipleContentBuilderContainer Container { get; }
 
-    public override void Process(ICodeGenerationProvider provider, bool dryRun)
+    public override void Process(ICodeGenerationProvider provider, string basePath)
     {
         Guard.IsNotNull(provider);
 
-        if (dryRun)
-        {
-            return;
-        }
-
-        var builder = Container.MultipleContentBuilder;
+        var multipleContent = Container.MultipleContentBuilder.Build();
         if (!string.IsNullOrEmpty(provider.LastGeneratedFilesFilename))
         {
             var prefixedLastGeneratedFilesFilename = Path.Combine(provider.Path, provider.LastGeneratedFilesFilename);
-            builder.DeleteLastGeneratedFiles(prefixedLastGeneratedFilesFilename, provider.RecurseOnDeleteGeneratedFiles, provider.Encoding);
-            builder.SaveLastGeneratedFiles(prefixedLastGeneratedFilesFilename, provider.Encoding);
+            DeleteLastGeneratedFiles(_fileSystem, basePath, provider.Encoding, prefixedLastGeneratedFilesFilename, provider.RecurseOnDeleteGeneratedFiles);
+            SaveLastGeneratedFiles(_fileSystem, basePath, provider.Encoding, prefixedLastGeneratedFilesFilename, multipleContent.Contents);
         }
 
-        builder.SaveAll(provider.Encoding);
+        SaveAll(_fileSystem, basePath, provider.Encoding, multipleContent.Contents);
     }
 }

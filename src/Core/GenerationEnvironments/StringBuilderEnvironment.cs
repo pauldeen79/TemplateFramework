@@ -11,22 +11,18 @@ public sealed class StringBuilderEnvironment : GenerationEnvironmentBase
     {
         Guard.IsNotNull(builder);
 
+        _fileSystem = fileSystem;
         Builder = builder;
-        FileSystem = fileSystem;
     }
 
-    public StringBuilder Builder { get; }
-    public IFileSystem FileSystem { get; }
+    private readonly IFileSystem _fileSystem;
 
-    public override void Process(ICodeGenerationProvider provider, bool dryRun)
+    public StringBuilder Builder { get; }
+
+    public override void Process(ICodeGenerationProvider provider, string basePath)
     {
         Guard.IsNotNull(provider);
 
-        if (dryRun)
-        {
-            return;
-        }
-
-        FileSystem.WriteAllText(provider.DefaultFilename, Builder.ToString(), provider.Encoding);
+        _fileSystem.WriteAllText(string.IsNullOrEmpty(basePath) ? provider.DefaultFilename : Path.Combine(basePath, provider.DefaultFilename), Builder.ToString(), provider.Encoding);
     }
 }

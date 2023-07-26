@@ -20,7 +20,7 @@ public partial class CodeGenerationAssemblyTests
         {
             // Arrange
             var sut = CreateSut();
-            var settings = new CodeGenerationAssemblySettings(TestData.GetAssemblyName(), currentDirectory: TestData.BasePath);
+            var settings = new CodeGenerationAssemblySettings(TestData.BasePath, TestData.GetAssemblyName(), currentDirectory: TestData.BasePath);
 
             // Act & Assert
             sut.Invoking(x => x.Generate(settings, generationEnvironment: null!))
@@ -34,7 +34,7 @@ public partial class CodeGenerationAssemblyTests
             var sut = CreateSut();
 
             // Act
-            sut.Generate(new CodeGenerationAssemblySettings(TestData.GetAssemblyName(), currentDirectory: TestData.BasePath), GenerationEnvironmentMock.Object);
+            sut.Generate(new CodeGenerationAssemblySettings(TestData.BasePath, TestData.GetAssemblyName(), currentDirectory: TestData.BasePath), GenerationEnvironmentMock.Object);
 
             // Assert
             CodeGenerationEngineMock.Verify(x => x.Generate(It.IsAny<ICodeGenerationProvider>(), It.IsAny<IGenerationEnvironment>(), It.IsAny<ICodeGenerationSettings>()), Times.Once);
@@ -47,7 +47,7 @@ public partial class CodeGenerationAssemblyTests
             var sut = CreateSut();
 
             // Act
-            sut.Generate(new CodeGenerationAssemblySettings(TestData.GetAssemblyName(), currentDirectory: TestData.BasePath, classNameFilter: new[] { typeof(MyGeneratorProvider).FullName! }), GenerationEnvironmentMock.Object);
+            sut.Generate(new CodeGenerationAssemblySettings(TestData.BasePath, TestData.GetAssemblyName(), currentDirectory: TestData.BasePath, classNameFilter: new[] { typeof(MyGeneratorProvider).FullName! }), GenerationEnvironmentMock.Object);
 
             // Assert
             CodeGenerationEngineMock.Verify(x => x.Generate(It.IsAny<ICodeGenerationProvider>(), It.IsAny<IGenerationEnvironment>(), It.IsAny<ICodeGenerationSettings>()), Times.Once);
@@ -60,7 +60,7 @@ public partial class CodeGenerationAssemblyTests
             var sut = CreateSut();
 
             // Act
-            sut.Generate(new CodeGenerationAssemblySettings(TestData.GetAssemblyName(), currentDirectory: TestData.BasePath, classNameFilter: new[] { "WrongName" }), GenerationEnvironmentMock.Object);
+            sut.Generate(new CodeGenerationAssemblySettings(TestData.BasePath, TestData.GetAssemblyName(), currentDirectory: TestData.BasePath, classNameFilter: new[] { "WrongName" }), GenerationEnvironmentMock.Object);
 
             // Assert
             CodeGenerationEngineMock.Verify(x => x.Generate(It.IsAny<ICodeGenerationProvider>(), It.IsAny<IGenerationEnvironment>(), It.IsAny<ICodeGenerationSettings>()), Times.Never);

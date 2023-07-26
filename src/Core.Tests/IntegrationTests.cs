@@ -12,8 +12,7 @@ public class IntegrationTests
         var sut = provider.GetRequiredService<ITemplateEngine>();
 
         var template = new TestData.Template(builder => builder.Append("Hello world!"));
-        var fileSystemMock = new Mock<IFileSystem>();
-        var generationEnvironment = new MultipleContentBuilder(fileSystemMock.Object, TestData.BasePath);
+        var generationEnvironment = new MultipleContentBuilder(TestData.BasePath);
 
         // Act
         sut.Render(new RenderTemplateRequest(template, generationEnvironment));

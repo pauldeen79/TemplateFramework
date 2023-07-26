@@ -48,12 +48,13 @@ public partial class CodeGenerationEngineTests
             CodeGenerationProviderMock.SetupGet(x => x.DefaultFilename).Returns("MyFile.txt");
             CodeGenerationProviderMock.Setup(x => x.CreateGenerator()).Returns(this);
             CodeGenerationSettingsMock.SetupGet(x => x.DryRun).Returns(false);
+            CodeGenerationSettingsMock.SetupGet(x => x.BasePath).Returns(TestData.BasePath);
 
             // Act
             sut.Generate(CodeGenerationProviderMock.Object, GenerationEnvironmentMock.Object, CodeGenerationSettingsMock.Object);
 
             // Assert
-            GenerationEnvironmentMock.Verify(x => x.Process(CodeGenerationProviderMock.Object, false), Times.Once);
+            GenerationEnvironmentMock.Verify(x => x.Process(CodeGenerationProviderMock.Object, TestData.BasePath), Times.Once);
         }
 
         [Fact]
@@ -71,7 +72,7 @@ public partial class CodeGenerationEngineTests
             sut.Generate(CodeGenerationProviderMock.Object, GenerationEnvironmentMock.Object, CodeGenerationSettingsMock.Object);
 
             // Assert
-            GenerationEnvironmentMock.Verify(x => x.Process(CodeGenerationProviderMock.Object, false), Times.Never);
+            GenerationEnvironmentMock.Verify(x => x.Process(CodeGenerationProviderMock.Object, TestData.BasePath), Times.Never);
         }
 
         [Fact]

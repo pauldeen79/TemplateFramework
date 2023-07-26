@@ -4,6 +4,8 @@ internal sealed class MultipleContent : IMultipleContent
 {
     public MultipleContent(string basePath, IEnumerable<IContent> contents)
     {
+        Guard.IsNotNull(basePath);
+
         BasePath = basePath;
         Contents = contents.ToList().AsReadOnly();
     }

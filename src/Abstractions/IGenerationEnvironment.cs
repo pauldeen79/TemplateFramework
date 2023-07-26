@@ -3,5 +3,5 @@
 public interface IGenerationEnvironment
 {
     GenerationEnvironmentType Type { get; }
-    void Process(ICodeGenerationProvider provider, bool dryRun);
+    void Process(ICodeGenerationProvider provider, string basePath);
 }
