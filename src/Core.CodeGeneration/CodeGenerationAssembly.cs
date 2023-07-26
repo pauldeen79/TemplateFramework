@@ -11,17 +11,16 @@ public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
         _codeGenerationEngine = codeGenerationEngine;
     }
 
-    public void Generate(ICodeGenerationAssemblySettings settings, IMultipleContentBuilder generationEnvironment)
+    public void Generate(ICodeGenerationAssemblySettings settings, IGenerationEnvironment generationEnvironment)
     {
         Guard.IsNotNull(settings);
         Guard.IsNotNull(generationEnvironment);
 
         var assembly = AssemblyHelper.GetAssembly(settings.AssemblyName, settings.CurrentDirectory);
-        var environment = generationEnvironment.ToGenerationEnvironment();
 
         foreach (var codeGenerationProvider in GetCodeGeneratorProviders(assembly, settings.ClassNameFilter))
         {
-            _codeGenerationEngine.Generate(codeGenerationProvider, environment, settings);
+            _codeGenerationEngine.Generate(codeGenerationProvider, generationEnvironment, settings);
         }
     }
 
