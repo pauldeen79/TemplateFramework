@@ -69,6 +69,19 @@ public partial class CodeGenerationAssemblySettingsTests
         }
 
         [Fact]
+        public void Constructs_With_BasePath_And_AssemblyName_And_CurrentDirectory_And_DryRun()
+        {
+            // Act
+            var instance = new CodeGenerationAssemblySettings(TestData.BasePath, TestData.GetAssemblyName(), Path.Combine(TestData.BasePath, "SomeDirectory"), dryRun: true);
+
+            // Assert
+            instance.BasePath.Should().Be(TestData.BasePath);
+            instance.AssemblyName.Should().Be(TestData.GetAssemblyName());
+            instance.CurrentDirectory.Should().Be(Path.Combine(TestData.BasePath, "SomeDirectory"));
+            instance.DryRun.Should().BeTrue();
+        }
+
+        [Fact]
         public void Constructs_With_All_Arguments()
         {
             // Act

@@ -8,7 +8,7 @@ public partial class CodeGenerationSettingsTests
         public void Creates_Instance_With_Basepath()
         {
             // Act
-            var sut = new CodeGenerationSettings(TestData.BasePath, DryRun);
+            var sut = new CodeGenerationSettings(TestData.BasePath);
 
             // Assert
             sut.BasePath.Should().Be(TestData.BasePath);
