@@ -2,11 +2,11 @@
 
 public interface ICodeGenerationProvider
 {
-    bool SkipWhenFileExists { get; }
     string Path { get; }
     string DefaultFilename { get; }
     bool RecurseOnDeleteGeneratedFiles { get; }
     string LastGeneratedFilesFilename { get; }
+    Encoding Encoding { get; }
 
     object CreateGenerator();
     object? CreateAdditionalParameters();

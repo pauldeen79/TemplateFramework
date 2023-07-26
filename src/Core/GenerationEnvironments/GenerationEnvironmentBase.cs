@@ -8,4 +8,6 @@ internal abstract class GenerationEnvironmentBase : IGenerationEnvironment
     }
 
     public GenerationEnvironmentType Type { get; }
+
+    public abstract void Process(ICodeGenerationProvider provider, bool dryRun);
 }

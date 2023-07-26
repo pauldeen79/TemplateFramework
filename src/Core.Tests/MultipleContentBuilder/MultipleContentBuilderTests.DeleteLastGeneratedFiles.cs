@@ -11,7 +11,7 @@ public partial class MultipleContentBuilderTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.DeleteLastGeneratedFiles(lastGeneratedFilesPath: null!, false))
+            sut.Invoking(x => x.DeleteLastGeneratedFiles(lastGeneratedFilesPath: null!, false, Encoding.Latin1))
                .Should().Throw<ArgumentNullException>().WithParameterName("lastGeneratedFilesPath");
         }
 
@@ -22,7 +22,7 @@ public partial class MultipleContentBuilderTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.DeleteLastGeneratedFiles(lastGeneratedFilesPath: string.Empty, false))
+            sut.Invoking(x => x.DeleteLastGeneratedFiles(lastGeneratedFilesPath: string.Empty, false, Encoding.Latin1))
                .Should().Throw<ArgumentException>().WithParameterName("lastGeneratedFilesPath");
         }
 
@@ -33,8 +33,19 @@ public partial class MultipleContentBuilderTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.DeleteLastGeneratedFiles(lastGeneratedFilesPath: " ", false))
+            sut.Invoking(x => x.DeleteLastGeneratedFiles(lastGeneratedFilesPath: " ", false, Encoding.Latin1))
                .Should().Throw<ArgumentException>().WithParameterName("lastGeneratedFilesPath");
+        }
+
+        [Fact]
+        public void Throws_On_Null_Encoding()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act & Assert
+            sut.Invoking(x => x.DeleteLastGeneratedFiles("LastGeneratedFiles.txt", true, encoding: null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("encoding");
         }
 
         [Fact]
@@ -44,7 +55,7 @@ public partial class MultipleContentBuilderTests
             var sut = CreateSut(TestData.BasePath);
 
             // Act
-            sut.DeleteLastGeneratedFiles(Path.Combine("MyDirectory", "LastGeneratedFiles.txt"), false);
+            sut.DeleteLastGeneratedFiles(Path.Combine("MyDirectory", "LastGeneratedFiles.txt"), false, Encoding.Latin1);
 
             // Assert
             FileSystemMock.Verify(x => x.FileExists(Path.Combine(TestData.BasePath, "MyDirectory", "LastGeneratedFiles.txt")), Times.Once);
@@ -57,7 +68,7 @@ public partial class MultipleContentBuilderTests
             var sut = CreateSut(TestData.BasePath);
 
             // Act
-            sut.DeleteLastGeneratedFiles("LastGeneratedFiles.txt", false);
+            sut.DeleteLastGeneratedFiles("LastGeneratedFiles.txt", false, Encoding.Latin1);
 
             // Assert
             FileSystemMock.Verify(x => x.FileExists(Path.Combine(TestData.BasePath, "LastGeneratedFiles.txt")), Times.Once);
@@ -70,7 +81,7 @@ public partial class MultipleContentBuilderTests
             var sut = CreateSut(string.Empty);
 
             // Act
-            sut.DeleteLastGeneratedFiles("LastGeneratedFiles.txt", false);
+            sut.DeleteLastGeneratedFiles("LastGeneratedFiles.txt", false, Encoding.Latin1);
 
             // Assert
             FileSystemMock.Verify(x => x.FileExists("LastGeneratedFiles.txt"), Times.Once);
@@ -84,7 +95,7 @@ public partial class MultipleContentBuilderTests
             FileSystemMock.Setup(x => x.DirectoryExists(TestData.BasePath)).Returns(false);
 
             // Act
-            sut.DeleteLastGeneratedFiles("*.generated.cs", false);
+            sut.DeleteLastGeneratedFiles("*.generated.cs", false, Encoding.Latin1);
 
             // Assert
             FileSystemMock.Verify(x => x.FileExists(It.IsAny<string>()), Times.Never);
@@ -99,7 +110,7 @@ public partial class MultipleContentBuilderTests
             FileSystemMock.Setup(x => x.DirectoryExists(TestData.BasePath)).Returns(true);
 
             // Act
-            sut.DeleteLastGeneratedFiles("*.generated.cs", false);
+            sut.DeleteLastGeneratedFiles("*.generated.cs", false, Encoding.Latin1);
 
             // Assert
             FileSystemMock.Verify(x => x.FileExists(It.IsAny<string>()), Times.Never);
@@ -115,7 +126,7 @@ public partial class MultipleContentBuilderTests
             FileSystemMock.Setup(x => x.GetFiles(TestData.BasePath, "*.generated.cs", false)).Returns(new[] { Path.Combine(TestData.BasePath, "File1.txt") });
 
             // Act
-            sut.DeleteLastGeneratedFiles("*.generated.cs", false);
+            sut.DeleteLastGeneratedFiles("*.generated.cs", false, Encoding.Latin1);
 
             // Assert
             FileSystemMock.Verify(x => x.FileExists(It.IsAny<string>()), Times.Never); // not called because the files are read from Directory.GetFiles
@@ -135,7 +146,7 @@ public partial class MultipleContentBuilderTests
             });
 
             // Act
-            sut.DeleteLastGeneratedFiles("*.generated.cs", true);
+            sut.DeleteLastGeneratedFiles("*.generated.cs", true, Encoding.Latin1);
 
             // Assert
             FileSystemMock.Verify(x => x.FileExists(It.IsAny<string>()), Times.Never); // not called because the files are read from Directory.GetFiles
@@ -150,7 +161,7 @@ public partial class MultipleContentBuilderTests
             FileSystemMock.Setup(x => x.FileExists("LastGeneratedFiles.txt")).Returns(false);
 
             // Act
-            sut.DeleteLastGeneratedFiles("LastGeneratedFiles.txt", false);
+            sut.DeleteLastGeneratedFiles("LastGeneratedFiles.txt", false, Encoding.Latin1);
 
             // Assert
             FileSystemMock.Verify(x => x.FileExists(It.IsAny<string>()), Times.Once); // once because last generated files is checked
@@ -170,7 +181,7 @@ public partial class MultipleContentBuilderTests
             });
 
             // Act
-            sut.DeleteLastGeneratedFiles("LastGeneratedFiles.txt", false);
+            sut.DeleteLastGeneratedFiles("LastGeneratedFiles.txt", false, Encoding.Latin1);
 
             // Assert
             FileSystemMock.Verify(x => x.FileExists(It.IsAny<string>()), Times.Exactly(3)); // once because last generated files is checked, two times because of File1.txt and File2.txt
@@ -190,7 +201,7 @@ public partial class MultipleContentBuilderTests
             });
 
             // Act
-            sut.DeleteLastGeneratedFiles("LastGeneratedFiles.txt", false);
+            sut.DeleteLastGeneratedFiles("LastGeneratedFiles.txt", false, Encoding.Latin1);
 
             // Assert
             FileSystemMock.Verify(x => x.FileExists(It.IsAny<string>()), Times.Exactly(3)); // once because last generated files is checked, two times because of File1.txt and File2.txt

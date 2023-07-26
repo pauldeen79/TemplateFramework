@@ -5,8 +5,26 @@ internal sealed class MultipleContentBuilderContainerEnvironment : GenerationEnv
     internal MultipleContentBuilderContainerEnvironment(IMultipleContentBuilderContainer builder)
         : base(GenerationEnvironmentType.MultipleContentBuilderContainer)
     {
-        Builder = builder;
+        Container = builder;
     }
 
-    public IMultipleContentBuilderContainer Builder { get; }
+    public IMultipleContentBuilderContainer Container { get; }
+
+    public override void Process(ICodeGenerationProvider provider, bool dryRun)
+    {
+        if (dryRun)
+        {
+            return;
+        }
+
+        var builder = Container.MultipleContentBuilder;
+        if (!string.IsNullOrEmpty(provider.LastGeneratedFilesFilename))
+        {
+            var prefixedLastGeneratedFilesFilename = Path.Combine(provider.Path, provider.LastGeneratedFilesFilename);
+            builder.DeleteLastGeneratedFiles(prefixedLastGeneratedFilesFilename, provider.RecurseOnDeleteGeneratedFiles, provider.Encoding);
+            builder.SaveLastGeneratedFiles(prefixedLastGeneratedFilesFilename, provider.Encoding);
+        }
+
+        builder.SaveAll(provider.Encoding);
+    }
 }

@@ -12,7 +12,7 @@ public class MultipleContentTemplateRenderer : ITemplateRenderer
         if (request.GenerationEnvironment is MultipleContentBuilderContainerEnvironment containerEnvironment)
         {
             // Use TemplateFileManager
-            multipleContentBuilder = containerEnvironment.Builder.MultipleContentBuilder
+            multipleContentBuilder = containerEnvironment.Container.MultipleContentBuilder
                 ?? throw new InvalidOperationException("MultipleContentBuilder property is null");
         }
         else if (request.GenerationEnvironment is MultipleContentBuilderEnvironment builderEnvironment)

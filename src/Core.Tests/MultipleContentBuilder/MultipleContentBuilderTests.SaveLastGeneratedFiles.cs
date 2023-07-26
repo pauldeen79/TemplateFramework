@@ -11,7 +11,7 @@ public partial class MultipleContentBuilderTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.SaveLastGeneratedFiles(lastGeneratedFilesPath: null!))
+            sut.Invoking(x => x.SaveLastGeneratedFiles(lastGeneratedFilesPath: null!, Encoding.Latin1))
                .Should().Throw<ArgumentNullException>().WithParameterName("lastGeneratedFilesPath");
         }
 
@@ -22,7 +22,7 @@ public partial class MultipleContentBuilderTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.SaveLastGeneratedFiles(lastGeneratedFilesPath: string.Empty))
+            sut.Invoking(x => x.SaveLastGeneratedFiles(lastGeneratedFilesPath: string.Empty, Encoding.Latin1))
                .Should().Throw<ArgumentException>().WithParameterName("lastGeneratedFilesPath");
         }
 
@@ -33,8 +33,19 @@ public partial class MultipleContentBuilderTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.SaveLastGeneratedFiles(lastGeneratedFilesPath: " "))
+            sut.Invoking(x => x.SaveLastGeneratedFiles(lastGeneratedFilesPath: " ", Encoding.Latin1))
                .Should().Throw<ArgumentException>().WithParameterName("lastGeneratedFilesPath");
+        }
+
+        [Fact]
+        public void Throws_On_Null_Encoding()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act & Assert
+            sut.Invoking(x => x.SaveLastGeneratedFiles("LastGeneratedFiles.txt", encoding: null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("encoding");
         }
 
         [Fact]
@@ -45,7 +56,7 @@ public partial class MultipleContentBuilderTests
             FileSystemMock.Setup(x => x.DirectoryExists(TestData.BasePath)).Returns(false);
 
             // Act
-            sut.SaveLastGeneratedFiles("LastGeneratedFiles.txt");
+            sut.SaveLastGeneratedFiles("LastGeneratedFiles.txt", Encoding.Latin1);
 
             // Assert
             FileSystemMock.Verify(x => x.CreateDirectory(TestData.BasePath), Times.Once);
@@ -59,10 +70,10 @@ public partial class MultipleContentBuilderTests
             FileSystemMock.Setup(x => x.DirectoryExists(TestData.BasePath)).Returns(true);
 
             // Act
-            sut.SaveLastGeneratedFiles("LastGeneratedFiles.txt");
+            sut.SaveLastGeneratedFiles("LastGeneratedFiles.txt", Encoding.Latin1);
 
             // Assert
-            FileSystemMock.Verify(x => x.WriteAllLines(Path.Combine(TestData.BasePath, "LastGeneratedFiles.txt"), It.IsAny<IEnumerable<string>>(), It.IsAny<Encoding>()), Times.Once);
+            FileSystemMock.Verify(x => x.WriteAllLines(Path.Combine(TestData.BasePath, "LastGeneratedFiles.txt"), It.IsAny<IEnumerable<string>>(), Encoding.Latin1), Times.Once);
         }
 
         [Fact]
@@ -73,10 +84,10 @@ public partial class MultipleContentBuilderTests
             FileSystemMock.Setup(x => x.DirectoryExists("MyDirectory")).Returns(true);
 
             // Act
-            sut.SaveLastGeneratedFiles("LastGeneratedFiles.txt");
+            sut.SaveLastGeneratedFiles("LastGeneratedFiles.txt", Encoding.Latin1);
 
             // Assert
-            FileSystemMock.Verify(x => x.WriteAllLines("LastGeneratedFiles.txt", It.IsAny<IEnumerable<string>>(), It.IsAny<Encoding>()), Times.Once);
+            FileSystemMock.Verify(x => x.WriteAllLines("LastGeneratedFiles.txt", It.IsAny<IEnumerable<string>>(), Encoding.Latin1), Times.Once);
         }
 
         [Fact]
@@ -87,10 +98,10 @@ public partial class MultipleContentBuilderTests
             FileSystemMock.Setup(x => x.DirectoryExists(TestData.BasePath)).Returns(true);
 
             // Act
-            sut.SaveLastGeneratedFiles("*.template.generated.cs");
+            sut.SaveLastGeneratedFiles("*.template.generated.cs", Encoding.Latin1);
 
             // Assert
-            FileSystemMock.Verify(x => x.WriteAllLines(It.IsAny<string>(), It.IsAny<IEnumerable<string>>(), It.IsAny<Encoding>()), Times.Never);
+            FileSystemMock.Verify(x => x.WriteAllLines(It.IsAny<string>(), It.IsAny<IEnumerable<string>>(), Encoding.Latin1), Times.Never);
         }
     }
 }

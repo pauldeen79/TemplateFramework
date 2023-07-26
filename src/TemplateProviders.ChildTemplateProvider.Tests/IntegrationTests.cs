@@ -33,7 +33,7 @@ public class IntegrationTests
             engine.Render(new RenderTemplateRequest(childTemplate, builder, context.CreateChildContext(new TemplateContext(childTemplate))));
         });
         var fileSystemMock = new Mock<IFileSystem>();
-        var generationEnvironment = new MultipleContentBuilder(fileSystemMock.Object, Encoding.UTF8, TestData.BasePath);
+        var generationEnvironment = new MultipleContentBuilder(fileSystemMock.Object, TestData.BasePath);
 
         // Act
         sut.Render(new RenderTemplateRequest(template, generationEnvironment));

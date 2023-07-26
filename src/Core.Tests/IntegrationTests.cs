@@ -13,7 +13,7 @@ public class IntegrationTests
 
         var template = new TestData.Template(builder => builder.Append("Hello world!"));
         var fileSystemMock = new Mock<IFileSystem>();
-        var generationEnvironment = new MultipleContentBuilder(fileSystemMock.Object, Encoding.UTF8, TestData.BasePath);
+        var generationEnvironment = new MultipleContentBuilder(fileSystemMock.Object, TestData.BasePath);
 
         // Act
         sut.Render(new RenderTemplateRequest(template, generationEnvironment));

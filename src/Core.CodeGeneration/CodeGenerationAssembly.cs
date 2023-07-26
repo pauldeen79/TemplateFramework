@@ -17,10 +17,11 @@ public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
         Guard.IsNotNull(generationEnvironment);
 
         var assembly = AssemblyHelper.GetAssembly(settings.AssemblyName, settings.CurrentDirectory);
+        var environment = generationEnvironment.ToGenerationEnvironment();
 
         foreach (var codeGenerationProvider in GetCodeGeneratorProviders(assembly, settings.ClassNameFilter))
         {
-            _codeGenerationEngine.Generate(codeGenerationProvider, generationEnvironment, settings);
+            _codeGenerationEngine.Generate(codeGenerationProvider, environment, settings);
         }
     }
 

@@ -11,11 +11,11 @@ public partial class MultipleContentBuilderTests
             var sut = CreateSut(string.Empty);
 
             // Act
-            sut.SaveAll();
+            sut.SaveAll(Encoding.Latin1);
 
             // Assert
-            FileSystemMock.Verify(x => x.WriteAllText("File1.txt", "Test1" + Environment.NewLine, It.IsAny<Encoding>()), Times.Once);
-            FileSystemMock.Verify(x => x.WriteAllText("File2.txt", "Test2" + Environment.NewLine, It.IsAny<Encoding>()), Times.Once);
+            FileSystemMock.Verify(x => x.WriteAllText("File1.txt", "Test1" + Environment.NewLine, Encoding.Latin1), Times.Once);
+            FileSystemMock.Verify(x => x.WriteAllText("File2.txt", "Test2" + Environment.NewLine, Encoding.Latin1), Times.Once);
         }
 
         [Fact]
@@ -27,10 +27,10 @@ public partial class MultipleContentBuilderTests
             c1.Builder.AppendLine("Test1");
 
             // Act
-            sut.SaveAll();
+            sut.SaveAll(Encoding.Latin1);
 
             // Assert
-            FileSystemMock.Verify(x => x.WriteAllText(Path.Combine(TestData.BasePath, "File1.txt"), "Test1" + Environment.NewLine, Encoding.UTF8), Times.Once);
+            FileSystemMock.Verify(x => x.WriteAllText(Path.Combine(TestData.BasePath, "File1.txt"), "Test1" + Environment.NewLine, Encoding.Latin1), Times.Once);
         }
 
         [Fact]
@@ -40,11 +40,11 @@ public partial class MultipleContentBuilderTests
             var sut = CreateSut(TestData.BasePath);
 
             // Act
-            sut.SaveAll();
+            sut.SaveAll(Encoding.Latin1);
 
             // Assert
-            FileSystemMock.Verify(x => x.WriteAllText(Path.Combine(TestData.BasePath, "File1.txt"), "Test1" + Environment.NewLine, It.IsAny<Encoding>()), Times.Once);
-            FileSystemMock.Verify(x => x.WriteAllText(Path.Combine(TestData.BasePath, "File2.txt"), "Test2" + Environment.NewLine, It.IsAny<Encoding>()), Times.Once);
+            FileSystemMock.Verify(x => x.WriteAllText(Path.Combine(TestData.BasePath, "File1.txt"), "Test1" + Environment.NewLine, Encoding.Latin1), Times.Once);
+            FileSystemMock.Verify(x => x.WriteAllText(Path.Combine(TestData.BasePath, "File2.txt"), "Test2" + Environment.NewLine, Encoding.Latin1), Times.Once);
         }
 
         [Fact]
@@ -56,8 +56,19 @@ public partial class MultipleContentBuilderTests
             c1.Builder.AppendLine("Test1");
 
             // Act & Assert
-            sut.Invoking(x => x.SaveAll())
+            sut.Invoking(x => x.SaveAll(Encoding.Latin1))
                .Should().Throw<ArgumentException>().WithParameterName("filename");
+        }
+
+        [Fact]
+        public void Throws_On_Null_Encoding()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act & Assert
+            sut.Invoking(x => x.SaveAll(encoding: null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("encoding");
         }
 
         [Fact]
@@ -68,10 +79,10 @@ public partial class MultipleContentBuilderTests
             FileSystemMock.Setup(x => x.FileExists(It.IsAny<string>())).Returns(true);
 
             // Act
-            sut.SaveAll();
+            sut.SaveAll(Encoding.Latin1);
 
             // Assert
-            FileSystemMock.Verify(x => x.WriteAllText(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Encoding>()), Times.Never);
+            FileSystemMock.Verify(x => x.WriteAllText(It.IsAny<string>(), It.IsAny<string>(), Encoding.Latin1), Times.Never);
         }
 
         [Fact]
@@ -87,7 +98,7 @@ public partial class MultipleContentBuilderTests
             });
 
             // Act
-            sut.SaveAll();
+            sut.SaveAll(Encoding.Latin1);
 
             // Assert
             FileSystemMock.Verify(x => x.CreateDirectory(TestData.BasePath), Times.Once);
@@ -97,10 +108,10 @@ public partial class MultipleContentBuilderTests
         public void Uses_Specified_Encoding()
         {
             // Arrange
-            var sut = CreateSut(TestData.BasePath, encoding: Encoding.UTF32);
+            var sut = CreateSut(TestData.BasePath);
 
             // Act
-            sut.SaveAll();
+            sut.SaveAll(Encoding.UTF32);
 
             // Assert
             FileSystemMock.Verify(x => x.WriteAllText(Path.Combine(TestData.BasePath, "File1.txt"), "Test1" + Environment.NewLine, Encoding.UTF32), Times.Once);
@@ -108,24 +119,10 @@ public partial class MultipleContentBuilderTests
         }
 
         [Fact]
-        public void Uses_Utf8Encoding_When_Not_Specified()
-        {
-            // Arrange
-            var sut = CreateSut(TestData.BasePath, encoding: default);
-
-            // Act
-            sut.SaveAll();
-
-            // Assert
-            FileSystemMock.Verify(x => x.WriteAllText(Path.Combine(TestData.BasePath, "File1.txt"), "Test1" + Environment.NewLine, Encoding.UTF8), Times.Once);
-            FileSystemMock.Verify(x => x.WriteAllText(Path.Combine(TestData.BasePath, "File2.txt"), "Test2" + Environment.NewLine, Encoding.UTF8), Times.Once);
-        }
-
-        [Fact]
         public void Retries_When_IOException_Occurs()
         {
             // Arrange
-            var sut = CreateSut(TestData.BasePath, encoding: Encoding.UTF32);
+            var sut = CreateSut(TestData.BasePath);
             int attempt = 0;
             FileSystemMock.Setup(x => x.WriteAllText(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Encoding>()))
                           .Callback<string, string, Encoding>((path, contents, encoding) =>
@@ -140,7 +137,7 @@ public partial class MultipleContentBuilderTests
                               }
                           });
             // Act
-            sut.SaveAll();
+            sut.SaveAll(Encoding.UTF32);
 
             // Assert
             FileSystemMock.Verify(x => x.WriteAllText(Path.Combine(TestData.BasePath, "File1.txt"), "Test1" + Environment.NewLine, Encoding.UTF32), Times.Exactly(3));

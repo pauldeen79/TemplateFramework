@@ -5,40 +5,30 @@ public class MultipleContentBuilder : IMultipleContentBuilder
     private readonly IFileSystem _fileSystem;
     private readonly List<IContentBuilder> _contentList;
 
-    public MultipleContentBuilder() : this(new FileSystem(), Encoding.UTF8, string.Empty)
+    public MultipleContentBuilder() : this(new FileSystem(), string.Empty)
     {
     }
 
-    public MultipleContentBuilder(string basePath) : this(new FileSystem(), Encoding.UTF8, basePath)
+    public MultipleContentBuilder(string basePath) : this(new FileSystem(), basePath)
     {
     }
 
-    public MultipleContentBuilder(Encoding encoding) : this(new FileSystem(), encoding, string.Empty)
-    {
-    }
-
-    public MultipleContentBuilder(Encoding encoding, string basePath) : this(new FileSystem(), encoding, basePath)
-    {
-    }
-
-    public MultipleContentBuilder(IFileSystem fileSystem, Encoding encoding, string basePath)
+    internal MultipleContentBuilder(IFileSystem fileSystem, string basePath)
     {
         Guard.IsNotNull(fileSystem);
-        Guard.IsNotNull(encoding);
         Guard.IsNotNull(basePath);
         
         _fileSystem = fileSystem;
         _contentList = new List<IContentBuilder>();
-        Encoding = encoding;
         BasePath = basePath;
     }
 
     public string BasePath { get; set; }
 
-    public Encoding Encoding { get; set; }
-
-    public void SaveAll()
+    public void SaveAll(Encoding encoding)
     {
+        Guard.IsNotNull(encoding);
+
         foreach (var content in _contentList.Select(x => x.Build()))
         {
             var path = string.IsNullOrEmpty(BasePath) || Path.IsPathRooted(content.Filename)
@@ -57,13 +47,14 @@ public class MultipleContentBuilder : IMultipleContentBuilder
             }
 
             var contents = content.Contents.NormalizeLineEndings();
-            Retry(() => _fileSystem.WriteAllText(path, contents, Encoding));
+            Retry(() => _fileSystem.WriteAllText(path, contents, encoding));
         }
     }
 
-    public void SaveLastGeneratedFiles(string lastGeneratedFilesPath)
+    public void SaveLastGeneratedFiles(string lastGeneratedFilesPath, Encoding encoding)
     {
         Guard.IsNotNullOrWhiteSpace(lastGeneratedFilesPath);
+        Guard.IsNotNull(encoding);
 
         var fullPath = string.IsNullOrEmpty(BasePath) || Path.IsPathRooted(lastGeneratedFilesPath)
             ? lastGeneratedFilesPath
@@ -77,13 +68,14 @@ public class MultipleContentBuilder : IMultipleContentBuilder
 
         if (!fullPath.Contains('*', StringComparison.InvariantCulture))
         {
-            _fileSystem.WriteAllLines(fullPath, _contentList.Select(x => x.Build()).OrderBy(c => c.Filename).Select(c => c.Filename), Encoding);
+            _fileSystem.WriteAllLines(fullPath, _contentList.Select(x => x.Build()).OrderBy(c => c.Filename).Select(c => c.Filename), encoding);
         }
     }
 
-    public void DeleteLastGeneratedFiles(string lastGeneratedFilesPath, bool recurse)
+    public void DeleteLastGeneratedFiles(string lastGeneratedFilesPath, bool recurse, Encoding encoding)
     {
         Guard.IsNotNullOrWhiteSpace(lastGeneratedFilesPath);
+        Guard.IsNotNull(encoding);
 
         var basePath = BasePath;
         if (lastGeneratedFilesPath.Contains(Path.DirectorySeparatorChar, StringComparison.InvariantCulture))
@@ -103,7 +95,7 @@ public class MultipleContentBuilder : IMultipleContentBuilder
         }
         else if (!fullPath.Contains('*', StringComparison.InvariantCulture) && _fileSystem.FileExists(fullPath))
         {
-            DeleteFilesFromLastGeneratedFilesContents(basePath, fullPath);
+            DeleteFilesFromLastGeneratedFilesContents(basePath, fullPath, encoding);
         }
     }
 
@@ -125,11 +117,11 @@ public class MultipleContentBuilder : IMultipleContentBuilder
 
     public IEnumerable<IContentBuilder> Contents => _contentList.AsReadOnly();
 
-    public IMultipleContent Build() => new MultipleContent(BasePath, Encoding, Contents.Select(x => x.Build()));
+    public IMultipleContent Build() => new MultipleContent(BasePath, Contents.Select(x => x.Build()));
 
-    private void DeleteFilesFromLastGeneratedFilesContents(string basePath, string fullPath)
+    private void DeleteFilesFromLastGeneratedFilesContents(string basePath, string fullPath, Encoding encoding)
     {
-        foreach (var filename in _fileSystem.ReadAllLines(fullPath, Encoding))
+        foreach (var filename in _fileSystem.ReadAllLines(fullPath, encoding))
         {
             var fileFullPath = string.IsNullOrEmpty(basePath) || Path.IsPathRooted(filename)
                 ? filename

@@ -16,18 +16,5 @@ public partial class MultipleContentBuilderTests
             // Assert
             sut.BasePath.Should().Be("something else");
         }
-
-        [Fact]
-        public void Can_Change_Encoding()
-        {
-            // Arrange
-            var sut = CreateSut();
-
-            // Act
-            sut.Encoding = Encoding.BigEndianUnicode;
-
-            // Assert
-            sut.Encoding.Should().Be(Encoding.BigEndianUnicode);
-        }
     }
 }

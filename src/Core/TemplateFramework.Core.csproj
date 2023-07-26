@@ -18,28 +18,34 @@
     <ProjectReference Include="..\Abstractions\TemplateFramework.Abstractions.csproj" />
   </ItemGroup>
 
-    <ItemGroup>
-      <Using Include="System.Diagnostics.CodeAnalysis" />
-      <Using Include="System.Reflection" />
-      <Using Include="System.Runtime.Serialization" />
-      <Using Include="System.Text" />
-      <Using Include="System.Text.RegularExpressions" />
-      <Using Include="System.Xml" />
-      <Using Include="CommunityToolkit.Diagnostics" />
-      <Using Include="Microsoft.Extensions.DependencyInjection" />
-      <Using Include="TemplateFramework.Abstractions" />
-      <Using Include="TemplateFramework.Abstractions.Domains" />
-      <Using Include="TemplateFramework.Abstractions.Extensions" />
-      <Using Include="TemplateFramework.Abstractions.Infrastructure" />
-      <Using Include="TemplateFramework.Abstractions.Requests" />
-      <Using Include="TemplateFramework.Abstractions.Templates" />
-      <Using Include="TemplateFramework.Core.Contracts" />
-      <Using Include="TemplateFramework.Core.Extensions" />
-      <Using Include="TemplateFramework.Core.GenerationEnvironments" />
-      <Using Include="TemplateFramework.Core.Infrastructure" />
-      <Using Include="TemplateFramework.Core.Requests" />
-      <Using Include="TemplateFramework.Core.TemplateInitializers" />
-      <Using Include="TemplateFramework.Core.TemplateRenderers" />
-    </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="TemplateFramework.Core.Tests" />
+    <InternalsVisibleTo Include="TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="System.Diagnostics.CodeAnalysis" />
+    <Using Include="System.Reflection" />
+    <Using Include="System.Runtime.Serialization" />
+    <Using Include="System.Text" />
+    <Using Include="System.Text.RegularExpressions" />
+    <Using Include="System.Xml" />
+    <Using Include="CommunityToolkit.Diagnostics" />
+    <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="TemplateFramework.Abstractions" />
+    <Using Include="TemplateFramework.Abstractions.CodeGeneration" />
+    <Using Include="TemplateFramework.Abstractions.Domains" />
+    <Using Include="TemplateFramework.Abstractions.Extensions" />
+    <Using Include="TemplateFramework.Abstractions.Infrastructure" />
+    <Using Include="TemplateFramework.Abstractions.Requests" />
+    <Using Include="TemplateFramework.Abstractions.Templates" />
+    <Using Include="TemplateFramework.Core.Contracts" />
+    <Using Include="TemplateFramework.Core.Extensions" />
+    <Using Include="TemplateFramework.Core.GenerationEnvironments" />
+    <Using Include="TemplateFramework.Core.Infrastructure" />
+    <Using Include="TemplateFramework.Core.Requests" />
+    <Using Include="TemplateFramework.Core.TemplateInitializers" />
+    <Using Include="TemplateFramework.Core.TemplateRenderers" />
+  </ItemGroup>
 
 </Project>

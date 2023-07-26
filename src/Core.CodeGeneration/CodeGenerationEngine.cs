@@ -11,7 +11,7 @@ public class CodeGenerationEngine : ICodeGenerationEngine
 
     private readonly ITemplateEngine _templateEngine;
 
-    public void Generate(ICodeGenerationProvider provider, IMultipleContentBuilder generationEnvironment, ICodeGenerationSettings settings)
+    public void Generate(ICodeGenerationProvider provider, IGenerationEnvironment generationEnvironment, ICodeGenerationSettings settings)
     {
         Guard.IsNotNull(provider);
         Guard.IsNotNull(generationEnvironment);
@@ -19,24 +19,12 @@ public class CodeGenerationEngine : ICodeGenerationEngine
 
         _templateEngine.Render(new RenderTemplateRequest<object?>(
                                template: provider.CreateGenerator(),
-                               builder: generationEnvironment,
+                               generationEnvironment: generationEnvironment,
                                model: provider.CreateModel(),
                                defaultFilename: provider.DefaultFilename,
                                additionalParameters: provider.CreateAdditionalParameters(),
                                context: null));
 
-        if (settings.DryRun)
-        {
-            return;
-        }
-
-        if (!string.IsNullOrEmpty(provider.LastGeneratedFilesFilename))
-        {
-            var prefixedLastGeneratedFilesFilename = Path.Combine(provider.Path, provider.LastGeneratedFilesFilename);
-            generationEnvironment.DeleteLastGeneratedFiles(prefixedLastGeneratedFilesFilename, provider.RecurseOnDeleteGeneratedFiles);
-            generationEnvironment.SaveLastGeneratedFiles(prefixedLastGeneratedFilesFilename);
-        }
-
-        generationEnvironment.SaveAll();
+        generationEnvironment.Process(provider, settings.DryRun);
     }
 }
