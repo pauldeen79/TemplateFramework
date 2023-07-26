@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Core.GenerationEnvironments;
 
-internal abstract class GenerationEnvironmentBase : IGenerationEnvironment
+public abstract class GenerationEnvironmentBase : IGenerationEnvironment
 {
     protected GenerationEnvironmentBase(GenerationEnvironmentType type)
     {

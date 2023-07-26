@@ -349,6 +349,14 @@ public partial class RenderTemplateRequestTests
         }
 
         [Fact]
+        public void Throws_On_Null_GenerationEnvironment()
+        {
+            // Act & Assert
+            this.Invoking(_ => new RenderTemplateRequest(this, generationEnvironment: default!, DefaultFilename, null, null))
+                .Should().Throw<ArgumentNullException>().WithParameterName("generationEnvironment");
+        }
+
+        [Fact]
         public void Throws_On_Null_DefaultFileName()
         {
             // Act & Assert

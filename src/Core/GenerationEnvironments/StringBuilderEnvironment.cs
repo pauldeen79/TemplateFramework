@@ -1,10 +1,16 @@
 ﻿namespace TemplateFramework.Core.GenerationEnvironments;
 
-internal sealed class StringBuilderEnvironment : GenerationEnvironmentBase
+public sealed class StringBuilderEnvironment : GenerationEnvironmentBase
 {
-    internal StringBuilderEnvironment(StringBuilder builder, IFileSystem fileSystem)
+    public StringBuilderEnvironment(StringBuilder builder) : this(new FileSystem(), builder)
+    {
+    }
+
+    internal StringBuilderEnvironment(IFileSystem fileSystem, StringBuilder builder)
         : base(GenerationEnvironmentType.StringBuilder)
     {
+        Guard.IsNotNull(builder);
+
         Builder = builder;
         FileSystem = fileSystem;
     }
@@ -14,6 +20,8 @@ internal sealed class StringBuilderEnvironment : GenerationEnvironmentBase
 
     public override void Process(ICodeGenerationProvider provider, bool dryRun)
     {
+        Guard.IsNotNull(provider);
+
         if (dryRun)
         {
             return;

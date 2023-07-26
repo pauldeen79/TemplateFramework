@@ -1,10 +1,12 @@
 ﻿namespace TemplateFramework.Core.GenerationEnvironments;
 
-internal sealed class MultipleContentBuilderEnvironment : GenerationEnvironmentBase
+public sealed class MultipleContentBuilderEnvironment : GenerationEnvironmentBase
 {
-    internal MultipleContentBuilderEnvironment(IMultipleContentBuilder builder)
+    public MultipleContentBuilderEnvironment(IMultipleContentBuilder builder)
         : base(GenerationEnvironmentType.MultipleContentBuilder)
     {
+        Guard.IsNotNull(builder);
+
         Builder = builder;
     }
 
@@ -12,6 +14,8 @@ internal sealed class MultipleContentBuilderEnvironment : GenerationEnvironmentB
 
     public override void Process(ICodeGenerationProvider provider, bool dryRun)
     {
+        Guard.IsNotNull(provider);
+
         if (dryRun)
         {
             return;

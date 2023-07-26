@@ -8,14 +8,14 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         string defaultFilename,
         object? additionalParameters,
         ITemplateContext? context)
-        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder)), new FileSystem()), defaultFilename, additionalParameters, context)
+        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, additionalParameters, context)
     {
     }
 
     public RenderTemplateRequest(
         object template,
         StringBuilder builder)
-        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder)), new FileSystem()), string.Empty, null, null)
+        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, null, null)
     {
     }
 
@@ -23,7 +23,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         object template,
         StringBuilder builder,
         string defaultFilename)
-        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder)), new FileSystem()), defaultFilename, null, null)
+        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, null, null)
     {
     }
 
@@ -32,7 +32,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         StringBuilder builder,
         string defaultFilename,
         object? additionalParameters)
-        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder)), new FileSystem()), defaultFilename, additionalParameters, null)
+        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, additionalParameters, null)
     {
     }
 
@@ -40,7 +40,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         object template,
         StringBuilder builder,
         object? additionalParameters)
-        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder)), new FileSystem()), string.Empty, additionalParameters, null)
+        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, additionalParameters, null)
     {
     }
 
@@ -49,7 +49,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         StringBuilder builder,
         string defaultFilename,
         ITemplateContext? context)
-        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder)), new FileSystem()), defaultFilename, null, context)
+        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, null, context)
     {
     }
 
@@ -57,7 +57,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         object template,
         StringBuilder builder,
         ITemplateContext? context)
-        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder)), new FileSystem()), string.Empty, null, context)
+        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, null, context)
     {
     }
 
@@ -179,7 +179,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
     {
     }
 
-    protected RenderTemplateRequest(
+    public RenderTemplateRequest(
         object template,
         IGenerationEnvironment generationEnvironment,
         string defaultFilename,
@@ -187,6 +187,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         ITemplateContext? context)
     {
         Guard.IsNotNull(template);
+        Guard.IsNotNull(generationEnvironment);
         Guard.IsNotNull(defaultFilename);
 
         Template = template;
@@ -221,7 +222,7 @@ public class RenderTemplateRequest<TModel> : RenderTemplateRequest, IRenderTempl
         string defaultFilename,
         object? additionalParameters,
         ITemplateContext? context)
-        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder)), new FileSystem()), model, defaultFilename, additionalParameters, context)
+        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), model, defaultFilename, additionalParameters, context)
     {
     }
 
@@ -229,7 +230,7 @@ public class RenderTemplateRequest<TModel> : RenderTemplateRequest, IRenderTempl
         object template,
         StringBuilder builder,
         TModel? model)
-        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder)), new FileSystem()), model, string.Empty, null, null)
+        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), model, string.Empty, null, null)
     {
     }
 
@@ -238,7 +239,7 @@ public class RenderTemplateRequest<TModel> : RenderTemplateRequest, IRenderTempl
         StringBuilder builder,
         TModel? model,
         string defaultFilename)
-        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder)), new FileSystem()), model, defaultFilename, null, null)
+        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), model, defaultFilename, null, null)
     {
     }
 
@@ -248,7 +249,7 @@ public class RenderTemplateRequest<TModel> : RenderTemplateRequest, IRenderTempl
         TModel? model,
         string defaultFilename,
         object? additionalParameters)
-        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder)), new FileSystem()), model, defaultFilename, additionalParameters, null)
+        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), model, defaultFilename, additionalParameters, null)
     {
     }
 
@@ -257,7 +258,7 @@ public class RenderTemplateRequest<TModel> : RenderTemplateRequest, IRenderTempl
         StringBuilder builder,
         TModel? model,
         object? additionalParameters)
-        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder)), new FileSystem()), model, string.Empty, additionalParameters, null)
+        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), model, string.Empty, additionalParameters, null)
     {
     }
 
@@ -267,7 +268,7 @@ public class RenderTemplateRequest<TModel> : RenderTemplateRequest, IRenderTempl
         TModel? model,
         string defaultFilename,
         ITemplateContext? context)
-        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder)), new FileSystem()), model, defaultFilename, null, context)
+        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), model, defaultFilename, null, context)
     {
     }
 
@@ -276,7 +277,7 @@ public class RenderTemplateRequest<TModel> : RenderTemplateRequest, IRenderTempl
         StringBuilder builder,
         TModel? model,
         ITemplateContext? context)
-        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder)), new FileSystem()), model, string.Empty, null, context)
+        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), model, string.Empty, null, context)
     {
     }
 
