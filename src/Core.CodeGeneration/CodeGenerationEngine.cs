@@ -17,8 +17,6 @@ public class CodeGenerationEngine : ICodeGenerationEngine
         Guard.IsNotNull(generationEnvironment);
         Guard.IsNotNull(settings);
 
-        provider.Initialize(settings.SkipWhenFileExists);
-
         _templateEngine.Render(new RenderTemplateRequest<object?>(
                                template: provider.CreateGenerator(),
                                builder: generationEnvironment,

@@ -17,7 +17,7 @@ internal static class TestData
 
 public sealed class MyGeneratorProvider : ICodeGenerationProvider
 {
-    public bool SkipWhenFileExists { get; private set; }
+    public bool SkipWhenFileExists => false;
 
     public string Path { get; } = "";
 
@@ -32,11 +32,6 @@ public sealed class MyGeneratorProvider : ICodeGenerationProvider
     public object CreateGenerator() => new MyGenerator();
 
     public object? CreateModel() => null;
-
-    public void Initialize(bool skipWhenFileExists)
-    {
-        SkipWhenFileExists = skipWhenFileExists;
-    }
 }
 
 public sealed class MyGenerator

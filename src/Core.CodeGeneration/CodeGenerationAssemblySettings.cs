@@ -2,40 +2,36 @@
 
 public class CodeGenerationAssemblySettings : ICodeGenerationAssemblySettings
 {
-    public CodeGenerationAssemblySettings(string basePath, string assemblyName)
-        : this(basePath, assemblyName, false, false, false, null, null)
+    public CodeGenerationAssemblySettings(string assemblyName)
+        : this(assemblyName, false, null, null)
     {
     }
 
-    public CodeGenerationAssemblySettings(string basePath, string assemblyName, string currentDirectory)
-        : this(basePath, assemblyName, false, false, false, currentDirectory, null)
+    public CodeGenerationAssemblySettings(string assemblyName, string currentDirectory)
+        : this(assemblyName, false, currentDirectory, null)
     {
     }
 
-    public CodeGenerationAssemblySettings(string basePath, string assemblyName, string currentDirectory, IEnumerable<string> classNameFilter)
-        : this(basePath, assemblyName, false, false, false, currentDirectory, classNameFilter)
+    public CodeGenerationAssemblySettings(string assemblyName, string currentDirectory, IEnumerable<string> classNameFilter)
+        : this(assemblyName, false, currentDirectory, classNameFilter)
     {
     }
 
-    public CodeGenerationAssemblySettings(string basePath, string assemblyName, bool dryRun)
-        : this(basePath, assemblyName, false, false, dryRun, null, null)
+    public CodeGenerationAssemblySettings(string assemblyName, bool dryRun)
+        : this(assemblyName, dryRun, null, null)
     {
     }
 
-    public CodeGenerationAssemblySettings(string basePath, string assemblyName, bool generateMultipleFiles, bool dryRun)
-        : this(basePath, assemblyName, generateMultipleFiles, false, dryRun, null, null)
+    public CodeGenerationAssemblySettings(string assemblyName, string currentDirectory, bool dryRun)
+        : this(assemblyName, dryRun, currentDirectory, null)
     {
     }
 
-    public CodeGenerationAssemblySettings(string basePath,
-                                          string assemblyName,
-                                          bool generateMultipleFiles,
-                                          bool skipWhenFileExists,
+    public CodeGenerationAssemblySettings(string assemblyName,
                                           bool dryRun,
                                           string? currentDirectory,
                                           IEnumerable<string>? classNameFilter)
     {
-        Guard.IsNotNull(basePath);
         Guard.IsNotNull(assemblyName);
 
         if (string.IsNullOrEmpty(currentDirectory))
@@ -46,9 +42,6 @@ public class CodeGenerationAssemblySettings : ICodeGenerationAssemblySettings
         AssemblyName = assemblyName;
         CurrentDirectory = currentDirectory;
         ClassNameFilter = classNameFilter ?? Enumerable.Empty<string>();
-        BasePath = basePath;
-        GenerateMultipleFiles = generateMultipleFiles;
-        SkipWhenFileExists = skipWhenFileExists;
         DryRun = dryRun;
     }
 
@@ -57,12 +50,6 @@ public class CodeGenerationAssemblySettings : ICodeGenerationAssemblySettings
     public string CurrentDirectory { get; }
 
     public IEnumerable<string> ClassNameFilter { get; }
-
-    public string BasePath { get; }
-
-    public bool GenerateMultipleFiles { get; }
-
-    public bool SkipWhenFileExists { get; }
 
     public bool DryRun { get; }
 }

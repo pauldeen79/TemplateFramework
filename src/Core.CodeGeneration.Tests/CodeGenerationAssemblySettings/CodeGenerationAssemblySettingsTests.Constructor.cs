@@ -5,94 +5,66 @@ public partial class CodeGenerationAssemblySettingsTests
     public class Constructor
     {
         [Fact]
-        public void Throws_On_Null_BasePath()
-        {
-            // Act & Assert
-            this.Invoking(_ => new CodeGenerationAssemblySettings(basePath: null!, assemblyName: TestData.GetAssemblyName()))
-                .Should().Throw<ArgumentNullException>().WithParameterName("basePath");
-        }
-
-        [Fact]
         public void Throws_On_Null_AssemblyName()
         {
             // Act & Assert
-            this.Invoking(_ => new CodeGenerationAssemblySettings(basePath: TestData.BasePath, assemblyName: null!))
+            this.Invoking(_ => new CodeGenerationAssemblySettings(assemblyName: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("assemblyName");
         }
 
         [Fact]
-        public void Constructs_With_BasePath_And_AssemblyName()
+        public void Constructs_With_AssemblyName()
         {
             // Act
-            var instance = new CodeGenerationAssemblySettings(TestData.BasePath, TestData.GetAssemblyName());
+            var instance = new CodeGenerationAssemblySettings(TestData.GetAssemblyName());
 
             // Assert
-            instance.BasePath.Should().Be(TestData.BasePath);
             instance.AssemblyName.Should().Be(TestData.GetAssemblyName());
         }
 
         [Fact]
-        public void Constructs_With_BasePath_And_AssemblyName_And_CurrentDirectory()
+        public void Constructs_With_AssemblyName_And_CurrentDirectory()
         {
             // Act
-            var instance = new CodeGenerationAssemblySettings(TestData.BasePath, TestData.GetAssemblyName(), Path.Combine(TestData.BasePath, "SomeDirectory"));
+            var instance = new CodeGenerationAssemblySettings(TestData.GetAssemblyName(), Path.Combine(TestData.BasePath, "SomeDirectory"));
 
             // Assert
-            instance.BasePath.Should().Be(TestData.BasePath);
             instance.AssemblyName.Should().Be(TestData.GetAssemblyName());
             instance.CurrentDirectory.Should().Be(Path.Combine(TestData.BasePath, "SomeDirectory"));
         }
 
         [Fact]
-        public void Constructs_With_BasePath_And_AssemblyName_And_DryRun()
+        public void Constructs_With_AssemblyName_And_DryRun()
         {
             // Act
-            var instance = new CodeGenerationAssemblySettings(TestData.BasePath, TestData.GetAssemblyName(), dryRun: true);
+            var instance = new CodeGenerationAssemblySettings(TestData.GetAssemblyName(), dryRun: true);
 
             // Assert
-            instance.BasePath.Should().Be(TestData.BasePath);
             instance.AssemblyName.Should().Be(TestData.GetAssemblyName());
             instance.DryRun.Should().BeTrue();
         }
 
         [Fact]
-        public void Constructs_With_BasePath_And_AssemblyName_And_CurrentDirectory_And_ClassNameFilter()
+        public void Constructs_With_AssemblyName_And_CurrentDirectory_And_ClassNameFilter()
         {
             // Act
-            var instance = new CodeGenerationAssemblySettings(TestData.BasePath, TestData.GetAssemblyName(), Path.Combine(TestData.BasePath, "SomeDirectory"), classNameFilter: new[] { "MyFilter" });
+            var instance = new CodeGenerationAssemblySettings(TestData.GetAssemblyName(), Path.Combine(TestData.BasePath, "SomeDirectory"), classNameFilter: new[] { "MyFilter" });
 
             // Assert
-            instance.BasePath.Should().Be(TestData.BasePath);
             instance.AssemblyName.Should().Be(TestData.GetAssemblyName());
             instance.CurrentDirectory.Should().Be(Path.Combine(TestData.BasePath, "SomeDirectory"));
             instance.ClassNameFilter.Should().BeEquivalentTo("MyFilter");
         }
 
         [Fact]
-        public void Constructs_With_BasePath_And_AssemblyName_And_GenerateMultipleFiles_And_DryRun()
-        {
-            // Act
-            var instance = new CodeGenerationAssemblySettings(TestData.BasePath, TestData.GetAssemblyName(), generateMultipleFiles: true, dryRun: true);
-
-            // Assert
-            instance.BasePath.Should().Be(TestData.BasePath);
-            instance.AssemblyName.Should().Be(TestData.GetAssemblyName());
-            instance.GenerateMultipleFiles.Should().BeTrue();
-            instance.DryRun.Should().BeTrue();
-        }
-
-        [Fact]
         public void Constructs_With_All_Arguments()
         {
             // Act
-            var instance = new CodeGenerationAssemblySettings(TestData.BasePath, TestData.GetAssemblyName(), true, false, false, null, new[] { "Filter" });
+            var instance = new CodeGenerationAssemblySettings(TestData.GetAssemblyName(), true, null, new[] { "Filter" });
 
             // Assert
-            instance.BasePath.Should().Be(TestData.BasePath);
             instance.AssemblyName.Should().Be(TestData.GetAssemblyName());
-            instance.GenerateMultipleFiles.Should().BeTrue();
-            instance.DryRun.Should().BeFalse();
-            instance.SkipWhenFileExists.Should().BeFalse();
+            instance.DryRun.Should().BeTrue();
             instance.CurrentDirectory.Should().NotBeNull();
             instance.ClassNameFilter.Should().BeEquivalentTo("Filter");
         }

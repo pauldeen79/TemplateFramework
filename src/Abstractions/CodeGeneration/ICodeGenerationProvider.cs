@@ -8,7 +8,6 @@ public interface ICodeGenerationProvider
     bool RecurseOnDeleteGeneratedFiles { get; }
     string LastGeneratedFilesFilename { get; }
 
-    void Initialize(bool skipWhenFileExists);
     object CreateGenerator();
     object? CreateAdditionalParameters();
     object? CreateModel();
