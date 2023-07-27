@@ -66,7 +66,7 @@ public partial class MultipleContentBuilderEnvironmentTests
         //}
 
         [Fact]
-        public void Throws_On_Null_Encoding_Argument()
+        public void Throws_On_Null_Encoding()
         {
             // Arrange
             var sut = CreateSut();

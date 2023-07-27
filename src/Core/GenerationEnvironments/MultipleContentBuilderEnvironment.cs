@@ -65,12 +65,13 @@ public sealed class MultipleContentBuilderEnvironment : IGenerationEnvironment
         }
     }
 
-    private void SaveLastGeneratedFiles(IFileSystem fileSystem, string basePath, Encoding encoding, string lastGeneratedFilesPath, IEnumerable<IContent> contents)
+    internal void SaveLastGeneratedFiles(IFileSystem fileSystem, string basePath, Encoding encoding, string lastGeneratedFilesPath, IEnumerable<IContent> contents)
     {
         Guard.IsNotNull(fileSystem);
         Guard.IsNotNull(basePath);
         Guard.IsNotNull(encoding);
         Guard.IsNotNullOrWhiteSpace(lastGeneratedFilesPath);
+        Guard.IsNotNull(contents);
 
         var fullPath = string.IsNullOrEmpty(basePath) || Path.IsPathRooted(lastGeneratedFilesPath)
             ? lastGeneratedFilesPath
