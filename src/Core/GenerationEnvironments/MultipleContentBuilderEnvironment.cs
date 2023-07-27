@@ -87,7 +87,7 @@ public sealed class MultipleContentBuilderEnvironment : GenerationEnvironmentBas
         }
     }
 
-    private void DeleteLastGeneratedFiles(IFileSystem fileSystem, string basePath, Encoding encoding, string lastGeneratedFilesPath, bool recurse)
+    internal void DeleteLastGeneratedFiles(IFileSystem fileSystem, string basePath, Encoding encoding, string lastGeneratedFilesPath, bool recurse)
     {
         Guard.IsNotNull(fileSystem);
         Guard.IsNotNull(basePath);
