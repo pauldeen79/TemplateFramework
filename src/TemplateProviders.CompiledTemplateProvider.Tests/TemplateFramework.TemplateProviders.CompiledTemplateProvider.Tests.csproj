@@ -51,7 +51,6 @@
     <Using Include="Microsoft.Extensions.DependencyInjection" />
     <Using Include="Moq" />
     <Using Include="TemplateFramework.Abstractions" />
-    <Using Include="TemplateFramework.Abstractions.Infrastructure" />
     <Using Include="TemplateFramework.Abstractions.Templates" />
     <Using Include="TemplateFramework.Core" />
     <Using Include="TemplateFramework.Core.Extensions" />

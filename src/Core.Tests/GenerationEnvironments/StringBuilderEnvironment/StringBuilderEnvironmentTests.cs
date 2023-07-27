@@ -2,7 +2,7 @@
 
 public partial class StringBuilderEnvironmentTests
 {
-    protected Mock<IFileSystem> FileSystemMock { get; } = new();
+    internal Mock<IFileSystem> FileSystemMock { get; } = new();
     protected Mock<ICodeGenerationProvider> CodeGenerationProviderMock { get; } = new();
     protected StringBuilder Builder { get; } = new();
     

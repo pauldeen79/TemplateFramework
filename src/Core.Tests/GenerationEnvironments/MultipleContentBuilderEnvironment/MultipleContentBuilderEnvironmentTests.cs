@@ -2,7 +2,7 @@
 
 public partial class MultipleContentBuilderEnvironmentTests
 {
-    protected Mock<IFileSystem> FileSystemMock { get; } = new();
+    internal Mock<IFileSystem> FileSystemMock { get; } = new();
     protected Mock<ICodeGenerationProvider> CodeGenerationProviderMock { get; } = new();
     protected Mock<IMultipleContentBuilder> MultipleContentBuilderMock { get; } = new();
     protected Mock<IMultipleContent> MultipleContentMock { get; } = new();
