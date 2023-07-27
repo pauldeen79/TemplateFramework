@@ -9,4 +9,14 @@ public partial class MultipleContentBuilderEnvironmentTests
     protected Mock<IContent> ContentMock { get; } = new();
 
     protected MultipleContentBuilderEnvironment CreateSut() => new(FileSystemMock.Object, MultipleContentBuilderMock.Object);
+
+    protected IEnumerable<IContent> CreateContents(bool skipWhenFileExists = false)
+    {
+        var builder = new MultipleContentBuilder();
+        var c1 = builder.AddContent("File1.txt", skipWhenFileExists: skipWhenFileExists);
+        c1.Builder.AppendLine("Test1");
+        var c2 = builder.AddContent("File2.txt", skipWhenFileExists: skipWhenFileExists);
+        c2.Builder.AppendLine("Test2");
+        return builder.Build().Contents;
+    }
 }

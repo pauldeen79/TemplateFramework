@@ -35,7 +35,7 @@ public sealed class MultipleContentBuilderEnvironment : GenerationEnvironmentBas
         SaveAll(_fileSystem, basePath, provider.Encoding, multipleContent.Contents);
     }
 
-    private void SaveAll(IFileSystem fileSystem, string basePath, Encoding encoding, IEnumerable<IContent> contents)
+    internal void SaveAll(IFileSystem fileSystem, string basePath, Encoding encoding, IEnumerable<IContent> contents)
     {
         Guard.IsNotNull(fileSystem);
         Guard.IsNotNull(basePath);
