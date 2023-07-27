@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="TemplateFramework.Core.Tests" />
+    <InternalsVisibleTo Include="TemplateFramework.Core.CodeGeneration.Tests" />
     <InternalsVisibleTo Include="TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests" />
     <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
   </ItemGroup>

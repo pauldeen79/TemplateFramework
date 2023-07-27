@@ -21,7 +21,7 @@ public sealed class MultipleContentBuilderEnvironment : IGenerationEnvironment
 
     public GenerationEnvironmentType Type => GenerationEnvironmentType.MultipleContentBuilder;
 
-    public void Process(ICodeGenerationProvider provider, string basePath)
+    public void Process(ICodeGenerationProvider provider, string basePath, string defaultFilename)
     {
         Guard.IsNotNull(provider);
 

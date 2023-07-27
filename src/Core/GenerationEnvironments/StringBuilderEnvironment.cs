@@ -21,10 +21,15 @@ public sealed class StringBuilderEnvironment : IGenerationEnvironment
 
     public GenerationEnvironmentType Type => GenerationEnvironmentType.StringBuilder;
 
-    public void Process(ICodeGenerationProvider provider, string basePath)
+    public void Process(ICodeGenerationProvider provider, string basePath, string defaultFilename)
     {
         Guard.IsNotNull(provider);
+        Guard.IsNotNullOrEmpty(defaultFilename);
 
-        _fileSystem.WriteAllText(string.IsNullOrEmpty(basePath) ? provider.DefaultFilename : Path.Combine(basePath, provider.DefaultFilename), Builder.ToString(), provider.Encoding);
+        var path = string.IsNullOrEmpty(basePath)
+            ? defaultFilename
+            : Path.Combine(basePath, defaultFilename);
+
+        _fileSystem.WriteAllText(path, Builder.ToString(), provider.Encoding);
     }
 }

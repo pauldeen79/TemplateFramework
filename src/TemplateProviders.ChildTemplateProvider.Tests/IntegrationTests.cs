@@ -24,7 +24,7 @@ public class IntegrationTests
             .AddTemplateFrameworkChildTemplateProvider()
             .AddSingleton(_ => _templateCreatorMock.Object)
             .BuildServiceProvider();
-        var sut = provider.GetRequiredService<ITemplateEngine>();
+        var engine = provider.GetRequiredService<ITemplateEngine>();
 
         var templateProvider = provider.GetRequiredService<ITemplateProvider>();
         var template = new TestData.MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine(templateProvider, (builder, context, engine, provider) =>
@@ -35,7 +35,7 @@ public class IntegrationTests
         var generationEnvironment = new MultipleContentBuilder();
 
         // Act
-        sut.Render(new RenderTemplateRequest(template, generationEnvironment));
+        engine.Render(new RenderTemplateRequest(template, generationEnvironment));
 
         // Assert
         generationEnvironment.Contents.Should().ContainSingle();
