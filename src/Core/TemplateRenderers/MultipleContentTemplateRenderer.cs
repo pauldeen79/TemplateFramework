@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Core.TemplateRenderers;
 
-public class MultipleContentTemplateRenderer : ITemplateRenderer
+public sealed class MultipleContentTemplateRenderer : ITemplateRenderer
 {
     public bool Supports(IGenerationEnvironment generationEnvironment) => generationEnvironment is MultipleContentBuilderEnvironment;
 

@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Core.CodeGeneration;
 
-public class CodeGenerationAssemblySettings : ICodeGenerationAssemblySettings
+public sealed class CodeGenerationAssemblySettings : ICodeGenerationAssemblySettings
 {
     public CodeGenerationAssemblySettings(string basePath, string assemblyName)
         : this(basePath, assemblyName, false, null, null)

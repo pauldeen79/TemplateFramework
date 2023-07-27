@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Core.TemplateInitializers;
 
-public class DefaultTemplateInitializer : ITemplateInitializer
+public sealed class DefaultTemplateInitializer : ITemplateInitializer
 {
     private readonly IEnumerable<ITemplateParameterConverter> _converters;
 

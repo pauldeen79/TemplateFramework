@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.TemplateProviders.CompiledTemplateProvider;
 
-public class Provider : ITemplateProvider
+public sealed class Provider : ITemplateProvider
 {
     public bool Supports(ICreateTemplateRequest request) => request is CreateCompiledTemplateRequest;
 

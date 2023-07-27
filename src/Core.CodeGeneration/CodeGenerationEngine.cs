@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Core.CodeGeneration;
 
-public class CodeGenerationEngine : ICodeGenerationEngine
+public sealed class CodeGenerationEngine : ICodeGenerationEngine
 {
     public CodeGenerationEngine(ITemplateEngine templateEngine)
     {

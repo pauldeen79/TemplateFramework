@@ -1,7 +1,7 @@
 ﻿namespace TemplateFramework.Runtime;
 
 [ExcludeFromCodeCoverage]
-public class CustomAssemblyLoadContext : AssemblyLoadContext
+public sealed class CustomAssemblyLoadContext : AssemblyLoadContext
 {
     public CustomAssemblyLoadContext(string name, bool isCollectible, Func<IEnumerable<string>> customPathsDelegate)
         : base(name, isCollectible)

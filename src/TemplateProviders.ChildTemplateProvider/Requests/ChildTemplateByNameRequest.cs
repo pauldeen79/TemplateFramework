@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Requests;
 
-public class ChildTemplateByNameRequest : ICreateTemplateRequest
+public sealed class ChildTemplateByNameRequest : ICreateTemplateRequest
 {
     public ChildTemplateByNameRequest(string name)
     {

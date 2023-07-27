@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Core;
 
-public class MultipleContentBuilder : IMultipleContentBuilder
+public sealed class MultipleContentBuilder : IMultipleContentBuilder
 {
     private readonly List<IContentBuilder> _contentList;
 

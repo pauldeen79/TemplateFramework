@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Core.CodeGeneration;
 
-public class CodeGenerationSettings : ICodeGenerationSettings
+public sealed class CodeGenerationSettings : ICodeGenerationSettings
 {
     public CodeGenerationSettings(string basePath)
         : this(basePath, false)

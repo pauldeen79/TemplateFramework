@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.TemplateProviders.ChildTemplateProvider;
 
-public class Provider : ITemplateProvider
+public sealed class Provider : ITemplateProvider
 {
     private readonly IEnumerable<ITemplateCreator> _childTemplateCreators;
 

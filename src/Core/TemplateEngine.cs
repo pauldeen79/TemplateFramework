@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Core;
 
-public class TemplateEngine : ITemplateEngine
+public sealed class TemplateEngine : ITemplateEngine
 {
     private readonly ITemplateInitializer _templateInitializer;
     private readonly IEnumerable<ITemplateRenderer> _templateRenderers;
