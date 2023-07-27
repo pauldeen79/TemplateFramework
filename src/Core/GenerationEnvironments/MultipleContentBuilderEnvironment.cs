@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Core.GenerationEnvironments;
 
-public sealed class MultipleContentBuilderEnvironment : GenerationEnvironmentBase
+public sealed class MultipleContentBuilderEnvironment : IGenerationEnvironment
 {
     public MultipleContentBuilderEnvironment(IMultipleContentBuilder builder)
         : this(new FileSystem(), builder)
@@ -8,7 +8,6 @@ public sealed class MultipleContentBuilderEnvironment : GenerationEnvironmentBas
     }
 
     internal MultipleContentBuilderEnvironment(IFileSystem fileSystem, IMultipleContentBuilder builder)
-        : base(GenerationEnvironmentType.MultipleContentBuilder)
     {
         Guard.IsNotNull(builder);
 
@@ -20,7 +19,9 @@ public sealed class MultipleContentBuilderEnvironment : GenerationEnvironmentBas
 
     public IMultipleContentBuilder Builder { get; }
 
-    public override void Process(ICodeGenerationProvider provider, string basePath)
+    public GenerationEnvironmentType Type => GenerationEnvironmentType.MultipleContentBuilder;
+
+    public void Process(ICodeGenerationProvider provider, string basePath)
     {
         Guard.IsNotNull(provider);
 
