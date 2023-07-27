@@ -18,5 +18,18 @@ public partial class MultipleContentBuilderTests
             instance.Contents.Should().HaveCount(2);
             instance.Contents.Select(x => x.SkipWhenFileExists).Should().AllBeEquivalentTo(true);
         }
+
+        [Fact]
+        public void Throws_When_Filename_Is_Empty()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var c1 = sut.AddContent(filename: string.Empty);
+            c1.Builder.AppendLine("Test1");
+
+            // Act & Assert
+            sut.Invoking(x => x.Build())
+               .Should().Throw<ArgumentException>().WithParameterName("filename");
+        }
     }
 }

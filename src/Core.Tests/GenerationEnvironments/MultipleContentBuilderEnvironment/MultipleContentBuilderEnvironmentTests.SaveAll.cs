@@ -49,22 +49,6 @@ public partial class MultipleContentBuilderEnvironmentTests
             FileSystemMock.Verify(x => x.WriteAllText(Path.Combine(TestData.BasePath, "File2.txt"), "Test2" + Environment.NewLine, Encoding.Latin1), Times.Once);
         }
 
-        //TODO: Move to tests of Build method of MultipleContentBuilder class
-        //[Fact]
-        //public void Throws_When_Filename_Is_Empty()
-        //{
-        //    // Arrange
-        //    var sut = CreateSut();
-        //    var builder = new MultipleContentBuilder();
-        //    var c1 = builder.AddContent(filename: string.Empty);
-        //    c1.Builder.AppendLine("Test1");
-        //    var contents = builder.Build().Contents;
-
-        //    // Act & Assert
-        //    sut.Invoking(x => x.SaveAll(FileSystemMock.Object, TestData.BasePath, Encoding.Latin1, contents))
-        //       .Should().Throw<ArgumentException>().WithParameterName("filename");
-        //}
-
         [Fact]
         public void Throws_On_Null_Encoding()
         {
