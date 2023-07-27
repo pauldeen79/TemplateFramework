@@ -2,27 +2,18 @@
 
 public class MultipleContentTemplateRenderer : ITemplateRenderer
 {
-    public bool Supports(IGenerationEnvironment generationEnvironment) => generationEnvironment is MultipleContentBuilderEnvironment or MultipleContentBuilderContainerEnvironment;
+    public bool Supports(IGenerationEnvironment generationEnvironment) => generationEnvironment is MultipleContentBuilderEnvironment;
 
     public void Render(IRenderTemplateRequest request)
     {
         Guard.IsNotNull(request);
 
-        IMultipleContentBuilder multipleContentBuilder;
-        if (request.GenerationEnvironment is MultipleContentBuilderContainerEnvironment containerEnvironment)
-        {
-            // Use TemplateFileManager
-            multipleContentBuilder = containerEnvironment.Container.MultipleContentBuilder
-                ?? throw new InvalidOperationException("MultipleContentBuilder property is null");
-        }
-        else if (request.GenerationEnvironment is MultipleContentBuilderEnvironment builderEnvironment)
-        {
-            multipleContentBuilder = builderEnvironment.Builder;
-        }
-        else
+        if (request.GenerationEnvironment is not MultipleContentBuilderEnvironment builderEnvironment)
         {
             throw new NotSupportedException("GenerationEnvironment should be of type IMultipleContentBuilder or IMultipleContentBuilderContainer");
         }
+
+        var multipleContentBuilder = builderEnvironment.Builder;
 
         if (request.Template is IMultipleContentBuilderTemplate multipleContentBuilderTemplate)
         {

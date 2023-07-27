@@ -45,19 +45,5 @@ public partial class MultipleContentTemplateRendererTests
             // Assert
             result.Should().BeTrue();
         }
-
-        [Fact]
-        public void Returns_True_When_GenerationEnvironment_Is_MultipleContentBuilderContainer()
-        {
-            // Arrange
-            var sut = CreateSut();
-            var request = new RenderTemplateRequest(this, new Mock<IMultipleContentBuilderContainer>().Object, DefaultFilename);
-
-            // Act
-            var result = sut.Supports(request.GenerationEnvironment);
-
-            // Assert
-            result.Should().BeTrue();
-        }
     }
 }

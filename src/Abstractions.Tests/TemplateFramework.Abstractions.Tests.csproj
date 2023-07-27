@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Core\TemplateFramework.Core.csproj" />
+    <ProjectReference Include="..\Abstractions\TemplateFramework.Abstractions.csproj" />
   </ItemGroup>
 
   <ItemGroup>
