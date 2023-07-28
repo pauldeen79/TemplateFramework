@@ -23,9 +23,11 @@ public sealed class MultipleContentTemplateRenderer : ITemplateRenderer
             return;
         }
 
+        // Make a new request, because we are using a different generation environment.
+        // Render using a stringbuilder, then add it to multiple contents
         var stringBuilder = new StringBuilder();
-        var singleRequest = new RenderTemplateRequest(request.Template, stringBuilder, request.DefaultFilename, request.AdditionalParameters, null); // note that additional parameters are currently ignored by the implemented class
+        var singleRequest = new RenderTemplateRequest(request.Template, request.Model, stringBuilder, request.DefaultFilename, request.AdditionalParameters, request.Context);
         new StringBuilderTemplateRenderer().Render(singleRequest);
-        multipleContentBuilder.AddContent(request.DefaultFilename, false, new StringBuilder((string?)stringBuilder.ToString()));
+        multipleContentBuilder.AddContent(request.DefaultFilename, false, new StringBuilder(stringBuilder.ToString()));
     }
 }

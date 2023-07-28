@@ -4,124 +4,139 @@ public class RenderTemplateRequest : IRenderTemplateRequest
 {
     public RenderTemplateRequest(
         object template,
+        object? model,
         StringBuilder builder,
         string defaultFilename,
         object? additionalParameters,
         ITemplateContext? context)
-        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, additionalParameters, context)
+        : this(template, model, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, additionalParameters, context)
     {
     }
 
     public RenderTemplateRequest(
         object template,
+        object? model,
         StringBuilder builder)
-        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, null, null)
+        : this(template, model, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, null, null)
     {
     }
 
     public RenderTemplateRequest(
         object template,
+        object? model,
         StringBuilder builder,
         string defaultFilename)
-        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, null, null)
+        : this(template, model, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, null, null)
     {
     }
 
     public RenderTemplateRequest(
         object template,
+        object? model,
         StringBuilder builder,
         string defaultFilename,
         object? additionalParameters)
-        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, additionalParameters, null)
+        : this(template, model, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, additionalParameters, null)
     {
     }
 
     public RenderTemplateRequest(
         object template,
+        object? model,
         StringBuilder builder,
         object? additionalParameters)
-        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, additionalParameters, null)
+        : this(template, model, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, additionalParameters, null)
     {
     }
 
     public RenderTemplateRequest(
         object template,
+        object? model,
         StringBuilder builder,
         string defaultFilename,
         ITemplateContext? context)
-        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, null, context)
+        : this(template, model, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, null, context)
     {
     }
 
     public RenderTemplateRequest(
         object template,
+        object? model,
         StringBuilder builder,
         ITemplateContext? context)
-        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, null, context)
+        : this(template, model, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, null, context)
     {
     }
 
     public RenderTemplateRequest(
         object template,
+        object? model,
         IMultipleContentBuilder builder,
         string defaultFilename,
         object? additionalParameters,
         ITemplateContext? context)
-        : this(template, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, additionalParameters, context)
+        : this(template, model, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, additionalParameters, context)
     {
     }
 
     public RenderTemplateRequest(
         object template,
+        object? model,
         IMultipleContentBuilder builder)
-        : this(template, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, null, null)
+        : this(template, model, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, null, null)
     {
     }
 
     public RenderTemplateRequest(
         object template,
+        object? model,
         IMultipleContentBuilder builder,
         string defaultFilename)
-        : this(template, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, null, null)
+        : this(template, model, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, null, null)
     {
     }
 
     public RenderTemplateRequest(
         object template,
+        object? model,
         IMultipleContentBuilder builder,
         string defaultFilename,
         object? additionalParameters)
-        : this(template, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, additionalParameters, null)
+        : this(template, model, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, additionalParameters, null)
     {
     }
 
     public RenderTemplateRequest(
         object template,
+        object? model,
         IMultipleContentBuilder builder,
         object? additionalParameters)
-        : this(template, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, additionalParameters, null)
+        : this(template, model, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, additionalParameters, null)
     {
     }
 
     public RenderTemplateRequest(
         object template,
+        object? model,
         IMultipleContentBuilder builder,
         string defaultFilename,
         ITemplateContext? context)
-        : this(template, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, null, context)
+        : this(template, model, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, null, context)
     {
     }
 
     public RenderTemplateRequest(
         object template,
+        object? model,
         IMultipleContentBuilder builder,
         ITemplateContext? context)
-        : this(template, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, null, context)
+        : this(template, model, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, null, context)
     {
     }
 
     public RenderTemplateRequest(
         object template,
+        object? model,
         IGenerationEnvironment generationEnvironment,
         string defaultFilename,
         object? additionalParameters,
@@ -133,171 +148,16 @@ public class RenderTemplateRequest : IRenderTemplateRequest
 
         Template = template;
         GenerationEnvironment = generationEnvironment;
+        Model = model;
         DefaultFilename = defaultFilename;
         AdditionalParameters = additionalParameters;
         Context = context;
     }
 
     public object Template { get; }
-
     public IGenerationEnvironment GenerationEnvironment { get; }
-
+    public object? Model { get; }
     public string DefaultFilename { get; }
-
     public object? AdditionalParameters { get; }
-
     public ITemplateContext? Context { get; }
-}
-
-public class RenderTemplateRequest<TModel> : RenderTemplateRequest, IRenderTemplateRequest<TModel>
-{
-    public RenderTemplateRequest(IRenderTemplateRequest request)
-        : this((request ?? throw new ArgumentNullException(nameof(request))).Template, request.GenerationEnvironment, default, request.DefaultFilename, request.AdditionalParameters, request.Context)
-    {
-    }
-
-    public RenderTemplateRequest(
-        object template,
-        StringBuilder builder,
-        TModel? model,
-        string defaultFilename,
-        object? additionalParameters,
-        ITemplateContext? context)
-        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), model, defaultFilename, additionalParameters, context)
-    {
-    }
-
-    public RenderTemplateRequest(
-        object template,
-        StringBuilder builder,
-        TModel? model)
-        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), model, string.Empty, null, null)
-    {
-    }
-
-    public RenderTemplateRequest(
-        object template,
-        StringBuilder builder,
-        TModel? model,
-        string defaultFilename)
-        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), model, defaultFilename, null, null)
-    {
-    }
-
-    public RenderTemplateRequest(
-        object template,
-        StringBuilder builder,
-        TModel? model,
-        string defaultFilename,
-        object? additionalParameters)
-        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), model, defaultFilename, additionalParameters, null)
-    {
-    }
-
-    public RenderTemplateRequest(
-        object template,
-        StringBuilder builder,
-        TModel? model,
-        object? additionalParameters)
-        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), model, string.Empty, additionalParameters, null)
-    {
-    }
-
-    public RenderTemplateRequest(
-        object template,
-        StringBuilder builder,
-        TModel? model,
-        string defaultFilename,
-        ITemplateContext? context)
-        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), model, defaultFilename, null, context)
-    {
-    }
-
-    public RenderTemplateRequest(
-        object template,
-        StringBuilder builder,
-        TModel? model,
-        ITemplateContext? context)
-        : this(template, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), model, string.Empty, null, context)
-    {
-    }
-
-    public RenderTemplateRequest(
-        object template,
-        IMultipleContentBuilder builder,
-        TModel? model,
-        string defaultFilename,
-        object? additionalParameters,
-        ITemplateContext? context)
-        : this(template, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), model, defaultFilename, additionalParameters, context)
-    {
-    }
-
-    public RenderTemplateRequest(
-        object template,
-        IMultipleContentBuilder builder,
-        TModel? model)
-        : this(template, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), model, string.Empty, null, null)
-    {
-    }
-
-    public RenderTemplateRequest(
-        object template,
-        IMultipleContentBuilder builder,
-        TModel? model,
-        string defaultFilename)
-        : this(template, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), model, defaultFilename, null, null)
-    {
-    }
-
-    public RenderTemplateRequest(
-        object template,
-        IMultipleContentBuilder builder,
-        TModel? model,
-        string defaultFilename,
-        object? additionalParameters)
-        : this(template, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), model, defaultFilename, additionalParameters, null)
-    {
-    }
-
-    public RenderTemplateRequest(
-        object template,
-        IMultipleContentBuilder builder,
-        TModel? model,
-        object? additionalParameters)
-        : this(template, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), model, string.Empty, additionalParameters, null)
-    {
-    }
-
-    public RenderTemplateRequest(
-        object template,
-        IMultipleContentBuilder builder,
-        TModel? model,
-        string defaultFilename,
-        ITemplateContext? context)
-        : this(template, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), model, defaultFilename, null, context)
-    {
-    }
-
-    public RenderTemplateRequest(
-        object template,
-        IMultipleContentBuilder builder,
-        TModel? model,
-        ITemplateContext? context)
-        : this(template, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), model, string.Empty, null, context)
-    {
-    }
-
-    public RenderTemplateRequest(
-        object template,
-        IGenerationEnvironment generationEnvironment,
-        TModel? model,
-        string defaultFilename,
-        object? additionalParameters,
-        ITemplateContext? context) : base(template, generationEnvironment, defaultFilename, additionalParameters, context)
-    {
-        Model = model;
-    }
-
-    public TModel? Model { get; }
 }

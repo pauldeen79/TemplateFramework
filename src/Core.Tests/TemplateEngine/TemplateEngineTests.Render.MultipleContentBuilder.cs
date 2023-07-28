@@ -8,12 +8,11 @@ public partial class TemplateEngineTests
         public void Throws_On_Null_Request()
         {
             // Arrange
-            IRenderTemplateRequest<object?> request = null!;
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Render(request))
-               .Should().Throw<ArgumentNullException>().WithParameterName(nameof(request));
+            sut.Invoking(x => x.Render(request: null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("request");
         }
 
         [Fact]
@@ -24,7 +23,7 @@ public partial class TemplateEngineTests
             var template = new TestData.PlainTemplateWithAdditionalParameters();
             IMultipleContentBuilder? generationEnvironment = MultipleContentBuilderMock.Object;
             var additionalParameters = new { AdditionalParameter = "Some value" };
-            var request = new RenderTemplateRequest<object?>(template, generationEnvironment, string.Empty, additionalParameters);
+            var request = new RenderTemplateRequest(template, null, generationEnvironment, string.Empty, additionalParameters);
 
             // Act
             sut.Render(request);
@@ -42,7 +41,7 @@ public partial class TemplateEngineTests
             IMultipleContentBuilder? generationEnvironment = MultipleContentBuilderMock.Object;
             var additionalParameters = new { AdditionalParameter = "Some value" };
             TemplateRendererMock.Setup(x => x.Supports(It.IsAny<IGenerationEnvironment>())).Returns(true);
-            var request = new RenderTemplateRequest(template, generationEnvironment, additionalParameters);
+            var request = new RenderTemplateRequest(template, additionalParameters, generationEnvironment);
 
             // Act
             sut.Render(request);

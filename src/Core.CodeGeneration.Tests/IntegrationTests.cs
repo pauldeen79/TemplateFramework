@@ -34,11 +34,11 @@ public class IntegrationTests
         public Encoding Encoding => Encoding.UTF8;
 
         public IRenderTemplateRequest CreateRequest(IGenerationEnvironment generationEnvironment)
-            => new RenderTemplateRequest<object?>
+            => new RenderTemplateRequest
             (
                 template: new IntegrationTemplate(),
-                generationEnvironment: generationEnvironment,
                 model: "Hello world!",
+                generationEnvironment: generationEnvironment,
                 defaultFilename: "NotUsedInMultipleContentBuilder.txt",
                 additionalParameters: null,
                 context: null

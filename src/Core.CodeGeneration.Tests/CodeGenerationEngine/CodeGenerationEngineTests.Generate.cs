@@ -1,6 +1,4 @@
-﻿using FluentAssertions.Equivalency.Tracing;
-
-namespace TemplateFramework.Core.CodeGeneration.Tests;
+﻿namespace TemplateFramework.Core.CodeGeneration.Tests;
 
 public partial class CodeGenerationEngineTests
 {
@@ -46,7 +44,7 @@ public partial class CodeGenerationEngineTests
             var sut = CreateSut();
             CodeGenerationProviderMock.SetupGet(x => x.Encoding).Returns(Encoding.Latin1);
             CodeGenerationProviderMock.SetupGet(x => x.Path).Returns(TestData.BasePath);
-            CodeGenerationProviderMock.Setup(x => x.CreateRequest(It.IsAny<IGenerationEnvironment>())).Returns<IGenerationEnvironment>(env => new RenderTemplateRequest(this, env, "Filename.txt", null, null));
+            CodeGenerationProviderMock.Setup(x => x.CreateRequest(It.IsAny<IGenerationEnvironment>())).Returns<IGenerationEnvironment>(env => new RenderTemplateRequest(this, null, env, "Filename.txt", null, null));
             CodeGenerationSettingsMock.SetupGet(x => x.DryRun).Returns(false);
             CodeGenerationSettingsMock.SetupGet(x => x.BasePath).Returns(TestData.BasePath);
 
@@ -64,7 +62,7 @@ public partial class CodeGenerationEngineTests
             var sut = CreateSut();
             CodeGenerationProviderMock.SetupGet(x => x.Encoding).Returns(Encoding.Latin1);
             CodeGenerationProviderMock.SetupGet(x => x.Path).Returns(TestData.BasePath);
-            CodeGenerationProviderMock.Setup(x => x.CreateRequest(It.IsAny<IGenerationEnvironment>())).Returns<IGenerationEnvironment>(env => new RenderTemplateRequest(this, env, "Filename.txt", null, null));
+            CodeGenerationProviderMock.Setup(x => x.CreateRequest(It.IsAny<IGenerationEnvironment>())).Returns<IGenerationEnvironment>(env => new RenderTemplateRequest(this, null, env, "Filename.txt", null, null));
             CodeGenerationSettingsMock.SetupGet(x => x.DryRun).Returns(true);
 
             // Act

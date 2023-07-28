@@ -2,5 +2,5 @@
 
 public interface ITemplateInitializer
 {
-    void Initialize<TModel>(IRenderTemplateRequest<TModel> request, ITemplateEngine engine);
+    void Initialize(IRenderTemplateRequest request, ITemplateEngine engine);
 }

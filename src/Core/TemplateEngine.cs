@@ -13,7 +13,7 @@ public sealed class TemplateEngine : ITemplateEngine
         _templateRenderers = templateRenderers;
     }
 
-    public void Render<TModel>(IRenderTemplateRequest<TModel> request)
+    public void Render(IRenderTemplateRequest request)
     {
         Guard.IsNotNull(request);
 

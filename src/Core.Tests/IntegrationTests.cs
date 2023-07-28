@@ -15,7 +15,7 @@ public class IntegrationTests
         var generationEnvironment = new MultipleContentBuilder();
 
         // Act
-        sut.Render(new RenderTemplateRequest(template, generationEnvironment));
+        sut.Render(new RenderTemplateRequest(template, null, generationEnvironment, string.Empty, null));
 
         // Assert
         generationEnvironment.Contents.Should().ContainSingle();
