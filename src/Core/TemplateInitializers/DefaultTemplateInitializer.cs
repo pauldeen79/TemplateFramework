@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Core.TemplateInitializers;
 
-public class DefaultTemplateInitializer : ITemplateInitializer
+public sealed class DefaultTemplateInitializer : ITemplateInitializer
 {
     private readonly IEnumerable<ITemplateParameterConverter> _converters;
 
@@ -11,7 +11,7 @@ public class DefaultTemplateInitializer : ITemplateInitializer
         _converters = converters;
     }
 
-    public void Initialize<TModel>(IRenderTemplateRequest<TModel> request, ITemplateEngine engine)
+    public void Initialize(IRenderTemplateRequest request, ITemplateEngine engine)
     {
         Guard.IsNotNull(request);
         Guard.IsNotNull(engine);
@@ -21,11 +21,13 @@ public class DefaultTemplateInitializer : ITemplateInitializer
         TrySetTemplateEngineOnTemplate(request.Template, engine);
     }
 
-    private void TrySetAdditionalParametersOnTemplate<TModel>(IRenderTemplateRequest<TModel> request)
+    private void TrySetAdditionalParametersOnTemplate(IRenderTemplateRequest request)
     {
-        if (request.Template is IModelContainer<TModel> modelContainer)
+        var templateType = request.Template.GetType();
+        if (Array.Exists(templateType.GetInterfaces(), t => t.FullName?.StartsWith("TemplateFramework.Abstractions.IModelContainer", StringComparison.InvariantCulture) == true))
         {
-            modelContainer.Model = request.Model;
+            var modelProperty = templateType.GetProperty(nameof(IModelContainer<object?>.Model))!;
+            modelProperty.SetValue(request.Template, ConvertType(request.Model, modelProperty.PropertyType));
         }
 
         if (request.Template is not IParameterizedTemplate parameterizedTemplate)

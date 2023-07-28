@@ -11,7 +11,7 @@ public partial class TemplateInitializerTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Initialize<object?>(request: null!, TemplateEngineMock.Object))
+            sut.Invoking(x => x.Initialize(request: null!, TemplateEngineMock.Object))
                .Should().Throw<ArgumentNullException>().WithParameterName("request");
         }
 
@@ -22,7 +22,7 @@ public partial class TemplateInitializerTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Initialize(new Mock<IRenderTemplateRequest<Initialize>>().Object, engine: null!))
+            sut.Invoking(x => x.Initialize(new Mock<IRenderTemplateRequest>().Object, engine: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("engine");
         }
     }

@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <Using Include="System.Text" />
+    <Using Include="TemplateFramework.Abstractions.CodeGeneration" />
     <Using Include="TemplateFramework.Abstractions.Domains" />
     <Using Include="TemplateFramework.Abstractions.Requests" />
   </ItemGroup>

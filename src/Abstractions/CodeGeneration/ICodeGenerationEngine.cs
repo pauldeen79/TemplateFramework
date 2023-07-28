@@ -2,5 +2,5 @@
 
 public interface ICodeGenerationEngine
 {
-    void Generate(ICodeGenerationProvider provider, IMultipleContentBuilder generationEnvironment, ICodeGenerationSettings settings);
+    void Generate(ICodeGenerationProvider provider, IGenerationEnvironment generationEnvironment, ICodeGenerationSettings settings);
 }

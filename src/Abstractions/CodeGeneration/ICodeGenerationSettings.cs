@@ -2,6 +2,7 @@
 
 public interface ICodeGenerationSettings
 {
-    bool SkipWhenFileExists { get; }
+    string BasePath { get; }
+    string DefaultFilename { get; }
     bool DryRun { get; }
 }

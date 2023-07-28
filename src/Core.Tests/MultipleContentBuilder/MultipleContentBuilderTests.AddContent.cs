@@ -8,7 +8,7 @@ public partial class MultipleContentBuilderTests
         public void Throws_On_Null_Filename()
         {
             // Arrange
-            var sut = CreateSut(TestData.BasePath);
+            var sut = CreateSut();
 
             // Act & Assert
             sut.Invoking(x => x.AddContent(filename: null!))
@@ -19,7 +19,7 @@ public partial class MultipleContentBuilderTests
         public void Uses_StringBuilder_When_Supplied()
         {
             // Arrange
-            var sut = CreateSut(TestData.BasePath);
+            var sut = CreateSut();
             var builder = new StringBuilder("ExistingContent");
 
             // Act
@@ -33,7 +33,7 @@ public partial class MultipleContentBuilderTests
         public void Creates_New_StringBulder_When_Not_Supplied()
         {
             // Arrange
-            var sut = CreateSut(TestData.BasePath);
+            var sut = CreateSut();
 
             // Act
             var result = sut.AddContent("File.txt");
@@ -46,7 +46,7 @@ public partial class MultipleContentBuilderTests
         public void Sets_Filename_Correctly()
         {
             // Arrange
-            var sut = CreateSut(TestData.BasePath);
+            var sut = CreateSut();
 
             // Act
             var result = sut.AddContent("File.txt");
@@ -59,7 +59,7 @@ public partial class MultipleContentBuilderTests
         public void Sets_SkipWhenFileExists_Correctly()
         {
             // Arrange
-            var sut = CreateSut(TestData.BasePath);
+            var sut = CreateSut();
 
             // Act
             var result = sut.AddContent("File.txt", skipWhenFileExists: true);
@@ -72,7 +72,7 @@ public partial class MultipleContentBuilderTests
         public void Adds_New_File_To_Content_List()
         {
             // Arrange
-            var sut = CreateSut(TestData.BasePath);
+            var sut = CreateSut();
 
             // Act
             _ = sut.AddContent("File.txt");

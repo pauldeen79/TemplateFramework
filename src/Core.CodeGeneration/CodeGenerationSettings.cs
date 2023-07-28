@@ -1,23 +1,28 @@
 ﻿namespace TemplateFramework.Core.CodeGeneration;
 
-public class CodeGenerationSettings : ICodeGenerationSettings
+public sealed class CodeGenerationSettings : ICodeGenerationSettings
 {
-    public CodeGenerationSettings()
-        : this(false, false)
+    public CodeGenerationSettings(string basePath)
+        : this(basePath, string.Empty, false)
     {
     }
 
-    public CodeGenerationSettings(bool dryRun)
-        : this(false, dryRun)
+    public CodeGenerationSettings(string basePath, string defaultFilename)
+        : this(basePath, defaultFilename, false)
     {
     }
 
-    public CodeGenerationSettings(bool skipWhenFileExists, bool dryRun)
+    public CodeGenerationSettings(string basePath, string defaultFilename, bool dryRun)
     {
-        SkipWhenFileExists = skipWhenFileExists;
+        Guard.IsNotNull(basePath);
+        Guard.IsNotNull(defaultFilename);
+
+        BasePath = basePath;
+        DefaultFilename = defaultFilename;
         DryRun = dryRun;
     }
 
-    public bool SkipWhenFileExists { get; }
+    public string BasePath { get; }
+    public string DefaultFilename { get; }
     public bool DryRun { get; }
 }

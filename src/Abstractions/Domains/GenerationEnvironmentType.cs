@@ -4,5 +4,4 @@ public enum GenerationEnvironmentType
 {
     StringBuilder,
     MultipleContentBuilder,
-    MultipleContentBuilderContainer
 }

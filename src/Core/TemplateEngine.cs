@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Core;
 
-public class TemplateEngine : ITemplateEngine
+public sealed class TemplateEngine : ITemplateEngine
 {
     private readonly ITemplateInitializer _templateInitializer;
     private readonly IEnumerable<ITemplateRenderer> _templateRenderers;
@@ -13,7 +13,7 @@ public class TemplateEngine : ITemplateEngine
         _templateRenderers = templateRenderers;
     }
 
-    public void Render<TModel>(IRenderTemplateRequest<TModel> request)
+    public void Render(IRenderTemplateRequest request)
     {
         Guard.IsNotNull(request);
 

@@ -2,5 +2,5 @@
 
 public interface ITemplateEngine
 {
-    void Render<TModel>(IRenderTemplateRequest<TModel> request);
+    void Render(IRenderTemplateRequest request);
 }

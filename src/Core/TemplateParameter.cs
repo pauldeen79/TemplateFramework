@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Core;
 
-public class TemplateParameter : ITemplateParameter
+public sealed class TemplateParameter : ITemplateParameter
 {
     public TemplateParameter(string name, Type type)
     {

@@ -17,26 +17,19 @@ internal static class TestData
 
 public sealed class MyGeneratorProvider : ICodeGenerationProvider
 {
-    public bool SkipWhenFileExists { get; private set; }
-
     public string Path { get; } = "";
-
-    public string DefaultFilename => "MyFile.txt";
 
     public bool RecurseOnDeleteGeneratedFiles { get; }
 
     public string LastGeneratedFilesFilename { get; } = "";
+
+    public Encoding Encoding => Encoding.UTF8;
 
     public object? CreateAdditionalParameters() => null;
 
     public object CreateGenerator() => new MyGenerator();
 
     public object? CreateModel() => null;
-
-    public void Initialize(bool skipWhenFileExists)
-    {
-        SkipWhenFileExists = skipWhenFileExists;
-    }
 }
 
 public sealed class MyGenerator

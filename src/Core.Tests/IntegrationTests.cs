@@ -12,14 +12,13 @@ public class IntegrationTests
         var sut = provider.GetRequiredService<ITemplateEngine>();
 
         var template = new TestData.Template(builder => builder.Append("Hello world!"));
-        var fileSystemMock = new Mock<IFileSystem>();
-        var generationEnvironment = new MultipleContentBuilder(fileSystemMock.Object, Encoding.UTF8, TestData.BasePath);
+        var builder = new MultipleContentBuilder();
 
         // Act
-        sut.Render(new RenderTemplateRequest(template, generationEnvironment));
+        sut.Render(new RenderTemplateRequest(template, builder));
 
         // Assert
-        generationEnvironment.Contents.Should().ContainSingle();
-        generationEnvironment.Contents.Single().Builder.ToString().Should().Be("Hello world!");
+        builder.Contents.Should().ContainSingle();
+        builder.Contents.Single().Builder.ToString().Should().Be("Hello world!");
     }
 }

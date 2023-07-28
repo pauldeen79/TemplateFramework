@@ -1,7 +1,7 @@
 ﻿namespace TemplateFramework.Runtime;
 
 [ExcludeFromCodeCoverage]
-public class PluginLoadContext : AssemblyLoadContext
+public sealed class PluginLoadContext : AssemblyLoadContext
 {
     private readonly AssemblyDependencyResolver _resolver;
 

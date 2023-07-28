@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Core;
 
-public class TemplateContext : ITemplateContext
+public sealed class TemplateContext : ITemplateContext
 {
     public TemplateContext(object template)
         : this(template, null, null, null, null)

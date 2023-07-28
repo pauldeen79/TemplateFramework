@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Core.TemplateRenderers;
 
-public class StringBuilderTemplateRenderer : ITemplateRenderer
+public sealed class StringBuilderTemplateRenderer : ITemplateRenderer
 {
     public bool Supports(IGenerationEnvironment generationEnvironment) => generationEnvironment is StringBuilderEnvironment;
     

@@ -11,7 +11,7 @@ public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
         _codeGenerationEngine = codeGenerationEngine;
     }
 
-    public void Generate(ICodeGenerationAssemblySettings settings, IMultipleContentBuilder generationEnvironment)
+    public void Generate(ICodeGenerationAssemblySettings settings, IGenerationEnvironment generationEnvironment)
     {
         Guard.IsNotNull(settings);
         Guard.IsNotNull(generationEnvironment);

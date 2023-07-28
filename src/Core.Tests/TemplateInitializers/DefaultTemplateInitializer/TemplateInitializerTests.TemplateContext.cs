@@ -11,7 +11,7 @@ public partial class TemplateInitializerTests
             var sut = CreateSut();
             var template = new TestData.PlainTemplateWithTemplateContext(_ => "Hello world!");
             var context = new Core.TemplateContext(template);
-            var request = new RenderTemplateRequest<object?>(template, new StringBuilder(), null, DefaultFilename, null, context);
+            var request = new RenderTemplateRequest(template, new StringBuilder(), DefaultFilename, null, context);
 
             // Act
             sut.Initialize(request, TemplateEngineMock.Object);
@@ -26,7 +26,7 @@ public partial class TemplateInitializerTests
             // Arrange
             var sut = CreateSut();
             var template = new TestData.PlainTemplateWithTemplateContext(_ => "Hello world!");
-            var request = new RenderTemplateRequest<object?>(template, new StringBuilder(), null, DefaultFilename, null, context: null);
+            var request = new RenderTemplateRequest(template, new StringBuilder(), DefaultFilename, null);
 
             // Act
             sut.Initialize(request, TemplateEngineMock.Object);
@@ -46,7 +46,7 @@ public partial class TemplateInitializerTests
             var sut = CreateSut();
             var template = new TestData.PlainTemplateWithTemplateContext(ctx => ctx.Model?.ToString() ?? string.Empty); // note that this template type does not implement IModelContainer<T>, so the model property will not be set. But it will be available in the TemplateContext (untyped)
             var model = "Hello world!";
-            var request = new RenderTemplateRequest<string>(template, new StringBuilder(), model, DefaultFilename, null, context: null);
+            var request = new RenderTemplateRequest(template, model, new StringBuilder(), DefaultFilename, null, context: null);
 
             // Act
             sut.Initialize(request, TemplateEngineMock.Object);

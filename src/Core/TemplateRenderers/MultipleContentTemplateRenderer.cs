@@ -1,28 +1,19 @@
 ﻿namespace TemplateFramework.Core.TemplateRenderers;
 
-public class MultipleContentTemplateRenderer : ITemplateRenderer
+public sealed class MultipleContentTemplateRenderer : ITemplateRenderer
 {
-    public bool Supports(IGenerationEnvironment generationEnvironment) => generationEnvironment is MultipleContentBuilderEnvironment or MultipleContentBuilderContainerEnvironment;
+    public bool Supports(IGenerationEnvironment generationEnvironment) => generationEnvironment is MultipleContentBuilderEnvironment;
 
     public void Render(IRenderTemplateRequest request)
     {
         Guard.IsNotNull(request);
 
-        IMultipleContentBuilder multipleContentBuilder;
-        if (request.GenerationEnvironment is MultipleContentBuilderContainerEnvironment containerEnvironment)
-        {
-            // Use TemplateFileManager
-            multipleContentBuilder = containerEnvironment.Builder.MultipleContentBuilder
-                ?? throw new InvalidOperationException("MultipleContentBuilder property is null");
-        }
-        else if (request.GenerationEnvironment is MultipleContentBuilderEnvironment builderEnvironment)
-        {
-            multipleContentBuilder = builderEnvironment.Builder;
-        }
-        else
+        if (request.GenerationEnvironment is not MultipleContentBuilderEnvironment builderEnvironment)
         {
             throw new NotSupportedException("GenerationEnvironment should be of type IMultipleContentBuilder or IMultipleContentBuilderContainer");
         }
+
+        var multipleContentBuilder = builderEnvironment.Builder;
 
         if (request.Template is IMultipleContentBuilderTemplate multipleContentBuilderTemplate)
         {
@@ -32,9 +23,11 @@ public class MultipleContentTemplateRenderer : ITemplateRenderer
             return;
         }
 
+        // Make a new request, because we are using a different generation environment.
+        // Render using a stringbuilder, then add it to multiple contents
         var stringBuilder = new StringBuilder();
-        var singleRequest = new RenderTemplateRequest(request.Template, stringBuilder, request.DefaultFilename, request.AdditionalParameters, null); // note that additional parameters are currently ignored by the implemented class
+        var singleRequest = new RenderTemplateRequest(request.Template, request.Model, stringBuilder, request.DefaultFilename, request.AdditionalParameters, request.Context);
         new StringBuilderTemplateRenderer().Render(singleRequest);
-        multipleContentBuilder.AddContent(request.DefaultFilename, false, new StringBuilder((string?)stringBuilder.ToString()));
+        multipleContentBuilder.AddContent(request.DefaultFilename, false, new StringBuilder(stringBuilder.ToString()));
     }
 }
