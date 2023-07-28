@@ -34,7 +34,7 @@ public class IntegrationTests
         public Encoding Encoding => Encoding.UTF8;
 
         public IRenderTemplateRequest CreateRequest(IGenerationEnvironment generationEnvironment)
-            => new RenderTemplateRequest<string?>
+            => new RenderTemplateRequest<object?>
             (
                 template: new IntegrationTemplate(),
                 generationEnvironment: generationEnvironment,

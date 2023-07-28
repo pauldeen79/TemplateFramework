@@ -11,11 +11,19 @@ public static class TemplateEngineExtensions
 
         if (type.IsGenericType)
         {
-            instance.GetType().GetMethod(nameof(ITemplateEngine.Render))!.MakeGenericMethod(type.GetGenericArguments()[0]).Invoke(instance, new[] { request });
+            var modelProperty = type.GetProperty(nameof(IRenderTemplateRequest<object?>.Model));
+            if (modelProperty != null)
+            {
+                var modelValue = modelProperty.GetValue(request);
+                if (modelValue != null)
+                {
+                    var typedRequest = Activator.CreateInstance(typeof(RenderTemplateRequest<>).MakeGenericType(modelValue.GetType()), request.Template, request.GenerationEnvironment, modelValue, request.DefaultFilename, request.AdditionalParameters, request.Context);
+                    instance.GetType().GetMethod(nameof(ITemplateEngine.Render))!.MakeGenericMethod(modelValue.GetType()).Invoke(instance, new[] { typedRequest });
+                    return;
+                }
+            }
         }
-        else
-        {
-            instance.Render(new RenderTemplateRequest<object?>(request));
-        }
+
+        instance.Render(new RenderTemplateRequest<object?>(request));
     }
 }
