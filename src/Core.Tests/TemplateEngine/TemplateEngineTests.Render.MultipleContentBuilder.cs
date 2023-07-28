@@ -23,7 +23,7 @@ public partial class TemplateEngineTests
             var template = new TestData.PlainTemplateWithAdditionalParameters();
             IMultipleContentBuilder? generationEnvironment = MultipleContentBuilderMock.Object;
             var additionalParameters = new { AdditionalParameter = "Some value" };
-            var request = new RenderTemplateRequest(template, null, generationEnvironment, string.Empty, additionalParameters);
+            var request = new RenderTemplateRequest(template, generationEnvironment, additionalParameters);
 
             // Act
             sut.Render(request);

@@ -20,7 +20,7 @@ public partial class StringBuilderTemplateRendererTests
         {
             // Arrange
             var sut = CreateSut();
-            var request = new RenderTemplateRequest(new TestData.Template(_ => { }), DefaultFilename, new Mock<IMultipleContentBuilder>().Object);
+            var request = new RenderTemplateRequest(new TestData.Template(_ => { }), new Mock<IMultipleContentBuilder>().Object);
 
             // Act & Assert
             sut.Invoking(x => x.Render(request))
@@ -34,7 +34,7 @@ public partial class StringBuilderTemplateRendererTests
             var sut = CreateSut();
             var template = new TestData.Template(b => b.Append("Hello world!"));
             var generationEnvironment = new StringBuilder();
-            var request = new RenderTemplateRequest(template, DefaultFilename, generationEnvironment);
+            var request = new RenderTemplateRequest(template, generationEnvironment);
 
             // Act
             sut.Render(request);
@@ -50,7 +50,7 @@ public partial class StringBuilderTemplateRendererTests
             var sut = CreateSut();
             var template = new TestData.TextTransformTemplate(() => "Hello world!");
             var generationEnvironment = new StringBuilder();
-            var request = new RenderTemplateRequest(template, DefaultFilename, generationEnvironment);
+            var request = new RenderTemplateRequest(template, generationEnvironment);
 
             // Act
             sut.Render(request);
@@ -66,7 +66,7 @@ public partial class StringBuilderTemplateRendererTests
             var sut = CreateSut();
             var template = new TestData.PlainTemplate(() => "Hello world!");
             var generationEnvironment = new StringBuilder();
-            var request = new RenderTemplateRequest(template, DefaultFilename, generationEnvironment);
+            var request = new RenderTemplateRequest(template, generationEnvironment);
 
             // Act
             sut.Render(request);

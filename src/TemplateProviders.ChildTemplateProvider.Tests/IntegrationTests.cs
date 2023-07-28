@@ -30,12 +30,12 @@ public class IntegrationTests
         var template = new TestData.MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine(templateProvider, (builder, context, engine, provider) =>
         {
             var childTemplate = provider.Create(new ChildTemplateByNameRequest("MyTemplate"));
-            engine.Render(new RenderTemplateRequest(childTemplate, null, builder, context.CreateChildContext(new TemplateContext(childTemplate))));
+            engine.Render(new RenderTemplateRequest(childTemplate, builder, context.CreateChildContext(new TemplateContext(childTemplate))));
         });
         var generationEnvironment = new MultipleContentBuilder();
 
         // Act
-        engine.Render(new RenderTemplateRequest(template, null, generationEnvironment, string.Empty, null, null));
+        engine.Render(new RenderTemplateRequest(template, generationEnvironment));
 
         // Assert
         generationEnvironment.Contents.Should().ContainSingle();

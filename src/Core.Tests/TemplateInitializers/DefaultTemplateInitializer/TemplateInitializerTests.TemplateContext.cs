@@ -11,7 +11,7 @@ public partial class TemplateInitializerTests
             var sut = CreateSut();
             var template = new TestData.PlainTemplateWithTemplateContext(_ => "Hello world!");
             var context = new Core.TemplateContext(template);
-            var request = new RenderTemplateRequest(template, null, new StringBuilder(), DefaultFilename, null, context);
+            var request = new RenderTemplateRequest(template, new StringBuilder(), DefaultFilename, null, context);
 
             // Act
             sut.Initialize(request, TemplateEngineMock.Object);
@@ -26,7 +26,7 @@ public partial class TemplateInitializerTests
             // Arrange
             var sut = CreateSut();
             var template = new TestData.PlainTemplateWithTemplateContext(_ => "Hello world!");
-            var request = new RenderTemplateRequest(template, null, new StringBuilder(), DefaultFilename, null);
+            var request = new RenderTemplateRequest(template, new StringBuilder(), DefaultFilename, null);
 
             // Act
             sut.Initialize(request, TemplateEngineMock.Object);

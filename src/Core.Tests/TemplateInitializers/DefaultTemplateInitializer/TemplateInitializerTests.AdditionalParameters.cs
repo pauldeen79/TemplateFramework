@@ -27,7 +27,7 @@ public partial class TemplateInitializerTests
             var sut = CreateSut();
             var additionalParameters = new { AdditionalParameter = "Hello world!" };
             var template = new TestData.PlainTemplateWithAdditionalParameters();
-            var request = new RenderTemplateRequest(template, null, new StringBuilder(), DefaultFilename, additionalParameters);
+            var request = new RenderTemplateRequest(template, new StringBuilder(), DefaultFilename, additionalParameters);
 
             // Act
             sut.Initialize(request, TemplateEngineMock.Object);
@@ -46,7 +46,7 @@ public partial class TemplateInitializerTests
             object? convertedValue = "Hello world!";
             TemplateParameterConverterMock.Setup(x => x.TryConvert(It.IsAny<object?>(), It.IsAny<Type>(), out convertedValue))
                                           .Returns(true);
-            var request = new RenderTemplateRequest(template, null, new StringBuilder(), DefaultFilename, additionalParameters);
+            var request = new RenderTemplateRequest(template, new StringBuilder(), DefaultFilename, additionalParameters);
 
             // Act
             sut.Initialize(request, TemplateEngineMock.Object);
@@ -62,7 +62,7 @@ public partial class TemplateInitializerTests
             var sut = CreateSut();
             var additionalParameters = new { AdditionalParameter = "Hello world!", NonExistingParameter = "Kaboom" };
             var template = new TestData.PlainTemplateWithAdditionalParameters();
-            var request = new RenderTemplateRequest(template, null, new StringBuilder(), DefaultFilename, additionalParameters);
+            var request = new RenderTemplateRequest(template, new StringBuilder(), DefaultFilename, additionalParameters);
 
             // Act & Assert
             sut.Invoking(x => x.Initialize(request, TemplateEngineMock.Object))

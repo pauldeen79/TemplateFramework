@@ -9,7 +9,7 @@ public partial class StringBuilderTemplateRendererTests
         {
             // Arrange
             var sut = CreateSut();
-            var request = new RenderTemplateRequest(this, DefaultFilename, new StringBuilder());
+            var request = new RenderTemplateRequest(this, new StringBuilder());
 
             // Act
             var result = sut.Supports(request.GenerationEnvironment);
@@ -23,7 +23,7 @@ public partial class StringBuilderTemplateRendererTests
         {
             // Arrange
             var sut = CreateSut();
-            var request = new RenderTemplateRequest(this, DefaultFilename, new Mock<IMultipleContentBuilder>().Object);
+            var request = new RenderTemplateRequest(this, new Mock<IMultipleContentBuilder>().Object);
 
             // Act
             var result = sut.Supports(request.GenerationEnvironment);
