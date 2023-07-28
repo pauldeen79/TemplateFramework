@@ -17,12 +17,20 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
         Guard.IsNotNull(generationEnvironment);
         Guard.IsNotNull(settings);
 
-        var request = provider.CreateRequest(generationEnvironment);
-        _templateEngine.Render(request);
+        _templateEngine.Render(
+            new RenderTemplateRequest
+            (
+                template: provider.CreateGenerator(),
+                model: provider.CreateModel(),
+                generationEnvironment: generationEnvironment,
+                additionalParameters: provider.CreateAdditionalParameters(),
+                defaultFilename: settings.DefaultFilename,
+                context: null
+            ));
 
         if (!settings.DryRun)
         {
-            generationEnvironment.SaveContents(provider, settings.BasePath, request.DefaultFilename);
+            generationEnvironment.SaveContents(provider, settings.BasePath, settings.DefaultFilename);
         }
     }
 }

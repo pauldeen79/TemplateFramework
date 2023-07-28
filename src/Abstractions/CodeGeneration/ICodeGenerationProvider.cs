@@ -7,5 +7,7 @@ public interface ICodeGenerationProvider
     string LastGeneratedFilesFilename { get; }
     Encoding Encoding { get; }
 
-    IRenderTemplateRequest CreateRequest(IGenerationEnvironment generationEnvironment);
+    object CreateGenerator();
+    object? CreateAdditionalParameters();
+    object? CreateModel();
 }

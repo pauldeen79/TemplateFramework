@@ -2,38 +2,40 @@
 
 public sealed class CodeGenerationAssemblySettings : ICodeGenerationAssemblySettings
 {
-    public CodeGenerationAssemblySettings(string basePath, string assemblyName)
-        : this(basePath, assemblyName, false, null, null)
+    public CodeGenerationAssemblySettings(string basePath, string defaultFilename, string assemblyName)
+        : this(basePath, defaultFilename, assemblyName, false, null, null)
     {
     }
 
-    public CodeGenerationAssemblySettings(string basePath, string assemblyName, string currentDirectory)
-        : this(basePath, assemblyName, false, currentDirectory, null)
+    public CodeGenerationAssemblySettings(string basePath, string defaultFilename, string assemblyName, string currentDirectory)
+        : this(basePath, defaultFilename, assemblyName, false, currentDirectory, null)
     {
     }
 
-    public CodeGenerationAssemblySettings(string basePath, string assemblyName, string currentDirectory, IEnumerable<string> classNameFilter)
-        : this(basePath, assemblyName, false, currentDirectory, classNameFilter)
+    public CodeGenerationAssemblySettings(string basePath, string defaultFilename, string assemblyName, string currentDirectory, IEnumerable<string> classNameFilter)
+        : this(basePath, defaultFilename, assemblyName, false, currentDirectory, classNameFilter)
     {
     }
 
-    public CodeGenerationAssemblySettings(string basePath, string assemblyName, bool dryRun)
-        : this(basePath, assemblyName, dryRun, null, null)
+    public CodeGenerationAssemblySettings(string basePath, string defaultFilename, string assemblyName, bool dryRun)
+        : this(basePath, defaultFilename, assemblyName, dryRun, null, null)
     {
     }
 
-    public CodeGenerationAssemblySettings(string basePath, string assemblyName, string currentDirectory, bool dryRun)
-        : this(basePath, assemblyName, dryRun, currentDirectory, null)
+    public CodeGenerationAssemblySettings(string basePath, string defaultFilename, string assemblyName, string currentDirectory, bool dryRun)
+        : this(basePath, defaultFilename, assemblyName, dryRun, currentDirectory, null)
     {
     }
 
     public CodeGenerationAssemblySettings(string basePath,
+                                          string defaultFilename,
                                           string assemblyName,
                                           bool dryRun,
                                           string? currentDirectory,
                                           IEnumerable<string>? classNameFilter)
     {
         Guard.IsNotNull(basePath);
+        Guard.IsNotNull(defaultFilename);
         Guard.IsNotNull(assemblyName);
 
         if (string.IsNullOrEmpty(currentDirectory))
@@ -42,6 +44,7 @@ public sealed class CodeGenerationAssemblySettings : ICodeGenerationAssemblySett
         }
 
         BasePath = basePath;
+        DefaultFilename = defaultFilename;
         AssemblyName = assemblyName;
         CurrentDirectory = currentDirectory;
         ClassNameFilter = classNameFilter ?? Enumerable.Empty<string>();
@@ -49,11 +52,10 @@ public sealed class CodeGenerationAssemblySettings : ICodeGenerationAssemblySett
     }
 
     public string BasePath { get; }
-    public string AssemblyName { get; }
-
-    public string CurrentDirectory { get; }
-
-    public IEnumerable<string> ClassNameFilter { get; }
-
+    public string DefaultFilename { get; }
     public bool DryRun { get; }
+    
+    public string AssemblyName { get; }
+    public string CurrentDirectory { get; }
+    public IEnumerable<string> ClassNameFilter { get; }
 }

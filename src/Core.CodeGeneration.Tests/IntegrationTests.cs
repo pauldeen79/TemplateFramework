@@ -19,7 +19,7 @@ public class IntegrationTests
         var generationEnvironment = new MultipleContentBuilderEnvironment(serviceProvider.GetRequiredService<IFileSystem>(), builder);
 
         // Act
-        sut.Generate(codeGenerationProvider, generationEnvironment, new CodeGenerationSettings(TestData.BasePath, false));
+        sut.Generate(codeGenerationProvider, generationEnvironment, new CodeGenerationSettings(TestData.BasePath, "DefaultFilename.txt", false));
 
         // Assert
         builder.Contents.Should().ContainSingle();
@@ -33,16 +33,9 @@ public class IntegrationTests
         public string LastGeneratedFilesFilename => "*.generated.txt";
         public Encoding Encoding => Encoding.UTF8;
 
-        public IRenderTemplateRequest CreateRequest(IGenerationEnvironment generationEnvironment)
-            => new RenderTemplateRequest
-            (
-                template: new IntegrationTemplate(),
-                model: "Hello world!",
-                generationEnvironment: generationEnvironment,
-                defaultFilename: "NotUsedInMultipleContentBuilder.txt",
-                additionalParameters: null,
-                context: null
-            );
+        public object? CreateAdditionalParameters() => null;
+        public object CreateGenerator() => new IntegrationTemplate();
+        public object? CreateModel() => "Hello world!";
     }
 
     private sealed class IntegrationTemplate : IMultipleContentBuilderTemplate, IModelContainer<string>

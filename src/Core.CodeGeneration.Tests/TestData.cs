@@ -25,8 +25,11 @@ public sealed class MyGeneratorProvider : ICodeGenerationProvider
 
     public Encoding Encoding => Encoding.UTF8;
 
-    public IRenderTemplateRequest CreateRequest(IGenerationEnvironment generationEnvironment)
-        => new RenderTemplateRequest(new MyGenerator(), null, generationEnvironment, string.Empty, null, null);
+    public object? CreateAdditionalParameters() => null;
+
+    public object CreateGenerator() => new MyGenerator();
+
+    public object? CreateModel() => null;
 }
 
 public sealed class MyGenerator
