@@ -21,7 +21,7 @@ public sealed class StringBuilderEnvironment : IGenerationEnvironment
 
     public GenerationEnvironmentType Type => GenerationEnvironmentType.StringBuilder;
 
-    public void Process(ICodeGenerationProvider provider, string basePath, string defaultFilename)
+    public void SaveContents(ICodeGenerationProvider provider, string basePath, string defaultFilename)
     {
         Guard.IsNotNull(provider);
         Guard.IsNotNullOrEmpty(defaultFilename);

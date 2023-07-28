@@ -22,7 +22,7 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
 
         if (!settings.DryRun)
         {
-            generationEnvironment.Process(provider, settings.BasePath, request.DefaultFilename);
+            generationEnvironment.SaveContents(provider, settings.BasePath, request.DefaultFilename);
         }
     }
 }

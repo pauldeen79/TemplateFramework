@@ -38,14 +38,12 @@ public partial class CodeGenerationEngineTests
         }
 
         [Fact]
-        public void Processes_Result_When_BasePath_Is_Filled_And_DryRun_Is_False()
+        public void Saves_Generated_Content_When_BasePath_Is_Filled_And_DryRun_Is_False()
         {
             // Arrange
             var sut = CreateSut();
-            CodeGenerationProviderMock.SetupGet(x => x.DefaultFilename).Returns(string.Empty);
             CodeGenerationProviderMock.SetupGet(x => x.Encoding).Returns(Encoding.Latin1);
             CodeGenerationProviderMock.SetupGet(x => x.Path).Returns(TestData.BasePath);
-            CodeGenerationProviderMock.SetupGet(x => x.DefaultFilename).Returns("MyFile.txt");
             CodeGenerationProviderMock.Setup(x => x.CreateGenerator()).Returns(this);
             CodeGenerationSettingsMock.SetupGet(x => x.DryRun).Returns(false);
             CodeGenerationSettingsMock.SetupGet(x => x.BasePath).Returns(TestData.BasePath);
@@ -54,15 +52,14 @@ public partial class CodeGenerationEngineTests
             sut.Generate(CodeGenerationProviderMock.Object, GenerationEnvironmentMock.Object, CodeGenerationSettingsMock.Object);
 
             // Assert
-            GenerationEnvironmentMock.Verify(x => x.Process(CodeGenerationProviderMock.Object, TestData.BasePath), Times.Once);
+            GenerationEnvironmentMock.Verify(x => x.SaveContents(CodeGenerationProviderMock.Object, TestData.BasePath, "MyFile.txt"), Times.Once);
         }
 
         [Fact]
-        public void Does_Not_Process_Result_When_BasePath_Is_Filled_But_DryRun_Is_True()
+        public void Does_Not_Save_Generatd_Content_When_BasePath_Is_Filled_But_DryRun_Is_True()
         {
             // Arrange
             var sut = CreateSut();
-            CodeGenerationProviderMock.SetupGet(x => x.DefaultFilename).Returns("MyFile.txt");
             CodeGenerationProviderMock.SetupGet(x => x.Encoding).Returns(Encoding.Latin1);
             CodeGenerationProviderMock.SetupGet(x => x.Path).Returns(TestData.BasePath);
             CodeGenerationProviderMock.Setup(x => x.CreateGenerator()).Returns(this);
@@ -72,40 +69,7 @@ public partial class CodeGenerationEngineTests
             sut.Generate(CodeGenerationProviderMock.Object, GenerationEnvironmentMock.Object, CodeGenerationSettingsMock.Object);
 
             // Assert
-            GenerationEnvironmentMock.Verify(x => x.Process(CodeGenerationProviderMock.Object, TestData.BasePath), Times.Never);
-        }
-
-        [Fact]
-        public void Generates_Multiple_Files_When_Provider_Wants_This()
-        {
-            // Arrange
-            var sut = CreateSut();
-            CodeGenerationProviderMock.SetupGet(x => x.DefaultFilename).Returns(string.Empty);
-            CodeGenerationProviderMock.Setup(x => x.CreateGenerator()).Returns(this);
-            GenerationEnvironmentMock.SetupGet(x => x.Type).Returns(GenerationEnvironmentType.MultipleContentBuilder);
-
-            // Act
-            sut.Generate(CodeGenerationProviderMock.Object, GenerationEnvironmentMock.Object, CodeGenerationSettingsMock.Object);
-
-            // Assert
-            TemplateEngineMock.Verify(x => x.Render(It.Is<IRenderTemplateRequest<object?>>(x => x.GenerationEnvironment == GenerationEnvironmentMock.Object)), Times.Once);
-        }
-
-        [Fact]
-        public void Generates_Single_File_When_Provider_Wants_This()
-        {
-            // Arrange
-            var sut = CreateSut();
-            CodeGenerationProviderMock.SetupGet(x => x.Path).Returns(TestData.BasePath);
-            CodeGenerationProviderMock.SetupGet(x => x.DefaultFilename).Returns("MyFile.txt");
-            CodeGenerationProviderMock.Setup(x => x.CreateGenerator()).Returns(this);
-            GenerationEnvironmentMock.SetupGet(x => x.Type).Returns(GenerationEnvironmentType.StringBuilder);
-
-            // Act
-            sut.Generate(CodeGenerationProviderMock.Object, GenerationEnvironmentMock.Object, CodeGenerationSettingsMock.Object);
-
-            // Assert
-            TemplateEngineMock.Verify(x => x.Render(It.Is<IRenderTemplateRequest<object?>>(x => x.GenerationEnvironment == GenerationEnvironmentMock.Object)), Times.Once);
+            GenerationEnvironmentMock.Verify(x => x.SaveContents(CodeGenerationProviderMock.Object, TestData.BasePath, "MyFile.txt"), Times.Never);
         }
     }
 }

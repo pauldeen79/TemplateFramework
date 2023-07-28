@@ -2,7 +2,7 @@
 
 public partial class StringBuilderEnvironmentTests
 {
-    public class Process : StringBuilderEnvironmentTests
+    public class SaveContents : StringBuilderEnvironmentTests
     {
         [Fact]
         public void Throws_On_Null_Provider()
@@ -11,7 +11,7 @@ public partial class StringBuilderEnvironmentTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process(provider: null!, TestData.BasePath, "Filename.txt"))
+            sut.Invoking(x => x.SaveContents(provider: null!, TestData.BasePath, "Filename.txt"))
                .Should().Throw<ArgumentNullException>().WithParameterName("provider");
         }
 
@@ -22,7 +22,7 @@ public partial class StringBuilderEnvironmentTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process(CodeGenerationProviderMock.Object, TestData.BasePath, defaultFilename: null!))
+            sut.Invoking(x => x.SaveContents(CodeGenerationProviderMock.Object, TestData.BasePath, defaultFilename: null!))
                .Should().Throw<ArgumentException>().WithParameterName("defaultFilename");
         }
 
@@ -33,7 +33,7 @@ public partial class StringBuilderEnvironmentTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process(CodeGenerationProviderMock.Object, TestData.BasePath, defaultFilename: string.Empty))
+            sut.Invoking(x => x.SaveContents(CodeGenerationProviderMock.Object, TestData.BasePath, defaultFilename: string.Empty))
                .Should().Throw<ArgumentException>().WithParameterName("defaultFilename");
         }
 
@@ -46,7 +46,7 @@ public partial class StringBuilderEnvironmentTests
             Builder.Append("Contents");
 
             // Act
-            sut.Process(CodeGenerationProviderMock.Object, string.Empty, "Filename.txt");
+            sut.SaveContents(CodeGenerationProviderMock.Object, string.Empty, "Filename.txt");
 
             // Arrange
             FileSystemMock.Verify(x => x.WriteAllText("Filename.txt", "Contents", Encoding.UTF32), Times.Once);
@@ -61,7 +61,7 @@ public partial class StringBuilderEnvironmentTests
             Builder.Append("Contents");
 
             // Act
-            sut.Process(CodeGenerationProviderMock.Object, TestData.BasePath, "Filename.txt");
+            sut.SaveContents(CodeGenerationProviderMock.Object, TestData.BasePath, "Filename.txt");
 
             // Arrange
             FileSystemMock.Verify(x => x.WriteAllText(Path.Combine(TestData.BasePath, "Filename.txt"), "Contents", Encoding.UTF32), Times.Once);
