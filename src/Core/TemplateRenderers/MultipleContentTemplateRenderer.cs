@@ -15,6 +15,7 @@ public sealed class MultipleContentTemplateRenderer : ITemplateRenderer
 
         var multipleContentBuilder = builderEnvironment.Builder;
 
+        //TODO: Check if we need a wrapper here, when loading external assemblies...
         if (request.Template is IMultipleContentBuilderTemplate multipleContentBuilderTemplate)
         {
             // No need to convert string to MultipleContentBuilder, and then add it again..

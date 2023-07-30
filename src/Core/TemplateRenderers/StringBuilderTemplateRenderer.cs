@@ -16,6 +16,7 @@ public sealed class StringBuilderTemplateRenderer : ITemplateRenderer
 
         var builder = environment.Builder;
 
+        //TODO: Check if we need a wrapper here, when loading external assemblies...
         if (request.Template is IStringBuilderTemplate typedTemplate)
         {
             typedTemplate.Render(builder);
