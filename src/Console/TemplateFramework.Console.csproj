@@ -30,12 +30,19 @@
     <Using Include="CommunityToolkit.Diagnostics" />
     <Using Include="McMaster.Extensions.CommandLineUtils" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="System.Globalization" />
+    <Using Include="System.Text" />
+    <Using Include="TemplateFramework.Abstractions" />
+    <Using Include="TemplateFramework.Abstractions.CodeGeneration" />
     <Using Include="TemplateFramework.Console.Commands" />
     <Using Include="TemplateFramework.Console.Contracts" />
     <Using Include="TemplateFramework.Console.Extensions" />
     <Using Include="TemplateFramework.Core" />
+    <Using Include="TemplateFramework.Core.CodeGeneration" />
     <Using Include="TemplateFramework.Core.CodeGeneration.Extensions" />
     <Using Include="TemplateFramework.Core.Extensions" />
+    <Using Include="TemplateFramework.Core.GenerationEnvironments" />
+    <Using Include="TextCopy" />
   </ItemGroup>
 
 </Project>

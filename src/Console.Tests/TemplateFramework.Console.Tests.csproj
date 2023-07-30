@@ -38,6 +38,9 @@
     <Using Include="Microsoft.Extensions.DependencyInjection" />
     <Using Include="TemplateFramework.Console.Commands" />
     <Using Include="TemplateFramework.Console.Extensions" />
+    <Using Include="TemplateFramework.Core.CodeGeneration.Extensions" />
+    <Using Include="TemplateFramework.Core.Extensions" />
+    <Using Include="TextCopy" />
     <Using Include="Xunit" />
   </ItemGroup>
 

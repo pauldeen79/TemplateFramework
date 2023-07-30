@@ -2,6 +2,11 @@
 
 public sealed class MultipleContentBuilderEnvironment : IGenerationEnvironment
 {
+    public MultipleContentBuilderEnvironment()
+        : this(new FileSystem(), new MultipleContentBuilder())
+    {
+    }
+
     public MultipleContentBuilderEnvironment(IMultipleContentBuilder builder)
         : this(new FileSystem(), builder)
     {

@@ -17,6 +17,7 @@ public static class Program
             .AddTemplateFramework()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateCommands();
+        serviceCollection.InjectClipboard();
         using var provider = serviceCollection.BuildServiceProvider();
         var processor = provider.GetRequiredService<ICommandLineProcessor>();
         processor.Initialize(app);
