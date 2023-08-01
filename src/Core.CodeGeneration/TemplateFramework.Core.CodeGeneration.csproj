@@ -29,7 +29,9 @@
     <Using Include="TemplateFramework.Abstractions" />
     <Using Include="TemplateFramework.Abstractions.CodeGeneration" />
     <Using Include="TemplateFramework.Abstractions.Extensions" />
-    <Using Include="TemplateFramework.Core.Extensions"/>
+    <Using Include="TemplateFramework.Core.CodeGeneration.CodeGeneratorProviderCreators" />
+    <Using Include="TemplateFramework.Core.CodeGeneration.Contracts" />
+    <Using Include="TemplateFramework.Core.Extensions" />
     <Using Include="TemplateFramework.Core.Requests" />
     <Using Include="TemplateFramework.Runtime" />
   </ItemGroup>
