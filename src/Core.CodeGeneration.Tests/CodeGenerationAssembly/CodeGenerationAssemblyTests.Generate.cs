@@ -4,6 +4,13 @@ public partial class CodeGenerationAssemblyTests
 {
     public class Generate : CodeGenerationAssemblyTests
     {
+        public Generate()
+        {
+            CodeGenerationProviderCreatorMock
+                .Setup(x => x.TryCreateInstance(It.IsAny<Type>()))
+                .Returns<Type>(t => Activator.CreateInstance(t) as ICodeGenerationProvider);
+        }
+
         [Fact]
         public void Throws_On_Null_Settings()
         {
