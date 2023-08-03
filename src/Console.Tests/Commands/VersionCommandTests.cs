@@ -19,7 +19,7 @@ public class VersionCommandTests
         sut.Initialize(app);
 
         // Assert
-        app.Commands.Should().HaveCount(0); // aparently, this does not add a command that is publicly visible...
+        app.Commands.Should().BeEmpty(); // aparently, this does not add a command that is publicly visible...
     }
 
     [Fact]

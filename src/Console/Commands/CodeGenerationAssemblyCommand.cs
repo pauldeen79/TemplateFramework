@@ -44,11 +44,11 @@ public class CodeGenerationAssemblyCommand : ICommandLineCommand
                     : string.Empty;
 
                 var basePath = basePathOption.HasValue()
-                    ? basePathOption.Value() ?? string.Empty
+                    ? basePathOption.Value()!
                     : string.Empty;
 
                 var defaultFilename = defaultFilenameOption.HasValue()
-                    ? defaultFilenameOption.Value() ?? string.Empty
+                    ? defaultFilenameOption.Value()!
                     : string.Empty;
 
                 var dryRun = dryRunOption.HasValue() || clipboardOption.HasValue();
@@ -57,7 +57,7 @@ public class CodeGenerationAssemblyCommand : ICommandLineCommand
                 {
                     var generationEnvironment = new MultipleContentBuilderEnvironment();
                     var classNameFilter = filterClassNameOption.Values.Where(x => x is not null).Select(x => x!);
-                    var settings = new CodeGenerationAssemblySettings(basePath, defaultFilename, assemblyName, dryRunOption.HasValue(), currentDirectory, classNameFilter);
+                    var settings = new CodeGenerationAssemblySettings(basePath, defaultFilename, assemblyName, dryRun, currentDirectory, classNameFilter);
                     _codeGenerationAssembly.Generate(settings, generationEnvironment);
                     WriteOutput(app, generationEnvironment, basePath, bareOption, clipboardOption, dryRun);
                 });
@@ -67,11 +67,15 @@ public class CodeGenerationAssemblyCommand : ICommandLineCommand
 
     private void WriteOutput(CommandLineApplication app, MultipleContentBuilderEnvironment generationEnvironment, string basePath, CommandOption<bool> bareOption, CommandOption<bool> clipboardOption, bool dryRun)
     {
-        if (!string.IsNullOrEmpty(basePath) && !dryRun)
+        if (!dryRun)
         {
             if (!bareOption.HasValue())
             {
-                app.Out.WriteLine($"Written code generation output to path: {basePath}");
+                var dir = string.IsNullOrEmpty(basePath)
+                    ? Directory.GetCurrentDirectory()
+                    : basePath;
+
+                app.Out.WriteLine($"Written code generation output to path: {dir}");
             }
         }
         else if (clipboardOption.HasValue())
@@ -88,13 +92,15 @@ public class CodeGenerationAssemblyCommand : ICommandLineCommand
     {
         var stringBuilder = new StringBuilder();
         var output = builder.Build();
+
         foreach (var content in output.Contents)
         {
             var path = string.IsNullOrEmpty(basePath) || Path.IsPathRooted(content.Filename)
                 ? content.Filename
                 : Path.Combine(basePath, content.Filename);
 
-            stringBuilder.AppendLine(CultureInfo.CurrentCulture, $"{path}:");
+            stringBuilder.Append(path);
+            stringBuilder.AppendLine(":");
             stringBuilder.AppendLine(content.Contents);
         }
 
@@ -104,6 +110,7 @@ public class CodeGenerationAssemblyCommand : ICommandLineCommand
     private void WriteOutputToClipboard(CommandLineApplication app, string templateOutput, CommandOption<bool> bareOption)
     {
         _clipboard.SetText(templateOutput);
+
         if (!bareOption.HasValue())
         {
             app.Out.WriteLine("Copied code generation output to clipboard");
