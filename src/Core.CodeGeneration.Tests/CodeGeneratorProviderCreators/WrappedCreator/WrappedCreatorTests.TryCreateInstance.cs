@@ -26,7 +26,7 @@ public partial class WrappedCreatorTests
             var result = sut.TryCreateInstance(type);
 
             // Assert
-            result.Should().BeOfType<MyGeneratorProvider>();
+            result.Should().BeOfType<CodeGenerationProviderWrapper>();
         }
 
         [Fact]

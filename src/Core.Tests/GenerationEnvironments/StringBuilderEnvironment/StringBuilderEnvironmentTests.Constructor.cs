@@ -13,7 +13,7 @@ public partial class StringBuilderEnvironmentTests
         }
 
         [Fact]
-        public void Creates_Instance_Correctly()
+        public void Creates_Instance_Correctly_With_Builder_Argument()
         {
             // Act
             var instance = CreateSut();
@@ -21,6 +21,16 @@ public partial class StringBuilderEnvironmentTests
             // Assert
             instance.Should().NotBeNull();
             instance.Builder.Should().BeSameAs(Builder);
+        }
+
+        [Fact]
+        public void Creates_Instance_Correctly_Without_Arguments()
+        {
+            // Act
+            var instance = new StringBuilderEnvironment();
+
+            // Assert
+            instance.Builder.Should().NotBeNull();
         }
     }
 }

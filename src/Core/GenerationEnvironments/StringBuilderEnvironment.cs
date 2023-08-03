@@ -2,6 +2,11 @@
 
 public sealed class StringBuilderEnvironment : IGenerationEnvironment
 {
+    public StringBuilderEnvironment()
+        : this(new FileSystem(), new StringBuilder())
+    {
+    }
+
     public StringBuilderEnvironment(StringBuilder builder)
         : this(new FileSystem(), builder)
     {
