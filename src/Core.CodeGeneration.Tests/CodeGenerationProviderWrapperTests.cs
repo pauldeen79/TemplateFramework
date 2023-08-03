@@ -28,7 +28,7 @@ public class CodeGenerationProviderWrapperTests
     }
 
     [Fact]
-    public void Throws_On_Required_Null_Property()
+    public void Throws_On_Required_Null_Property_Non_Value_Type()
     {
         // Arrange
         var providerMock = new Mock<ICodeGenerationProvider>();
@@ -38,5 +38,24 @@ public class CodeGenerationProviderWrapperTests
         sut.Invoking(x => _ = x.Path)
            .Should().Throw<InvalidOperationException>()
            .WithMessage("Path of template Castle.Proxies.ICodeGenerationProviderProxy was null");
+    }
+
+    [Fact]
+    public void Throws_On_Required_Null_Property_Value_Type()
+    {
+        // Arrange
+        var sut = new CodeGenerationProviderWrapper(new MyThing());
+
+        // Act & Assert
+        sut.Invoking(x => _ = x.RecurseOnDeleteGeneratedFiles)
+           .Should().Throw<InvalidOperationException>()
+           .WithMessage("RecurseOnDeleteGeneratedFiles of template TemplateFramework.Core.CodeGeneration.Tests.CodeGenerationProviderWrapperTests+MyThing was null");
+    }
+
+    private sealed class MyThing
+    {
+#pragma warning disable S1144 // Unused private types or members should be removed
+        public bool? DryRun => null;
+#pragma warning restore S1144 // Unused private types or members should be removed
     }
 }
