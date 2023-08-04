@@ -2,6 +2,15 @@
 
 public sealed class MultipleContentTemplateRenderer : ITemplateRenderer
 {
+    private readonly IEnumerable<IMultipleContentBuilderTemplateCreator> _creators;
+
+    public MultipleContentTemplateRenderer(IEnumerable<IMultipleContentBuilderTemplateCreator> creators)
+    {
+        Guard.IsNotNull(creators);
+
+        _creators = creators;
+    }
+
     public bool Supports(IGenerationEnvironment generationEnvironment) => generationEnvironment is MultipleContentBuilderEnvironment;
 
     public void Render(IRenderTemplateRequest request)
@@ -15,8 +24,9 @@ public sealed class MultipleContentTemplateRenderer : ITemplateRenderer
 
         var multipleContentBuilder = builderEnvironment.Builder;
 
-        //TODO: Check if we need a wrapper here, when loading external assemblies...
-        if (request.Template is IMultipleContentBuilderTemplate multipleContentBuilderTemplate)
+        var multipleContentBuilderTemplate = TryGetMultipleContentBuilderTemplate(request.Template);
+        if (multipleContentBuilderTemplate is not null)
+       
         {
             // No need to convert string to MultipleContentBuilder, and then add it again..
             // We can simply pass the MultipleContentBuilder instance
@@ -31,4 +41,7 @@ public sealed class MultipleContentTemplateRenderer : ITemplateRenderer
         new StringBuilderTemplateRenderer().Render(singleRequest);
         multipleContentBuilder.AddContent(request.DefaultFilename, false, new StringBuilder(stringBuilder.ToString()));
     }
+
+    private IMultipleContentBuilderTemplate? TryGetMultipleContentBuilderTemplate(object template)
+        => _creators.Select(x => x.TryCreate(template)).FirstOrDefault(x => x is not null);
 }

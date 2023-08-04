@@ -44,6 +44,7 @@
     <Using Include="TemplateFramework.Core.Extensions" />
     <Using Include="TemplateFramework.Core.GenerationEnvironments" />
     <Using Include="TemplateFramework.Core.Infrastructure" />
+    <Using Include="TemplateFramework.Core.MultipleContentBuilderTemplateCreators" />
     <Using Include="TemplateFramework.Core.Requests" />
     <Using Include="TemplateFramework.Core.TemplateInitializers" />
     <Using Include="TemplateFramework.Core.TemplateRenderers" />

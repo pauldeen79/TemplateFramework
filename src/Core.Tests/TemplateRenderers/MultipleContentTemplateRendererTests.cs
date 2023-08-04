@@ -2,6 +2,9 @@
 
 public partial class MultipleContentTemplateRendererTests
 {
-    protected MultipleContentTemplateRenderer CreateSut() => new();
+    protected Mock<IMultipleContentBuilderTemplateCreator> MultipleContentBuilderTemplateCreatorMock { get; } = new();
+
+    protected MultipleContentTemplateRenderer CreateSut() => new(new[] { MultipleContentBuilderTemplateCreatorMock.Object });
+
     protected const string DefaultFilename = "MyFile.txt";
 }
