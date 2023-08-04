@@ -2,5 +2,6 @@
 
 public partial class ProviderTests
 {
-    protected Provider CreateSut() => new();
+    protected Mock<IAssemblyService> AssemblyServiceMock { get; } = new();
+    protected Provider CreateSut() => new(AssemblyServiceMock.Object);
 }

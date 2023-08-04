@@ -24,6 +24,7 @@
     <Using Include="Microsoft.Extensions.DependencyInjection" />
     <Using Include="TemplateFramework.Abstractions" />
     <Using Include="TemplateFramework.Runtime" />
+    <Using Include="TemplateFramework.Runtime.Contracts" />
     <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.Requests" />
   </ItemGroup>
 

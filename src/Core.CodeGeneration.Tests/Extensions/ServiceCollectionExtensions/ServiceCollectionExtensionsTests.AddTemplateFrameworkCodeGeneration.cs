@@ -11,6 +11,7 @@ public class ServiceCollectionExtensionsTests
             using var provider = new ServiceCollection()
                 .AddTemplateFramework()
                 .AddTemplateFrameworkCodeGeneration()
+                .AddTemplateFrameworkRuntime()
                 .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
 
             // Assert

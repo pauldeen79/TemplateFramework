@@ -9,6 +9,9 @@ public partial class CodeGenerationAssemblyTests
             CodeGenerationProviderCreatorMock
                 .Setup(x => x.TryCreateInstance(It.IsAny<Type>()))
                 .Returns<Type>(t => Activator.CreateInstance(t) as ICodeGenerationProvider);
+            AssemblyServiceMock
+                .Setup(x => x.GetAssembly(It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(GetType().Assembly);
         }
 
         [Fact]

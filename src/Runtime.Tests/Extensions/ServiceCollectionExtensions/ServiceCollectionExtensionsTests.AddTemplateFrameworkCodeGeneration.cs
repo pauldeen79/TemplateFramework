@@ -1,16 +1,14 @@
-﻿namespace TemplateFramework.TemplateProviders.CompiledTemplateProvider.Tests.Extensions;
+﻿namespace TemplateFramework.Runtime.Tests.Extensions;
 
 public class ServiceCollectionExtensionsTests
 {
-    public class AddTemplateFrameworkCompiledTemplateProvider
+    public class AddTemplateFrameworkCodeGeneration
     {
         [Fact]
         public void All_Dependencies_Can_Be_Resolved()
         {
             // Act
             using var provider = new ServiceCollection()
-                .AddTemplateFramework()
-                .AddTemplateFrameworkCompiledTemplateProvider()
                 .AddTemplateFrameworkRuntime()
                 .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
 
