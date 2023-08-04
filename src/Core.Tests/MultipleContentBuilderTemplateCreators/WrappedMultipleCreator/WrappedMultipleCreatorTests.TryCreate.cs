@@ -1,11 +1,11 @@
 ﻿namespace TemplateFramework.Core.Tests.MultipleContentBuilderTemplateCreators;
 
-public partial class TypedMultipleCreatorTests
+public partial class WrappedMultipleCreatorTests
 {
-    public class TryCreate : TypedMultipleCreatorTests
+    public class TryCreate : WrappedMultipleCreatorTests
     {
         [Fact]
-        public void Returns_Instance_When_Instance_Is_Assignable_To_IMultipleContentBuilderTemplate()
+        public void Returns_Wrapped_Instance_When_Instance_Implements_IMultipleContentBuilderTemplate()
         {
             // Arrange
             var templateMock = new Mock<IMultipleContentBuilderTemplate>();
@@ -15,7 +15,7 @@ public partial class TypedMultipleCreatorTests
             var result = sut.TryCreate(templateMock.Object);
 
             // Assert
-            result.Should().BeSameAs(templateMock.Object);
+            result.Should().BeOfType<MultipleContentBuilderTemplateWrapper>();
         }
 
         [Fact]

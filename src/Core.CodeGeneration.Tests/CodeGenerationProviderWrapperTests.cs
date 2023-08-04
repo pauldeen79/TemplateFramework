@@ -28,7 +28,7 @@ public class CodeGenerationProviderWrapperTests
     }
 
     [Fact]
-    public void Throws_On_Required_Null_Property_Non_Value_Type()
+    public void Throws_On_Required_Null_Path()
     {
         // Arrange
         var providerMock = new Mock<ICodeGenerationProvider>();
@@ -37,11 +37,23 @@ public class CodeGenerationProviderWrapperTests
         // Act & Assert
         sut.Invoking(x => _ = x.Path)
            .Should().Throw<InvalidOperationException>()
-           .WithMessage("Path of template Castle.Proxies.ICodeGenerationProviderProxy was null");
+           .WithMessage("Path of provider Castle.Proxies.ICodeGenerationProviderProxy was null");
     }
 
     [Fact]
-    public void Throws_On_Required_Null_Property_Value_Type()
+    public void Throws_On_NonExisting_Path_Property()
+    {
+        // Arrange
+        var sut = new CodeGenerationProviderWrapper(new object());
+
+        // Act & Assert
+        sut.Invoking(x => _ = x.Path)
+           .Should().Throw<InvalidOperationException>()
+           .WithMessage("Path of provider System.Object was null");
+    }
+
+    [Fact]
+    public void Throws_On_Required_Null_RecurseOnDeleteGeneratedFiles()
     {
         // Arrange
         var sut = new CodeGenerationProviderWrapper(new MyThing());
@@ -49,7 +61,107 @@ public class CodeGenerationProviderWrapperTests
         // Act & Assert
         sut.Invoking(x => _ = x.RecurseOnDeleteGeneratedFiles)
            .Should().Throw<InvalidOperationException>()
-           .WithMessage("RecurseOnDeleteGeneratedFiles of template TemplateFramework.Core.CodeGeneration.Tests.CodeGenerationProviderWrapperTests+MyThing was null");
+           .WithMessage("RecurseOnDeleteGeneratedFiles of provider TemplateFramework.Core.CodeGeneration.Tests.CodeGenerationProviderWrapperTests+MyThing was null");
+    }
+
+    [Fact]
+    public void Throws_On_NonExisting_RecurseOnDeleteGeneratedFiles_Property()
+    {
+        // Arrange
+        var sut = new CodeGenerationProviderWrapper(new object());
+
+        // Act & Assert
+        sut.Invoking(x => _ = x.RecurseOnDeleteGeneratedFiles)
+           .Should().Throw<InvalidOperationException>()
+           .WithMessage("RecurseOnDeleteGeneratedFiles of provider System.Object was null");
+    }
+
+    [Fact]
+    public void Throws_On_Required_Null_LastGeneratedFilesFilename()
+    {
+        // Arrange
+        var providerMock = new Mock<ICodeGenerationProvider>();
+        var sut = new CodeGenerationProviderWrapper(providerMock.Object);
+
+        // Act & Assert
+        sut.Invoking(x => _ = x.LastGeneratedFilesFilename)
+           .Should().Throw<InvalidOperationException>()
+           .WithMessage("LastGeneratedFilesFilename of provider Castle.Proxies.ICodeGenerationProviderProxy was null");
+    }
+
+    [Fact]
+    public void Throws_On_NonExisting_LastGeneratedFilesFilename_Property()
+    {
+        // Arrange
+        var sut = new CodeGenerationProviderWrapper(new object());
+
+        // Act & Assert
+        sut.Invoking(x => _ = x.LastGeneratedFilesFilename)
+           .Should().Throw<InvalidOperationException>()
+           .WithMessage("LastGeneratedFilesFilename of provider System.Object was null");
+    }
+
+    [Fact]
+    public void Throws_On_Required_Null_Encoding()
+    {
+        // Arrange
+        var providerMock = new Mock<ICodeGenerationProvider>();
+        var sut = new CodeGenerationProviderWrapper(providerMock.Object);
+
+        // Act & Assert
+        sut.Invoking(x => _ = x.Encoding)
+           .Should().Throw<InvalidOperationException>()
+           .WithMessage("Encoding of provider Castle.Proxies.ICodeGenerationProviderProxy was null");
+    }
+
+    [Fact]
+    public void Throws_On_NonExisting_Encoding_Property()
+    {
+        // Arrange
+        var sut = new CodeGenerationProviderWrapper(new object());
+
+        // Act & Assert
+        sut.Invoking(x => _ = x.Encoding)
+           .Should().Throw<InvalidOperationException>()
+           .WithMessage("Encoding of provider System.Object was null");
+    }
+
+    [Fact]
+    public void CreateAdditionalParameters_Returns_Null_When_Method_Is_Not_Found_On_Wrapped_Instance()
+    {
+        // Arrange
+        var sut = new CodeGenerationProviderWrapper(new object());
+
+        // Act
+        var result = sut.CreateAdditionalParameters();
+
+        // Assert
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public void CreateGenerator_Throws_When_Method_Is_Not_Found_On_Wrapped_Instance()
+    {
+        // Arrange
+        var sut = new CodeGenerationProviderWrapper(new object());
+
+        // Act & Assert
+        sut.Invoking(x => _ = x.CreateGenerator())
+           .Should().Throw<InvalidOperationException>()
+           .WithMessage("CreateGenerator of provider System.Object was null");
+    }
+
+    [Fact]
+    public void CreateModel_Returns_Null_When_Method_Is_Not_Found_On_Wrapped_Instance()
+    {
+        // Arrange
+        var sut = new CodeGenerationProviderWrapper(new object());
+
+        // Act
+        var result = sut.CreateModel();
+
+        // Assert
+        result.Should().BeNull();
     }
 
     private sealed class MyThing

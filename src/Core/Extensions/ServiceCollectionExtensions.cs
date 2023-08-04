@@ -10,5 +10,6 @@ public static class ServiceCollectionExtensions
             .AddSingleton<ITemplateRenderer, StringBuilderTemplateRenderer>()
             .AddSingleton<ITemplateRenderer, MultipleContentTemplateRenderer>()
             .AddSingleton<IMultipleContentBuilderTemplateCreator, TypedMultipleCreator>()
+            .AddSingleton<IMultipleContentBuilderTemplateCreator, WrappedMultipleCreator>()
             ;
 }

@@ -26,22 +26,12 @@ internal sealed class CodeGenerationProviderWrapper : ICodeGenerationProvider
     public object? CreateModel() => _instance.GetType().GetMethod(nameof(CreateModel))?.Invoke(_instance, Array.Empty<object>());
 
     private T NullGuard<T>(T? value, string name)
-    {
-        if (value is null)
-        {
-            throw new InvalidOperationException($"{name} of template {_instance.GetType().FullName} was null");
-        }
-
-        return value;
-    }
+        => value is null
+            ? throw new InvalidOperationException($"{name} of provider {_instance.GetType().FullName} was null")
+            : value;
 
     private T NullGuard<T>(T? value, string name) where T : struct
-    {
-        if (value is null)
-        {
-            throw new InvalidOperationException($"{name} of template {_instance.GetType().FullName} was null");
-        }
-
-        return value.Value;
-    }
+        => value is null
+            ? throw new InvalidOperationException($"{name} of provider {_instance.GetType().FullName} was null")
+            : value.Value;
 }
