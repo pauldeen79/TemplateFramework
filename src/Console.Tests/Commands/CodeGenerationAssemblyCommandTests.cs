@@ -52,7 +52,7 @@ public class CodeGenerationAssemblyCommandTests
     public void Uses_Current_Directory_As_CurrentDirectory_When_AssemblyName_Is_Not_A_Filename()
     {
         // Act
-        _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--assembly {GetType().Assembly.FullName}");
+        _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}");
 
         // Assert
         CodeGenerationAssemblyMock.Verify(x => x.Generate(It.Is<ICodeGenerationAssemblySettings>(x => x.CurrentDirectory == Directory.GetCurrentDirectory()), It.IsAny<IGenerationEnvironment>()), Times.Once);
@@ -62,7 +62,7 @@ public class CodeGenerationAssemblyCommandTests
     public void Uses_Directory_Of_Assembly_As_CurrentDirectory_When_AssemblyName_Is_Not_A_Filename()
     {
         // Act
-        _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--assembly {Path.Combine(TestData.BasePath, "myassembly.dll")}");
+        _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {Path.Combine(TestData.BasePath, "myassembly.dll")}");
 
         // Assert
         CodeGenerationAssemblyMock.Verify(x => x.Generate(It.Is<ICodeGenerationAssemblySettings>(x => x.CurrentDirectory == TestData.BasePath), It.IsAny<IGenerationEnvironment>()), Times.Once);
@@ -72,7 +72,7 @@ public class CodeGenerationAssemblyCommandTests
     public void Uses_Specified_BasePath_From_Arguments_When_Present()
     {
         // Act
-        _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--assembly {GetType().Assembly.FullName}", $"--path {TestData.BasePath}");
+        _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}", $"--path {TestData.BasePath}");
 
         // Assert
         CodeGenerationAssemblyMock.Verify(x => x.Generate(It.Is<ICodeGenerationAssemblySettings>(x => x.BasePath == TestData.BasePath), It.IsAny<IGenerationEnvironment>()), Times.Once);
@@ -82,7 +82,7 @@ public class CodeGenerationAssemblyCommandTests
     public void Uses_Empty_BasePath_When_Not_Present_In_Arguments()
     {
         // Act
-        _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--assembly {GetType().Assembly.FullName}");
+        _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}");
 
         // Assert
         CodeGenerationAssemblyMock.Verify(x => x.Generate(It.Is<ICodeGenerationAssemblySettings>(x => x.BasePath == string.Empty), It.IsAny<IGenerationEnvironment>()), Times.Once);
@@ -92,7 +92,7 @@ public class CodeGenerationAssemblyCommandTests
     public void Uses_Specified_DefaultFIlename_From_Arguments_When_Present()
     {
         // Act
-        _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--assembly {GetType().Assembly.FullName}", "--default MyFile.txt");
+        _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}", "--default MyFile.txt");
 
         // Assert
         CodeGenerationAssemblyMock.Verify(x => x.Generate(It.Is<ICodeGenerationAssemblySettings>(x => x.DefaultFilename == "MyFile.txt"), It.IsAny<IGenerationEnvironment>()), Times.Once);
@@ -102,7 +102,7 @@ public class CodeGenerationAssemblyCommandTests
     public void Uses_Empty_DefaultFilename_When_Not_Present_In_Arguments()
     {
         // Act
-        _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--assembly {GetType().Assembly.FullName}");
+        _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}");
 
         // Assert
         CodeGenerationAssemblyMock.Verify(x => x.Generate(It.Is<ICodeGenerationAssemblySettings>(x => x.DefaultFilename == string.Empty), It.IsAny<IGenerationEnvironment>()), Times.Once);
@@ -112,7 +112,7 @@ public class CodeGenerationAssemblyCommandTests
     public void Uses_DryRun_When_DryRun_Option_Is_Present_In_Arguments()
     {
         // Act
-        _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--assembly {GetType().Assembly.FullName}", "--dryrun");
+        _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}", "--dryrun");
 
         // Assert
         CodeGenerationAssemblyMock.Verify(x => x.Generate(It.Is<ICodeGenerationAssemblySettings>(x => x.DryRun), It.IsAny<IGenerationEnvironment>()), Times.Once);
@@ -122,7 +122,7 @@ public class CodeGenerationAssemblyCommandTests
     public void Uses_DryRun_When_Cipboard_Option_Is_Present_In_Arguments()
     {
         // Act
-        _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--assembly {GetType().Assembly.FullName}", "--clipboard");
+        _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}", "--clipboard");
 
         // Assert
         CodeGenerationAssemblyMock.Verify(x => x.Generate(It.Is<ICodeGenerationAssemblySettings>(x => x.DryRun), It.IsAny<IGenerationEnvironment>()), Times.Once);
@@ -132,7 +132,7 @@ public class CodeGenerationAssemblyCommandTests
     public void Uses_DryRun_When_Cipboard_And_DryRun_Options_Are_Present_In_Arguments()
     {
         // Act
-        _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--assembly {GetType().Assembly.FullName}", "--clipboard", "--dryrun");
+        _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}", "--clipboard", "--dryrun");
 
         // Assert
         CodeGenerationAssemblyMock.Verify(x => x.Generate(It.Is<ICodeGenerationAssemblySettings>(x => x.DryRun), It.IsAny<IGenerationEnvironment>()), Times.Once);
@@ -142,7 +142,7 @@ public class CodeGenerationAssemblyCommandTests
     public void Reports_Output_Directory_When_DryRun_Is_False_And_BasePath_Is_Specified()
     {
         // Act
-        var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--assembly {GetType().Assembly.FullName}", $"--path {TestData.BasePath}");
+        var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}", $"--path {TestData.BasePath}");
 
         // Assert
         output.Should().Be("Written code generation output to path: " + TestData.BasePath + Environment.NewLine);
@@ -152,7 +152,7 @@ public class CodeGenerationAssemblyCommandTests
     public void Reports_Output_Directory_When_DryRun_Is_Not_Specified_And_BasePath_Is_Not_Specified()
     {
         // Act
-        var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--assembly {GetType().Assembly.FullName}");
+        var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}");
 
         // Assert
         output.Should().Be("Written code generation output to path: " + Directory.GetCurrentDirectory() + Environment.NewLine);
@@ -162,7 +162,7 @@ public class CodeGenerationAssemblyCommandTests
     public void Does_Not_Report_Output_Directory_When_DryRun_Is_Not_Specified_And_BareOption_Is_Specified()
     {
         // Act
-        var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--assembly {GetType().Assembly.FullName}", "--bare");
+        var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}", "--bare");
 
         // Assert
         output.Should().BeEmpty();
@@ -179,7 +179,7 @@ public class CodeGenerationAssemblyCommandTests
                                       x.Builder.AddContent("MyFile.txt", false, null).Builder.Append("Hello!");
                                   });
         // Act
-        _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--assembly {GetType().Assembly.FullName}", "--clipboard");
+        _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}", "--clipboard");
 
         // Assert
         ClipboardMock.Verify(x => x.SetText(@"MyFile.txt:
@@ -191,7 +191,7 @@ Hello!
     public void Reports_Output_Being_Copied_To_Clipboard_When_BareOption_Is_Not_Specified()
     {
         // Act
-        var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--assembly {GetType().Assembly.FullName}", "--clipboard");
+        var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}", "--clipboard");
 
         // Assert
         output.Should().Be("Copied code generation output to clipboard" + Environment.NewLine);
@@ -201,7 +201,7 @@ Hello!
     public void Does_Not_Report_Output_Being_Copied_To_Clipboard_When_BareOption_Is_Specified()
     {
         // Act
-        var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--assembly {GetType().Assembly.FullName}", "--clipboard", "--bare");
+        var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}", "--clipboard", "--bare");
 
         // Assert
         output.Should().BeEmpty();
@@ -219,7 +219,7 @@ Hello!
                                   });
 
         // Act
-        var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--assembly {GetType().Assembly.FullName}", "--dryrun");
+        var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}", "--dryrun");
 
         // Assert
         output.Should().Be("Code generation output:" + Environment.NewLine + @"MyFile.txt:
@@ -239,7 +239,7 @@ Hello!
                                   });
 
         // Act
-        var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--assembly {GetType().Assembly.FullName}", "--dryrun", $"--path {TestData.BasePath}");
+        var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}", "--dryrun", $"--path {TestData.BasePath}");
 
         // Assert
         output.Should().Be("Code generation output:" + Environment.NewLine + @$"{Path.Combine(TestData.BasePath, "MyFile.txt")}:
