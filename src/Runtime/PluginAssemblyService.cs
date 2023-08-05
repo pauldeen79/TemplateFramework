@@ -20,11 +20,7 @@ public class PluginAssemblyService : IAssemblyService
             var context = new PluginLoadContext(pluginLocation);
             return context.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(pluginLocation)));
         }
-        else
-        {
-            // This is kind of quirk mode, with an assembly name.
-            // Works as long as you are using the same package reference on both sides. (the host program and the plug-in assembly)
-            return new CustomAssemblyService().GetAssembly(assemblyName, currentDirectory);
-        }
+
+        return null!;
     }
 }
