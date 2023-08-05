@@ -139,5 +139,5 @@ internal static class TestData
         }
 
         public ITemplateParameter[] GetParameters() => new[] { new TemplateParameter(nameof(Property), typeof(string)) };
-    }    
+    }
 }

@@ -20,13 +20,13 @@ public partial class TypedCreatorTests
         {
             // Arrange
             var sut = new TypedCreator();
-            var type = typeof(MyGeneratorProvider);
+            var type = typeof(MyTypedGeneratorProvider);
 
             // Act
             var result = sut.TryCreateInstance(type);
 
             // Assert
-            result.Should().BeOfType<MyGeneratorProvider>();
+            result.Should().BeOfType<MyTypedGeneratorProvider>();
         }
 
         [Fact]

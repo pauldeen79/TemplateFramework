@@ -20,6 +20,20 @@ public partial class WrappedCreatorTests
         {
             // Arrange
             var sut = new WrappedCreator();
+            var type = typeof(MyTypedGeneratorProvider);
+
+            // Act
+            var result = sut.TryCreateInstance(type);
+
+            // Assert
+            result.Should().BeOfType<CodeGenerationProviderWrapper>();
+        }
+
+        [Fact]
+        public void Returns_Instance_When_Type_Has_All_Properties_And_Methods_Of_ICodeGenerationProvider()
+        {
+            // Arrange
+            var sut = new WrappedCreator();
             var type = typeof(MyGeneratorProvider);
 
             // Act
