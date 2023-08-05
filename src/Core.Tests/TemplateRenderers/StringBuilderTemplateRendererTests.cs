@@ -2,5 +2,7 @@
 
 public partial class StringBuilderTemplateRendererTests
 {
-    protected StringBuilderTemplateRenderer CreateSut() => new();
+    protected Mock<IStringBuilderTemplateRenderer> StringBuilderTemplateRendererMock { get; } = new();
+
+    protected StringBuilderTemplateRenderer CreateSut() => new(new[] { StringBuilderTemplateRendererMock.Object });
 }

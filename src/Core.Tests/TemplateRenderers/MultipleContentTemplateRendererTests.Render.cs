@@ -4,6 +4,13 @@ public partial class MultipleContentTemplateRendererTests
 {
     public class Render : MultipleContentTemplateRendererTests
     {
+        public Render()
+        {
+            SingleContentTemplateRendererMock
+                .Setup(x => x.Render(It.IsAny<IRenderTemplateRequest>()))
+                .Callback<IRenderTemplateRequest>(req => ((StringBuilderEnvironment)req.GenerationEnvironment).Builder.Append(req.Template.ToString()));
+        }
+
         [Fact]
         public void Throws_When_Request_Is_Null()
         {
@@ -66,7 +73,7 @@ public partial class MultipleContentTemplateRendererTests
 
             // Assert
             contentBuilderMock.Object.Builder.Should().NotBeNull();
-            contentBuilderMock.Object.Builder.ToString().Should().Be("Hello world!");
+            contentBuilderMock.Object.Builder.ToString().Should().Be("TemplateFramework.Core.Tests.TestData+TextTransformTemplate");
         }
     }
 }
