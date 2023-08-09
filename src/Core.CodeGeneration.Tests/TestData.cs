@@ -37,15 +37,15 @@ public sealed class MyGenerator
     public override string ToString() => "Here is code from MyGenerator";
 }
 
-internal sealed class MyTypedGeneratorProvider : ICodeGenerationProvider
+public sealed class MyTypedGeneratorProvider : ICodeGenerationProvider
 {
-    public string Path => throw new NotImplementedException();
+    public string Path => string.Empty;
 
-    public bool RecurseOnDeleteGeneratedFiles => throw new NotImplementedException();
+    public bool RecurseOnDeleteGeneratedFiles => default;
 
-    public string LastGeneratedFilesFilename => throw new NotImplementedException();
+    public string LastGeneratedFilesFilename => string.Empty;
 
-    public Encoding Encoding => throw new NotImplementedException();
+    public Encoding Encoding => Encoding.Default;
 
     public object? CreateAdditionalParameters() => throw new NotImplementedException();
 
