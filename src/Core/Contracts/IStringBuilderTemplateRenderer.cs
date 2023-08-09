@@ -2,5 +2,5 @@
 
 public interface IStringBuilderTemplateRenderer
 {
-    bool TryRender(object instance);
+    bool TryRender(object instance, StringBuilder builder);
 }

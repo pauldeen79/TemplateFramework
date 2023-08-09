@@ -6,7 +6,7 @@ public sealed class StringBuilderTemplateRenderer : ISingleContentTemplateRender
 
     public StringBuilderTemplateRenderer(IEnumerable<IStringBuilderTemplateRenderer> renderers)
     {
-        Guard.IsNotNull(Render);
+        Guard.IsNotNull(renderers);
 
         _renderers = renderers;
     }
@@ -23,37 +23,14 @@ public sealed class StringBuilderTemplateRenderer : ISingleContentTemplateRender
             throw new NotSupportedException($"Type of GenerationEnvironment ({request.GenerationEnvironment?.GetType().FullName}) is not supported");
         }
 
-        var builder = environment.Builder;
-
-        //TODO: Finish code by adding new classes and moving code to there
-        if (!_renderers.Any(x => x.TryRender(request.Template)))
+        if (!_renderers.Any(x => x.TryRender(request.Template, environment.Builder)))
         {
-            throw new NotSupportedException($"Template type {request.Template?.GetType().FullName} is not supported");
+            var output = request.Template.ToString();
+
+            if (!string.IsNullOrEmpty(output))
+            {
+                environment.Builder.Append(output);
+            }
         }
-
-        //if (request.Template is IStringBuilderTemplate typedTemplate)
-        //{
-        //    typedTemplate.Render(builder);
-        //}
-        //else if (request.Template is ITextTransformTemplate textTransformTemplate)
-        //{
-        //    var output = textTransformTemplate.TransformText();
-        //    ApendIfFilled(builder, output);
-        //}
-        //else
-        //{
-        //    var output = request.Template.ToString();
-        //    ApendIfFilled(builder, output);
-        //}
     }
-
-    //private static void ApendIfFilled(StringBuilder builder, string? output)
-    //{
-    //    if (string.IsNullOrEmpty(output))
-    //    {
-    //        return;
-    //    }
-        
-    //    builder.Append(output);
-    //}
 }
