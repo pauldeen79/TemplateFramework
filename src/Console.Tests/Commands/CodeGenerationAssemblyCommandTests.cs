@@ -69,6 +69,16 @@ public class CodeGenerationAssemblyCommandTests
     }
 
     [Fact]
+    public void Uses_Specified_CurrentDirectory_When_Available()
+    {
+        // Act
+        _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {Path.Combine(TestData.BasePath, "myassembly.dll")}", "--directory something");
+
+        // Assert
+        CodeGenerationAssemblyMock.Verify(x => x.Generate(It.Is<ICodeGenerationAssemblySettings>(x => x.CurrentDirectory == "something"), It.IsAny<IGenerationEnvironment>()), Times.Once);
+    }
+
+    [Fact]
     public void Uses_Specified_BasePath_From_Arguments_When_Present()
     {
         // Act
