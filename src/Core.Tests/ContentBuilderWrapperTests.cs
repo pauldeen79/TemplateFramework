@@ -27,11 +27,13 @@ public class ContentBuilderWrapperTests
     [Fact]
     public void Wraps_Build_Result_Correctly()
     {
-        // Act
+        // Arrange
         var builder = new StringBuilder();
         builder.Append("Some result");
-        var instance = new ContentBuilderWrapper(new MyContentBuilder { Filename = "Filename.txt", SkipWhenFileExists = true, Builder = builder }).Build();
         var compareTo = new MyContentBuilder { Filename = "Filename.txt", SkipWhenFileExists = true, Builder = builder }.Build();
+
+        // Act
+        var instance = new ContentBuilderWrapper(new MyContentBuilder { Filename = "Filename.txt", SkipWhenFileExists = true, Builder = builder }).Build();
 
         // Assert
         instance.Filename.Should().Be(compareTo.Filename);
@@ -114,6 +116,49 @@ public class ContentBuilderWrapperTests
         // Act & Assert
         sut.Invoking(x => _ = x.Build())
            .Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void Can_Set_Filename_Property_On_Wrapped_Instance_When_Present()
+    {
+        // Arrange
+        var wrappedInstance = new MyContentBuilder { Filename = "Filename.txt", SkipWhenFileExists = true, Builder = null };
+        var instance = new ContentBuilderWrapper(wrappedInstance);
+
+        // Act
+        instance.Filename = "Updated.txt";
+
+        // Assert
+        wrappedInstance.Filename.Should().Be("Updated.txt");
+    }
+
+    [Fact]
+    public void Can_Set_SkipWhenFileExists_Property_On_Wrapped_Instance_When_Present()
+    {
+        // Arrange
+        var wrappedInstance = new MyContentBuilder { Filename = "Filename.txt", SkipWhenFileExists = true, Builder = null };
+        var instance = new ContentBuilderWrapper(wrappedInstance);
+
+        // Act
+        instance.SkipWhenFileExists = false;
+
+        // Assert
+        wrappedInstance.SkipWhenFileExists.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Can_Set_Builder_Property_On_Wrapped_Instance_When_Present()
+    {
+        // Arrange
+        var wrappedInstance = new MyContentBuilder { Filename = "Filename.txt", SkipWhenFileExists = true, Builder = null };
+        var instance = new ContentBuilderWrapper(wrappedInstance);
+        var builder = new StringBuilder();
+
+        // Act
+        instance.Builder = builder;
+
+        // Assert
+        wrappedInstance.Builder.Should().BeSameAs(builder);
     }
 
     private sealed class MyContentBuilder
