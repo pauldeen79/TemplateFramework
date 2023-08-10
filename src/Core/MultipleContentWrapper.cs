@@ -6,7 +6,7 @@ internal sealed class MultipleContentWrapper : IMultipleContent
     {
         Guard.IsNotNull(instance);
 
-        Contents = NullGuard((IEnumerable<object?>?)instance.GetType().GetProperty(nameof(Contents))?.GetValue(instance), instance, nameof(Contents))
+        Contents = NullGuard((IEnumerable<object?>?)NullGuard(instance.GetType().GetProperty(nameof(Contents)), instance, nameof(Contents)).GetValue(instance), instance, nameof(Contents))
             .Select(x => new ContentWrapper(x!))
             .ToList()
             .AsReadOnly();
