@@ -44,12 +44,85 @@ public class MultipleContentBuilderWrapperTests
         result.Should().BeEquivalentTo(compareToResult);
     }
 
+    [Fact]
+    public void Throws_When_WrappedInstance_Does_Not_Have_AddContent_Method()
+    {
+        // Arrange
+        var sut = new MultipleContentBuilderWrapper(new { Contents = Enumerable.Empty<IContent>() });
+
+        // Act & Assert
+        sut.Invoking(x => x.AddContent(string.Empty, false, null))
+           .Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void Throws_When_WrappedInstance_Does_Not_Have_Build_Method()
+    {
+        // Arrange
+        var sut = new MultipleContentBuilderWrapper(new { Contents = Enumerable.Empty<IContent>() });
+
+        // Act & Assert
+        sut.Invoking(x => x.Build())
+           .Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void Throws_When_WrappedInstance_Does_Not_Have_Contents_Property()
+    {
+        // Arrange
+        var sut = new MultipleContentBuilderWrapper(new object());
+
+        // Act & Assert
+        sut.Invoking(x => _ = x.Contents)
+           .Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void Throws_When_AddContent_Method_Of_WrappedInstance_Returns_Null()
+    {
+        // Arrange
+        var multipleContentBuilderMock = new Mock<IMultipleContentBuilder>();
+        var sut = new MultipleContentBuilderWrapper(multipleContentBuilderMock.Object);
+
+        // Act & Assert
+        sut.Invoking(x => x.AddContent(string.Empty, false, null))
+           .Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void Throws_When_Build_Method_Of_WrappedInstance_Returns_Null()
+    {
+        // Arrange
+        var multipleContentBuilderMock = new Mock<IMultipleContentBuilder>();
+        var sut = new MultipleContentBuilderWrapper(multipleContentBuilderMock.Object);
+
+        // Act & Assert
+        sut.Invoking(x => x.Build())
+           .Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void Throws_When_Contents_Property_Of_WrappedInstance_Returns_Null()
+    {
+        // Arrange
+        var multipleContentBuilderMock = new Mock<IMultipleContentBuilder>();
+        multipleContentBuilderMock.SetupGet(x => x.Contents).Returns(default(IEnumerable<IContentBuilder>)!);
+        var sut = new MultipleContentBuilderWrapper(multipleContentBuilderMock.Object);
+
+        // Act & Assert
+        sut.Invoking(x => _ = x.Contents)
+           .Should().Throw<InvalidOperationException>();
+    }
+
     private sealed class MyMultipleContentBuilder
     {
         private readonly List<IContentBuilder> _list = new();
+
         public IEnumerable<IContentBuilder>? Contents => _list;
 
+#pragma warning disable S3241 // Methods should not return values that are never used
         public IContentBuilder AddContent(string filename, bool skipWhenFileExists, StringBuilder? builder)
+#pragma warning restore S3241 // Methods should not return values that are never used
         {
             var contentBuilder = new MyContentBuilder
             {
