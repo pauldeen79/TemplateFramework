@@ -44,7 +44,7 @@ public class MultipleContentBuilderWrapperTests
         result.Should().BeEquivalentTo(compareToResult);
     }
 
-    private class MyMultipleContentBuilder
+    private sealed class MyMultipleContentBuilder
     {
         private readonly List<IContentBuilder> _list = new();
         public IEnumerable<IContentBuilder>? Contents => _list;
