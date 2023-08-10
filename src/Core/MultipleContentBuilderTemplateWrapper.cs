@@ -15,6 +15,11 @@ internal sealed class MultipleContentBuilderTemplateWrapper : IMultipleContentBu
     {
         Guard.IsNotNull(builder);
 
-        _instance.GetType().GetMethod(nameof(Render))?.Invoke(_instance, new object?[] { new MultipleContentBuilderWrapper(builder) });
+        NullGuard(_instance.GetType().GetMethod(nameof(Render)), nameof(Render)).Invoke(_instance, new object?[] { new MultipleContentBuilderWrapper(builder) });
     }
+
+    private T NullGuard<T>(T? value, string name)
+        => value is null
+            ? throw new InvalidOperationException($"{name} of multiple content builder template {_instance.GetType().FullName} was null")
+            : value;
 }
