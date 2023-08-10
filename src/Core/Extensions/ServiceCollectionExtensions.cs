@@ -13,6 +13,8 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IMultipleContentBuilderTemplateCreator, WrappedMultipleCreator>()
             .AddSingleton<IStringBuilderTemplateRenderer, TypedStringBuilderTemplateRenderer>()
             .AddSingleton<IStringBuilderTemplateRenderer, TypedTextTransformTemplateRenderer>()
+            .AddSingleton<IStringBuilderTemplateRenderer, WrappedStringBuilderTemplateRenderer>()
+            .AddSingleton<IStringBuilderTemplateRenderer, WrappedTextTransformTemplateRenderer>()
             .AddSingleton<ISingleContentTemplateRenderer, StringBuilderTemplateRenderer>() // also register using its own type, so we can render a single template from  multiple content template renderer
             ;
 }
