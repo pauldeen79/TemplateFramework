@@ -2,6 +2,14 @@
 
 public sealed class Provider : ITemplateProvider
 {
+    private readonly IAssemblyService _assemblyService;
+
+    public Provider(IAssemblyService assemblyService)
+    {
+        Guard.IsNotNull(assemblyService);
+        _assemblyService = assemblyService;
+    }
+
     public bool Supports(ICreateTemplateRequest request) => request is CreateCompiledTemplateRequest;
 
     public object Create(ICreateTemplateRequest request)
@@ -10,7 +18,7 @@ public sealed class Provider : ITemplateProvider
         Guard.IsOfType<CreateCompiledTemplateRequest>(request);
 
         var createCompiledTemplateRequest = (CreateCompiledTemplateRequest)request;
-        var assembly = AssemblyHelper.GetAssembly(createCompiledTemplateRequest.AssemblyName, createCompiledTemplateRequest.CurrentDirectory);
+        var assembly = _assemblyService.GetAssembly(createCompiledTemplateRequest.AssemblyName, createCompiledTemplateRequest.CurrentDirectory);
         var template = assembly.CreateInstance(createCompiledTemplateRequest.ClassName);
         if (template is null)
         {

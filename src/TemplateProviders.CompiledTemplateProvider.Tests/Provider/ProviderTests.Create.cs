@@ -4,6 +4,13 @@ public partial class ProviderTests
 {
     public class Create : ProviderTests
     {
+        public Create()
+        {
+            AssemblyServiceMock
+                .Setup(x => x.GetAssembly(It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(GetType().Assembly);
+        }
+
         [Fact]
         public void Throws_On_Null_Request()
         {

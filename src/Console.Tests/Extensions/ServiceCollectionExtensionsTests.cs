@@ -6,7 +6,12 @@ public class ServiceCollectionExtensionsTests
     public void All_Dependencies_Can_Be_Resolved()
     {
         // Act
-        using var provider = new ServiceCollection()
+        var services = new ServiceCollection();
+        services.InjectClipboard();
+        using var provider = services
+            .AddTemplateFramework()
+            .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
             .AddTemplateCommands()
             .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
 

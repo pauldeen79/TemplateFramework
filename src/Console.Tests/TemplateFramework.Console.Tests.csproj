@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -8,12 +8,26 @@
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+
+    <IsWindows Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">true</IsWindows> 
+    <IsOSX Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">true</IsOSX> 
+    <IsLinux Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">true</IsLinux> 
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(IsWindows)'=='true'">
+    <DefineConstants>Windows</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(IsOSX)'=='true'">
+    <DefineConstants>OSX</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(IsLinux)'=='true'">
+    <DefineConstants>Linux</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.11.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.3" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.0" />
     <PackageReference Include="Moq" Version="4.18.4" />
     <PackageReference Include="pauldeen79.CrossCutting.Common.Testing" Version="2.7.55" />
     <PackageReference Include="xunit" Version="2.5.0" />
@@ -35,9 +49,19 @@
     <Using Include="CrossCutting.Common.Testing" />
     <Using Include="FluentAssertions" />
     <Using Include="McMaster.Extensions.CommandLineUtils" />
+    <Using Include="Moq;" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="System.Text" />
+    <Using Include="TemplateFramework.Abstractions" />
+    <Using Include="TemplateFramework.Abstractions.CodeGeneration" />
     <Using Include="TemplateFramework.Console.Commands" />
+    <Using Include="TemplateFramework.Console.Contracts" />
     <Using Include="TemplateFramework.Console.Extensions" />
+    <Using Include="TemplateFramework.Console.Tests.ConsoleTestHelpers" />
+    <Using Include="TemplateFramework.Core.CodeGeneration.Extensions" />
+    <Using Include="TemplateFramework.Core.Extensions" />
+    <Using Include="TemplateFramework.Runtime.Extensions" />
+    <Using Include="TextCopy" />
     <Using Include="Xunit" />
   </ItemGroup>
 

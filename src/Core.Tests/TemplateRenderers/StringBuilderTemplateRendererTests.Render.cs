@@ -4,6 +4,13 @@ public partial class StringBuilderTemplateRendererTests
 {
     public class Render : StringBuilderTemplateRendererTests
     {
+        public Render()
+        {
+            StringBuilderTemplateRendererMock
+                .Setup(x => x.TryRender(It.IsAny<object>(), It.IsAny<StringBuilder>()))
+                .Returns(true);
+        }
+
         [Fact]
         public void Throws_When_Request_Is_Null()
         {
@@ -28,7 +35,7 @@ public partial class StringBuilderTemplateRendererTests
         }
 
         [Fact]
-        public void Renders_Template_Correctly()
+        public void Renders_Template_Correctly_When_A_TemplateRenderer_Supports_The_Template()
         {
             // Arrange
             var sut = CreateSut();
@@ -40,39 +47,26 @@ public partial class StringBuilderTemplateRendererTests
             sut.Render(request);
 
             // Assert
-            generationEnvironment.ToString().Should().Be("Hello world!");
+            StringBuilderTemplateRendererMock.Verify(x => x.TryRender(It.IsAny<object>(), It.IsAny<StringBuilder>()), Times.Once);
         }
 
         [Fact]
-        public void Renders_TextTransformTemplate_Correctly()
+        public void Renders_Template_Using_ToString_When_No_TemplateRenderer_Supports_The_Template()
         {
             // Arrange
             var sut = CreateSut();
-            var template = new TestData.TextTransformTemplate(() => "Hello world!");
+            var template = new TestData.Template(b => b.Append("Hello world!"));
             var generationEnvironment = new StringBuilder();
             var request = new RenderTemplateRequest(template, generationEnvironment);
+            StringBuilderTemplateRendererMock
+                .Setup(x => x.TryRender(It.IsAny<object>(), It.IsAny<StringBuilder>()))
+                .Returns(false);
 
             // Act
             sut.Render(request);
 
             // Assert
-            generationEnvironment.ToString().Should().Be("Hello world!");
-        }
-
-        [Fact]
-        public void Renders_NonTemplateType_Correctly()
-        {
-            // Arrange
-            var sut = CreateSut();
-            var template = new TestData.PlainTemplate(() => "Hello world!");
-            var generationEnvironment = new StringBuilder();
-            var request = new RenderTemplateRequest(template, generationEnvironment);
-
-            // Act
-            sut.Render(request);
-
-            // Assert
-            generationEnvironment.ToString().Should().Be("Hello world!");
+            generationEnvironment.ToString().Should().Be("TemplateFramework.Core.Tests.TestData+Template");
         }
     }
 }

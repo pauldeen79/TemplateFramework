@@ -6,5 +6,7 @@ public static class ServiceCollectionExtensions
         => services
             .AddSingleton<ICodeGenerationAssembly, CodeGenerationAssembly>()
             .AddSingleton<ICodeGenerationEngine, CodeGenerationEngine>()
+            .AddSingleton<ICodeGenerationProviderCreator, TypedCreator>()
+            .AddSingleton<ICodeGenerationProviderCreator, WrappedCreator>()
             ;
 }

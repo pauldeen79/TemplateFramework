@@ -2,6 +2,20 @@
 
 public sealed class MultipleContentTemplateRenderer : ITemplateRenderer
 {
+    private readonly ISingleContentTemplateRenderer _singleContentTemplateRenderer;
+    private readonly IEnumerable<IMultipleContentBuilderTemplateCreator> _creators;
+
+    public MultipleContentTemplateRenderer(
+        ISingleContentTemplateRenderer singleContentTemplateRenderer,
+        IEnumerable<IMultipleContentBuilderTemplateCreator> creators)
+    {
+        Guard.IsNotNull(singleContentTemplateRenderer);
+        Guard.IsNotNull(creators);
+
+        _singleContentTemplateRenderer = singleContentTemplateRenderer;
+        _creators = creators;
+    }
+
     public bool Supports(IGenerationEnvironment generationEnvironment) => generationEnvironment is MultipleContentBuilderEnvironment;
 
     public void Render(IRenderTemplateRequest request)
@@ -15,7 +29,8 @@ public sealed class MultipleContentTemplateRenderer : ITemplateRenderer
 
         var multipleContentBuilder = builderEnvironment.Builder;
 
-        if (request.Template is IMultipleContentBuilderTemplate multipleContentBuilderTemplate)
+        var multipleContentBuilderTemplate = TryGetMultipleContentBuilderTemplate(request.Template);
+        if (multipleContentBuilderTemplate is not null)
         {
             // No need to convert string to MultipleContentBuilder, and then add it again..
             // We can simply pass the MultipleContentBuilder instance
@@ -27,7 +42,10 @@ public sealed class MultipleContentTemplateRenderer : ITemplateRenderer
         // Render using a stringbuilder, then add it to multiple contents
         var stringBuilder = new StringBuilder();
         var singleRequest = new RenderTemplateRequest(request.Template, request.Model, stringBuilder, request.DefaultFilename, request.AdditionalParameters, request.Context);
-        new StringBuilderTemplateRenderer().Render(singleRequest);
+        _singleContentTemplateRenderer.Render(singleRequest);
         multipleContentBuilder.AddContent(request.DefaultFilename, false, new StringBuilder(stringBuilder.ToString()));
     }
+
+    private IMultipleContentBuilderTemplate? TryGetMultipleContentBuilderTemplate(object template)
+        => _creators.Select(x => x.TryCreate(template)).FirstOrDefault(x => x is not null);
 }

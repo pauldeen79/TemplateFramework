@@ -27,7 +27,7 @@
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.11.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.3" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.0" />
     <PackageReference Include="Moq" Version="4.18.4" />
     <PackageReference Include="xunit" Version="2.5.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.0">
@@ -58,7 +58,9 @@
     <Using Include="TemplateFramework.Core.Contracts" />
     <Using Include="TemplateFramework.Core.Extensions" />
     <Using Include="TemplateFramework.Core.GenerationEnvironments" />
+    <Using Include="TemplateFramework.Core.MultipleContentBuilderTemplateCreators" />
     <Using Include="TemplateFramework.Core.Requests" />
+    <Using Include="TemplateFramework.Core.StringBuilderTemplateRenderers" />
     <Using Include="TemplateFramework.Core.TemplateInitializers" />
     <Using Include="TemplateFramework.Core.TemplateRenderers" />
     <Using Include="Xunit" />

@@ -2,7 +2,7 @@
   "profiles": {
     "TemplateFramework.Console": {
       "commandName": "Project",
-      "commandLineArgs": "--help"
+      "commandLineArgs": "assembly --name templateframework.core.codegeneration.tests --directory C:\\git\\TemplateFramework\\src\\Core.CodeGeneration.Tests\\bin\\debug\\net7.0 --dryrun --default myfile.txt"
     }
   }
 }

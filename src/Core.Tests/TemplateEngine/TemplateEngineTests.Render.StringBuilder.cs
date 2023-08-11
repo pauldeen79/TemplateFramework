@@ -4,6 +4,11 @@ public partial class TemplateEngineTests
 {
     public class Render_StringBuilder : TemplateEngineTests
     {
+        public Render_StringBuilder()
+        {
+            TemplateRendererMock.Setup(x => x.Supports(It.IsAny<IGenerationEnvironment>())).Returns(true);
+        }
+
         [Fact]
         public void Throws_On_Null_Request()
         {
@@ -19,7 +24,7 @@ public partial class TemplateEngineTests
         public void Initializes_Template_Correctly()
         {
             // Arrange
-            var sut = new TemplateEngine(TemplateInitializerMock.Object, DefaultTemplateRenderers);
+            var sut = CreateSut();
             var template = new TestData.PlainTemplateWithAdditionalParameters();
             StringBuilder? builder = StringBuilder;
             var additionalParameters = new { AdditionalParameter = "Some value" };
@@ -36,7 +41,7 @@ public partial class TemplateEngineTests
         public void Renders_Template_Correctly()
         {
             // Arrange
-            var sut = new TemplateEngine(TemplateInitializerMock.Object, new[] { TemplateRendererMock.Object });
+            var sut = CreateSut();
             var template = new TestData.PlainTemplateWithAdditionalParameters();
             StringBuilder? generationEnvironment = StringBuilder;
             var additionalParameters = new { AdditionalParameter = "Some value" };

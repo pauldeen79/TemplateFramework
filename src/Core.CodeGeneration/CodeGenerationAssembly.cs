@@ -3,12 +3,21 @@
 public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
 {
     private readonly ICodeGenerationEngine _codeGenerationEngine;
+    private readonly IAssemblyService _assemblyService;
+    private readonly IEnumerable<ICodeGenerationProviderCreator> _creators;
 
-    public CodeGenerationAssembly(ICodeGenerationEngine codeGenerationEngine)
+    public CodeGenerationAssembly(
+        ICodeGenerationEngine codeGenerationEngine,
+        IAssemblyService assemblyService,
+        IEnumerable<ICodeGenerationProviderCreator> creators)
     {
         Guard.IsNotNull(codeGenerationEngine);
+        Guard.IsNotNull(assemblyService);
+        Guard.IsNotNull(creators);
 
         _codeGenerationEngine = codeGenerationEngine;
+        _assemblyService = assemblyService;
+        _creators = creators;
     }
 
     public void Generate(ICodeGenerationAssemblySettings settings, IGenerationEnvironment generationEnvironment)
@@ -16,7 +25,7 @@ public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
         Guard.IsNotNull(settings);
         Guard.IsNotNull(generationEnvironment);
 
-        var assembly = AssemblyHelper.GetAssembly(settings.AssemblyName, settings.CurrentDirectory);
+        var assembly = _assemblyService.GetAssembly(settings.AssemblyName, settings.CurrentDirectory);
 
         foreach (var codeGenerationProvider in GetCodeGeneratorProviders(assembly, settings.ClassNameFilter))
         {
@@ -24,22 +33,15 @@ public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
         }
     }
 
-    private static IEnumerable<ICodeGenerationProvider> GetCodeGeneratorProviders(Assembly assembly, IEnumerable<string>? classNameFilter)
-        => assembly.GetExportedTypes().Where(t => !t.IsAbstract && !t.IsInterface && Array.Exists(t.GetInterfaces(), i => i.FullName == typeof(ICodeGenerationProvider).FullName))
+    private IEnumerable<ICodeGenerationProvider> GetCodeGeneratorProviders(Assembly assembly, IEnumerable<string>? classNameFilter)
+        => assembly.GetExportedTypes().Where(t => !t.IsAbstract && !t.IsInterface && Array.Exists(t.GetConstructors(), c => c.GetParameters().Length == 0))
             .Where(t => FilterIsValid(t, classNameFilter))
-            .Select(t =>
-            {
-                var instance = Activator.CreateInstance(t);
-                if (instance is null)
-                {
-                    throw new InvalidOperationException($"Could not create instance of type {t.FullName}");
-                }
-                if (instance is not ICodeGenerationProvider provider)
-                {
-                    throw new InvalidOperationException($"Type {t.FullName} is not of type ICodeGenerationProvider");
-                }
-                return provider;
-            });
+            .Select(t => TryCreateInstance(t)!)
+            .Where(x => x is not null);
+
+    private ICodeGenerationProvider? TryCreateInstance(Type type)
+        => _creators.Select(creator => creator.TryCreateInstance(type))
+                    .FirstOrDefault(x => x is not null);
 
     private static bool FilterIsValid(Type type, IEnumerable<string>? classNameFilter)
     {

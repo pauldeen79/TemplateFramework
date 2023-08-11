@@ -12,15 +12,6 @@ internal static class TestData
     internal const string BasePath = "Unknown basepath, only Windows, Linux and OSX are supported";
 #endif
 
-    internal sealed class PlainTemplate
-    {
-        private readonly Func<string> _delegate;
-
-        public PlainTemplate(Func<string> @delegate) => _delegate = @delegate;
-
-        public override string ToString() => _delegate();
-    }
-
     internal sealed class Template : IStringBuilderTemplate
     {
         private readonly Action<StringBuilder> _delegate;
@@ -139,5 +130,5 @@ internal static class TestData
         }
 
         public ITemplateParameter[] GetParameters() => new[] { new TemplateParameter(nameof(Property), typeof(string)) };
-    }    
+    }
 }

@@ -4,6 +4,13 @@ public partial class MultipleContentTemplateRendererTests
 {
     public class Render : MultipleContentTemplateRendererTests
     {
+        public Render()
+        {
+            SingleContentTemplateRendererMock
+                .Setup(x => x.Render(It.IsAny<IRenderTemplateRequest>()))
+                .Callback<IRenderTemplateRequest>(req => ((StringBuilderEnvironment)req.GenerationEnvironment).Builder.Append(req.Template.ToString()));
+        }
+
         [Fact]
         public void Throws_When_Request_Is_Null()
         {
@@ -32,15 +39,16 @@ public partial class MultipleContentTemplateRendererTests
         {
             // Arrange
             var sut = CreateSut();
-            var template = new Mock<IMultipleContentBuilderTemplate>();
+            var templateMock = new Mock<IMultipleContentBuilderTemplate>();
             var generationEnvironment = new Mock<IMultipleContentBuilder>();
-            var request = new RenderTemplateRequest(template.Object, DefaultFilename, generationEnvironment.Object);
+            var request = new RenderTemplateRequest(templateMock.Object, DefaultFilename, generationEnvironment.Object);
+            MultipleContentBuilderTemplateCreatorMock.Setup(x => x.TryCreate(It.IsAny<object>())).Returns(templateMock.Object);
 
             // Act
             sut.Render(request);
 
             // Assert
-            template.Verify(x => x.Render(It.IsAny<IMultipleContentBuilder>()), Times.Once);
+            templateMock.Verify(x => x.Render(It.IsAny<IMultipleContentBuilder>()), Times.Once);
         }
 
         [Fact]
@@ -48,7 +56,7 @@ public partial class MultipleContentTemplateRendererTests
         {
             // Arrange
             var sut = CreateSut();
-            var template = new TestData.TextTransformTemplate(() => "Hello world!");
+            var templateMock = new TestData.TextTransformTemplate(() => "Hello world!");
             var generationEnvironment = new Mock<IMultipleContentBuilder>();
             var contentBuilderMock = new Mock<IContentBuilder>();
             generationEnvironment.Setup(x => x.AddContent(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<StringBuilder?>()))
@@ -58,14 +66,14 @@ public partial class MultipleContentTemplateRendererTests
 
                                      return contentBuilderMock.Object;
                                  });
-            var request = new RenderTemplateRequest(template, DefaultFilename, generationEnvironment.Object);
+            var request = new RenderTemplateRequest(templateMock, DefaultFilename, generationEnvironment.Object);
 
             // Act
             sut.Render(request);
 
             // Assert
             contentBuilderMock.Object.Builder.Should().NotBeNull();
-            contentBuilderMock.Object.Builder.ToString().Should().Be("Hello world!");
+            contentBuilderMock.Object.Builder.ToString().Should().Be("TemplateFramework.Core.Tests.TestData+TextTransformTemplate");
         }
     }
 }
