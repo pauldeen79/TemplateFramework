@@ -74,7 +74,7 @@ public class WrappedTextTransformTemplateRendererTests
         }
 
         [Fact]
-        public void Calls_Render_Method_When_Instance_Has_Render_Method_Without_Parameter()
+        public void Calls_TransformText_Method_When_Instance_Has_Render_Method_Without_Parameter()
         {
             // Arrange
             var sut = CreateSut();
@@ -85,6 +85,34 @@ public class WrappedTextTransformTemplateRendererTests
 
             // Assert
             templateMock.Verify(x => x.TransformText(), Times.Once);
+        }
+
+        [Fact]
+        public void Appends_Result_Of_TransFormText_Method_When_Instance_Has_Render_Method_Without_Parameter()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var templateMock = new Mock<ITextTransformTemplate>();
+            templateMock.Setup(x => x.TransformText()).Returns("Hello world!");
+
+            // Act
+            _ = sut.TryRender(instance: templateMock.Object, Builder);
+
+            // Assert
+            Builder.ToString().Should().Be("Hello world!");
+        }
+
+        [Fact]
+        public void Throws_When_Builder_Argument_Is_Null()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var templateMock = new Mock<ITextTransformTemplate>();
+            templateMock.Setup(x => x.TransformText()).Returns("Hello world!");
+
+            // Act & Assert
+            sut.Invoking(x => _ = x.TryRender(instance: templateMock.Object, builder: null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("builder");
         }
 
         private sealed class TextTransformTemplateWithParameters
