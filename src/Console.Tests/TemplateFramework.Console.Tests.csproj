@@ -54,8 +54,8 @@
     <Using Include="System.Text" />
     <Using Include="TemplateFramework.Abstractions" />
     <Using Include="TemplateFramework.Abstractions.CodeGeneration" />
+    <Using Include="TemplateFramework.Console.Abstractions" />
     <Using Include="TemplateFramework.Console.Commands" />
-    <Using Include="TemplateFramework.Console.Contracts" />
     <Using Include="TemplateFramework.Console.Extensions" />
     <Using Include="TemplateFramework.Console.Tests.ConsoleTestHelpers" />
     <Using Include="TemplateFramework.Core.CodeGeneration.Extensions" />

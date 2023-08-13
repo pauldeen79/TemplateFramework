@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Abstractions;
+﻿namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Abstractions;
 
 public interface ITemplateCreator
 {

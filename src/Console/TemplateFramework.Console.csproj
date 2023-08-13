@@ -7,6 +7,9 @@
     <Nullable>enable</Nullable>
     <AnalysisLevel>latest-All</AnalysisLevel>
     <PackageId>pauldeen79.TemplateFramework.Console</PackageId>
+    <Description>Framework for template processing and code generation</Description>
+    <PackageTags>template engine code generation</PackageTags>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/pauldeen79/TemplateFramework</RepositoryUrl>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>tf</ToolCommandName>
@@ -26,6 +29,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\..\Readme.md" Pack="true" PackagePath="\"/>
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="System.Diagnostics.CodeAnalysis" />
     <Using Include="CommunityToolkit.Diagnostics" />
     <Using Include="McMaster.Extensions.CommandLineUtils" />
@@ -34,8 +41,8 @@
     <Using Include="System.Text" />
     <Using Include="TemplateFramework.Abstractions" />
     <Using Include="TemplateFramework.Abstractions.CodeGeneration" />
+    <Using Include="TemplateFramework.Console.Abstractions" />
     <Using Include="TemplateFramework.Console.Commands" />
-    <Using Include="TemplateFramework.Console.Contracts" />
     <Using Include="TemplateFramework.Console.Extensions" />
     <Using Include="TemplateFramework.Core" />
     <Using Include="TemplateFramework.Core.CodeGeneration" />

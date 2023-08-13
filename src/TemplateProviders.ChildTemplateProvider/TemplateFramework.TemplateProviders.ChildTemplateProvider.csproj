@@ -22,6 +22,7 @@
     <Using Include="CommunityToolkit.Diagnostics" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
     <Using Include="TemplateFramework.Abstractions" />
+    <Using Include="TemplateFramework.TemplateProviders.ChildTemplateProvider.Abstractions" />
     <Using Include="TemplateFramework.TemplateProviders.ChildTemplateProvider.Requests" />
   </ItemGroup>
 

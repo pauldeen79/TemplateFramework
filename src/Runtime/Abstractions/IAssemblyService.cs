@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Runtime.Contracts;
+﻿namespace TemplateFramework.Runtime.Abstractions;
 
 public interface IAssemblyService
 {

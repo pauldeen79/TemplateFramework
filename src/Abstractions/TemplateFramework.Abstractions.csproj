@@ -6,6 +6,9 @@
     <Nullable>enable</Nullable>
     <AnalysisLevel>latest-All</AnalysisLevel>
     <PackageId>pauldeen79.TemplateFramework.Abstractions</PackageId>
+    <Description>Framework for template processing and code generation</Description>
+    <PackageTags>template engine code generation</PackageTags>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/pauldeen79/TemplateFramework</RepositoryUrl>
   </PropertyGroup>
 
@@ -14,6 +17,10 @@
     <Using Include="TemplateFramework.Abstractions.CodeGeneration" />
     <Using Include="TemplateFramework.Abstractions.Domains" />
     <Using Include="TemplateFramework.Abstractions.Requests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\Readme.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
 </Project>

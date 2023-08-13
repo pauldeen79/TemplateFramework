@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Contracts;
+﻿namespace TemplateFramework.Core.Abstractions;
 
 internal interface IFileSystem
 {

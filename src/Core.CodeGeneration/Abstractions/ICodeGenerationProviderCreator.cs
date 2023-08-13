@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.CodeGeneration.Contracts;
+﻿namespace TemplateFramework.Core.CodeGeneration.Abstractions;
 
 public interface ICodeGenerationProviderCreator
 {
