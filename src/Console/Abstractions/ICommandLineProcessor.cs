@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Console.Contracts;
+﻿namespace TemplateFramework.Console.Abstractions;
 
 public interface ICommandLineProcessor
 {

@@ -16,6 +16,7 @@ public static class Program
         var serviceCollection = new ServiceCollection()
             .AddTemplateFramework()
             .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkCompiledTemplateProvider()
             .AddTemplateFrameworkRuntime()
             .AddTemplateCommands();
         serviceCollection.InjectClipboard();
