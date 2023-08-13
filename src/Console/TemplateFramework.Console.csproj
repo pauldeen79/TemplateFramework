@@ -50,6 +50,7 @@
     <Using Include="TemplateFramework.Core.Extensions" />
     <Using Include="TemplateFramework.Core.GenerationEnvironments" />
     <Using Include="TemplateFramework.Runtime.Extensions" />
+    <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.Extensions" />
     <Using Include="TextCopy" />
   </ItemGroup>
 
