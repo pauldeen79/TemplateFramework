@@ -5,6 +5,12 @@ If you want to create templates in any .NET language (C#, VB.Net, F#) and run th
 
 We currently target .NET 7.0, but the code can easily be ported back to older .NET versions.
 
+# Difference between a template and code generation provider
+A code generation provider is a class that provides a template instance, along with optional model and additional parameters.
+This is typically the level you want to use, if you want to scaffold multiple files using a single command.
+
+If you want to use the template abstraction level, then you have to make sure the template class has a public parameterless constructor.
+
 # Features
 - Runs templates or code generation providers from .NET assemblies from command line
 - Supports generating single or multiple files from one template
@@ -26,10 +32,10 @@ You have to write a class in a .NET 7.0 project (class library project is good e
 Then you can either use the command line tool 'tf' (Template Framework) or write your own host and reference the Core and TemplateProviders.CompiledTemplateProvider packages.
 
 There are multiple types of templates supported out of the box:
-- StringBuilder template, which appends to a single output using a StringBuilder which is passed as an argument.
-- Text Transform template, which has one method that is called to run the template. The return type is a string.
+- StringBuilder template, which appends to a single output using a StringBuilder which is passed as an argument
+- Text Transform template, which has one method with a return type of string, that is called to run the template
 - Multiple Content Builder template, which allows to create more output files
-- POCO template. If the class is not of a supported type, then the ToString method will be called on the template instance.
+- POCO template. If the class is not of a supported type, then the ToString method will be called on the template instance
 
 To create a StringBuilder template, implement this interface from the TemplateFramework.Abstractions package:
 
@@ -62,7 +68,7 @@ public interface IMultipleContentBuilderTemplate
 The template assembly is loaded by the command tool.
 If you want to add external references to your template assembly, then you have to follow some additional steps.
 
-First option is to write a custom host. Add the references to the Core, Runtime and TemplateProviders.CompiledTemplateProvider packages.
+First option is to write a custom host. Add the references to the Core and TemplateProviders.CompiledTemplateProvider packages.
 
 Second option is to use the plug-in architecture as documented by Microsoft. (https://learn.microsoft.com/en-us/dotnet/core/tutorials/creating-app-with-plugin-support)
 Note that this option hasn't been tested yet.
