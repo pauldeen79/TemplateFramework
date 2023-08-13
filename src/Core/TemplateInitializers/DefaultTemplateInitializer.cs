@@ -71,7 +71,7 @@ public sealed class DefaultTemplateInitializer : ITemplateInitializer
             return;
         }
 
-        templateEngineContainer.TemplateEngine = engine;
+        templateEngineContainer.Engine = engine;
     }
 
     private object? ConvertType(object? value, Type type)

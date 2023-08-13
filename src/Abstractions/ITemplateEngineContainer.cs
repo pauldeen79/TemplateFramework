@@ -2,5 +2,5 @@
 
 public interface ITemplateEngineContainer
 {
-    ITemplateEngine TemplateEngine { get; set; }
+    ITemplateEngine Engine { get; set; }
 }

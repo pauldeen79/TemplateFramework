@@ -35,9 +35,9 @@ internal static class TestData
         }
 
         public ITemplateContext Context { get; set; } = default!;
-        public ITemplateEngine TemplateEngine { get; set; } = default!;
+        public ITemplateEngine Engine { get; set; } = default!;
         public ITemplateProvider TemplateProvider { get; }
 
-        public void Render(IMultipleContentBuilder builder) => _delegate(builder, Context, TemplateEngine, TemplateProvider);
+        public void Render(IMultipleContentBuilder builder) => _delegate(builder, Context, Engine, TemplateProvider);
     }
 }
