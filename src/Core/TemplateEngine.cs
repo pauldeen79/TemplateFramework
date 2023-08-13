@@ -19,6 +19,8 @@ public sealed class TemplateEngine : ITemplateEngine
 
         _templateInitializer.Initialize(request, this);
 
+        var test = 1 + 1;
+
         var renderer = _templateRenderers.FirstOrDefault(x => x.Supports(request.GenerationEnvironment));
         if (renderer is null)
         {
