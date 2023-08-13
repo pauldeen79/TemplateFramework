@@ -6,6 +6,9 @@
     <Nullable>enable</Nullable>
     <AnalysisLevel>latest-All</AnalysisLevel>
     <PackageId>pauldeen79.TemplateFramework.Core.CodeGeneration</PackageId>
+    <Description>Framework for template processing and code generation</Description>
+    <PackageTags>template engine;code generation</PackageTags>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/pauldeen79/TemplateFramework</RepositoryUrl>
   </PropertyGroup>
 
@@ -17,6 +20,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Core\TemplateFramework.Core.csproj" />
     <ProjectReference Include="..\Runtime\TemplateFramework.Runtime.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\Readme.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
   <ItemGroup>

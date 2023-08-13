@@ -5,13 +5,20 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AnalysisLevel>latest-All</AnalysisLevel>
-
-    <IsPackable>false</IsPackable>
+    <PackageId>pauldeen79.TemplateFramework.Runtime</PackageId>
+    <Description>Framework for template processing and code generation</Description>
+    <PackageTags>template engine;code generation</PackageTags>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/pauldeen79/TemplateFramework</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.2.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\Readme.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
   <ItemGroup>

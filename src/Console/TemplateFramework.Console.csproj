@@ -8,7 +8,7 @@
     <AnalysisLevel>latest-All</AnalysisLevel>
     <PackageId>pauldeen79.TemplateFramework.Console</PackageId>
     <Description>Framework for template processing and code generation</Description>
-    <PackageTags>template engine code generation</PackageTags>
+    <PackageTags>template engine;code generation</PackageTags>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/pauldeen79/TemplateFramework</RepositoryUrl>
     <PackAsTool>true</PackAsTool>
