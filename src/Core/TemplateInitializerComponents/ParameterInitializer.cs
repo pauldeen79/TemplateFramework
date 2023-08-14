@@ -2,13 +2,13 @@
 
 public class ParameterInitializer : ITemplateInitializerComponent
 {
-    private readonly IEnumerable<ITemplateParameterConverter> _converters;
+    private readonly IValueConverter _converter;
 
-    public ParameterInitializer(IEnumerable<ITemplateParameterConverter> converters)
+    public ParameterInitializer(IValueConverter converter)
     {
-        Guard.IsNotNull(converters);
+        Guard.IsNotNull(converter);
 
-        _converters = converters;
+        _converter = converter;
     }
 
     public void Initialize(IRenderTemplateRequest request, ITemplateEngine engine)
@@ -31,20 +31,7 @@ public class ParameterInitializer : ITemplateInitializerComponent
                 throw new NotSupportedException($"Unsupported template parameter: {item.Key}");
             }
 
-            parameterizedTemplate.SetParameter(item.Key, ConvertType(item.Value, parameter.Type));
+            parameterizedTemplate.SetParameter(item.Key, _converter.Convert(item.Value, parameter.Type));
         }
-    }
-
-    private object? ConvertType(object? value, Type type)
-    {
-        foreach (var converter in _converters)
-        {
-            if (converter.TryConvert(value, type, out var convertedValue))
-            {
-                return convertedValue;
-            }
-        }
-
-        return value;
     }
 }

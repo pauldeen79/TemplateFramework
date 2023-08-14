@@ -2,9 +2,9 @@
 
 public class ModelInitializerTests
 {
-    protected ModelInitializer CreateSut() => new(new[] { TemplateParameterConverterMock.Object });
+    protected ModelInitializer CreateSut() => new(ValueConverterMock.Object);
     
-    protected Mock<ITemplateParameterConverter> TemplateParameterConverterMock { get; } = new();
+    protected Mock<IValueConverter> ValueConverterMock { get; } = new();
     protected Mock<ITemplateEngine> TemplateEngineMock { get; } = new();
     
     protected const string DefaultFilename = "DefaultFilename.txt";
@@ -12,11 +12,11 @@ public class ModelInitializerTests
     public class Constructor
     {
         [Fact]
-        public void Throws_On_Null_Converters()
+        public void Throws_On_Null_Converter()
         {
             // Act & Assert
-            this.Invoking(_ => new ModelInitializer(converters: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("converters");
+            this.Invoking(_ => new ModelInitializer(converter: null!))
+                .Should().Throw<ArgumentNullException>().WithParameterName("converter");
         }
     }
 
@@ -30,6 +30,7 @@ public class ModelInitializerTests
             var model = "Hello world!";
             var template = new TestData.TemplateWithModel<string>(_ => { });
             var request = new RenderTemplateRequest(template, model, new StringBuilder(), DefaultFilename);
+            ValueConverterMock.Setup(x => x.Convert(It.IsAny<object?>(), It.IsAny<Type>())).Returns<object?, Type>((value, type) => value);
 
             // Act
             sut.Initialize(request, TemplateEngineMock.Object);

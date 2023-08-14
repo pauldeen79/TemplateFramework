@@ -2,13 +2,13 @@
 
 public class ModelInitializer : ITemplateInitializerComponent
 {
-    private readonly IEnumerable<ITemplateParameterConverter> _converters;
+    private readonly IValueConverter _converter;
 
-    public ModelInitializer(IEnumerable<ITemplateParameterConverter> converters)
+    public ModelInitializer(IValueConverter converter)
     {
-        Guard.IsNotNull(converters);
+        Guard.IsNotNull(converter);
 
-        _converters = converters;
+        _converter = converter;
     }
 
     public void Initialize(IRenderTemplateRequest request, ITemplateEngine engine)
@@ -21,20 +21,7 @@ public class ModelInitializer : ITemplateInitializerComponent
         if (Array.Exists(templateType.GetInterfaces(), t => t.FullName?.StartsWith("TemplateFramework.Abstractions.IModelContainer", StringComparison.InvariantCulture) == true))
         {
             var modelProperty = templateType.GetProperty(nameof(IModelContainer<object?>.Model))!;
-            modelProperty.SetValue(request.Template, ConvertType(request.Model, modelProperty.PropertyType));
+            modelProperty.SetValue(request.Template, _converter.Convert(request.Model, modelProperty.PropertyType));
         }
-    }
-
-    private object? ConvertType(object? value, Type type)
-    {
-        foreach (var converter in _converters)
-        {
-            if (converter.TryConvert(value, type, out var convertedValue))
-            {
-                return convertedValue;
-            }
-        }
-
-        return value;
     }
 }
