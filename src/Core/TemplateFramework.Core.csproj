@@ -57,8 +57,4 @@
     <Using Include="TemplateFramework.Core.TemplateRenderers" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="TemplateInitializers\" />
-  </ItemGroup>
-
 </Project>
