@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests.TemplateInitializers;
+﻿namespace TemplateFramework.Core.Tests;
 
 public partial class TemplateInitializerTests
 {
@@ -8,7 +8,7 @@ public partial class TemplateInitializerTests
         public void Throws_On_Null_Converters()
         {
             // Act & Assert
-            this.Invoking(_ => new DefaultTemplateInitializer(converters: null!))
+            this.Invoking(_ => new TemplateInitializer(converters: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("converters");
         }
     }

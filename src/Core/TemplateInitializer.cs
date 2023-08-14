@@ -1,10 +1,10 @@
-﻿namespace TemplateFramework.Core.TemplateInitializers;
+﻿namespace TemplateFramework.Core;
 
-public sealed class DefaultTemplateInitializer : ITemplateInitializer
+public sealed class TemplateInitializer : ITemplateInitializer
 {
     private readonly IEnumerable<ITemplateParameterConverter> _converters;
 
-    public DefaultTemplateInitializer(IEnumerable<ITemplateParameterConverter> converters)
+    public TemplateInitializer(IEnumerable<ITemplateParameterConverter> converters)
     {
         Guard.IsNotNull(converters);
 

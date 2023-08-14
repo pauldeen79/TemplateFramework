@@ -61,7 +61,6 @@
     <Using Include="TemplateFramework.Core.MultipleContentBuilderTemplateCreators" />
     <Using Include="TemplateFramework.Core.Requests" />
     <Using Include="TemplateFramework.Core.StringBuilderTemplateRenderers" />
-    <Using Include="TemplateFramework.Core.TemplateInitializers" />
     <Using Include="TemplateFramework.Core.TemplateRenderers" />
     <Using Include="Xunit" />
   </ItemGroup>

@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests.TemplateInitializers;
+﻿namespace TemplateFramework.Core.Tests;
 
 public partial class TemplateInitializerTests
 {

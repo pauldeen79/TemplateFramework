@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\Readme.md" Pack="true" PackagePath="\"/>
+    <None Include="..\..\Readme.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -54,8 +54,11 @@
     <Using Include="TemplateFramework.Core.MultipleContentBuilderTemplateCreators" />
     <Using Include="TemplateFramework.Core.Requests" />
     <Using Include="TemplateFramework.Core.StringBuilderTemplateRenderers" />
-    <Using Include="TemplateFramework.Core.TemplateInitializers" />
     <Using Include="TemplateFramework.Core.TemplateRenderers" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="TemplateInitializers\" />
   </ItemGroup>
 
 </Project>
