@@ -32,6 +32,17 @@ internal static class TestData
         public void Render(StringBuilder builder) => _delegate(builder);
     }
 
+    internal sealed class TemplateWithEngine : IStringBuilderTemplate, ITemplateEngineContainer
+    {
+        public ITemplateEngine Engine { get; set; } = default!;
+
+        private readonly Action<StringBuilder> _delegate;
+
+        public TemplateWithEngine(Action<StringBuilder> @delegate) => _delegate = @delegate;
+
+        public void Render(StringBuilder builder) => _delegate(builder);
+    }
+
     internal sealed class TemplateWithViewModel<T> : IStringBuilderTemplate, IParameterizedTemplate
     {
         public T? ViewModel { get; set; } = default!;

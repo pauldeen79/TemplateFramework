@@ -16,7 +16,7 @@ public partial class TemplateEngineTests
         public void Throws_On_Null_TemplateRenderers()
         {
             // Act & Assert
-            this.Invoking(_ => new TemplateEngine(new DefaultTemplateInitializer(Enumerable.Empty<ITemplateParameterConverter>()), templateRenderers: null!))
+            this.Invoking(_ => new TemplateEngine(TemplateInitializerMock.Object, templateRenderers: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("templateRenderers");
         }
     }

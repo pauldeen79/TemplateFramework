@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests.TemplateInitializers;
+﻿namespace TemplateFramework.Core.Tests;
 
 public partial class TemplateInitializerTests
 {
@@ -22,8 +22,21 @@ public partial class TemplateInitializerTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Initialize(new Mock<IRenderTemplateRequest>().Object, engine: null!))
+            sut.Invoking(x => x.Initialize(RenderTemplateRequestMock.Object, engine: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("engine");
+        }
+
+        [Fact]
+        public void Processes_TemplateInitializeComponents_On_Non_Null_Arguments()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            sut.Initialize(RenderTemplateRequestMock.Object, TemplateEngineMock.Object);
+
+            // Assert
+            TemplateInitializerComponentMock.Verify(x => x.Initialize(RenderTemplateRequestMock.Object, TemplateEngineMock.Object), Times.Once);
         }
     }
 }

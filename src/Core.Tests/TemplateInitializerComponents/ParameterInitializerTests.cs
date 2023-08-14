@@ -1,25 +1,27 @@
-﻿namespace TemplateFramework.Core.Tests.TemplateInitializers;
+﻿namespace TemplateFramework.Core.Tests.TemplateInitializerComponents;
 
-public partial class TemplateInitializerTests
+public class ParameterInitializerTests
 {
-    public class AdditionalParameters : TemplateInitializerTests
+    protected ParameterInitializer CreateSut() => new(ValueConverterMock.Object);
+    
+    protected Mock<IValueConverter> ValueConverterMock { get; } = new();
+    protected Mock<ITemplateEngine> TemplateEngineMock { get; } = new();
+    
+    protected const string DefaultFilename = "DefaultFilename.txt";
+
+    public class Constructor
     {
         [Fact]
-        public void Sets_Model_When_Possible()
+        public void Throws_On_Null_Converter()
         {
-            // Arrange
-            var sut = CreateSut();
-            var model = "Hello world!";
-            var template = new TestData.TemplateWithModel<string>(_ => { });
-            var request = new RenderTemplateRequest(template, model, new StringBuilder(), DefaultFilename);
-
-            // Act
-            sut.Initialize(request, TemplateEngineMock.Object);
-
-            // Assert
-            template.Model.Should().Be(model);
+            // Act & Assert
+            this.Invoking(_ => new ParameterInitializer(converter: null!))
+                .Should().Throw<ArgumentNullException>().WithParameterName("converter");
         }
+    }
 
+    public class Initialize : ParameterInitializerTests
+    {
         [Fact]
         public void Sets_AdditionalParameters_When_Template_Implements_IParameterizedTemplate()
         {
@@ -28,6 +30,7 @@ public partial class TemplateInitializerTests
             var additionalParameters = new { AdditionalParameter = "Hello world!" };
             var template = new TestData.PlainTemplateWithAdditionalParameters();
             var request = new RenderTemplateRequest(template, new StringBuilder(), DefaultFilename, additionalParameters);
+            ValueConverterMock.Setup(x => x.Convert(It.IsAny<object?>(), It.IsAny<Type>())).Returns<object?, Type>((value, type) => value);
 
             // Act
             sut.Initialize(request, TemplateEngineMock.Object);
@@ -44,8 +47,8 @@ public partial class TemplateInitializerTests
             var additionalParameters = new { AdditionalParameter = "?" };
             var template = new TestData.PlainTemplateWithAdditionalParameters();
             object? convertedValue = "Hello world!";
-            TemplateParameterConverterMock.Setup(x => x.TryConvert(It.IsAny<object?>(), It.IsAny<Type>(), out convertedValue))
-                                          .Returns(true);
+            ValueConverterMock.Setup(x => x.Convert(It.IsAny<object?>(), It.IsAny<Type>()))
+                              .Returns(convertedValue);
             var request = new RenderTemplateRequest(template, new StringBuilder(), DefaultFilename, additionalParameters);
 
             // Act
@@ -78,13 +81,31 @@ public partial class TemplateInitializerTests
             var additionalParameters = new { AdditionalParameter = "Hello world!", Model = "Ignored" };
             var template = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
             var request = new RenderTemplateRequest(template, model, new StringBuilder(), DefaultFilename, additionalParameters);
+            ValueConverterMock.Setup(x => x.Convert(It.IsAny<object?>(), It.IsAny<Type>())).Returns<object?, Type>((value, type) => value);
 
             // Act
             sut.Initialize(request, TemplateEngineMock.Object);
 
             // Assert
-            template.Model.Should().Be(model);
+            template.Model.Should().BeNull();
             template.AdditionalParameter.Should().Be(additionalParameters.AdditionalParameter);
+        }
+
+        [Fact]
+        public void Can_Inject_ViewModel_On_Template_Using_AdditionalParameters()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var template = new TestData.TemplateWithViewModel<TestData.NonConstructableViewModel>(_ => { });
+            var viewModel = new TestData.NonConstructableViewModel("Some value");
+            var request = new RenderTemplateRequest(template, new StringBuilder(), DefaultFilename, additionalParameters: new { ViewModel = viewModel });
+            ValueConverterMock.Setup(x => x.Convert(It.IsAny<object?>(), It.IsAny<Type>())).Returns<object?, Type>((value, type) => value);
+
+            // Act
+            sut.Initialize(request, TemplateEngineMock.Object);
+
+            // Assert
+            template.ViewModel.Should().BeSameAs(viewModel);
         }
     }
 }

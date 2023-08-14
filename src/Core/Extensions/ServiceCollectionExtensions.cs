@@ -6,7 +6,7 @@ public static class ServiceCollectionExtensions
         => services
             .AddSingleton<IFileSystem, FileSystem>()
             .AddSingleton<ITemplateEngine, TemplateEngine>()
-            .AddSingleton<ITemplateInitializer, DefaultTemplateInitializer>()
+            .AddSingleton<ITemplateInitializer, TemplateInitializer>()
             .AddSingleton<ITemplateRenderer, StringBuilderTemplateRenderer>()
             .AddSingleton<ITemplateRenderer, MultipleContentTemplateRenderer>()
             .AddSingleton<IMultipleContentBuilderTemplateCreator, TypedMultipleCreator>()
@@ -15,6 +15,11 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IStringBuilderTemplateRenderer, TypedTextTransformTemplateRenderer>()
             .AddSingleton<IStringBuilderTemplateRenderer, WrappedStringBuilderTemplateRenderer>()
             .AddSingleton<IStringBuilderTemplateRenderer, WrappedTextTransformTemplateRenderer>()
+            .AddSingleton<ITemplateInitializerComponent, ModelInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, ParameterInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, ContextInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, EngineInitializer>()
+            .AddSingleton<IValueConverter, ValueConverter>()
             .AddSingleton<ISingleContentTemplateRenderer, StringBuilderTemplateRenderer>() // also register using its own type, so we can render a single template from  multiple content template renderer
             ;
 }
