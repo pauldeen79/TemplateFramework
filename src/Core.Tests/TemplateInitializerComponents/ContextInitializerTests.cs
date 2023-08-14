@@ -1,8 +1,14 @@
-﻿namespace TemplateFramework.Core.Tests;
+﻿namespace TemplateFramework.Core.Tests.TemplateInitializerComponents;
 
-public partial class TemplateInitializerTests
+public class ContextInitializerTests
 {
-    public class TemplateContext : TemplateInitializerTests
+    protected ContextInitializer CreateSut() => new();
+    
+    protected Mock<ITemplateEngine> TemplateEngineMock { get; } = new();
+    
+    protected const string DefaultFilename = "DefaultFilename.txt";
+
+    public class Initialize : ContextInitializerTests
     {
         [Fact]
         public void Sets_TemplateContext_On_Template_When_Possible()

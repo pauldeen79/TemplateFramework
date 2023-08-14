@@ -15,6 +15,10 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IStringBuilderTemplateRenderer, TypedTextTransformTemplateRenderer>()
             .AddSingleton<IStringBuilderTemplateRenderer, WrappedStringBuilderTemplateRenderer>()
             .AddSingleton<IStringBuilderTemplateRenderer, WrappedTextTransformTemplateRenderer>()
+            .AddSingleton<ITemplateInitializerComponent, ModelInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, ParameterInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, ContextInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, EngineInitializer>()
             .AddSingleton<ISingleContentTemplateRenderer, StringBuilderTemplateRenderer>() // also register using its own type, so we can render a single template from  multiple content template renderer
             ;
 }
