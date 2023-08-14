@@ -47,6 +47,7 @@ public class ValueConverterTests
 
             // Assert
             result.Should().BeEquivalentTo(value.ToUpperInvariant());
+            TemplateParameterConverterMock.Verify(x => x.TryConvert(It.IsAny<object?>(), It.IsAny<Type>(), out convertedValue), Times.Once);
         }
     }
 }
