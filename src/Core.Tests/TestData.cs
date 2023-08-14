@@ -32,17 +32,6 @@ internal static class TestData
         public void Render(StringBuilder builder) => _delegate(builder);
     }
 
-    internal sealed class TemplateWithModelNonTyped<T> : IStringBuilderTemplate
-    {
-        public T? Model { get; set; } = default!;
-
-        private readonly Action<StringBuilder> _delegate;
-
-        public TemplateWithModelNonTyped(Action<StringBuilder> @delegate) => _delegate = @delegate;
-
-        public void Render(StringBuilder builder) => _delegate(builder);
-    }
-
     internal sealed class TemplateWithViewModel<T> : IStringBuilderTemplate, IParameterizedTemplate
     {
         public T? ViewModel { get; set; } = default!;

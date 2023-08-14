@@ -24,8 +24,11 @@ public sealed class TemplateInitializer : ITemplateInitializer
     private void TrySetAdditionalParametersOnTemplate(IRenderTemplateRequest request)
     {
         var templateType = request.Template.GetType();
-        var modelProperty = templateType.GetProperty(nameof(IModelContainer<object?>.Model));
-        modelProperty?.SetValue(request.Template, ConvertType(request.Model, modelProperty.PropertyType));
+        if (Array.Exists(templateType.GetInterfaces(), t => t.FullName?.StartsWith("TemplateFramework.Abstractions.IModelContainer", StringComparison.InvariantCulture) == true))
+        {
+            var modelProperty = templateType.GetProperty(nameof(IModelContainer<object?>.Model))!;
+            modelProperty.SetValue(request.Template, ConvertType(request.Model, modelProperty.PropertyType));
+        }
 
         if (request.Template is not IParameterizedTemplate parameterizedTemplate)
         {
