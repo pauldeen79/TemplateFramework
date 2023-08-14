@@ -5,12 +5,28 @@ public partial class TemplateInitializerTests
     public class AdditionalParameters : TemplateInitializerTests
     {
         [Fact]
-        public void Sets_Model_When_Possible()
+        public void Sets_Model_Using_Typed_Interface()
         {
             // Arrange
             var sut = CreateSut();
             var model = "Hello world!";
             var template = new TestData.TemplateWithModel<string>(_ => { });
+            var request = new RenderTemplateRequest(template, model, new StringBuilder(), DefaultFilename);
+
+            // Act
+            sut.Initialize(request, TemplateEngineMock.Object);
+
+            // Assert
+            template.Model.Should().Be(model);
+        }
+
+        [Fact]
+        public void Sets_Model_Using_Shaped_Interface()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var model = "Hello world!";
+            var template = new TestData.TemplateWithModelNonTyped<string>(_ => { });
             var request = new RenderTemplateRequest(template, model, new StringBuilder(), DefaultFilename);
 
             // Act
