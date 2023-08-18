@@ -1,14 +1,14 @@
 ﻿namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests;
 
-public partial class ProviderTests
+public partial class ProviderComponentTests
 {
-    public class Constructor : ProviderTests
+    public class Constructor : ProviderComponentTests
     {
         [Fact]
         public void Throws_On_Null_Argument()
         {
             // Act & Assert
-            this.Invoking(_ => new Provider(childTemplateCreators: null!))
+            this.Invoking(_ => new ProviderComponent(childTemplateCreators: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("childTemplateCreators");
         }
 

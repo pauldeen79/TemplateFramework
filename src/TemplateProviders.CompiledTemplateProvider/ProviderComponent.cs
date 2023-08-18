@@ -1,10 +1,10 @@
 ﻿namespace TemplateFramework.TemplateProviders.CompiledTemplateProvider;
 
-public sealed class Provider : ITemplateProvider
+public sealed class ProviderComponent : ITemplateProviderComponent
 {
     private readonly IAssemblyService _assemblyService;
 
-    public Provider(IAssemblyService assemblyService)
+    public ProviderComponent(IAssemblyService assemblyService)
     {
         Guard.IsNotNull(assemblyService);
         _assemblyService = assemblyService;

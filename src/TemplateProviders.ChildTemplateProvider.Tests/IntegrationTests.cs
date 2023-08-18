@@ -26,8 +26,7 @@ public class IntegrationTests
             .BuildServiceProvider();
         var engine = provider.GetRequiredService<ITemplateEngine>();
 
-        var templateProvider = provider.GetRequiredService<ITemplateProvider>();
-        var template = new TestData.MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine(templateProvider, (builder, context, engine, provider) =>
+        var template = new TestData.MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine((builder, context, engine, provider) =>
         {
             var childTemplate = provider.Create(new ChildTemplateByNameRequest("MyTemplate"));
             engine.Render(new RenderTemplateRequest(childTemplate, builder, context.CreateChildContext(new TemplateContext(childTemplate))));

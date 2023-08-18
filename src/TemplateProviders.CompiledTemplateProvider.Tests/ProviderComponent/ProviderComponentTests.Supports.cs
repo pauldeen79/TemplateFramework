@@ -1,8 +1,8 @@
 ﻿namespace TemplateFramework.TemplateProviders.CompiledTemplateProvider.Tests;
 
-public partial class ProviderTests
+public partial class ProviderComponentTests
 {
-    public class Supports : ProviderTests
+    public class Supports : ProviderComponentTests
     {
         [Fact]
         public void Returns_False_On_Null_Request()

@@ -1,8 +1,8 @@
 ﻿namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests;
 
-public partial class ProviderTests
+public partial class ProviderComponentTests
 {
-    public class CreateByModel : ProviderTests
+    public class CreateByModel : ProviderComponentTests
     {
         [Fact]
         public void Does_Not_Throw_On_Null_Argument()

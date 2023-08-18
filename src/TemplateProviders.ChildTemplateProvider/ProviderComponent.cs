@@ -1,10 +1,10 @@
 ﻿namespace TemplateFramework.TemplateProviders.ChildTemplateProvider;
 
-public sealed class Provider : ITemplateProvider
+public sealed class ProviderComponent : ITemplateProviderComponent
 {
     private readonly IEnumerable<ITemplateCreator> _childTemplateCreators;
 
-    public Provider(IEnumerable<ITemplateCreator> childTemplateCreators)
+    public ProviderComponent(IEnumerable<ITemplateCreator> childTemplateCreators)
     {
         Guard.IsNotNull(childTemplateCreators);
 

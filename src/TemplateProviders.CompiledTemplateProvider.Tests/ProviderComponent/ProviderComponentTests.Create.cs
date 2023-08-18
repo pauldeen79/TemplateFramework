@@ -1,8 +1,8 @@
 ﻿namespace TemplateFramework.TemplateProviders.CompiledTemplateProvider.Tests;
 
-public partial class ProviderTests
+public partial class ProviderComponentTests
 {
-    public class Create : ProviderTests
+    public class Create : ProviderComponentTests
     {
         public Create()
         {
