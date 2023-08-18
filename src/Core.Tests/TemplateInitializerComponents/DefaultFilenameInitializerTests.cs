@@ -1,30 +1,29 @@
 ﻿namespace TemplateFramework.Core.Tests.TemplateInitializerComponents;
 
-public class ProviderInitializerTests
+public class DefaultFilenameInitializerTests
 {
-    protected ProviderInitializer CreateSut() => new(TemplateProviderMock.Object);
+    protected DefaultFilenameInitializer CreateSut() => new();
     
     protected Mock<ITemplateEngine> TemplateEngineMock { get; } = new();
-    protected Mock<ITemplateProvider> TemplateProviderMock { get; } = new();
     
     protected const string DefaultFilename = "DefaultFilename.txt";
 
-    public class Initialize : ProviderInitializerTests
+    public class Initialize : DefaultFilenameInitializerTests
     {
         [Fact]
-        public void Sets_Provider_When_Possible()
+        public void Sets_DefaultFilename_When_Possible()
         {
             // Arrange
             var sut = CreateSut();
             var model = "Hello world!";
-            var template = new TestData.TemplateWithProvider(_ => { });
+            var template = new TestData.TemplateWithDefaultFilename(_ => { });
             var request = new RenderTemplateRequest(template, model, new StringBuilder(), DefaultFilename);
 
             // Act
             sut.Initialize(request, TemplateEngineMock.Object);
 
             // Assert
-            template.Provider.Should().BeSameAs(TemplateProviderMock.Object);
+            template.DefaultFilename.Should().Be(DefaultFilename);
         }
     }
 }
