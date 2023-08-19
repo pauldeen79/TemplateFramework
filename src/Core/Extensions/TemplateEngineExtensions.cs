@@ -162,8 +162,6 @@ public static class TemplateEngineExtensions
         instance.Render(new RenderTemplateRequest(template, model, generationEnvironment, string.Empty, null, context.CreateChildContext(new TemplateContext(template, model))));
     }
 
-    //###
-
     public static void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, object template, string defaultFilename, object additionalParameters, ITemplateContext context)
     {
         Guard.IsNotNull(context);

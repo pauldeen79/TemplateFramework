@@ -1,7 +1,4 @@
-﻿using System.Data;
-using TemplateFramework.Abstractions;
-
-namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests;
+﻿namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests;
 
 public class IntegrationTests
 {
@@ -65,9 +62,16 @@ public class IntegrationTests
             new TestData.TypeBase { Namespace  = "Namespace2", Name = "Class2a" },
             new TestData.TypeBase { Namespace  = "Namespace2", Name = "Class2b" },
         };
+        var additionalParameters = new Dictionary<string, object?>
+        {
+            { nameof(TestData.BogusCsharpClassGenerator.GenerateMultipleFiles), true },
+            { nameof(TestData.BogusCsharpClassGenerator.SkipWhenFileExists), false },
+            { nameof(TestData.BogusCsharpClassGenerator.CreateCodeGenerationHeader), true },
+            { nameof(TestData.BogusCsharpClassGenerator.EnvironmentVersion), "1.0" },
+        };
 
         // Act
-        engine.Render(new RenderTemplateRequest(template, model, generationEnvironment, new { GenerateMultipleFiles = true, SkipWhenFileExists = false, CreateCodeGenerationHeader = true }));
+        engine.Render(new RenderTemplateRequest(template, model, generationEnvironment, additionalParameters));
 
         // Assert
         generationEnvironment.Contents.Should().HaveCount(4);

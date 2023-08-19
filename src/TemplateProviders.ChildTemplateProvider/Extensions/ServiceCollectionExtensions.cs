@@ -7,11 +7,17 @@ public static class ServiceCollectionExtensions
             .AddSingleton<ITemplateProviderComponent, ProviderComponent>();
 
     public static IServiceCollection AddChildTemplate<T>(this IServiceCollection services, Type modelType) where T : class, new()
-        => services.AddSingleton<ITemplateCreator>(_ => new TemplateCreator<T>(modelType, null));
+        => services
+            .AddSingleton<ITemplateCreator>(provider => new TemplateCreator<T>(() => provider.GetRequiredService<T>(), modelType, null))
+            .AddTransient<T>();
 
     public static IServiceCollection AddChildTemplate<T>(this IServiceCollection services, string name) where T : class, new()
-        => services.AddSingleton<ITemplateCreator>(_ => new TemplateCreator<T>(null, name));
+        => services
+            .AddSingleton<ITemplateCreator>(provider => new TemplateCreator<T>(() => provider.GetRequiredService<T>(), null, name))
+            .AddTransient<T>();
 
     public static IServiceCollection AddChildTemplate<T>(this IServiceCollection services, Type modelType, string name) where T : class, new()
-        => services.AddSingleton<ITemplateCreator>(_ => new TemplateCreator<T>(modelType, name));
+        => services
+            .AddSingleton<ITemplateCreator>(provider => new TemplateCreator<T>(() => provider.GetRequiredService<T>(), modelType, name))
+            .AddTransient<T>();
 }

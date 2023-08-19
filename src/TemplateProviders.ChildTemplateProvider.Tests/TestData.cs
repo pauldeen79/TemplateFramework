@@ -47,6 +47,7 @@ internal static class TestData
             GenerateMultipleFiles = false;
             SkipWhenFileExists = false;
             CreateCodeGenerationHeader = true;
+            EnvironmentVersion = null;
         }
 
         // Properties that are injected by the template engine
