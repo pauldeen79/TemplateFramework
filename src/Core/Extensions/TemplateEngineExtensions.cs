@@ -161,4 +161,70 @@ public static class TemplateEngineExtensions
         var template = templateFactory(model);
         instance.Render(new RenderTemplateRequest(template, model, generationEnvironment, string.Empty, null, context.CreateChildContext(new TemplateContext(template, model))));
     }
+
+    //###
+
+    public static void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, object template, string defaultFilename, object additionalParameters, ITemplateContext context)
+    {
+        Guard.IsNotNull(context);
+
+        instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, defaultFilename, additionalParameters, context.CreateChildContext(new TemplateContext(template))));
+    }
+
+    public static void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, object template, string defaultFilename, ITemplateContext context)
+    {
+        Guard.IsNotNull(context);
+
+        instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, defaultFilename, null, context.CreateChildContext(new TemplateContext(template))));
+    }
+
+    public static void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, object template, object additionalParameters, ITemplateContext context)
+    {
+        Guard.IsNotNull(context);
+
+        instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, string.Empty, additionalParameters, context.CreateChildContext(new TemplateContext(template))));
+    }
+
+    public static void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, object template, ITemplateContext context)
+    {
+        Guard.IsNotNull(context);
+
+        instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, string.Empty, null, context.CreateChildContext(new TemplateContext(template))));
+    }
+
+    public static void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, Func<object> templateFactory, string defaultFilename, object additionalParameters, ITemplateContext context)
+    {
+        Guard.IsNotNull(context);
+        Guard.IsNotNull(templateFactory);
+
+        var template = templateFactory();
+        instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, defaultFilename, additionalParameters, context.CreateChildContext(new TemplateContext(template))));
+    }
+
+    public static void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, Func<object> templateFactory, string defaultFilename, ITemplateContext context)
+    {
+        Guard.IsNotNull(context);
+        Guard.IsNotNull(templateFactory);
+
+        var template = templateFactory();
+        instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, defaultFilename, null, context.CreateChildContext(new TemplateContext(template))));
+    }
+
+    public static void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, Func<object> templateFactory, object additionalParameters, ITemplateContext context)
+    {
+        Guard.IsNotNull(context);
+        Guard.IsNotNull(templateFactory);
+
+        var template = templateFactory();
+        instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, string.Empty, additionalParameters, context.CreateChildContext(new TemplateContext(template))));
+    }
+
+    public static void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, Func<object> templateFactory, ITemplateContext context)
+    {
+        Guard.IsNotNull(context);
+        Guard.IsNotNull(templateFactory);
+
+        var template = templateFactory();
+        instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, string.Empty, null, context.CreateChildContext(new TemplateContext(template))));
+    }
 }

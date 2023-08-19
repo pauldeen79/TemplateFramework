@@ -39,9 +39,9 @@ internal static class TestData
         public void Render(IMultipleContentBuilder builder) => _delegate(builder, Context, Engine, Provider);
     }
 
-    internal sealed class BogusCsharpClassGenerator : IMultipleContentBuilderTemplate, IParameterizedTemplate, ITemplateContextContainer, ITemplateEngineContainer, ITemplateProviderContainer, IDefaultFilenameContainer, IModelContainer<IEnumerable<TypeBase>>
+    internal abstract class BogusCsharpClassGeneratorBase : IParameterizedTemplate, ITemplateContextContainer, ITemplateEngineContainer, ITemplateProviderContainer, IDefaultFilenameContainer
     {
-        public BogusCsharpClassGenerator()
+        protected BogusCsharpClassGeneratorBase()
         {
             // Provide default values for parameters, if needed
             GenerateMultipleFiles = false;
@@ -54,7 +54,6 @@ internal static class TestData
         public ITemplateEngine Engine { get; set; } = default!;
         public ITemplateProvider Provider { get; set; } = default!;
         public string DefaultFilename { get; set; } = default!;
-        public IEnumerable<TypeBase>? Model { get; set; }
 
         // Parameters, filled by the template engine
         public bool GenerateMultipleFiles { get; set; }
@@ -69,48 +68,6 @@ internal static class TestData
             new TemplateParameter(nameof(CreateCodeGenerationHeader), typeof(bool)),
             new TemplateParameter(nameof(EnvironmentVersion), typeof(string)),
         };
-
-        public void Render(IMultipleContentBuilder builder)
-        {
-            Guard.IsNotNull(builder);
-            Guard.IsNotNull(Model);
-            Guard.IsNotNull(DefaultFilename);
-
-            StringBuilder? singleStringBuilder = null;
-            IGenerationEnvironment generationEnvironment = new MultipleContentBuilderEnvironment(builder);
-
-            if (!GenerateMultipleFiles)
-            {
-                singleStringBuilder = builder.AddContent(DefaultFilename, SkipWhenFileExists).Builder;
-                generationEnvironment = new StringBuilderEnvironment(singleStringBuilder);
-            }
-
-            if (!GenerateMultipleFiles)
-            {
-                Engine.RenderChildTemplate(this, generationEnvironment, Provider.Create(new ChildTemplateByNameRequest("CodeGenerationHeader")), DefaultFilename, Context);
-
-                if (Context.IsRootContext)
-                {
-                    Engine.RenderChildTemplate(this, generationEnvironment, Provider.Create(new ChildTemplateByNameRequest("DefaultUsings")), DefaultFilename, Context);
-                }
-            }
-
-            foreach (var ns in Model.GroupBy(x => x.Namespace))
-            {
-                if (Context.IsRootContext && !GenerateMultipleFiles)
-                {
-                    singleStringBuilder!.AppendLine(CultureInfo.InvariantCulture, $"namespace {ns.Key}");
-                    singleStringBuilder!.AppendLine("{"); // open namespace
-                }
-
-                Engine.RenderChildTemplates(ns, generationEnvironment, typeBase => Provider.Create(new ChildTemplateByModelRequest(typeBase)), DefaultFilename, Context);
-
-                if (Context.IsRootContext && !GenerateMultipleFiles)
-                {
-                    singleStringBuilder!.AppendLine("}"); // close namespace
-                }
-            }
-        }
 
         public void SetParameter(string name, object? value)
         {
@@ -132,24 +89,78 @@ internal static class TestData
                     throw new NotSupportedException($"Unsupported parameter: {name}");
             }
         }
+
+        protected object AdditionalParameters
+            => new
+            {
+                GenerateMultipleFiles,
+                SkipWhenFileExists,
+                CreateCodeGenerationHeader,
+                EnvironmentVersion,
+            };
     }
 
-    internal sealed class CodeGenerationHeaderTemplate : IModelContainer<BogusCsharpClassGenerator>, IStringBuilderTemplate
+    internal sealed class BogusCsharpClassGenerator : BogusCsharpClassGeneratorBase, IMultipleContentBuilderTemplate, IModelContainer<IEnumerable<TypeBase>>
     {
-        public BogusCsharpClassGenerator? Model { get; set; }
+        // Properties that are injected by the template engine
+        public IEnumerable<TypeBase>? Model { get; set; }
 
-        public void Render(StringBuilder builder)
+        public void Render(IMultipleContentBuilder builder)
         {
             Guard.IsNotNull(builder);
             Guard.IsNotNull(Model);
+            Guard.IsNotNull(DefaultFilename);
 
-            if (!Model.CreateCodeGenerationHeader)
+            StringBuilder? singleStringBuilder = null;
+            IGenerationEnvironment generationEnvironment = new MultipleContentBuilderEnvironment(builder);
+
+            if (!GenerateMultipleFiles)
+            {
+                singleStringBuilder = builder.AddContent(DefaultFilename, SkipWhenFileExists).Builder;
+                generationEnvironment = new StringBuilderEnvironment(singleStringBuilder);
+            }
+
+            if (!GenerateMultipleFiles)
+            {
+                Engine.RenderChildTemplate(generationEnvironment, Provider.Create(new ChildTemplateByNameRequest("CodeGenerationHeader")), DefaultFilename, AdditionalParameters, Context);
+
+                if (Context.IsRootContext)
+                {
+                    Engine.RenderChildTemplate(generationEnvironment, Provider.Create(new ChildTemplateByNameRequest("DefaultUsings")), DefaultFilename, AdditionalParameters, Context);
+                }
+            }
+
+            foreach (var ns in Model.GroupBy(x => x.Namespace))
+            {
+                if (Context.IsRootContext && !GenerateMultipleFiles)
+                {
+                    singleStringBuilder!.AppendLine(CultureInfo.InvariantCulture, $"namespace {ns.Key}");
+                    singleStringBuilder!.AppendLine("{"); // open namespace
+                }
+
+                Engine.RenderChildTemplates(ns, generationEnvironment, typeBase => Provider.Create(new ChildTemplateByModelRequest(typeBase)), DefaultFilename, AdditionalParameters, Context);
+
+                if (Context.IsRootContext && !GenerateMultipleFiles)
+                {
+                    singleStringBuilder!.AppendLine("}"); // close namespace
+                }
+            }
+        }
+    }
+
+    internal sealed class CodeGenerationHeaderTemplate : BogusCsharpClassGeneratorBase, IStringBuilderTemplate
+    {
+        public void Render(StringBuilder builder)
+        {
+            Guard.IsNotNull(builder);
+
+            if (!CreateCodeGenerationHeader)
             {
                 return;
             }
 
-            var version = !string.IsNullOrEmpty(Model.EnvironmentVersion)
-                ? Model.EnvironmentVersion
+            var version = !string.IsNullOrEmpty(EnvironmentVersion)
+                ? EnvironmentVersion
                 : Environment.Version.ToString();
 
             builder.AppendLine(CultureInfo.InvariantCulture, $@"// ------------------------------------------------------------------------------
@@ -164,9 +175,9 @@ internal static class TestData
         }
     }
 
-    internal sealed class DefaultUsingsTemplate : IModelContainer<BogusCsharpClassGenerator>, IStringBuilderTemplate
+    internal sealed class DefaultUsingsTemplate : IModelContainer<IEnumerable<TypeBase>?>, IStringBuilderTemplate
     {
-        public BogusCsharpClassGenerator? Model { get; set; }
+        public IEnumerable<TypeBase>? Model { get; set; }
 
         public void Render(StringBuilder builder)
         {
