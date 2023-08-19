@@ -2,19 +2,6 @@
 
 public class IntegrationTests
 {
-    private readonly Mock<ITemplateCreator> _templateCreatorMock;
-
-    public IntegrationTests()
-    {
-        _templateCreatorMock = new Mock<ITemplateCreator>();
-        _templateCreatorMock.Setup(x => x.SupportsName(It.IsAny<string>()))
-                            .Returns<string>(name => name == "MyTemplate");
-        _templateCreatorMock.Setup(x => x.CreateByName(It.IsAny<string>()))
-                            .Returns<string>(name => name == "MyTemplate"
-                                ? new TestData.PlainTemplateWithTemplateContext(context => "Context IsRootContext: " + context.IsRootContext)
-                                : throw new NotSupportedException("What are you doing?!"));
-    }
-
     [Fact]
     public void Can_Render_MultipleContentBuilderTemplate_With_ChildTemplate_And_TemplateContext()
     {
@@ -22,7 +9,7 @@ public class IntegrationTests
         using var provider = new ServiceCollection()
             .AddTemplateFramework()
             .AddTemplateFrameworkChildTemplateProvider()
-            .AddSingleton(_ => _templateCreatorMock.Object)
+            .AddChildTemplate("MyTemplate", _ => new TestData.PlainTemplateWithTemplateContext(context => "Context IsRootContext: " + context.IsRootContext))
             .BuildServiceProvider();
         var engine = provider.GetRequiredService<ITemplateEngine>();
 
@@ -48,9 +35,13 @@ public class IntegrationTests
         using var provider = new ServiceCollection()
             .AddTemplateFramework()
             .AddTemplateFrameworkChildTemplateProvider()
-            .AddChildTemplate<TestData.CodeGenerationHeaderTemplate>("CodeGenerationHeader")
+            // Option 1: Provide a factory (transient, unless you use the IServiceProvider argument)
+            .AddChildTemplate("CodeGenerationHeader", _ => new TestData.CodeGenerationHeaderTemplate())
+            // Option 2: Register the template (allow control of lifetime)
             .AddChildTemplate<TestData.DefaultUsingsTemplate>("DefaultUsings")
+            .AddTransient<TestData.DefaultUsingsTemplate>()
             .AddChildTemplate<TestData.ClassTemplate>(typeof(TestData.TypeBase))
+            .AddTransient<TestData.ClassTemplate>()
             .BuildServiceProvider();
         var engine = provider.GetRequiredService<ITemplateEngine>();
         var template = new TestData.BogusCsharpClassGenerator();
