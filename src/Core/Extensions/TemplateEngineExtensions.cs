@@ -14,11 +14,35 @@ public static class TemplateEngineExtensions
         }
     }
 
+    //TODO: Create overloads without default filename and with additional parameters (and combinations)
+    public static void RenderChildTemplates(this ITemplateEngine instance, IEnumerable models, IGenerationEnvironment generationEnvironment, Func<object?, object> templateFactory, string defaultFilename, ITemplateContext context)
+    {
+        Guard.IsNotNull(context);
+        Guard.IsNotNull(templateFactory);
+
+        var items = models.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
+        foreach (var item in items)
+        {
+            var template = templateFactory(item.Model);
+            instance.Render(new RenderTemplateRequest(template, item.Model, generationEnvironment, defaultFilename, null, context.CreateChildContext(new TemplateContext(template, item, null, item.Index, items.Length))));
+        }
+    }
+
     //TODO: Create overloads without model and default filename, and with additional parameters (and combinations)
     public static void RenderChildTemplate(this ITemplateEngine instance, object? model, IGenerationEnvironment generationEnvironment, object template, string defaultFilename, ITemplateContext context)
     {
         Guard.IsNotNull(context);
 
+        instance.Render(new RenderTemplateRequest(template, model, generationEnvironment, defaultFilename, null, context.CreateChildContext(new TemplateContext(template, model))));
+    }
+
+    //TODO: Create overloads without model and default filename, and with additional parameters (and combinations)
+    public static void RenderChildTemplate(this ITemplateEngine instance, object? model, IGenerationEnvironment generationEnvironment, Func<object?, object> templateFactory, string defaultFilename, ITemplateContext context)
+    {
+        Guard.IsNotNull(context);
+        Guard.IsNotNull(templateFactory);
+
+        var template = templateFactory(model);
         instance.Render(new RenderTemplateRequest(template, model, generationEnvironment, defaultFilename, null, context.CreateChildContext(new TemplateContext(template, model))));
     }
 }

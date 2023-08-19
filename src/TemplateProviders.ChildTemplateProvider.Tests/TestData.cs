@@ -103,7 +103,7 @@ internal static class TestData
                     singleStringBuilder!.AppendLine("{"); // open namespace
                 }
 
-                Engine.RenderChildTemplates(ns, generationEnvironment, Provider.Create(new ChildTemplateByNameRequest("Class")), DefaultFilename, Context);
+                Engine.RenderChildTemplates(ns, generationEnvironment, typeBase => Provider.Create(new ChildTemplateByModelRequest(typeBase)), DefaultFilename, Context);
 
                 if (Context.IsRootContext && !GenerateMultipleFiles)
                 {
