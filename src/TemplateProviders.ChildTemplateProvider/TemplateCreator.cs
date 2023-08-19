@@ -27,9 +27,7 @@ public class TemplateCreator<T> : ITemplateCreator
             : throw new NotSupportedException("Name is not supported");
 
     public bool SupportsModel(object? model)
-        => _modelType is not null
-        && model is not null
-        && _modelType.IsInstanceOfType(model);
+        => model is not null && _modelType?.IsInstanceOfType(model) == true;
 
     public bool SupportsName(string name)
         => _name == name;
