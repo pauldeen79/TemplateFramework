@@ -107,6 +107,19 @@ public class TemplateCreatorTests
             // Assert
             result.Should().BeFalse();
         }
+
+        [Fact]
+        public void Returns_False_When_Model_Is_Null()
+        {
+            // Arrange
+            var sut = new TemplateCreator<TemplateCreatorTests>(() => new TemplateCreatorTests(), typeof(string), null);
+
+            // Act
+            var result = sut.SupportsModel(model: null);
+
+            // Assert
+            result.Should().BeFalse();
+        }
     }
 
     public class SupportsName
