@@ -23,5 +23,13 @@ public partial class ServiceCollectionExtensionsTests
                 && request.Template == Template)), Times.Once());
             ContextMock.Verify(x => x.CreateChildContext(It.IsAny<IChildTemplateContext>()), Times.Once());
         }
+
+        [Fact]
+        public void RenderChildTemplate_Throws_On_Null_Context_1()
+        {
+            // Act & Assert
+            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplate(Model, GenerationEnvironmentMock.Object, Template, DefaultFilename, AdditionalParameters, context: null!))
+                                     .Should().Throw<ArgumentNullException>().WithParameterName("context");
+        }
     }
 }
