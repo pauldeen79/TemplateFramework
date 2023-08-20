@@ -66,14 +66,15 @@ public interface IMultipleContentBuilderTemplate
 
 # How to add package references to your template assembly, when using the (Console) command tool
 The template assembly is loaded by the command tool.
-If you want to add external references to your template assembly, then you have to follow some additional steps.
+If you want to add external references to your template assembly, then you have to take some additional steps.
+There are more options to choose from.
 
-First option is to write a custom host. Add the references to the Core and TemplateProviders.CompiledTemplateProvider packages.
+The first option is to write a custom host. Add the references to the Core and TemplateProviders.CompiledTemplateProvider packages.
 
-Second option is to use the plug-in architecture as documented by Microsoft. (https://learn.microsoft.com/en-us/dotnet/core/tutorials/creating-app-with-plugin-support)
+The second option is to use the plug-in architecture as documented by Microsoft. (https://learn.microsoft.com/en-us/dotnet/core/tutorials/creating-app-with-plugin-support)
 Note that this option hasn't been tested yet.
 
-Third option is to add the following property to your template assembly:
+The third option is to add the following property to your template assembly:
 ```xml
   <PropertyGroup>
     ...
@@ -99,7 +100,7 @@ public interface ITemplateEngineContainer
 }
 ```
 
-Then, in your template, call the Render method on the TemplateEngine instance. (TemplateEngine property)
+Then, in your template, call the Render method on the TemplateEngine instance. (Engine property)
 As context, create a child context using the CreateChildContext method on the TemplateContext instance. (Context property)
 
 There is also an integration test in the TemplateFramework.TemplateProviders.ChildTemplateProvider test project to demonstrate this.
