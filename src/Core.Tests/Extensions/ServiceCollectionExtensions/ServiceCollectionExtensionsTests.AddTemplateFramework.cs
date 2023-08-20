@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Core.Tests.Extensions;
 
-public class ServiceCollectionExtensionsTests
+public partial class ServiceCollectionExtensionsTests
 {
     public class AddTemplateFramework
     {

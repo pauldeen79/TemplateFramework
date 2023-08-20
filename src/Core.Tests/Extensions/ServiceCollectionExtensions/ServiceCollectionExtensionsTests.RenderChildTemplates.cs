@@ -1,19 +1,9 @@
 ﻿namespace TemplateFramework.Core.Tests.Extensions;
 
-public partial class ServiceCollectionExtensionTests
+public partial class ServiceCollectionExtensionsTests
 {
-    public class RenderChildTemplates
+    public class RenderChildTemplates : ServiceCollectionExtensionsTests
     {
-        private Mock<ITemplateEngine> TemplateEngineMock { get; } = new();
-        private Mock<IGenerationEnvironment> GenerationEnvironmentMock { get; } = new();
-        private Mock<ITemplateContext> ContextMock { get; } = new();
-
-        private object Template { get; } = new object();
-        private object AdditionalParameters { get; } = new object();
-        private IEnumerable<object?> Models { get; } = new[] { new object(), new object(), new object() };
-
-        const string DefaultFilename = "DefaultFilename.txt";
-
         [Fact]
         public void Throws_On_Null_Model_1()
         {
