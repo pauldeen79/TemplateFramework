@@ -35,16 +35,12 @@ public class IntegrationTests
         using var provider = new ServiceCollection()
             .AddTemplateFramework()
             .AddTemplateFrameworkChildTemplateProvider()
-            // Option 1: Provide a factory (transient, unless you use the IServiceProvider argument)
             .AddChildTemplate("CodeGenerationHeader", _ => new TestData.CodeGenerationHeaderTemplate())
-            // Option 2: Register the template (allow control of lifetime)
-            .AddChildTemplate<TestData.DefaultUsingsTemplate>("DefaultUsings")
-            .AddTransient<TestData.DefaultUsingsTemplate>()
-            .AddChildTemplate<TestData.ClassTemplate>(typeof(TestData.TypeBase))
-            .AddTransient<TestData.ClassTemplate>()
+            .AddChildTemplate("DefaultUsings", _ => new TestData.DefaultUsingsTemplate())
+            .AddChildTemplate(typeof(TestData.TypeBase), _ => new TestData.ClassTemplate())
             .BuildServiceProvider();
         var engine = provider.GetRequiredService<ITemplateEngine>();
-        var template = new TestData.BogusCsharpClassGenerator();
+        var template = new TestData.CsharpClassGenerator();
         var generationEnvironment = new MultipleContentBuilder();
         var model = new[]
         {
@@ -55,10 +51,10 @@ public class IntegrationTests
         };
         var additionalParameters = new Dictionary<string, object?>
         {
-            { nameof(TestData.BogusCsharpClassGenerator.GenerateMultipleFiles), true },
-            { nameof(TestData.BogusCsharpClassGenerator.SkipWhenFileExists), false },
-            { nameof(TestData.BogusCsharpClassGenerator.CreateCodeGenerationHeader), true },
-            { nameof(TestData.BogusCsharpClassGenerator.EnvironmentVersion), "1.0" },
+            { nameof(TestData.CsharpClassGenerator.GenerateMultipleFiles), true },
+            { nameof(TestData.CsharpClassGenerator.SkipWhenFileExists), false },
+            { nameof(TestData.CsharpClassGenerator.CreateCodeGenerationHeader), true },
+            { nameof(TestData.CsharpClassGenerator.EnvironmentVersion), "1.0" },
         };
 
         // Act

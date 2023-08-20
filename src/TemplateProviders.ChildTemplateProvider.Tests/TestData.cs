@@ -39,9 +39,9 @@ internal static class TestData
         public void Render(IMultipleContentBuilder builder) => _delegate(builder, Context, Engine, Provider);
     }
 
-    internal abstract class BogusCsharpClassGeneratorBase : IParameterizedTemplate, ITemplateContextContainer, ITemplateEngineContainer, ITemplateProviderContainer, IDefaultFilenameContainer
+    internal abstract class CsharpClassGeneratorBase : IParameterizedTemplate, ITemplateContextContainer, ITemplateEngineContainer, ITemplateProviderContainer, IDefaultFilenameContainer
     {
-        protected BogusCsharpClassGeneratorBase()
+        protected CsharpClassGeneratorBase()
         {
             // Provide default values for parameters, if needed
             GenerateMultipleFiles = false;
@@ -101,7 +101,7 @@ internal static class TestData
             };
     }
 
-    internal sealed class BogusCsharpClassGenerator : BogusCsharpClassGeneratorBase, IMultipleContentBuilderTemplate, IModelContainer<IEnumerable<TypeBase>>
+    internal sealed class CsharpClassGenerator : CsharpClassGeneratorBase, IMultipleContentBuilderTemplate, IModelContainer<IEnumerable<TypeBase>>
     {
         // Properties that are injected by the template engine
         public IEnumerable<TypeBase>? Model { get; set; }
@@ -149,7 +149,7 @@ internal static class TestData
         }
     }
 
-    internal sealed class CodeGenerationHeaderTemplate : BogusCsharpClassGeneratorBase, IStringBuilderTemplate
+    internal sealed class CodeGenerationHeaderTemplate : CsharpClassGeneratorBase, IStringBuilderTemplate
     {
         public string Version
             => !string.IsNullOrEmpty(EnvironmentVersion)
