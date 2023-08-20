@@ -41,15 +41,6 @@ internal static class TestData
 
     internal abstract class CsharpClassGeneratorBase : IParameterizedTemplate, ITemplateContextContainer, ITemplateEngineContainer, ITemplateProviderContainer, IDefaultFilenameContainer
     {
-        protected CsharpClassGeneratorBase()
-        {
-            // Provide default values for parameters, if needed
-            GenerateMultipleFiles = false;
-            SkipWhenFileExists = false;
-            CreateCodeGenerationHeader = true;
-            EnvironmentVersion = null;
-        }
-
         // Properties that are injected by the template engine
         public ITemplateContext Context { get; set; } = default!;
         public ITemplateEngine Engine { get; set; } = default!;
@@ -59,8 +50,13 @@ internal static class TestData
         // Parameters, filled by the template engine
         public bool GenerateMultipleFiles { get; set; }
         public bool SkipWhenFileExists { get; set; }
-        public bool CreateCodeGenerationHeader { get; set; }
+        public bool CreateCodeGenerationHeader { get; set; } = true;
         public string? EnvironmentVersion { get; set; }
+        public string? FilenamePrefix { get; set; }
+        public string? FilenameSuffix { get; set; }
+        public bool EnableNullableContext { get; set; }
+        public string? CurrentIndent { get; set; } = "    ";
+        public CultureInfo CultureInfo { get; set; } = CultureInfo.CurrentCulture;
 
         public ITemplateParameter[] GetParameters() => new[]
         {
@@ -68,6 +64,11 @@ internal static class TestData
             new TemplateParameter(nameof(SkipWhenFileExists), typeof(bool)),
             new TemplateParameter(nameof(CreateCodeGenerationHeader), typeof(bool)),
             new TemplateParameter(nameof(EnvironmentVersion), typeof(string)),
+            new TemplateParameter(nameof(FilenamePrefix), typeof(string)),
+            new TemplateParameter(nameof(FilenameSuffix), typeof(string)),
+            new TemplateParameter(nameof(EnableNullableContext), typeof(bool)),
+            new TemplateParameter(nameof(CurrentIndent), typeof(string)),
+            new TemplateParameter(nameof(CultureInfo), typeof(CultureInfo)),
         };
 
         public void SetParameter(string name, object? value)
@@ -75,16 +76,31 @@ internal static class TestData
             switch (name)
             {
                 case nameof(GenerateMultipleFiles):
-                    GenerateMultipleFiles = Convert.ToBoolean(value, CultureInfo.InvariantCulture);
+                    GenerateMultipleFiles = Convert.ToBoolean(value, CultureInfo);
                     break;
                 case nameof(SkipWhenFileExists):
-                    SkipWhenFileExists = Convert.ToBoolean(value, CultureInfo.InvariantCulture);
+                    SkipWhenFileExists = Convert.ToBoolean(value, CultureInfo);
                     break;
                 case nameof(CreateCodeGenerationHeader):
-                    CreateCodeGenerationHeader = Convert.ToBoolean(value, CultureInfo.InvariantCulture);
+                    CreateCodeGenerationHeader = Convert.ToBoolean(value, CultureInfo);
                     break;
                 case nameof(EnvironmentVersion):
                     EnvironmentVersion = value?.ToString();
+                    break;
+                case nameof(FilenamePrefix):
+                    FilenamePrefix = value?.ToString();
+                    break;
+                case nameof(FilenameSuffix):
+                    FilenameSuffix = value?.ToString();
+                    break;
+                case nameof(EnableNullableContext):
+                    EnableNullableContext = Convert.ToBoolean(value, CultureInfo);
+                    break;
+                case nameof(CurrentIndent):
+                    CurrentIndent = value?.ToString();
+                    break;
+                case nameof(CultureInfo):
+                    CultureInfo = value as CultureInfo ?? throw new NotSupportedException("CultureInfo parameter must be of type CultureInfo");
                     break;
                 default:
                     throw new NotSupportedException($"Unsupported parameter: {name}");
@@ -119,27 +135,23 @@ internal static class TestData
             {
                 singleStringBuilder = builder.AddContent(DefaultFilename, SkipWhenFileExists).Builder;
                 generationEnvironment = new StringBuilderEnvironment(singleStringBuilder);
-            }
-
-            if (!GenerateMultipleFiles)
-            {
                 Engine.RenderChildTemplate(generationEnvironment, Provider.Create(new ChildTemplateByNameRequest("CodeGenerationHeader")), DefaultFilename, AdditionalParameters, Context);
 
                 if (Context.IsRootContext)
                 {
-                    Engine.RenderChildTemplate(generationEnvironment, Provider.Create(new ChildTemplateByNameRequest("DefaultUsings")), DefaultFilename, AdditionalParameters, Context);
+                    Engine.RenderChildTemplate(Model, generationEnvironment, Provider.Create(new ChildTemplateByNameRequest("DefaultUsings")), DefaultFilename, AdditionalParameters, Context);
                 }
             }
 
-            foreach (var ns in Model.GroupBy(x => x.Namespace))
+            foreach (var ns in Model.GroupBy(x => x.Namespace).OrderBy(x => x.Key))
             {
                 if (Context.IsRootContext && !GenerateMultipleFiles)
                 {
-                    singleStringBuilder!.AppendLine(CultureInfo.InvariantCulture, $"namespace {ns.Key}");
+                    singleStringBuilder!.AppendLine(CultureInfo, $"namespace {ns.Key}");
                     singleStringBuilder.AppendLine("{"); // open namespace
                 }
 
-                Engine.RenderChildTemplates(ns, generationEnvironment, typeBase => Provider.Create(new ChildTemplateByModelRequest(typeBase)), DefaultFilename, AdditionalParameters, Context);
+                Engine.RenderChildTemplates(ns.OrderBy(x => x.Name), generationEnvironment, typeBase => Provider.Create(new ChildTemplateByModelRequest(typeBase)), DefaultFilename, AdditionalParameters, Context);
 
                 if (Context.IsRootContext && !GenerateMultipleFiles)
                 {
@@ -165,7 +177,7 @@ internal static class TestData
                 return;
             }
 
-            builder.AppendLine(CultureInfo.InvariantCulture, $@"// ------------------------------------------------------------------------------
+            builder.AppendLine(CultureInfo, $@"// ------------------------------------------------------------------------------
 // <auto-generated>
 //     This code was generated by a tool.
 //     Runtime Version: { Version }
@@ -177,7 +189,7 @@ internal static class TestData
         }
     }
 
-    internal sealed class DefaultUsingsTemplate : IModelContainer<IEnumerable<TypeBase>?>, IStringBuilderTemplate
+    internal sealed class DefaultUsingsTemplate : CsharpClassGeneratorBase, IModelContainer<IEnumerable<TypeBase>?>, IStringBuilderTemplate
     {
         public IEnumerable<TypeBase>? Model { get; set; }
 
@@ -186,20 +198,96 @@ internal static class TestData
             Guard.IsNotNull(builder);
             Guard.IsNotNull(Model);
 
-            //TODO: Implement
+            foreach (var @using in DefaultUsings)
+            {
+                builder.AppendLine(CultureInfo, $"using {@using};");
+            }
         }
+
+        private readonly static string[] DefaultUsings = new[]
+{
+            "System",
+            "System.Collections.Generic",
+            "System.Linq",
+            "System.Text"
+        };
+
+        public IEnumerable<string> Usings
+            => DefaultUsings
+                //.Union(Model.SelectMany(classItem => classItem.Metadata.GetStringValues(ModelFramework.Objects.MetadataNames.CustomUsing)))
+                .OrderBy(ns => ns)
+                .Distinct();
     }
 
-    internal sealed class ClassTemplate : IModelContainer<TypeBase>, IStringBuilderTemplate
+    internal sealed class ClassTemplate : CsharpClassGeneratorBase, IModelContainer<TypeBase>, IMultipleContentBuilderTemplate
     {
         public TypeBase? Model { get; set; }
 
-        public void Render(StringBuilder builder)
+        public void Render(IMultipleContentBuilder builder)
         {
             Guard.IsNotNull(builder);
             Guard.IsNotNull(Model);
+            Guard.IsNotNull(Context);
 
-            //TODO: Implement
+            StringBuilderEnvironment generationEnvironment;
+
+            if (!GenerateMultipleFiles)
+            {
+                if (!builder.Contents.Any())
+                {
+                    builder.AddContent(DefaultFilename, SkipWhenFileExists);
+                }
+                generationEnvironment = new StringBuilderEnvironment(builder.Contents.Last().Builder); // important to take the last contents, in case of sub classes
+            }
+            else
+            {
+                var filename = $"{FilenamePrefix}{Model.Name}{FilenameSuffix}.cs";
+                var contentBuilder = builder.AddContent(filename, SkipWhenFileExists);
+                generationEnvironment = new StringBuilderEnvironment(contentBuilder.Builder);
+                Engine.RenderChildTemplate(generationEnvironment, Provider.Create(new ChildTemplateByNameRequest("CodeGenerationHeader")), DefaultFilename, AdditionalParameters, Context);
+                Engine.RenderChildTemplate(Context.GetModelFromContextByType<IEnumerable<TypeBase>>() ?? throw new InvalidOperationException("No root context found"), generationEnvironment, Provider.Create(new ChildTemplateByNameRequest("DefaultUsings")), DefaultFilename, AdditionalParameters, Context);
+                contentBuilder.Builder.AppendLine(CultureInfo, $"namespace {Model.Namespace}");
+                contentBuilder.Builder.AppendLine("{");
+            }
+
+            if (EnableNullableContext)
+            {
+                generationEnvironment.Builder.AppendLine("#nullable enable");
+            }
+
+            /* //TODO:
+             * <#@ renderChildTemplate name="CSharpClassGenerator.DefaultAttributeTemplate" model="Model.Attributes" customResolverDelegate="ResolveFromMetadata" #>
+                <#= Model.GetModifiers() #><#= Model.GetContainerType() #> <#= ViewModel.Name #><#= Model.GetGenericTypeArgumentsString() #><#= Model.GetInheritedClasses() #><#= Model.GetGenericTypeArgumentConstraintsString() #>
+             */
+            generationEnvironment.Builder.AppendLine(CultureInfo, $"{CurrentIndent}{{");
+
+            if (Model.SubClasses?.Any() == true)
+            {
+                var childAdditionalParameters = new
+                {
+                    //GenerateMultipleFiles, //set to false because the sub classes will be generated as part of the current file
+                    SkipWhenFileExists,
+                    CreateCodeGenerationHeader,
+                    EnvironmentVersion,
+                    FilenamePrefix,
+                    FilenameSuffix,
+                    EnableNullableContext,
+                    CurrentIndent = (CurrentIndent ?? string.Empty) + "    "
+                };
+                Engine.RenderChildTemplates(Model.SubClasses, new MultipleContentBuilderEnvironment(builder), _ => new ClassTemplate(), DefaultFilename, childAdditionalParameters, Context);
+            }
+
+            generationEnvironment.Builder.AppendLine(CultureInfo, $"{CurrentIndent}}}");
+
+            if (EnableNullableContext)
+            {
+                generationEnvironment.Builder.AppendLine("#nullable restore");
+            }
+
+            if (GenerateMultipleFiles)
+            {
+                generationEnvironment.Builder.AppendLine("}"); // close namespace
+            }
         }
     }
 
@@ -207,5 +295,6 @@ internal static class TestData
     {
         public string Namespace { get; set; } = "";
         public string Name { get; set; } = "";
+        public TypeBase[]? SubClasses { get; set; }
     }
 }
