@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Core.Tests.Extensions;
 
-public partial class ServiceCollectionExtensionsTests
+public partial class TemplateEngineExtensionsTests
 {
     protected Mock<ITemplateEngine> TemplateEngineMock { get; } = new();
     protected Mock<IGenerationEnvironment> GenerationEnvironmentMock { get; } = new();

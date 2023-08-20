@@ -1,8 +1,8 @@
 ﻿namespace TemplateFramework.Core.Tests.Extensions;
 
-public partial class ServiceCollectionExtensionsTests
+public partial class TemplateEngineExtensionsTests
 {
-    public class RenderChildTemplates : ServiceCollectionExtensionsTests
+    public class RenderChildTemplates : TemplateEngineExtensionsTests
     {
         [Fact]
         public void Throws_On_Null_Models_1()

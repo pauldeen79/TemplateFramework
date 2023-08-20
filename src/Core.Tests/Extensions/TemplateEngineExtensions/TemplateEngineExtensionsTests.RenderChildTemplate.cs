@@ -1,8 +1,8 @@
 ﻿namespace TemplateFramework.Core.Tests.Extensions;
 
-public partial class ServiceCollectionExtensionsTests
+public partial class TemplateEngineExtensionsTests
 {
-    public class RenderChildTemplate : ServiceCollectionExtensionsTests
+    public class RenderChildTemplate : TemplateEngineExtensionsTests
     {
         [Fact]
         public void RenderChildTemplate_Renders_ChildTemplate_Correctly_1()
