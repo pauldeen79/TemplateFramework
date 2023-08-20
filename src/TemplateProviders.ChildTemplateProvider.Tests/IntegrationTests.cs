@@ -47,7 +47,7 @@ public class IntegrationTests
             new TestData.TypeBase { Namespace  = "Namespace1", Name = "Class1a" },
             new TestData.TypeBase { Namespace  = "Namespace1", Name = "Class1b" },
             new TestData.TypeBase { Namespace  = "Namespace2", Name = "Class2a" },
-            new TestData.TypeBase { Namespace  = "Namespace2", Name = "Class2b" },
+            new TestData.TypeBase { Namespace  = "Namespace2", Name = "Class2b", SubClasses = new[] { new TestData.TypeBase { Namespace = "Ignored", Name = "Subclass1" }, new TestData.TypeBase { Namespace = "Ignored", Name = "Subclass2" } } },
         };
         var additionalParameters = new Dictionary<string, object?>
         {
@@ -55,6 +55,9 @@ public class IntegrationTests
             { nameof(TestData.CsharpClassGenerator.SkipWhenFileExists), false },
             { nameof(TestData.CsharpClassGenerator.CreateCodeGenerationHeader), true },
             { nameof(TestData.CsharpClassGenerator.EnvironmentVersion), "1.0" },
+            { nameof(TestData.CsharpClassGenerator.FilenamePrefix), "Entities/" },
+            { nameof(TestData.CsharpClassGenerator.FilenameSuffix), ".generated" },
+            { nameof(TestData.CsharpClassGenerator.EnableNullableContext), true },
         };
 
         // Act
