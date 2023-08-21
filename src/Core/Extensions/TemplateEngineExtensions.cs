@@ -208,8 +208,7 @@ public static class TemplateEngineExtensions
         var items = models.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
         foreach (var item in items)
         {
-            var createTemplateRequest = createTemplateRequestFactory(item.Model);
-            var template = context.Provider.Create(createTemplateRequest);
+            var template = context.Provider.Create(createTemplateRequestFactory(item.Model));
             instance.Render(new RenderTemplateRequest(template, item.Model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(template, item, item.Index, items.Length))));
         }
     }
@@ -223,8 +222,7 @@ public static class TemplateEngineExtensions
         var items = models.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
         foreach (var item in items)
         {
-            var createTemplateRequest = createTemplateRequestFactory(item.Model);
-            var template = context.Provider.Create(createTemplateRequest);
+            var template = context.Provider.Create(createTemplateRequestFactory(item.Model));
             instance.Render(new RenderTemplateRequest(template, item.Model, generationEnvironment, context.DefaultFilename, additionalParameters, context.CreateChildContext(new ChildTemplateContext(template, item, item.Index, items.Length))));
         }
     }
