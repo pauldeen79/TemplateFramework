@@ -37,90 +37,38 @@ internal static class TestData
         public void Render(IMultipleContentBuilder builder) => _delegate(builder, Context);
     }
 
-    internal abstract class CsharpClassGeneratorBase : IParameterizedTemplate, ITemplateContextContainer
+    internal class CsharpClassGeneratorViewModel<TModel>
+    {
+        public CsharpClassGeneratorViewModel(TModel data, CsharpClassGeneratorSettings settings)
+        {
+            Data = data;
+            Settings = settings;
+        }
+
+        public TModel Data { get; }
+        public CsharpClassGeneratorSettings Settings { get; }
+    }
+
+    internal record CsharpClassGeneratorSettings(bool GenerateMultipleFiles,
+                                                 bool SkipWhenFileExists,
+                                                 bool CreateCodeGenerationHeader,
+                                                 string? EnvironmentVersion,
+                                                 string? FilenamePrefix,
+                                                 string? FilenameSuffix,
+                                                 bool EnableNullableContext,
+                                                 int IndentCount,
+                                                 CultureInfo CultureInfo);
+
+    internal abstract class CsharpClassGeneratorBase : ITemplateContextContainer
     {
         // Properties that are injected by the template engine
         public ITemplateContext Context { get; set; } = default!;
-
-        // Parameters, filled by the template engine
-        public bool GenerateMultipleFiles { get; set; }
-        public bool SkipWhenFileExists { get; set; }
-        public bool CreateCodeGenerationHeader { get; set; } = true;
-        public string? EnvironmentVersion { get; set; }
-        public string? FilenamePrefix { get; set; }
-        public string? FilenameSuffix { get; set; }
-        public bool EnableNullableContext { get; set; }
-        public int IndentCount { get; set; } = 1;
-        public CultureInfo CultureInfo { get; set; } = CultureInfo.CurrentCulture;
-
-        public ITemplateParameter[] GetParameters() => new[]
-        {
-            new TemplateParameter(nameof(GenerateMultipleFiles), typeof(bool)),
-            new TemplateParameter(nameof(SkipWhenFileExists), typeof(bool)),
-            new TemplateParameter(nameof(CreateCodeGenerationHeader), typeof(bool)),
-            new TemplateParameter(nameof(EnvironmentVersion), typeof(string)),
-            new TemplateParameter(nameof(FilenamePrefix), typeof(string)),
-            new TemplateParameter(nameof(FilenameSuffix), typeof(string)),
-            new TemplateParameter(nameof(EnableNullableContext), typeof(bool)),
-            new TemplateParameter(nameof(IndentCount), typeof(int)),
-            new TemplateParameter(nameof(CultureInfo), typeof(CultureInfo)),
-        };
-
-        public void SetParameter(string name, object? value)
-        {
-            switch (name)
-            {
-                case nameof(GenerateMultipleFiles):
-                    GenerateMultipleFiles = Convert.ToBoolean(value, CultureInfo);
-                    break;
-                case nameof(SkipWhenFileExists):
-                    SkipWhenFileExists = Convert.ToBoolean(value, CultureInfo);
-                    break;
-                case nameof(CreateCodeGenerationHeader):
-                    CreateCodeGenerationHeader = Convert.ToBoolean(value, CultureInfo);
-                    break;
-                case nameof(EnvironmentVersion):
-                    EnvironmentVersion = value?.ToString();
-                    break;
-                case nameof(FilenamePrefix):
-                    FilenamePrefix = value?.ToString();
-                    break;
-                case nameof(FilenameSuffix):
-                    FilenameSuffix = value?.ToString();
-                    break;
-                case nameof(EnableNullableContext):
-                    EnableNullableContext = Convert.ToBoolean(value, CultureInfo);
-                    break;
-                case nameof(IndentCount):
-                    IndentCount = Convert.ToInt32(value, CultureInfo);
-                    break;
-                case nameof(CultureInfo):
-                    CultureInfo = value as CultureInfo ?? throw new NotSupportedException("CultureInfo parameter must be of type CultureInfo");
-                    break;
-                default:
-                    throw new NotSupportedException($"Unsupported parameter: {name}");
-            }
-        }
-
-        protected object AdditionalParameters
-            => new
-            {
-                GenerateMultipleFiles,
-                SkipWhenFileExists,
-                CreateCodeGenerationHeader,
-                EnvironmentVersion,
-                FilenamePrefix,
-                FilenameSuffix,
-                EnableNullableContext,
-                IndentCount,
-                CultureInfo
-            };
     }
 
-    internal sealed class CsharpClassGenerator : CsharpClassGeneratorBase, IMultipleContentBuilderTemplate, IModelContainer<IEnumerable<TypeBase>>
+    internal sealed class CsharpClassGenerator : CsharpClassGeneratorBase, IMultipleContentBuilderTemplate, IModelContainer<CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>>
     {
         // Properties that are injected by the template engine
-        public IEnumerable<TypeBase>? Model { get; set; }
+        public CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>? Model { get; set; }
 
         public void Render(IMultipleContentBuilder builder)
         {
@@ -130,29 +78,33 @@ internal static class TestData
             StringBuilder? singleStringBuilder = null;
             IGenerationEnvironment generationEnvironment = new MultipleContentBuilderEnvironment(builder);
 
-            if (!GenerateMultipleFiles)
+            if (!Model.Settings.GenerateMultipleFiles)
             {
-                singleStringBuilder = builder.AddContent(Context.DefaultFilename, SkipWhenFileExists).Builder;
+                singleStringBuilder = builder.AddContent(Context.DefaultFilename, Model.Settings.SkipWhenFileExists).Builder;
                 generationEnvironment = new StringBuilderEnvironment(singleStringBuilder);
-                Context.Engine.RenderChildTemplate(generationEnvironment, Context.Provider.Create(new ChildTemplateByNameRequest("CodeGenerationHeader")), Context.DefaultFilename, AdditionalParameters, Context);
+                Context.Engine.RenderChildTemplate(Model.Settings, generationEnvironment, Context.Provider.Create(new ChildTemplateByNameRequest("CodeGenerationHeader")), Context.DefaultFilename, Context);
 
                 if (Context.IsRootContext)
                 {
-                    Context.Engine.RenderChildTemplate(Model, generationEnvironment, Context.Provider.Create(new ChildTemplateByNameRequest("DefaultUsings")), Context.DefaultFilename, AdditionalParameters, Context);
+                    Context.Engine.RenderChildTemplate(Model, generationEnvironment, Context.Provider.Create(new ChildTemplateByNameRequest("DefaultUsings")), Context.DefaultFilename, Context);
                 }
             }
 
-            foreach (var ns in Model.GroupBy(x => x.Namespace).OrderBy(x => x.Key))
+            foreach (var ns in Model.Data.GroupBy(x => x.Namespace).OrderBy(x => x.Key))
             {
-                if (Context.IsRootContext && !GenerateMultipleFiles)
+                if (Context.IsRootContext && !Model.Settings.GenerateMultipleFiles)
                 {
-                    singleStringBuilder!.AppendLine(CultureInfo, $"namespace {ns.Key}");
+                    singleStringBuilder!.AppendLine(Model.Settings.CultureInfo, $"namespace {ns.Key}");
                     singleStringBuilder.AppendLine("{"); // open namespace
                 }
 
-                Context.Engine.RenderChildTemplates(ns.OrderBy(x => x.Name), generationEnvironment, typeBase => Context.Provider.Create(new ChildTemplateByModelRequest(typeBase)), Context.DefaultFilename, AdditionalParameters, Context);
+                var typeBaseItems = ns
+                    .OrderBy(typeBase => typeBase.Name)
+                    .Select(typeBase => new CsharpClassGeneratorViewModel<TypeBase>(typeBase, Model.Settings));
 
-                if (Context.IsRootContext && !GenerateMultipleFiles)
+                Context.Engine.RenderChildTemplates(typeBaseItems, generationEnvironment, typeBase => Context.Provider.Create(new ChildTemplateByModelRequest(((CsharpClassGeneratorViewModel<TypeBase>)typeBase).Data)), Context.DefaultFilename, Context);
+
+                if (Context.IsRootContext && !Model.Settings.GenerateMultipleFiles)
                 {
                     singleStringBuilder!.AppendLine("}"); // close namespace
                 }
@@ -160,23 +112,25 @@ internal static class TestData
         }
     }
 
-    internal sealed class CodeGenerationHeaderTemplate : CsharpClassGeneratorBase, IStringBuilderTemplate
+    internal sealed class CodeGenerationHeaderTemplate : CsharpClassGeneratorBase, IStringBuilderTemplate, IModelContainer<CsharpClassGeneratorSettings>
     {
+        public CsharpClassGeneratorSettings? Model { get; set; }
+
         public string Version
-            => !string.IsNullOrEmpty(EnvironmentVersion)
-                ? EnvironmentVersion
+            => !string.IsNullOrEmpty(Model?.EnvironmentVersion)
+                ? Model.EnvironmentVersion
                 : Environment.Version.ToString();
 
         public void Render(StringBuilder builder)
         {
             Guard.IsNotNull(builder);
 
-            if (!CreateCodeGenerationHeader)
+            if (Model?.CreateCodeGenerationHeader != true)
             {
                 return;
             }
 
-            builder.AppendLine(CultureInfo, $$"""
+            builder.AppendLine(Model.CultureInfo, $$"""
 // ------------------------------------------------------------------------------
 // <auto-generated>
 //     This code was generated by a tool.
@@ -190,9 +144,9 @@ internal static class TestData
         }
     }
 
-    internal sealed class DefaultUsingsTemplate : CsharpClassGeneratorBase, IModelContainer<IEnumerable<TypeBase>?>, IStringBuilderTemplate
+    internal sealed class DefaultUsingsTemplate : CsharpClassGeneratorBase, IModelContainer<CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>>, IStringBuilderTemplate
     {
-        public IEnumerable<TypeBase>? Model { get; set; }
+        public CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>? Model { get; set; }
 
         public void Render(StringBuilder builder)
         {
@@ -202,7 +156,7 @@ internal static class TestData
             var anyUsings = false;
             foreach (var @using in Usings)
             {
-                builder.AppendLine(CultureInfo, $"using {@using};");
+                builder.AppendLine(Model.Settings.CultureInfo, $"using {@using};");
                 anyUsings = true;
             }
 
@@ -227,9 +181,9 @@ internal static class TestData
                 .Distinct();
     }
 
-    internal sealed class ClassTemplate : CsharpClassGeneratorBase, IModelContainer<TypeBase>, IMultipleContentBuilderTemplate
+    internal sealed class ClassTemplate : CsharpClassGeneratorBase, IModelContainer<CsharpClassGeneratorViewModel<TypeBase>>, IMultipleContentBuilderTemplate
     {
-        public TypeBase? Model { get; set; }
+        public CsharpClassGeneratorViewModel<TypeBase>? Model { get; set; }
 
         public void Render(IMultipleContentBuilder builder)
         {
@@ -239,70 +193,73 @@ internal static class TestData
 
             StringBuilderEnvironment generationEnvironment;
 
-            if (!GenerateMultipleFiles)
+            if (!Model.Settings.GenerateMultipleFiles)
             {
                 if (!builder.Contents.Any())
                 {
-                    builder.AddContent(Context.DefaultFilename, SkipWhenFileExists);
+                    builder.AddContent(Context.DefaultFilename, Model.Settings.SkipWhenFileExists);
                 }
 
                 generationEnvironment = new StringBuilderEnvironment(builder.Contents.Last().Builder); // important to take the last contents, in case of sub classes
             }
             else
             {
-                var filename = $"{FilenamePrefix}{Model.Name}{FilenameSuffix}.cs";
-                var contentBuilder = builder.AddContent(filename, SkipWhenFileExists);
+                var filename = $"{Model.Settings.FilenamePrefix}{Model.Data.Name}{Model.Settings.FilenameSuffix}.cs";
+                var contentBuilder = builder.AddContent(filename, Model.Settings.SkipWhenFileExists);
                 generationEnvironment = new StringBuilderEnvironment(contentBuilder.Builder);
-                Context.Engine.RenderChildTemplate(generationEnvironment, Context.Provider.Create(new ChildTemplateByNameRequest("CodeGenerationHeader")), Context.DefaultFilename, AdditionalParameters, Context);
-                Context.Engine.RenderChildTemplate(Context.GetModelFromContextByType<IEnumerable<TypeBase>>() ?? throw new InvalidOperationException("No root context found"), generationEnvironment, Context.Provider.Create(new ChildTemplateByNameRequest("DefaultUsings")), Context.DefaultFilename, AdditionalParameters, Context);
-                contentBuilder.Builder.AppendLine(CultureInfo, $"namespace {Model.Namespace}");
-                contentBuilder.Builder.AppendLine("{");
+                Context.Engine.RenderChildTemplate(Model.Settings, generationEnvironment, Context.Provider.Create(new ChildTemplateByNameRequest("CodeGenerationHeader")), Context.DefaultFilename, Context);
+                var rootItems = Context.GetModelFromContextByType<CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>>(context => context.IsRootContext)
+                    ?? throw new InvalidOperationException("No root context found");
+                Context.Engine.RenderChildTemplate(rootItems, generationEnvironment, Context.Provider.Create(new ChildTemplateByNameRequest("DefaultUsings")), Context.DefaultFilename, Context);
+                contentBuilder.Builder.AppendLine(Model.Settings.CultureInfo, $"namespace {Model.Data.Namespace}");
+                contentBuilder.Builder.AppendLine("{"); // start namespace
             }
 
-            if (EnableNullableContext && IndentCount == 1)
+            if (Model.Settings.EnableNullableContext && Model.Settings.IndentCount == 1)
             {
                 generationEnvironment.Builder.AppendLine("#nullable enable");
             }
 
             var indentedBuilder = new IndentedStringBuilder(generationEnvironment.Builder);
-            for (int i = 0; i < IndentCount; i++)
+            for (int i = 0; i < Model.Settings.IndentCount; i++)
             {
                 indentedBuilder.Indent();
             }
             //TODO: Render attributes
             //TODO: Replace public class with more options based on model
-            indentedBuilder.AppendLine($"public class {Model.Name}");
-            indentedBuilder.AppendLine("{"); // open class
+            indentedBuilder.AppendLine($"public class {Model.Data.Name}");
+            indentedBuilder.AppendLine("{"); // start class
 
             //TODO: Render child items
-            if (Model.SubClasses?.Any() == true)
+            if (Model.Data.SubClasses?.Any() == true)
             {
-                var childAdditionalParameters = new
-                {
-                    GenerateMultipleFiles = false, //set to false because the sub classes will be generated as part of the current file
-                    SkipWhenFileExists,
-                    CreateCodeGenerationHeader,
-                    EnvironmentVersion,
-                    FilenamePrefix,
-                    FilenameSuffix,
-                    EnableNullableContext,
-                    IndentCount = IndentCount + 1
-                };
+                var settings = new CsharpClassGeneratorSettings
+                (
+                    GenerateMultipleFiles: false, //set to false because the sub classes will be generated as part of the current file
+                    SkipWhenFileExists: Model.Settings.SkipWhenFileExists,
+                    CreateCodeGenerationHeader: Model.Settings.CreateCodeGenerationHeader,
+                    EnvironmentVersion: Model.Settings.EnvironmentVersion,
+                    FilenamePrefix: Model.Settings.FilenamePrefix,
+                    FilenameSuffix: Model.Settings.FilenameSuffix,
+                    EnableNullableContext: Model.Settings.EnableNullableContext,
+                    IndentCount: Model.Settings.IndentCount + 1,
+                    CultureInfo: Model.Settings.CultureInfo
+                );
 
                 var childTemplateInstance = new ClassTemplate();
-                Context.Engine.RenderChildTemplates(Model.SubClasses, new MultipleContentBuilderEnvironment(builder), _ => childTemplateInstance, Context.DefaultFilename, childAdditionalParameters, Context);
+                Context.Engine.RenderChildTemplates(Model.Data.SubClasses.Select(typeBase => new CsharpClassGeneratorViewModel<TypeBase>(typeBase, settings)), new MultipleContentBuilderEnvironment(builder), _ => childTemplateInstance, Context.DefaultFilename, Context);
             }
 
-            indentedBuilder.AppendLine("}"); // close class
+            indentedBuilder.AppendLine("}"); // end class
 
-            if (EnableNullableContext && IndentCount == 1)
+            if (Model.Settings.EnableNullableContext && Model.Settings.IndentCount == 1)
             {
                 generationEnvironment.Builder.AppendLine("#nullable restore");
             }
 
-            if (GenerateMultipleFiles)
+            if (Model.Settings.GenerateMultipleFiles)
             {
-                generationEnvironment.Builder.AppendLine("}"); // close namespace
+                generationEnvironment.Builder.AppendLine("}"); // end namespace
             }
         }
     }

@@ -49,19 +49,22 @@ public class IntegrationTests
             new TestData.TypeBase { Namespace  = "Namespace2", Name = "Class2a" },
             new TestData.TypeBase { Namespace  = "Namespace2", Name = "Class2b", SubClasses = new[] { new TestData.TypeBase { Namespace = "Ignored", Name = "Subclass1" }, new TestData.TypeBase { Namespace = "Ignored", Name = "Subclass2" } } },
         };
-        var additionalParameters = new Dictionary<string, object?>
-        {
-            { nameof(TestData.CsharpClassGenerator.GenerateMultipleFiles), true },
-            { nameof(TestData.CsharpClassGenerator.SkipWhenFileExists), false },
-            { nameof(TestData.CsharpClassGenerator.CreateCodeGenerationHeader), true },
-            { nameof(TestData.CsharpClassGenerator.EnvironmentVersion), "1.0" },
-            { nameof(TestData.CsharpClassGenerator.FilenamePrefix), "Entities/" },
-            { nameof(TestData.CsharpClassGenerator.FilenameSuffix), ".generated" },
-            { nameof(TestData.CsharpClassGenerator.EnableNullableContext), true },
-        };
+        var settings = new TestData.CsharpClassGeneratorSettings
+        (
+            GenerateMultipleFiles: true,
+            SkipWhenFileExists: false,
+            CreateCodeGenerationHeader: true,
+            EnvironmentVersion: "1.0",
+            FilenamePrefix: "Entities/",
+            FilenameSuffix: ".generated",
+            EnableNullableContext: true,
+            IndentCount: 0,
+            CultureInfo: CultureInfo.CurrentCulture
+        );
+        var viewModel = new TestData.CsharpClassGeneratorViewModel<IEnumerable<TestData.TypeBase>>(model, settings);
 
         // Act
-        engine.Render(new RenderTemplateRequest(template, model, generationEnvironment, additionalParameters));
+        engine.Render(new RenderTemplateRequest(template, viewModel, generationEnvironment, settings));
 
         // Assert
         generationEnvironment.Contents.Should().HaveCount(4);
