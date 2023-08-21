@@ -835,5 +835,10 @@ public partial class TemplateEngineExtensionsTests
                 && request.Model == null
                 && request.Template == Template)), Times.Once());
         }
+
+        //33:void RenderChildTemplate(this ITemplateEngine instance, object? model, IGenerationEnvironment generationEnvironment, ITemplateContext context, ICreateTemplateRequest createTemplateRequest)
+        //34:void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, ITemplateContext context, ICreateTemplateRequest createTemplateRequest)
+        //35:void RenderChildTemplate(this ITemplateEngine instance, object? model, IGenerationEnvironment generationEnvironment, object additionalParameters, ITemplateContext context, ICreateTemplateRequest createTemplateRequest)
+        //36:void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, object additionalParameters, ITemplateContext context, ICreateTemplateRequest createTemplateRequest)
     }
 }
