@@ -194,7 +194,7 @@ public class CodeGenerationAssemblyCommandTests
                                       .Callback<ICodeGenerationAssemblySettings, IGenerationEnvironment>((settings, env) =>
                                       {
                                           var x = (MultipleContentBuilderEnvironment)env;
-                                          x.Builder.AddContent("MyFile.txt", false, null).Builder.Append("Hello!");
+                                          x.Builder.AddContent("MyFile.txt").Builder.Append("Hello!");
                                       });
             // Act
             _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}", "--clipboard");
@@ -233,7 +233,7 @@ Hello!
                                       .Callback<ICodeGenerationAssemblySettings, IGenerationEnvironment>((settings, env) =>
                                       {
                                           var x = (MultipleContentBuilderEnvironment)env;
-                                          x.Builder.AddContent("MyFile.txt", false, null).Builder.Append("Hello!");
+                                          x.Builder.AddContent("MyFile.txt").Builder.Append("Hello!");
                                       });
 
             // Act
@@ -253,7 +253,7 @@ Hello!
                                       .Callback<ICodeGenerationAssemblySettings, IGenerationEnvironment>((settings, env) =>
                                       {
                                           var x = (MultipleContentBuilderEnvironment)env;
-                                          x.Builder.AddContent("MyFile.txt", false, null).Builder.Append("Hello!");
+                                          x.Builder.AddContent("MyFile.txt").Builder.Append("Hello!");
                                       });
 
             // Act
