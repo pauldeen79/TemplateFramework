@@ -13,10 +13,10 @@ public class IntegrationTests
             .BuildServiceProvider();
         var engine = provider.GetRequiredService<ITemplateEngine>();
 
-        var template = new TestData.MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine((builder, context, engine, provider) =>
+        var template = new TestData.MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine((builder, context) =>
         {
-            var childTemplate = provider.Create(new ChildTemplateByNameRequest("MyTemplate"));
-            engine.Render(new RenderTemplateRequest(childTemplate, builder, context.CreateChildContext(new TemplateContext(childTemplate))));
+            var childTemplate = context.Provider.Create(new ChildTemplateByNameRequest("MyTemplate"));
+            context.Engine.Render(new RenderTemplateRequest(childTemplate, builder, context.CreateChildContext(new TemplateContext(context.Engine, context.Provider, "Filename.txt", childTemplate))));
         });
         var generationEnvironment = new MultipleContentBuilder();
 

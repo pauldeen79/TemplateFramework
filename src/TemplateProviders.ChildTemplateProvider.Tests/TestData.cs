@@ -23,29 +23,24 @@ internal static class TestData
         public override string ToString() => _delegate(Context);
     }
 
-    internal sealed class MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine : IMultipleContentBuilderTemplate, ITemplateContextContainer, ITemplateEngineContainer, ITemplateProviderContainer
+    internal sealed class MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine : IMultipleContentBuilderTemplate, ITemplateContextContainer
     {
-        private readonly Action<IMultipleContentBuilder, ITemplateContext, ITemplateEngine, ITemplateProvider> _delegate;
+        private readonly Action<IMultipleContentBuilder, ITemplateContext> _delegate;
 
-        public MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine(Action<IMultipleContentBuilder, ITemplateContext, ITemplateEngine, ITemplateProvider> @delegate)
+        public MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine(Action<IMultipleContentBuilder, ITemplateContext> @delegate)
         {
             _delegate = @delegate;
         }
 
         public ITemplateContext Context { get; set; } = default!;
-        public ITemplateEngine Engine { get; set; } = default!;
-        public ITemplateProvider Provider { get; set; } = default!;
 
-        public void Render(IMultipleContentBuilder builder) => _delegate(builder, Context, Engine, Provider);
+        public void Render(IMultipleContentBuilder builder) => _delegate(builder, Context);
     }
 
-    internal abstract class CsharpClassGeneratorBase : IParameterizedTemplate, ITemplateContextContainer, ITemplateEngineContainer, ITemplateProviderContainer, IDefaultFilenameContainer
+    internal abstract class CsharpClassGeneratorBase : IParameterizedTemplate, ITemplateContextContainer
     {
         // Properties that are injected by the template engine
         public ITemplateContext Context { get; set; } = default!;
-        public ITemplateEngine Engine { get; set; } = default!;
-        public ITemplateProvider Provider { get; set; } = default!;
-        public string DefaultFilename { get; set; } = default!;
 
         // Parameters, filled by the template engine
         public bool GenerateMultipleFiles { get; set; }
@@ -131,20 +126,19 @@ internal static class TestData
         {
             Guard.IsNotNull(builder);
             Guard.IsNotNull(Model);
-            Guard.IsNotNull(DefaultFilename);
 
             StringBuilder? singleStringBuilder = null;
             IGenerationEnvironment generationEnvironment = new MultipleContentBuilderEnvironment(builder);
 
             if (!GenerateMultipleFiles)
             {
-                singleStringBuilder = builder.AddContent(DefaultFilename, SkipWhenFileExists).Builder;
+                singleStringBuilder = builder.AddContent(Context.DefaultFilename, SkipWhenFileExists).Builder;
                 generationEnvironment = new StringBuilderEnvironment(singleStringBuilder);
-                Engine.RenderChildTemplate(generationEnvironment, Provider.Create(new ChildTemplateByNameRequest("CodeGenerationHeader")), DefaultFilename, AdditionalParameters, Context);
+                Context.Engine.RenderChildTemplate(generationEnvironment, Context.Provider.Create(new ChildTemplateByNameRequest("CodeGenerationHeader")), Context.DefaultFilename, AdditionalParameters, Context);
 
                 if (Context.IsRootContext)
                 {
-                    Engine.RenderChildTemplate(Model, generationEnvironment, Provider.Create(new ChildTemplateByNameRequest("DefaultUsings")), DefaultFilename, AdditionalParameters, Context);
+                    Context.Engine.RenderChildTemplate(Model, generationEnvironment, Context.Provider.Create(new ChildTemplateByNameRequest("DefaultUsings")), Context.DefaultFilename, AdditionalParameters, Context);
                 }
             }
 
@@ -156,7 +150,7 @@ internal static class TestData
                     singleStringBuilder.AppendLine("{"); // open namespace
                 }
 
-                Engine.RenderChildTemplates(ns.OrderBy(x => x.Name), generationEnvironment, typeBase => Provider.Create(new ChildTemplateByModelRequest(typeBase)), DefaultFilename, AdditionalParameters, Context);
+                Context.Engine.RenderChildTemplates(ns.OrderBy(x => x.Name), generationEnvironment, typeBase => Context.Provider.Create(new ChildTemplateByModelRequest(typeBase)), Context.DefaultFilename, AdditionalParameters, Context);
 
                 if (Context.IsRootContext && !GenerateMultipleFiles)
                 {
@@ -249,7 +243,7 @@ internal static class TestData
             {
                 if (!builder.Contents.Any())
                 {
-                    builder.AddContent(DefaultFilename, SkipWhenFileExists);
+                    builder.AddContent(Context.DefaultFilename, SkipWhenFileExists);
                 }
 
                 generationEnvironment = new StringBuilderEnvironment(builder.Contents.Last().Builder); // important to take the last contents, in case of sub classes
@@ -259,8 +253,8 @@ internal static class TestData
                 var filename = $"{FilenamePrefix}{Model.Name}{FilenameSuffix}.cs";
                 var contentBuilder = builder.AddContent(filename, SkipWhenFileExists);
                 generationEnvironment = new StringBuilderEnvironment(contentBuilder.Builder);
-                Engine.RenderChildTemplate(generationEnvironment, Provider.Create(new ChildTemplateByNameRequest("CodeGenerationHeader")), DefaultFilename, AdditionalParameters, Context);
-                Engine.RenderChildTemplate(Context.GetModelFromContextByType<IEnumerable<TypeBase>>() ?? throw new InvalidOperationException("No root context found"), generationEnvironment, Provider.Create(new ChildTemplateByNameRequest("DefaultUsings")), DefaultFilename, AdditionalParameters, Context);
+                Context.Engine.RenderChildTemplate(generationEnvironment, Context.Provider.Create(new ChildTemplateByNameRequest("CodeGenerationHeader")), Context.DefaultFilename, AdditionalParameters, Context);
+                Context.Engine.RenderChildTemplate(Context.GetModelFromContextByType<IEnumerable<TypeBase>>() ?? throw new InvalidOperationException("No root context found"), generationEnvironment, Context.Provider.Create(new ChildTemplateByNameRequest("DefaultUsings")), Context.DefaultFilename, AdditionalParameters, Context);
                 contentBuilder.Builder.AppendLine(CultureInfo, $"namespace {Model.Namespace}");
                 contentBuilder.Builder.AppendLine("{");
             }
@@ -296,7 +290,7 @@ internal static class TestData
                 };
 
                 var childTemplateInstance = new ClassTemplate();
-                Engine.RenderChildTemplates(Model.SubClasses, new MultipleContentBuilderEnvironment(builder), _ => childTemplateInstance, DefaultFilename, childAdditionalParameters, Context);
+                Context.Engine.RenderChildTemplates(Model.SubClasses, new MultipleContentBuilderEnvironment(builder), _ => childTemplateInstance, Context.DefaultFilename, childAdditionalParameters, Context);
             }
 
             indentedBuilder.AppendLine("}"); // close class

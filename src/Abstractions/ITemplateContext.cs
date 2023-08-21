@@ -4,6 +4,9 @@ public interface ITemplateContext : IChildTemplateContext
 {
     ITemplateContext? ParentContext { get; }
     ITemplateContext RootContext { get; }
+    ITemplateEngine Engine { get; }
+    ITemplateProvider Provider { get; }
+    string DefaultFilename { get; }
     bool IsRootContext { get; }
     bool HasIterations { get; }
     bool? IsFirstIteration { get; }

@@ -12,7 +12,7 @@ public partial class TemplateContextTests
         public void Returns_Correct_Result(int? iterationNumber, int? iterationCount, bool expectedResult)
         {
             // Arrange
-            var sut = new TemplateContext(this, model: string.Empty, parentContext: null, iterationNumber: iterationNumber, iterationCount: iterationCount);
+            var sut = new TemplateContext(EngineMock.Object, ProviderMock.Object, DefaultFilename, this, model: string.Empty, parentContext: null, iterationNumber: iterationNumber, iterationCount: iterationCount);
 
             // Act
             var result = sut.HasIterations;

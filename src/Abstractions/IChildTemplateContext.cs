@@ -4,6 +4,6 @@ public interface IChildTemplateContext
 {
     object Template { get; }
     object? Model { get; }
-    int? IterationNumber { get; set; }
-    int? IterationCount { get; set; }
+    int? IterationNumber { get; }
+    int? IterationCount { get; }
 }

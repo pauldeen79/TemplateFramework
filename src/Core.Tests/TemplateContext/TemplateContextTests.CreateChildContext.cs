@@ -23,7 +23,7 @@ public partial class TemplateContextTests
             var template = new object();
 
             // Act
-            var childContext = sut.CreateChildContext(new TemplateContext(template: template));
+            var childContext = sut.CreateChildContext(new TemplateContext(EngineMock.Object, ProviderMock.Object, DefaultFilename, template: template));
 
             // Assert
             childContext.Should().NotBeNull();

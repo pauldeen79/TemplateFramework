@@ -10,7 +10,7 @@ public static class TemplateEngineExtensions
         var items = models.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
         foreach (var item in items)
         {
-            instance.Render(new RenderTemplateRequest(template, item.Model, generationEnvironment, defaultFilename, additionalParameters, context.CreateChildContext(new TemplateContext(template, item, null, item.Index, items.Length))));
+            instance.Render(new RenderTemplateRequest(template, item.Model, generationEnvironment, defaultFilename, additionalParameters, context.CreateChildContext(new ChildTemplateContext(template, item, item.Index, items.Length))));
         }
     }
 
@@ -22,7 +22,7 @@ public static class TemplateEngineExtensions
         var items = models.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
         foreach (var item in items)
         {
-            instance.Render(new RenderTemplateRequest(template, item.Model, generationEnvironment, defaultFilename, null, context.CreateChildContext(new TemplateContext(template, item, null, item.Index, items.Length))));
+            instance.Render(new RenderTemplateRequest(template, item.Model, generationEnvironment, defaultFilename, null, context.CreateChildContext(new ChildTemplateContext(template, item, item.Index, items.Length))));
         }
     }
 
@@ -34,7 +34,7 @@ public static class TemplateEngineExtensions
         var items = models.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
         foreach (var item in items)
         {
-            instance.Render(new RenderTemplateRequest(template, item.Model, generationEnvironment, string.Empty, additionalParameters, context.CreateChildContext(new TemplateContext(template, item, null, item.Index, items.Length))));
+            instance.Render(new RenderTemplateRequest(template, item.Model, generationEnvironment, string.Empty, additionalParameters, context.CreateChildContext(new ChildTemplateContext(template, item, item.Index, items.Length))));
         }
     }
 
@@ -46,7 +46,7 @@ public static class TemplateEngineExtensions
         var items = models.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
         foreach (var item in items)
         {
-            instance.Render(new RenderTemplateRequest(template, item.Model, generationEnvironment, string.Empty, null, context.CreateChildContext(new TemplateContext(template, item, null, item.Index, items.Length))));
+            instance.Render(new RenderTemplateRequest(template, item.Model, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(template, item, item.Index, items.Length))));
         }
     }
 
@@ -60,7 +60,7 @@ public static class TemplateEngineExtensions
         foreach (var item in items)
         {
             var template = templateFactory(item.Model);
-            instance.Render(new RenderTemplateRequest(template, item.Model, generationEnvironment, defaultFilename, additionalParameters, context.CreateChildContext(new TemplateContext(template, item, null, item.Index, items.Length))));
+            instance.Render(new RenderTemplateRequest(template, item.Model, generationEnvironment, defaultFilename, additionalParameters, context.CreateChildContext(new ChildTemplateContext(template, item, item.Index, items.Length))));
         }
     }
 
@@ -74,7 +74,7 @@ public static class TemplateEngineExtensions
         foreach (var item in items)
         {
             var template = templateFactory(item.Model);
-            instance.Render(new RenderTemplateRequest(template, item.Model, generationEnvironment, defaultFilename, null, context.CreateChildContext(new TemplateContext(template, item, null, item.Index, items.Length))));
+            instance.Render(new RenderTemplateRequest(template, item.Model, generationEnvironment, defaultFilename, null, context.CreateChildContext(new ChildTemplateContext(template, item, item.Index, items.Length))));
         }
     }
 
@@ -88,7 +88,7 @@ public static class TemplateEngineExtensions
         foreach (var item in items)
         {
             var template = templateFactory(item.Model);
-            instance.Render(new RenderTemplateRequest(template, item.Model, generationEnvironment, string.Empty, additionalParameters, context.CreateChildContext(new TemplateContext(template, item, null, item.Index, items.Length))));
+            instance.Render(new RenderTemplateRequest(template, item.Model, generationEnvironment, string.Empty, additionalParameters, context.CreateChildContext(new ChildTemplateContext(template, item, item.Index, items.Length))));
         }
     }
 
@@ -102,7 +102,7 @@ public static class TemplateEngineExtensions
         foreach (var item in items)
         {
             var template = templateFactory(item.Model);
-            instance.Render(new RenderTemplateRequest(template, item.Model, generationEnvironment, string.Empty, null, context.CreateChildContext(new TemplateContext(template, item, null, item.Index, items.Length))));
+            instance.Render(new RenderTemplateRequest(template, item.Model, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(template, item, item.Index, items.Length))));
         }
     }
 
@@ -202,28 +202,28 @@ public static class TemplateEngineExtensions
     {
         Guard.IsNotNull(context);
 
-        instance.Render(new RenderTemplateRequest(template, model, generationEnvironment, defaultFilename, additionalParameters, context.CreateChildContext(new TemplateContext(template, model))));
+        instance.Render(new RenderTemplateRequest(template, model, generationEnvironment, defaultFilename, additionalParameters, context.CreateChildContext(new ChildTemplateContext(template, model))));
     }
 
     public static void RenderChildTemplate(this ITemplateEngine instance, object? model, IGenerationEnvironment generationEnvironment, object template, string defaultFilename, ITemplateContext context)
     {
         Guard.IsNotNull(context);
 
-        instance.Render(new RenderTemplateRequest(template, model, generationEnvironment, defaultFilename, null, context.CreateChildContext(new TemplateContext(template, model))));
+        instance.Render(new RenderTemplateRequest(template, model, generationEnvironment, defaultFilename, null, context.CreateChildContext(new ChildTemplateContext(template, model))));
     }
 
     public static void RenderChildTemplate(this ITemplateEngine instance, object? model, IGenerationEnvironment generationEnvironment, object template, object additionalParameters, ITemplateContext context)
     {
         Guard.IsNotNull(context);
 
-        instance.Render(new RenderTemplateRequest(template, model, generationEnvironment, string.Empty, additionalParameters, context.CreateChildContext(new TemplateContext(template, model))));
+        instance.Render(new RenderTemplateRequest(template, model, generationEnvironment, string.Empty, additionalParameters, context.CreateChildContext(new ChildTemplateContext(template, model))));
     }
 
     public static void RenderChildTemplate(this ITemplateEngine instance, object? model, IGenerationEnvironment generationEnvironment, object template, ITemplateContext context)
     {
         Guard.IsNotNull(context);
 
-        instance.Render(new RenderTemplateRequest(template, model, generationEnvironment, string.Empty, null, context.CreateChildContext(new TemplateContext(template, model))));
+        instance.Render(new RenderTemplateRequest(template, model, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(template, model))));
     }
 
     public static void RenderChildTemplate(this ITemplateEngine instance, object? model, IGenerationEnvironment generationEnvironment, Func<object?, object> templateFactory, string defaultFilename, object additionalParameters, ITemplateContext context)
@@ -232,7 +232,7 @@ public static class TemplateEngineExtensions
         Guard.IsNotNull(templateFactory);
 
         var template = templateFactory(model);
-        instance.Render(new RenderTemplateRequest(template, model, generationEnvironment, defaultFilename, additionalParameters, context.CreateChildContext(new TemplateContext(template, model))));
+        instance.Render(new RenderTemplateRequest(template, model, generationEnvironment, defaultFilename, additionalParameters, context.CreateChildContext(new ChildTemplateContext(template, model))));
     }
 
     public static void RenderChildTemplate(this ITemplateEngine instance, object? model, IGenerationEnvironment generationEnvironment, Func<object?, object> templateFactory, string defaultFilename, ITemplateContext context)
@@ -241,7 +241,7 @@ public static class TemplateEngineExtensions
         Guard.IsNotNull(templateFactory);
 
         var template = templateFactory(model);
-        instance.Render(new RenderTemplateRequest(template, model, generationEnvironment, defaultFilename, null, context.CreateChildContext(new TemplateContext(template, model))));
+        instance.Render(new RenderTemplateRequest(template, model, generationEnvironment, defaultFilename, null, context.CreateChildContext(new ChildTemplateContext(template, model))));
     }
 
     public static void RenderChildTemplate(this ITemplateEngine instance, object? model, IGenerationEnvironment generationEnvironment, Func<object?, object> templateFactory, object additionalParameters, ITemplateContext context)
@@ -250,7 +250,7 @@ public static class TemplateEngineExtensions
         Guard.IsNotNull(templateFactory);
 
         var template = templateFactory(model);
-        instance.Render(new RenderTemplateRequest(template, model, generationEnvironment, string.Empty, additionalParameters, context.CreateChildContext(new TemplateContext(template, model))));
+        instance.Render(new RenderTemplateRequest(template, model, generationEnvironment, string.Empty, additionalParameters, context.CreateChildContext(new ChildTemplateContext(template, model))));
     }
 
     public static void RenderChildTemplate(this ITemplateEngine instance, object? model, IGenerationEnvironment generationEnvironment, Func<object?, object> templateFactory, ITemplateContext context)
@@ -259,35 +259,35 @@ public static class TemplateEngineExtensions
         Guard.IsNotNull(templateFactory);
 
         var template = templateFactory(model);
-        instance.Render(new RenderTemplateRequest(template, model, generationEnvironment, string.Empty, null, context.CreateChildContext(new TemplateContext(template, model))));
+        instance.Render(new RenderTemplateRequest(template, model, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(template, model))));
     }
 
     public static void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, object template, string defaultFilename, object additionalParameters, ITemplateContext context)
     {
         Guard.IsNotNull(context);
 
-        instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, defaultFilename, additionalParameters, context.CreateChildContext(new TemplateContext(template))));
+        instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, defaultFilename, additionalParameters, context.CreateChildContext(new ChildTemplateContext(template))));
     }
 
     public static void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, object template, string defaultFilename, ITemplateContext context)
     {
         Guard.IsNotNull(context);
 
-        instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, defaultFilename, null, context.CreateChildContext(new TemplateContext(template))));
+        instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, defaultFilename, null, context.CreateChildContext(new ChildTemplateContext(template))));
     }
 
     public static void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, object template, object additionalParameters, ITemplateContext context)
     {
         Guard.IsNotNull(context);
 
-        instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, string.Empty, additionalParameters, context.CreateChildContext(new TemplateContext(template))));
+        instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, string.Empty, additionalParameters, context.CreateChildContext(new ChildTemplateContext(template))));
     }
 
     public static void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, object template, ITemplateContext context)
     {
         Guard.IsNotNull(context);
 
-        instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, string.Empty, null, context.CreateChildContext(new TemplateContext(template))));
+        instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(template))));
     }
 
     public static void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, Func<object> templateFactory, string defaultFilename, object additionalParameters, ITemplateContext context)
@@ -296,7 +296,7 @@ public static class TemplateEngineExtensions
         Guard.IsNotNull(templateFactory);
 
         var template = templateFactory();
-        instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, defaultFilename, additionalParameters, context.CreateChildContext(new TemplateContext(template))));
+        instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, defaultFilename, additionalParameters, context.CreateChildContext(new ChildTemplateContext(template))));
     }
 
     public static void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, Func<object> templateFactory, string defaultFilename, ITemplateContext context)
@@ -305,7 +305,7 @@ public static class TemplateEngineExtensions
         Guard.IsNotNull(templateFactory);
 
         var template = templateFactory();
-        instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, defaultFilename, null, context.CreateChildContext(new TemplateContext(template))));
+        instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, defaultFilename, null, context.CreateChildContext(new ChildTemplateContext(template))));
     }
 
     public static void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, Func<object> templateFactory, object additionalParameters, ITemplateContext context)
@@ -314,7 +314,7 @@ public static class TemplateEngineExtensions
         Guard.IsNotNull(templateFactory);
 
         var template = templateFactory();
-        instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, string.Empty, additionalParameters, context.CreateChildContext(new TemplateContext(template))));
+        instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, string.Empty, additionalParameters, context.CreateChildContext(new ChildTemplateContext(template))));
     }
 
     public static void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, Func<object> templateFactory, ITemplateContext context)
@@ -323,7 +323,7 @@ public static class TemplateEngineExtensions
         Guard.IsNotNull(templateFactory);
 
         var template = templateFactory();
-        instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, string.Empty, null, context.CreateChildContext(new TemplateContext(template))));
+        instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(template))));
     }
 
     public static void RenderChildTemplate(this ITemplateEngine instance, object? model, IGenerationEnvironment generationEnvironment, object template, string defaultFilename, object additionalParameters)
@@ -428,5 +428,31 @@ public static class TemplateEngineExtensions
 
         var template = templateFactory();
         instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, string.Empty, null, null));
+    }
+
+    private sealed class ChildTemplateContext : IChildTemplateContext
+    {
+        public ChildTemplateContext(object template) : this(template, null, null, null)
+        {
+        }
+
+        public ChildTemplateContext(object template, object? model) : this(template, model, null, null)
+        {
+        }
+
+        public ChildTemplateContext(object template, object? model, int? iterationNumber, int? iterationCount)
+        {
+            Guard.IsNotNull(template);
+            Template = template;
+            Model = model;
+            IterationNumber = iterationNumber;
+            IterationCount = iterationCount;
+        }
+
+        public object Template { get; }
+        public object? Model { get; }
+
+        public int? IterationNumber { get; set; }
+        public int? IterationCount { get; set; }
     }
 }

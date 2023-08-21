@@ -2,9 +2,10 @@
 
 public class ContextInitializerTests
 {
-    protected ContextInitializer CreateSut() => new();
+    protected ContextInitializer CreateSut() => new(TemplateProviderMock.Object);
     
     protected Mock<ITemplateEngine> TemplateEngineMock { get; } = new();
+    protected Mock<ITemplateProvider> TemplateProviderMock { get; } = new();
     
     protected const string DefaultFilename = "DefaultFilename.txt";
 
@@ -16,7 +17,7 @@ public class ContextInitializerTests
             // Arrange
             var sut = CreateSut();
             var template = new TestData.PlainTemplateWithTemplateContext(_ => "Hello world!");
-            var context = new Core.TemplateContext(template);
+            var context = new TemplateContext(TemplateEngineMock.Object, TemplateProviderMock.Object, DefaultFilename, template);
             var request = new RenderTemplateRequest(template, new StringBuilder(), DefaultFilename, null, context);
 
             // Act
