@@ -102,7 +102,12 @@ internal static class TestData
                     .OrderBy(typeBase => typeBase.Name)
                     .Select(typeBase => new CsharpClassGeneratorViewModel<TypeBase>(typeBase, Model.Settings));
 
-                Context.Engine.RenderChildTemplates(typeBaseItems, generationEnvironment, Context, typeBase => new ChildTemplateByModelRequest(((CsharpClassGeneratorViewModel<TypeBase>)typeBase!).Data));
+                Context.Engine.RenderChildTemplates(
+                    typeBaseItems,
+                    generationEnvironment,
+                    Context,
+                    typeBase => new ChildTemplateByModelRequest(((CsharpClassGeneratorViewModel<TypeBase>)typeBase!).Data)
+                    );
 
                 if (Context.IsRootContext && !Model.Settings.GenerateMultipleFiles)
                 {
@@ -247,7 +252,12 @@ internal static class TestData
                 );
 
                 var childTemplateInstance = new ClassTemplate();
-                Context.Engine.RenderChildTemplates(Model.Data.SubClasses.Select(typeBase => new CsharpClassGeneratorViewModel<TypeBase>(typeBase, settings)), new MultipleContentBuilderEnvironment(builder), _ => childTemplateInstance, Context.DefaultFilename, Context);
+                Context.Engine.RenderChildTemplates(
+                    Model.Data.SubClasses.Select(typeBase => new CsharpClassGeneratorViewModel<TypeBase>(typeBase, settings)),
+                    new MultipleContentBuilderEnvironment(builder),
+                    Context,
+                    _ => childTemplateInstance
+                    );
             }
 
             indentedBuilder.AppendLine("}"); // end class

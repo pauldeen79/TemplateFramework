@@ -232,6 +232,34 @@ public static class TemplateEngineExtensions
             instance.Render(new RenderTemplateRequest(template, item.Model, generationEnvironment, context.DefaultFilename, additionalParameters, context.CreateChildContext(new ChildTemplateContext(template, item, item.Index, items.Length))));
         }
     }
+
+    public static void RenderChildTemplates(this ITemplateEngine instance, IEnumerable models, IGenerationEnvironment generationEnvironment, ITemplateContext context, Func<object?, object> createTemplateFactory)
+    {
+        Guard.IsNotNull(models);
+        Guard.IsNotNull(context);
+        Guard.IsNotNull(createTemplateFactory);
+
+        var items = models.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
+        foreach (var item in items)
+        {
+            var template = createTemplateFactory(item.Model);
+            instance.Render(new RenderTemplateRequest(template, item.Model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(template, item, item.Index, items.Length))));
+        }
+    }
+
+    public static void RenderChildTemplates(this ITemplateEngine instance, IEnumerable models, IGenerationEnvironment generationEnvironment, object additionalParameters, ITemplateContext context, Func<object?, object> createTemplateFactory)
+    {
+        Guard.IsNotNull(models);
+        Guard.IsNotNull(context);
+        Guard.IsNotNull(createTemplateFactory);
+
+        var items = models.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
+        foreach (var item in items)
+        {
+            var template = createTemplateFactory(item.Model);
+            instance.Render(new RenderTemplateRequest(template, item.Model, generationEnvironment, context.DefaultFilename, additionalParameters, context.CreateChildContext(new ChildTemplateContext(template, item, item.Index, items.Length))));
+        }
+    }
     // end new
 
     public static void RenderChildTemplate(this ITemplateEngine instance, object? model, IGenerationEnvironment generationEnvironment, object template, string defaultFilename, object additionalParameters, ITemplateContext context)
