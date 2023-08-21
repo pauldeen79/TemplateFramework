@@ -28,7 +28,7 @@ public class ParameterInitializerTests
             // Arrange
             var sut = CreateSut();
             var additionalParameters = new { AdditionalParameter = "Hello world!" };
-            var template = new TestData.PlainTemplateWithAdditionalParameters();
+            var template = new PlainTemplateWithAdditionalParameters();
             var request = new RenderTemplateRequest(template, new StringBuilder(), DefaultFilename, additionalParameters);
             ValueConverterMock.Setup(x => x.Convert(It.IsAny<object?>(), It.IsAny<Type>())).Returns<object?, Type>((value, type) => value);
 
@@ -45,7 +45,7 @@ public class ParameterInitializerTests
             // Arrange
             var sut = CreateSut();
             var additionalParameters = new { AdditionalParameter = "?" };
-            var template = new TestData.PlainTemplateWithAdditionalParameters();
+            var template = new PlainTemplateWithAdditionalParameters();
             object? convertedValue = "Hello world!";
             ValueConverterMock.Setup(x => x.Convert(It.IsAny<object?>(), It.IsAny<Type>()))
                               .Returns(convertedValue);
@@ -64,7 +64,7 @@ public class ParameterInitializerTests
             // Arrange
             var sut = CreateSut();
             var additionalParameters = new { AdditionalParameter = "Hello world!", NonExistingParameter = "Kaboom" };
-            var template = new TestData.PlainTemplateWithAdditionalParameters();
+            var template = new PlainTemplateWithAdditionalParameters();
             var request = new RenderTemplateRequest(template, new StringBuilder(), DefaultFilename, additionalParameters);
 
             // Act & Assert

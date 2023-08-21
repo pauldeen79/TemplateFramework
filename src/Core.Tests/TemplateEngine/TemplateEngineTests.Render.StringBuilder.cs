@@ -25,7 +25,7 @@ public partial class TemplateEngineTests
         {
             // Arrange
             var sut = CreateSut();
-            var template = new TestData.PlainTemplateWithAdditionalParameters();
+            var template = new PlainTemplateWithAdditionalParameters();
             StringBuilder? builder = StringBuilder;
             var additionalParameters = new { AdditionalParameter = "Some value" };
             var request = new RenderTemplateRequest(template, additionalParameters, builder);
@@ -42,7 +42,7 @@ public partial class TemplateEngineTests
         {
             // Arrange
             var sut = CreateSut();
-            var template = new TestData.PlainTemplateWithAdditionalParameters();
+            var template = new PlainTemplateWithAdditionalParameters();
             StringBuilder? generationEnvironment = StringBuilder;
             var additionalParameters = new { AdditionalParameter = "Some value" };
             TemplateRendererMock.Setup(x => x.Supports(It.IsAny<IGenerationEnvironment>())).Returns(true);

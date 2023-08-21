@@ -1,19 +1,28 @@
 ﻿namespace TemplateFramework.Console.Commands;
 
-public class CodeGenerationAssemblyCommand : CommandBase
+public class RunTemplateCommand : CommandBase
 {
-    public CodeGenerationAssemblyCommand(ICodeGenerationAssembly codeGenerationAssembly, IClipboard clipboard) : base(codeGenerationAssembly, clipboard)
+    private readonly ITemplateProvider _templateProvider;
+    private readonly ITemplateEngine _templateEngine;
+    
+    public RunTemplateCommand(ICodeGenerationAssembly codeGenerationAssembly, IClipboard clipboard, ITemplateProvider templateProvider, ITemplateEngine templateEngine) : base(codeGenerationAssembly, clipboard)
     {
+        Guard.IsNotNull(templateProvider);
+        Guard.IsNotNull(templateEngine);
+
+        _templateProvider = templateProvider;
+        _templateEngine = templateEngine;
     }
 
     public override void Initialize(CommandLineApplication app)
     {
         Guard.IsNotNull(app);
-        app.Command("assembly", command =>
+        app.Command("template", command =>
         {
-            command.Description = "Runs all code generation providers from the specified assembly";
+            command.Description = "Runs a template";
 
-            var assemblyOption = command.Option<string>("-n|--name <NAME>", "The assembly name", CommandOptionType.SingleValue);
+            var assemblyOption = command.Option<string>("-a|--assembly <ASSEMBLY>", "The assembly name", CommandOptionType.SingleValue);
+            var classNameOption = command.Option<string>("-n|--classname <CLASSNAME>", "The template class name", CommandOptionType.SingleValue);
             var watchOption = command.Option<string>("-w|--watch", "Watches for file changes", CommandOptionType.NoValue);
             var dryRunOption = command.Option<bool>("-r|--dryrun", "Indicator whether a dry run should be performed", CommandOptionType.NoValue);
             var basePathOption = command.Option<string>("-p|--path", "Base path for code generation", CommandOptionType.SingleValue);
@@ -21,7 +30,6 @@ public class CodeGenerationAssemblyCommand : CommandBase
             var currentDirectoryOption = command.Option<string>("-i|--directory", "Current directory", CommandOptionType.SingleValue);
             var bareOption = command.Option<bool>("-b|--bare", "Bare output (only template output)", CommandOptionType.NoValue);
             var clipboardOption = command.Option<bool>("-c|--clipboard", "Copy output to clipboard", CommandOptionType.NoValue);
-            var filterClassNameOption = command.Option<string>("-f|--filter <CLASSNAME>", "Filter code generation provider by class name", CommandOptionType.MultipleValue);
             command.HelpOption();
             command.OnExecute(() =>
             {
@@ -29,6 +37,13 @@ public class CodeGenerationAssemblyCommand : CommandBase
                 if (string.IsNullOrEmpty(assemblyName))
                 {
                     app.Error.WriteLine("Error: Assembly name is required.");
+                    return;
+                }
+
+                var className = classNameOption.Value();
+                if (string.IsNullOrEmpty(assemblyName))
+                {
+                    app.Error.WriteLine("Error: Class name is required.");
                     return;
                 }
 
@@ -40,12 +55,19 @@ public class CodeGenerationAssemblyCommand : CommandBase
                 Watch(app, watchOption, assemblyName, () =>
                 {
                     var generationEnvironment = new MultipleContentBuilderEnvironment();
-                    var classNameFilter = filterClassNameOption.Values.Where(x => x is not null).Select(x => x!);
-                    var settings = new CodeGenerationAssemblySettings(basePath, defaultFilename, assemblyName, dryRun, currentDirectory, classNameFilter);
-                    _codeGenerationAssembly.Generate(settings, generationEnvironment);
+                    var createTemplateRequest = GetCreateTemplateRequest(assemblyName, className!, currentDirectory);
+
+                    object additionalParameters = new(); //TODO: Add support for additional parameters in command line
+                    var template = _templateProvider.Create(createTemplateRequest);
+                    _templateEngine.Render(new RenderTemplateRequest(template, null, generationEnvironment, defaultFilename, additionalParameters, null));
                     WriteOutput(app, generationEnvironment, basePath, bareOption, clipboardOption, dryRun);
                 });
             });
         });
     }
+
+    private static CreateCompiledTemplateRequest GetCreateTemplateRequest(string assemblyName, string className, string? currentDirectory)
+        => string.IsNullOrEmpty(currentDirectory)
+            ? new CreateCompiledTemplateRequest(assemblyName, className!)
+            : new CreateCompiledTemplateRequest(assemblyName, className!, currentDirectory);
 }

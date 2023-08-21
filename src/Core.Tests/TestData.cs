@@ -1,5 +1,22 @@
 ﻿namespace TemplateFramework.Core.Tests;
 
+public sealed class PlainTemplateWithAdditionalParameters : IParameterizedTemplate
+{
+    public string AdditionalParameter { get; set; } = "";
+
+    public void SetParameter(string name, object? value)
+    {
+        if (name == nameof(AdditionalParameter))
+        {
+            AdditionalParameter = value?.ToString() ?? string.Empty;
+        }
+    }
+
+    public ITemplateParameter[] GetParameters() => new[] { new TemplateParameter(nameof(AdditionalParameter), typeof(string)) };
+
+    public override string ToString() => AdditionalParameter;
+}
+
 internal static class TestData
 {
 #if Windows
@@ -51,23 +68,6 @@ internal static class TestData
         }
 
         public ITemplateParameter[] GetParameters() => new[] { new TemplateParameter(nameof(ViewModel), typeof(T?)) };
-    }
-
-    internal sealed class PlainTemplateWithAdditionalParameters : IParameterizedTemplate
-    {
-        public string AdditionalParameter { get; set; } = "";
-
-        public void SetParameter(string name, object? value)
-        {
-            if (name == nameof(AdditionalParameter))
-            {
-                AdditionalParameter = value?.ToString() ?? string.Empty;
-            }
-        }
-
-        public ITemplateParameter[] GetParameters() => new[] { new TemplateParameter(nameof(AdditionalParameter), typeof(string)) };
-
-        public override string ToString() => AdditionalParameter;
     }
 
     internal sealed class PlainTemplateWithModelAndAdditionalParameters<T> : IModelContainer<T>, IParameterizedTemplate
