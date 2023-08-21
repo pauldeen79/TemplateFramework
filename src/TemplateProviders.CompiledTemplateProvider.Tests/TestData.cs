@@ -21,11 +21,22 @@ internal static class TestData
         public override string ToString() => AdditionalParameter;
     }
 
-    internal sealed class PlainTemplateWithTemplateContext : ITemplateContextContainer
+    internal sealed class PlainTemplateWithTemplateContext
+    {
+        private readonly Func<object?, string> _delegate;
+
+        public PlainTemplateWithTemplateContext(Func<object?, string> @delegate) => _delegate = @delegate;
+
+        public object? Context { get; set; }
+
+        public override string ToString() => _delegate(Context);
+    }
+
+    internal sealed class PlainTemplateWithTypedTemplateContext : ITemplateContextContainer
     {
         private readonly Func<ITemplateContext, string> _delegate;
 
-        public PlainTemplateWithTemplateContext(Func<ITemplateContext, string> @delegate) => _delegate = @delegate;
+        public PlainTemplateWithTypedTemplateContext(Func<ITemplateContext, string> @delegate) => _delegate = @delegate;
 
         public ITemplateContext Context { get; set; } = default!;
 

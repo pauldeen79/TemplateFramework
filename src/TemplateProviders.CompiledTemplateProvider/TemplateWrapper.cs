@@ -40,6 +40,7 @@ public class TemplateWrapper : ITemplateContextContainer, IParameterizedTemplate
 
         var type = _instance.GetType();
         InitializeModel(type);
+        InitializeContext(type);
 
         var transformText = type.GetMethod(nameof(ITextTransformTemplate.TransformText));
         if (transformText is not null)
@@ -107,6 +108,23 @@ public class TemplateWrapper : ITemplateContextContainer, IParameterizedTemplate
         {
             modelProperty.SetValue(_instance, Model);
         }
+    }
+
+    private void InitializeContext(Type type)
+    {
+        if (Context is null)
+        {
+            return;
+        }
+
+        // Note that we currently only supported typed ITemplateContext objects... I can't think of a way to create a wrapper for this, because I can't instanciate something I don't know the type of :(
+        var context = Array.Find(type.GetProperties(), p => p.Name == nameof(ITemplateContextContainer.Context) && p.PropertyType == typeof(ITemplateContext));
+        if (context is null)
+        {
+            return;
+        }
+
+        context.SetValue(_instance, Context);
     }
 
     private static MethodInfo GetToStringMethod(Type type)

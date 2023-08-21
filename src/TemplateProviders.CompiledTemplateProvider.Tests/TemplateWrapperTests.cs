@@ -267,6 +267,38 @@ public class TemplateWrapperTests
             builder.Contents.Should().ContainSingle();
             builder.Contents.Single().Filename.Should().Be(DefaultFilename);
         }
+
+        [Fact]
+        public void Does_Not_Set_Context_On_Wrapped_Template_When_Context_Is_Not_Typed()
+        {
+            // Arrange
+            var wrappedInstance = new TestData.PlainTemplateWithTemplateContext(_ => "Hello world!");
+            var sut = new TemplateWrapper(wrappedInstance);
+            sut.Context = TemplateContextMock.Object;
+            var builder = new MultipleContentBuilder();
+
+            // Act
+            sut.Render(builder);
+
+            // Assert
+            wrappedInstance.Context.Should().BeNull();
+        }
+
+        [Fact]
+        public void Sets_Context_On_Wrapped_Template_When_Context_Is_Typed()
+        {
+            // Arrange
+            var wrappedInstance = new TestData.PlainTemplateWithTypedTemplateContext(_ => "Hello world!");
+            var sut = new TemplateWrapper(wrappedInstance);
+            sut.Context = TemplateContextMock.Object;
+            var builder = new MultipleContentBuilder();
+
+            // Act
+            sut.Render(builder);
+
+            // Assert
+            wrappedInstance.Context.Should().BeSameAs(sut.Context);
+        }
     }
 
     public class SetParameter : TemplateWrapperTests
