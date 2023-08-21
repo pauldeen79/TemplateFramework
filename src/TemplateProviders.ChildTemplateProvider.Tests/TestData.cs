@@ -82,11 +82,11 @@ internal static class TestData
             {
                 singleStringBuilder = builder.AddContent(Context.DefaultFilename, Model.Settings.SkipWhenFileExists).Builder;
                 generationEnvironment = new StringBuilderEnvironment(singleStringBuilder);
-                Context.Engine.RenderChildTemplate(Model.Settings, generationEnvironment, Context.Provider.Create(new ChildTemplateByNameRequest("CodeGenerationHeader")), Context.DefaultFilename, Context);
+                Context.Engine.RenderChildTemplate(Model.Settings, generationEnvironment, Context, new ChildTemplateByNameRequest("CodeGenerationHeader"));
 
                 if (Context.IsRootContext)
                 {
-                    Context.Engine.RenderChildTemplate(Model, generationEnvironment, Context.Provider.Create(new ChildTemplateByNameRequest("DefaultUsings")), Context.DefaultFilename, Context);
+                    Context.Engine.RenderChildTemplate(Model, generationEnvironment, Context, new ChildTemplateByNameRequest("DefaultUsings"));
                 }
             }
 
@@ -102,7 +102,7 @@ internal static class TestData
                     .OrderBy(typeBase => typeBase.Name)
                     .Select(typeBase => new CsharpClassGeneratorViewModel<TypeBase>(typeBase, Model.Settings));
 
-                Context.Engine.RenderChildTemplates(typeBaseItems, generationEnvironment, typeBase => Context.Provider.Create(new ChildTemplateByModelRequest(((CsharpClassGeneratorViewModel<TypeBase>)typeBase!).Data)), Context.DefaultFilename, Context);
+                Context.Engine.RenderChildTemplates(typeBaseItems, generationEnvironment, Context, typeBase => new ChildTemplateByModelRequest(((CsharpClassGeneratorViewModel<TypeBase>)typeBase!).Data));
 
                 if (Context.IsRootContext && !Model.Settings.GenerateMultipleFiles)
                 {
@@ -207,10 +207,10 @@ internal static class TestData
                 var filename = $"{Model.Settings.FilenamePrefix}{Model.Data.Name}{Model.Settings.FilenameSuffix}.cs";
                 var contentBuilder = builder.AddContent(filename, Model.Settings.SkipWhenFileExists);
                 generationEnvironment = new StringBuilderEnvironment(contentBuilder.Builder);
-                Context.Engine.RenderChildTemplate(Model.Settings, generationEnvironment, Context.Provider.Create(new ChildTemplateByNameRequest("CodeGenerationHeader")), Context.DefaultFilename, Context);
+                Context.Engine.RenderChildTemplate(Model.Settings, generationEnvironment, Context, new ChildTemplateByNameRequest("CodeGenerationHeader"));
                 var rootItems = Context.GetModelFromContextByType<CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>>(context => context.IsRootContext)
                     ?? throw new InvalidOperationException("No root context found");
-                Context.Engine.RenderChildTemplate(rootItems, generationEnvironment, Context.Provider.Create(new ChildTemplateByNameRequest("DefaultUsings")), Context.DefaultFilename, Context);
+                Context.Engine.RenderChildTemplate(rootItems, generationEnvironment, Context, new ChildTemplateByNameRequest("DefaultUsings"));
                 contentBuilder.Builder.AppendLine(Model.Settings.CultureInfo, $"namespace {Model.Data.Namespace}");
                 contentBuilder.Builder.AppendLine("{"); // start namespace
             }
