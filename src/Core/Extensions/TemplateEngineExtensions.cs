@@ -209,9 +209,7 @@ public static class TemplateEngineExtensions
         foreach (var item in items)
         {
             var createTemplateRequest = createTemplateRequestFactory(item.Model);
-            Guard.IsNotNull(createTemplateRequest);
             var template = context.Provider.Create(createTemplateRequest);
-            Guard.IsNotNull(template);
             instance.Render(new RenderTemplateRequest(template, item.Model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(template, item, item.Index, items.Length))));
         }
     }
@@ -226,9 +224,7 @@ public static class TemplateEngineExtensions
         foreach (var item in items)
         {
             var createTemplateRequest = createTemplateRequestFactory(item.Model);
-            Guard.IsNotNull(createTemplateRequest);
             var template = context.Provider.Create(createTemplateRequest);
-            Guard.IsNotNull(template);
             instance.Render(new RenderTemplateRequest(template, item.Model, generationEnvironment, context.DefaultFilename, additionalParameters, context.CreateChildContext(new ChildTemplateContext(template, item, item.Index, items.Length))));
         }
     }
