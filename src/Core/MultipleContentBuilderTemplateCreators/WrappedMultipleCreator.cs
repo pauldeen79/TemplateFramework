@@ -9,7 +9,9 @@ public class WrappedMultipleCreator : IMultipleContentBuilderTemplateCreator
             return null;
         }
 
-        if (Array.Exists(instance.GetType().GetMethods(), m => m.Name == nameof(IMultipleContentBuilderTemplate.Render) && Array.TrueForAll(m.GetParameters(), p => p.ParameterType.Name == nameof(IMultipleContentBuilder))))
+        if (Array.Exists(instance.GetType().GetMethods(), m =>
+            m.Name == nameof(IMultipleContentBuilderTemplate.Render)
+            && Array.TrueForAll(m.GetParameters(), p => p.ParameterType.Name == nameof(IMultipleContentBuilder))))
         {
             return new MultipleContentBuilderTemplateWrapper(instance);
         }

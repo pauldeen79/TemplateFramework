@@ -28,6 +28,7 @@ public class RunTemplateCommand : CommandBase
             var basePathOption = command.Option<string>("-p|--path", "Base path for code generation", CommandOptionType.SingleValue);
             var defaultFilenameOption = command.Option<string>("-d|--default", "Default filename", CommandOptionType.SingleValue);
             var currentDirectoryOption = command.Option<string>("-i|--directory", "Current directory", CommandOptionType.SingleValue);
+            var parametersArgument = command.Argument("Parameters", "Optional parameters to use (name:value)", true);
             var bareOption = command.Option<bool>("-b|--bare", "Bare output (only template output)", CommandOptionType.NoValue);
             var clipboardOption = command.Option<bool>("-c|--clipboard", "Copy output to clipboard", CommandOptionType.NoValue);
             command.HelpOption();
@@ -51,15 +52,18 @@ public class RunTemplateCommand : CommandBase
                 var basePath = GetBasePath(basePathOption);
                 var defaultFilename = GetDefaultFilename(defaultFilenameOption);
                 var dryRun = GetDryRun(dryRunOption, clipboardOption);
-
+                var parameters = parametersArgument.Values
+                    .Where(p => p?.Contains(':', StringComparison.CurrentCulture) == true)
+                    .Select(p => p!.Split(':'))
+                    .Select(p => new KeyValuePair<string, object?>(p[0], string.Join(":", p.Skip(1))))
+                    .ToArray();
                 Watch(app, watchOption, assemblyName, () =>
                 {
                     var generationEnvironment = new MultipleContentBuilderEnvironment();
                     var createTemplateRequest = GetCreateTemplateRequest(assemblyName, className!, currentDirectory);
 
-                    object additionalParameters = new(); //TODO: Add support for additional parameters in command line
                     var template = _templateProvider.Create(createTemplateRequest);
-                    _templateEngine.Render(new RenderTemplateRequest(template, null, generationEnvironment, defaultFilename, additionalParameters, null));
+                    _templateEngine.Render(new RenderTemplateRequest(template, null, generationEnvironment, defaultFilename, parameters, null));
                     WriteOutput(app, generationEnvironment, basePath, bareOption, clipboardOption, dryRun);
                 });
             });

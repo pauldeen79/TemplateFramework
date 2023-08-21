@@ -25,6 +25,6 @@ public sealed class ProviderComponent : ITemplateProviderComponent
             throw new InvalidOperationException($"Could not create instance of type {createCompiledTemplateRequest.ClassName}");
         }
 
-        return template;
+        return new TemplateWrapper(template);
     }
 }
