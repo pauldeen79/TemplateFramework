@@ -3,15 +3,12 @@
 [ExcludeFromCodeCoverage]
 public abstract class CommandBase : ICommandLineCommand
 {
-    internal ICodeGenerationAssembly _codeGenerationAssembly { get; }
     internal IClipboard _clipboard { get; }
 
-    protected CommandBase(ICodeGenerationAssembly codeGenerationAssembly, IClipboard clipboard)
+    protected CommandBase(IClipboard clipboard)
     {
-        Guard.IsNotNull(codeGenerationAssembly);
         Guard.IsNotNull(clipboard);
 
-        _codeGenerationAssembly = codeGenerationAssembly;
         _clipboard = clipboard;
     }
 

@@ -1,6 +1,4 @@
-﻿using TemplateFramework.Core.GenerationEnvironments;
-
-namespace TemplateFramework.Console.Tests.Commands;
+﻿namespace TemplateFramework.Console.Tests.Commands;
 
 public class CodeGenerationAssemblyCommandTests
 {
@@ -21,7 +19,7 @@ public class CodeGenerationAssemblyCommandTests
     public class Initialize : CodeGenerationAssemblyCommandTests
     {
         [Fact]
-        public void Initialize_Adds_VersionCommand_To_Application()
+        public void Initialize_Adds_Command_To_Application()
         {
             // Arrange
             using var app = new CommandLineApplication();
@@ -31,7 +29,7 @@ public class CodeGenerationAssemblyCommandTests
             sut.Initialize(app);
 
             // Assert
-            app.Commands.Should().ContainSingle(); // aparently, this does not add a command that is publicly visible...
+            app.Commands.Should().ContainSingle();
         }
 
         [Fact]
@@ -41,8 +39,8 @@ public class CodeGenerationAssemblyCommandTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Initialize(null!))
-               .Should().Throw<ArgumentNullException>();
+            sut.Invoking(x => x.Initialize(app: null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("app");
         }
     }
 

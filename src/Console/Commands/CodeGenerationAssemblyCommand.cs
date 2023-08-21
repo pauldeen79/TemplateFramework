@@ -2,8 +2,13 @@
 
 public class CodeGenerationAssemblyCommand : CommandBase
 {
-    public CodeGenerationAssemblyCommand(ICodeGenerationAssembly codeGenerationAssembly, IClipboard clipboard) : base(codeGenerationAssembly, clipboard)
+    private readonly ICodeGenerationAssembly _codeGenerationAssembly;
+
+    public CodeGenerationAssemblyCommand(ICodeGenerationAssembly codeGenerationAssembly, IClipboard clipboard) : base(clipboard)
     {
+        Guard.IsNotNull(codeGenerationAssembly);
+
+        _codeGenerationAssembly = codeGenerationAssembly;
     }
 
     public override void Initialize(CommandLineApplication app)

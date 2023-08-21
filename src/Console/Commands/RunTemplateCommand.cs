@@ -5,7 +5,7 @@ public class RunTemplateCommand : CommandBase
     private readonly ITemplateProvider _templateProvider;
     private readonly ITemplateEngine _templateEngine;
     
-    public RunTemplateCommand(ICodeGenerationAssembly codeGenerationAssembly, IClipboard clipboard, ITemplateProvider templateProvider, ITemplateEngine templateEngine) : base(codeGenerationAssembly, clipboard)
+    public RunTemplateCommand(IClipboard clipboard, ITemplateProvider templateProvider, ITemplateEngine templateEngine) : base(clipboard)
     {
         Guard.IsNotNull(templateProvider);
         Guard.IsNotNull(templateEngine);
@@ -42,7 +42,7 @@ public class RunTemplateCommand : CommandBase
                 }
 
                 var className = classNameOption.Value();
-                if (string.IsNullOrEmpty(assemblyName))
+                if (string.IsNullOrEmpty(className))
                 {
                     app.Error.WriteLine("Error: Class name is required.");
                     return;

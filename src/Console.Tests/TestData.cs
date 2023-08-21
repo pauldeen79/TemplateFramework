@@ -11,4 +11,22 @@ internal static class TestData
 #else
     internal const string BasePath = "Unknown basepath, only Windows, Linux and OSX are supported";
 #endif
+    internal sealed class PlainTemplateWithModelAndAdditionalParameters<T> : IModelContainer<T>, IParameterizedTemplate
+    {
+        public T? Model { get; set; } = default!;
+
+        public string AdditionalParameter { get; set; } = "";
+
+        public void SetParameter(string name, object? value)
+        {
+            if (name == nameof(AdditionalParameter))
+            {
+                AdditionalParameter = value?.ToString() ?? string.Empty;
+            }
+        }
+
+        public ITemplateParameter[] GetParameters() => new[] { new TemplateParameter(nameof(AdditionalParameter), typeof(T?)) };
+
+        public override string ToString() => AdditionalParameter;
+    }
 }
