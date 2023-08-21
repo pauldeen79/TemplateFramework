@@ -50,14 +50,14 @@ internal static class TestData
     }
 
     internal sealed record CsharpClassGeneratorSettings(bool GenerateMultipleFiles,
-                                                 bool SkipWhenFileExists,
-                                                 bool CreateCodeGenerationHeader,
-                                                 string? EnvironmentVersion,
-                                                 string? FilenamePrefix,
-                                                 string? FilenameSuffix,
-                                                 bool EnableNullableContext,
-                                                 int IndentCount,
-                                                 CultureInfo CultureInfo);
+                                                        bool SkipWhenFileExists,
+                                                        bool CreateCodeGenerationHeader,
+                                                        string? EnvironmentVersion,
+                                                        string? FilenamePrefix,
+                                                        string? FilenameSuffix,
+                                                        bool EnableNullableContext,
+                                                        int IndentCount,
+                                                        CultureInfo CultureInfo);
 
     internal abstract class CsharpClassGeneratorBase : ITemplateContextContainer
     {
@@ -112,7 +112,7 @@ internal static class TestData
         }
     }
 
-    internal sealed class CodeGenerationHeaderTemplate : CsharpClassGeneratorBase, IStringBuilderTemplate, IModelContainer<CsharpClassGeneratorSettings>
+    internal sealed class CodeGenerationHeaderTemplate : IStringBuilderTemplate, IModelContainer<CsharpClassGeneratorSettings>
     {
         public CsharpClassGeneratorSettings? Model { get; set; }
 
@@ -144,7 +144,7 @@ internal static class TestData
         }
     }
 
-    internal sealed class DefaultUsingsTemplate : CsharpClassGeneratorBase, IModelContainer<CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>>, IStringBuilderTemplate
+    internal sealed class DefaultUsingsTemplate : IModelContainer<CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>>, IStringBuilderTemplate
     {
         public CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>? Model { get; set; }
 
