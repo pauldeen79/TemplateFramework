@@ -38,6 +38,7 @@ public sealed class TemplateContext : ITemplateContext
     {
     }
 
+#pragma warning disable S107
     public TemplateContext(ITemplateEngine engine,
                            ITemplateProvider provider,
                            string defaultFilename,
@@ -46,6 +47,7 @@ public sealed class TemplateContext : ITemplateContext
                            ITemplateContext? parentContext,
                            int? iterationNumber,
                            int? iterationCount)
+#pragma warning restore S107
     {
         Guard.IsNotNull(engine);
         Guard.IsNotNull(provider);

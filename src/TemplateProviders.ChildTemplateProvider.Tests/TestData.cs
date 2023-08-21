@@ -37,7 +37,7 @@ internal static class TestData
         public void Render(IMultipleContentBuilder builder) => _delegate(builder, Context);
     }
 
-    internal class CsharpClassGeneratorViewModel<TModel>
+    internal sealed class CsharpClassGeneratorViewModel<TModel>
     {
         public CsharpClassGeneratorViewModel(TModel data, CsharpClassGeneratorSettings settings)
         {
@@ -49,7 +49,7 @@ internal static class TestData
         public CsharpClassGeneratorSettings Settings { get; }
     }
 
-    internal record CsharpClassGeneratorSettings(bool GenerateMultipleFiles,
+    internal sealed record CsharpClassGeneratorSettings(bool GenerateMultipleFiles,
                                                  bool SkipWhenFileExists,
                                                  bool CreateCodeGenerationHeader,
                                                  string? EnvironmentVersion,
@@ -102,7 +102,7 @@ internal static class TestData
                     .OrderBy(typeBase => typeBase.Name)
                     .Select(typeBase => new CsharpClassGeneratorViewModel<TypeBase>(typeBase, Model.Settings));
 
-                Context.Engine.RenderChildTemplates(typeBaseItems, generationEnvironment, typeBase => Context.Provider.Create(new ChildTemplateByModelRequest(((CsharpClassGeneratorViewModel<TypeBase>)typeBase).Data)), Context.DefaultFilename, Context);
+                Context.Engine.RenderChildTemplates(typeBaseItems, generationEnvironment, typeBase => Context.Provider.Create(new ChildTemplateByModelRequest(((CsharpClassGeneratorViewModel<TypeBase>)typeBase!).Data)), Context.DefaultFilename, Context);
 
                 if (Context.IsRootContext && !Model.Settings.GenerateMultipleFiles)
                 {
