@@ -31,6 +31,7 @@
     <Using Include="CommunityToolkit.Diagnostics" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
     <Using Include="System.Collections" />
+    <Using Include="System.Reflection" />
     <Using Include="System.Text" />
     <Using Include="TemplateFramework.Abstractions" />
     <Using Include="TemplateFramework.Abstractions.Requests" />

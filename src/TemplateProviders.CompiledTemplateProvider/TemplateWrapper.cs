@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.TemplateProviders.CompiledTemplateProvider;
 
-public class TemplateWrapper : ITemplateContextContainer, IParameterizedTemplate, IMultipleContentBuilderTemplate
+public class TemplateWrapper : ITemplateContextContainer, IParameterizedTemplate, IMultipleContentBuilderTemplate, IModelContainer<object>
 {
     private readonly object _instance;
 
@@ -12,6 +12,7 @@ public class TemplateWrapper : ITemplateContextContainer, IParameterizedTemplate
     }
 
     public ITemplateContext Context { get; set; } = default!;
+    public object? Model { get; set; }
 
     public ITemplateParameter[] GetParameters()
     {
@@ -38,6 +39,7 @@ public class TemplateWrapper : ITemplateContextContainer, IParameterizedTemplate
         Guard.IsNotNull(builder);
 
         var type = _instance.GetType();
+        InitializeModel(type);
 
         var transformText = type.GetMethod(nameof(ITextTransformTemplate.TransformText));
         if (transformText is not null)
@@ -48,11 +50,11 @@ public class TemplateWrapper : ITemplateContextContainer, IParameterizedTemplate
             return;
         }
 
-        var renderMethod = type.GetMethod(nameof(Render));
-        if (renderMethod is null || renderMethod.GetParameters().Length == 1)
+        var renderMethod = Array.Find(type.GetMethods(), m => m.Name == nameof(Render) && m.GetParameters().Length == 1);
+        if (renderMethod is null)
         {
             // There is no Render or TransformText method, so call ToString
-            var result = type.GetMethod("ToString")!.Invoke(_instance, Array.Empty<object?>());
+            var result = GetToStringMethod(type).Invoke(_instance, Array.Empty<object?>());
             // Render using a stringbuilder, then add it to multiple contents
             builder.AddContent(Context?.DefaultFilename ?? string.Empty, false, new StringBuilder(result?.ToString() ?? string.Empty));
             return;
@@ -61,11 +63,9 @@ public class TemplateWrapper : ITemplateContextContainer, IParameterizedTemplate
         if (renderMethod.GetParameters()[0].ParameterType.Name == nameof(IMultipleContentBuilder))
         {
             var result = new WrappedMultipleCreator().TryCreate(_instance);
-            if (result is null)
-            {
-                throw new NotSupportedException("Could not create a wrapper for the multiple content builder template");
-            }
-
+            
+            Guard.IsNotNull(result);
+            
             result.Render(builder);
         }
         else if (renderMethod.GetParameters()[0].ParameterType == typeof(StringBuilder))
@@ -77,7 +77,10 @@ public class TemplateWrapper : ITemplateContextContainer, IParameterizedTemplate
         }
         else
         {
-            throw new NotSupportedException("Render method does not have an argument of IMultipleContentBuilder or StringBuilder");
+            // There is no compatible Render method, so call ToString
+            var result = GetToStringMethod(type).Invoke(_instance, Array.Empty<object?>());
+            // Render using a stringbuilder, then add it to multiple contents
+            builder.AddContent(Context?.DefaultFilename ?? string.Empty, false, new StringBuilder(result?.ToString() ?? string.Empty));
         }
     }
 
@@ -91,4 +94,21 @@ public class TemplateWrapper : ITemplateContextContainer, IParameterizedTemplate
 
         method.Invoke(_instance, new object?[] { name, value });
     }
+
+    private void InitializeModel(Type type)
+    {
+        if (Model is null)
+        {
+            return;
+        }
+
+        var modelProperty = type.GetProperty(nameof(IModelContainer<object>.Model));
+        if (modelProperty is not null)
+        {
+            modelProperty.SetValue(_instance, Model);
+        }
+    }
+
+    private static MethodInfo GetToStringMethod(Type type)
+        => type.GetMethods().First(x => x.Name == nameof(ToString) && x.GetParameters().Length == 0);
 }
