@@ -518,7 +518,6 @@ public static class TemplateEngineExtensions
         Guard.IsNotNull(createTemplateRequest);
 
         var template = context.Provider.Create(createTemplateRequest);
-        Guard.IsNotNull(template);
         instance.Render(new RenderTemplateRequest(template, model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(template, model))));
     }
 
@@ -528,7 +527,6 @@ public static class TemplateEngineExtensions
         Guard.IsNotNull(createTemplateRequest);
 
         var template = context.Provider.Create(createTemplateRequest);
-        Guard.IsNotNull(template);
         instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(template))));
     }
 
@@ -538,7 +536,6 @@ public static class TemplateEngineExtensions
         Guard.IsNotNull(createTemplateRequest);
 
         var template = context.Provider.Create(createTemplateRequest);
-        Guard.IsNotNull(template);
         instance.Render(new RenderTemplateRequest(template, model, generationEnvironment, context.DefaultFilename, additionalParameters, context.CreateChildContext(new ChildTemplateContext(template, model))));
     }
 
@@ -548,7 +545,6 @@ public static class TemplateEngineExtensions
         Guard.IsNotNull(createTemplateRequest);
 
         var template = context.Provider.Create(createTemplateRequest);
-        Guard.IsNotNull(template);
         instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, context.DefaultFilename, additionalParameters, context.CreateChildContext(new ChildTemplateContext(template))));
     }
 
