@@ -3,10 +3,11 @@
 public class RunTemplateCommandTests
 {
     protected Mock<IClipboard> ClipboardMock { get; } = new();
+    protected Mock<IFileSystem> FileSystemMock { get; } = new();
     protected Mock<ITemplateProvider> TemplateProviderMock { get; } = new();
     protected Mock<ITemplateEngine> TemplateEngineMock { get; } = new();
 
-    private RunTemplateCommand CreateSut() => new(ClipboardMock.Object, TemplateProviderMock.Object, TemplateEngineMock.Object);
+    private RunTemplateCommand CreateSut() => new(ClipboardMock.Object, TemplateProviderMock.Object, TemplateEngineMock.Object, FileSystemMock.Object);
 
     public class Constructor
     {
@@ -71,7 +72,6 @@ public class RunTemplateCommandTests
         public void Sets_Parameters_Correctly_On_Template_Instance()
         {
             // Arrange
-            var sut = CreateSut();
             var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
             TemplateProviderMock.Setup(x => x.Create(It.IsAny<ICreateTemplateRequest>())).Returns(templateInstance);
 

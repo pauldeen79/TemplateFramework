@@ -4,7 +4,7 @@ public class CodeGenerationAssemblyCommand : CommandBase
 {
     private readonly ICodeGenerationAssembly _codeGenerationAssembly;
 
-    public CodeGenerationAssemblyCommand(ICodeGenerationAssembly codeGenerationAssembly, IClipboard clipboard) : base(clipboard)
+    public CodeGenerationAssemblyCommand(ICodeGenerationAssembly codeGenerationAssembly, IClipboard clipboard, IFileSystem fileSystem) : base(clipboard, fileSystem)
     {
         Guard.IsNotNull(codeGenerationAssembly);
 
@@ -37,7 +37,7 @@ public class CodeGenerationAssemblyCommand : CommandBase
                     return;
                 }
 
-                var currentDirectory = GetCurrentDirectory(currentDirectoryOption, assemblyName!);
+                var currentDirectory = GetCurrentDirectory(currentDirectoryOption.Value(), assemblyName!);
                 var basePath = GetBasePath(basePathOption);
                 var defaultFilename = GetDefaultFilename(defaultFilenameOption);
                 var dryRun = GetDryRun(dryRunOption, clipboardOption);

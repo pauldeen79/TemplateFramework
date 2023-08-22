@@ -5,7 +5,7 @@ public class RunTemplateCommand : CommandBase
     private readonly ITemplateProvider _templateProvider;
     private readonly ITemplateEngine _templateEngine;
     
-    public RunTemplateCommand(IClipboard clipboard, ITemplateProvider templateProvider, ITemplateEngine templateEngine) : base(clipboard)
+    public RunTemplateCommand(IClipboard clipboard, ITemplateProvider templateProvider, ITemplateEngine templateEngine, IFileSystem fileSystem) : base(clipboard, fileSystem)
     {
         Guard.IsNotNull(templateProvider);
         Guard.IsNotNull(templateEngine);
@@ -48,7 +48,7 @@ public class RunTemplateCommand : CommandBase
                     return;
                 }
 
-                var currentDirectory = GetCurrentDirectory(currentDirectoryOption, assemblyName!);
+                var currentDirectory = GetCurrentDirectory(currentDirectoryOption.Value(), assemblyName!);
                 var basePath = GetBasePath(basePathOption);
                 var defaultFilename = GetDefaultFilename(defaultFilenameOption);
                 var dryRun = GetDryRun(dryRunOption, clipboardOption);

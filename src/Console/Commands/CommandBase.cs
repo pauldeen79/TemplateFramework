@@ -1,18 +1,21 @@
 ﻿namespace TemplateFramework.Console.Commands;
 
-//TODO: Add unit tests, using class in unit test project which makes the protected methods public.
 public abstract class CommandBase : ICommandLineCommand
 {
     internal IClipboard _clipboard { get; }
+    protected IFileSystem FileSystem { get; }
 
-    protected CommandBase(IClipboard clipboard)
+    protected CommandBase(IClipboard clipboard, IFileSystem fileSystem)
     {
         Guard.IsNotNull(clipboard);
+        Guard.IsNotNull(fileSystem);
 
         _clipboard = clipboard;
+        FileSystem = fileSystem;
     }
 
-    protected static void Watch(CommandLineApplication app, CommandOption<string> watchOption, string fileName, Action action)
+    [ExcludeFromCodeCoverage]
+    protected void Watch(CommandLineApplication app, CommandOption<string> watchOption, string fileName, Action action)
     {
         Guard.IsNotNull(app);
         Guard.IsNotNull(watchOption);
@@ -26,7 +29,7 @@ public abstract class CommandBase : ICommandLineCommand
             return;
         }
 
-        if (!File.Exists(fileName))
+        if (!FileSystem.FileExists(fileName))
         {
             app.Out.WriteLine($"Error: Could not find file [{fileName}]. Could not watch file for changes.");
             return;
@@ -36,29 +39,30 @@ public abstract class CommandBase : ICommandLineCommand
         var previousLastWriteTime = new FileInfo(fileName).LastWriteTime;
         while (true)
         {
-            if (!File.Exists(fileName))
+            if (!FileSystem.FileExists(fileName))
             {
                 app.Out.WriteLine($"Error: Could not find file [{fileName}]. Could not watch file for changes.");
                 return;
             }
+
             var currentLastWriteTime = new FileInfo(fileName).LastWriteTime;
             if (currentLastWriteTime != previousLastWriteTime)
             {
                 previousLastWriteTime = currentLastWriteTime;
                 action();
             }
+
             Thread.Sleep(1000);
         }
     }
 
-    protected static string? GetCurrentDirectory(CommandOption<string> currentDirectoryOption, string assemblyName)
+    protected static string? GetCurrentDirectory(string? currentDirectory, string assemblyName)
     {
-        Guard.IsNotNull(currentDirectoryOption);
         Guard.IsNotNull(assemblyName);
 
-        if (currentDirectoryOption.HasValue())
+        if (!string.IsNullOrEmpty(currentDirectory))
         {
-            return currentDirectoryOption.Value()!;
+            return currentDirectory;
         }
 
         return assemblyName.EndsWith(".dll", StringComparison.CurrentCultureIgnoreCase)
