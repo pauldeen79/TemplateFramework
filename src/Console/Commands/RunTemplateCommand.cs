@@ -49,22 +49,22 @@ public class RunTemplateCommand : CommandBase
                 }
 
                 var currentDirectory = GetCurrentDirectory(currentDirectoryOption.Value(), assemblyName!);
-                var basePath = GetBasePath(basePathOption);
-                var defaultFilename = GetDefaultFilename(defaultFilenameOption);
-                var dryRun = GetDryRun(dryRunOption, clipboardOption);
+                var basePath = GetBasePath(basePathOption.Value());
+                var defaultFilename = GetDefaultFilename(defaultFilenameOption.Value());
+                var dryRun = GetDryRun(dryRunOption.HasValue(), clipboardOption.HasValue());
                 var parameters = parametersArgument.Values
                     .Where(p => p?.Contains(':', StringComparison.CurrentCulture) == true)
                     .Select(p => p!.Split(':'))
                     .Select(p => new KeyValuePair<string, object?>(p[0], string.Join(":", p.Skip(1))))
                     .ToArray();
-                Watch(app, watchOption, assemblyName, () =>
+                Watch(app, watchOption.HasValue(), assemblyName, () =>
                 {
                     var generationEnvironment = new MultipleContentBuilderEnvironment();
                     var createTemplateRequest = GetCreateTemplateRequest(assemblyName, className!, currentDirectory);
 
                     var template = _templateProvider.Create(createTemplateRequest);
                     _templateEngine.Render(new RenderTemplateRequest(template, null, generationEnvironment, defaultFilename, parameters, null));
-                    WriteOutput(app, generationEnvironment, basePath, bareOption, clipboardOption, dryRun);
+                    WriteOutput(app, generationEnvironment, basePath, bareOption.HasValue(), clipboardOption.HasValue(), dryRun);
                 });
             });
         });

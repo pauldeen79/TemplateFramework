@@ -38,17 +38,17 @@ public class CodeGenerationAssemblyCommand : CommandBase
                 }
 
                 var currentDirectory = GetCurrentDirectory(currentDirectoryOption.Value(), assemblyName!);
-                var basePath = GetBasePath(basePathOption);
-                var defaultFilename = GetDefaultFilename(defaultFilenameOption);
-                var dryRun = GetDryRun(dryRunOption, clipboardOption);
+                var basePath = GetBasePath(basePathOption.Value());
+                var defaultFilename = GetDefaultFilename(defaultFilenameOption.Value());
+                var dryRun = GetDryRun(dryRunOption.HasValue(), clipboardOption.HasValue());
 
-                Watch(app, watchOption, assemblyName, () =>
+                Watch(app, watchOption.HasValue(), assemblyName, () =>
                 {
                     var generationEnvironment = new MultipleContentBuilderEnvironment();
                     var classNameFilter = filterClassNameOption.Values.Where(x => x is not null).Select(x => x!);
                     var settings = new CodeGenerationAssemblySettings(basePath, defaultFilename, assemblyName, dryRun, currentDirectory, classNameFilter);
                     _codeGenerationAssembly.Generate(settings, generationEnvironment);
-                    WriteOutput(app, generationEnvironment, basePath, bareOption, clipboardOption, dryRun);
+                    WriteOutput(app, generationEnvironment, basePath, bareOption.HasValue(), clipboardOption.HasValue(), dryRun);
                 });
             });
         });

@@ -4,6 +4,7 @@ public abstract class CommandBase : ICommandLineCommand
 {
     internal IClipboard _clipboard { get; }
     protected IFileSystem FileSystem { get; }
+    protected bool Abort { get; set; }
 
     protected CommandBase(IClipboard clipboard, IFileSystem fileSystem)
     {
@@ -14,17 +15,15 @@ public abstract class CommandBase : ICommandLineCommand
         FileSystem = fileSystem;
     }
 
-    [ExcludeFromCodeCoverage]
-    protected void Watch(CommandLineApplication app, CommandOption<string> watchOption, string fileName, Action action)
+    protected void Watch(CommandLineApplication app, bool watch, string fileName, Action action)
     {
         Guard.IsNotNull(app);
-        Guard.IsNotNull(watchOption);
         Guard.IsNotNull(fileName);
         Guard.IsNotNull(action);
 
         action();
 
-        if (!watchOption.HasValue())
+        if (!watch)
         {
             return;
         }
@@ -36,8 +35,8 @@ public abstract class CommandBase : ICommandLineCommand
         }
 
         app.Out.WriteLine($"Watching file [{fileName}] for changes...");
-        var previousLastWriteTime = new FileInfo(fileName).LastWriteTime;
-        while (true)
+        var previousLastWriteTime = FileSystem.GetFileLastWriteTime(fileName);
+        while (!Abort)
         {
             if (!FileSystem.FileExists(fileName))
             {
@@ -45,7 +44,7 @@ public abstract class CommandBase : ICommandLineCommand
                 return;
             }
 
-            var currentLastWriteTime = new FileInfo(fileName).LastWriteTime;
+            var currentLastWriteTime = FileSystem.GetFileLastWriteTime(fileName);
             if (currentLastWriteTime != previousLastWriteTime)
             {
                 previousLastWriteTime = currentLastWriteTime;
@@ -92,13 +91,12 @@ public abstract class CommandBase : ICommandLineCommand
         return stringBuilder.ToString();
     }
 
-    protected static void WriteOutputToHost(CommandLineApplication app, string templateOutput, CommandOption<bool> bareOption)
+    protected static void WriteOutputToHost(CommandLineApplication app, string templateOutput, bool bare)
     {
         Guard.IsNotNull(app);
         Guard.IsNotNull(templateOutput);
-        Guard.IsNotNull(bareOption);
 
-        if (!bareOption.HasValue())
+        if (!bare)
         {
             app.Out.WriteLine("Code generation output:");
         }
@@ -106,17 +104,15 @@ public abstract class CommandBase : ICommandLineCommand
         app.Out.WriteLine(templateOutput);
     }
 
-    protected void WriteOutput(CommandLineApplication app, MultipleContentBuilderEnvironment generationEnvironment, string basePath, CommandOption<bool> bareOption, CommandOption<bool> clipboardOption, bool dryRun)
+    protected void WriteOutput(CommandLineApplication app, MultipleContentBuilderEnvironment generationEnvironment, string basePath, bool bare, bool clipboard, bool dryRun)
     {
         Guard.IsNotNull(app);
         Guard.IsNotNull(generationEnvironment);
         Guard.IsNotNull(basePath);
-        Guard.IsNotNull(bareOption);
-        Guard.IsNotNull(clipboardOption);
 
         if (!dryRun)
         {
-            if (!bareOption.HasValue())
+            if (!bare)
             {
                 var dir = string.IsNullOrEmpty(basePath)
                     ? Directory.GetCurrentDirectory()
@@ -125,55 +121,34 @@ public abstract class CommandBase : ICommandLineCommand
                 app.Out.WriteLine($"Written code generation output to path: {dir}");
             }
         }
-        else if (clipboardOption.HasValue())
+        else if (clipboard)
         {
-            WriteOutputToClipboard(app, GenerateSingleOutput(generationEnvironment.Builder, basePath), bareOption);
+            WriteOutputToClipboard(app, GenerateSingleOutput(generationEnvironment.Builder, basePath), bare);
         }
         else
         {
-            WriteOutputToHost(app, GenerateSingleOutput(generationEnvironment.Builder, basePath), bareOption);
+            WriteOutputToHost(app, GenerateSingleOutput(generationEnvironment.Builder, basePath), bare);
         }
     }
 
-    protected void WriteOutputToClipboard(CommandLineApplication app, string templateOutput, CommandOption<bool> bareOption)
+    protected void WriteOutputToClipboard(CommandLineApplication app, string templateOutput, bool bare)
     {
         Guard.IsNotNull(app);
         Guard.IsNotNull(templateOutput);
-        Guard.IsNotNull(bareOption);
 
         _clipboard.SetText(templateOutput);
 
-        if (!bareOption.HasValue())
+        if (!bare)
         {
             app.Out.WriteLine("Copied code generation output to clipboard");
         }
     }
 
-    protected static bool GetDryRun(CommandOption<bool> dryRunOption, CommandOption<bool> clipboardOption)
-    {
-        Guard.IsNotNull(dryRunOption);
-        Guard.IsNotNull(clipboardOption);
+    protected static bool GetDryRun(bool dryRun, bool clipboard) => dryRun || clipboard;
 
-        return dryRunOption.HasValue() || clipboardOption.HasValue();
-    }
+    protected static string GetDefaultFilename(string? defaultFilename) => defaultFilename ?? string.Empty;
 
-    protected static string GetDefaultFilename(CommandOption<string> defaultFilenameOption)
-    {
-        Guard.IsNotNull(defaultFilenameOption);
-
-        return defaultFilenameOption.HasValue()
-            ? defaultFilenameOption.Value()!
-            : string.Empty;
-    }
-
-    protected static string GetBasePath(CommandOption<string> basePathOption)
-    {
-        Guard.IsNotNull(basePathOption);
-
-        return basePathOption.HasValue()
-            ? basePathOption.Value()!
-            : string.Empty;
-    }
+    protected static string GetBasePath(string? basePath) => basePath ?? string.Empty;
 
     public abstract void Initialize(CommandLineApplication app);
 }

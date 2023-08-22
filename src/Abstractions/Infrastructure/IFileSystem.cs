@@ -15,4 +15,5 @@ public interface IFileSystem
 
     void WriteAllText(string path, string contents, Encoding encoding);
     void WriteAllLines(string path, IEnumerable<string> contents, Encoding encoding);
+    DateTime GetFileLastWriteTime(string fileName);
 }
