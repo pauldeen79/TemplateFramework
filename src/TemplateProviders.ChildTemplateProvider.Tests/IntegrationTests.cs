@@ -16,7 +16,7 @@ public class IntegrationTests
         var template = new TestData.MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine((builder, context) =>
         {
             var childTemplate = context.Provider.Create(new ChildTemplateByNameRequest("MyTemplate"));
-            context.Engine.Render(new RenderTemplateRequest(childTemplate, builder, context.CreateChildContext(new TemplateContext(context.Engine, context.Provider, "Filename.txt", childTemplate))));
+            context.Engine.Render(new RenderTemplateRequest(childTemplate, builder, context.CreateChildContext(new ChildTemplateContext(childTemplate))));
         });
         var generationEnvironment = new MultipleContentBuilder();
 
