@@ -5,11 +5,11 @@ public partial class TemplateEngineExtensionsTests
     public class RenderChildTemplates : TemplateEngineExtensionsTests
     {
         [Fact]
-        public void Throws_On_Null_Models_1()
+        public void Throws_On_Null_ChildModels_1()
         {
             // Act & Assert
-            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplates(models: null!, GenerationEnvironmentMock.Object, Template, ContextMock.Object))
-                                     .Should().Throw<ArgumentNullException>().WithParameterName("models");
+            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplates(childModels: null!, GenerationEnvironmentMock.Object, Template, ContextMock.Object))
+                                     .Should().Throw<ArgumentNullException>().WithParameterName("childModels");
         }
 
         [Fact]
@@ -41,11 +41,11 @@ public partial class TemplateEngineExtensionsTests
         }
 
         [Fact]
-        public void Throws_On_Null_Models_2()
+        public void Throws_On_Null_ChildModels_2()
         {
             // Act & Assert
-            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplates(models: null!, GenerationEnvironmentMock.Object, _ => Template, ContextMock.Object))
-                                     .Should().Throw<ArgumentNullException>().WithParameterName("models");
+            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplates(childModels: null!, GenerationEnvironmentMock.Object, _ => Template, ContextMock.Object))
+                                     .Should().Throw<ArgumentNullException>().WithParameterName("childModels");
         }
 
         [Fact]
@@ -77,11 +77,11 @@ public partial class TemplateEngineExtensionsTests
         }
 
         [Fact]
-        public void Throws_On_Null_Models_3()
+        public void Throws_On_Null_ChildModels_3()
         {
             // Act & Assert
-            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplates(models: null!, GenerationEnvironmentMock.Object, Template))
-                                     .Should().Throw<ArgumentNullException>().WithParameterName("models");
+            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplates(childModels: null!, GenerationEnvironmentMock.Object, Template))
+                                     .Should().Throw<ArgumentNullException>().WithParameterName("childModels");
         }
 
         [Fact]
@@ -101,11 +101,11 @@ public partial class TemplateEngineExtensionsTests
         }
 
         [Fact]
-        public void Throws_On_Null_Models_4()
+        public void Throws_On_Null_ChildModels_4()
         {
             // Act & Assert
-            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplates(models: null!, GenerationEnvironmentMock.Object, _ => Template))
-                                     .Should().Throw<ArgumentNullException>().WithParameterName("models");
+            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplates(childModels: null!, GenerationEnvironmentMock.Object, _ => Template))
+                                     .Should().Throw<ArgumentNullException>().WithParameterName("childModels");
         }
 
         [Fact]
@@ -125,11 +125,11 @@ public partial class TemplateEngineExtensionsTests
         }
 
         [Fact]
-        public void Throws_On_Null_Models_5()
+        public void Throws_On_Null_ChildModels_5()
         {
             // Act & Assert
-            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplates(models: null!, GenerationEnvironmentMock.Object, ContextMock.Object, _ => CreateTemplateRequestMock.Object))
-                                     .Should().Throw<ArgumentNullException>().WithParameterName("models");
+            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplates(childModels: null!, GenerationEnvironmentMock.Object, ContextMock.Object, _ => CreateTemplateRequestMock.Object))
+                                     .Should().Throw<ArgumentNullException>().WithParameterName("childModels");
         }
 
         [Fact]
@@ -171,11 +171,11 @@ public partial class TemplateEngineExtensionsTests
         }
 
         [Fact]
-        public void Throws_On_Null_Models_6()
+        public void Throws_On_Null_ChildModels_6()
         {
             // Act & Assert
-            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplates(models: null!, GenerationEnvironmentMock.Object, ContextMock.Object, _ => Template))
-                                     .Should().Throw<ArgumentNullException>().WithParameterName("models");
+            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplates(childModels: null!, GenerationEnvironmentMock.Object, ContextMock.Object, _ => Template))
+                                     .Should().Throw<ArgumentNullException>().WithParameterName("childModels");
         }
 
         [Fact]
@@ -215,11 +215,11 @@ public partial class TemplateEngineExtensionsTests
         }
 
         [Fact]
-        public void Throws_On_Null_Models_7()
+        public void Throws_On_Null_ChildModels_7()
         {
             // Act & Assert
-            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplates(models: null!, GenerationEnvironmentMock.Object, ContextMock.Object, Template))
-                                     .Should().Throw<ArgumentNullException>().WithParameterName("models");
+            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplates(childModels: null!, GenerationEnvironmentMock.Object, ContextMock.Object, Template))
+                                     .Should().Throw<ArgumentNullException>().WithParameterName("childModels");
         }
 
         [Fact]

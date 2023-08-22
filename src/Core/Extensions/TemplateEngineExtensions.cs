@@ -2,25 +2,25 @@
 
 public static class TemplateEngineExtensions
 {
-    public static void RenderChildTemplates(this ITemplateEngine instance, IEnumerable models, IGenerationEnvironment generationEnvironment, object template, ITemplateContext context)
+    public static void RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, object template, ITemplateContext context)
     {
-        Guard.IsNotNull(models);
+        Guard.IsNotNull(childModels);
         Guard.IsNotNull(context);
 
-        var items = models.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
+        var items = childModels.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
         foreach (var item in items)
         {
             instance.Render(new RenderTemplateRequest(template, item.Model, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(template, item, item.Index, items.Length))));
         }
     }
 
-    public static void RenderChildTemplates(this ITemplateEngine instance, IEnumerable models, IGenerationEnvironment generationEnvironment, Func<object?, object> templateFactory, ITemplateContext context)
+    public static void RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, Func<object?, object> templateFactory, ITemplateContext context)
     {
-        Guard.IsNotNull(models);
+        Guard.IsNotNull(childModels);
         Guard.IsNotNull(context);
         Guard.IsNotNull(templateFactory);
 
-        var items = models.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
+        var items = childModels.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
         foreach (var item in items)
         {
             var template = templateFactory(item.Model);
@@ -28,36 +28,36 @@ public static class TemplateEngineExtensions
         }
     }
 
-    public static void RenderChildTemplates(this ITemplateEngine instance, IEnumerable models, IGenerationEnvironment generationEnvironment, object template)
+    public static void RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, object template)
     {
-        Guard.IsNotNull(models);
+        Guard.IsNotNull(childModels);
 
-        var items = models.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
+        var items = childModels.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
         foreach (var item in items)
         {
             instance.Render(new RenderTemplateRequest(template, item.Model, generationEnvironment, string.Empty, null, null));
         }
     }
 
-    public static void RenderChildTemplates(this ITemplateEngine instance, IEnumerable models, IGenerationEnvironment generationEnvironment, Func<object?, object> templateFactory)
+    public static void RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, Func<object?, object> templateFactory)
     {
-        Guard.IsNotNull(models);
+        Guard.IsNotNull(childModels);
         Guard.IsNotNull(templateFactory);
 
-        foreach (var model in models)
+        foreach (var model in childModels)
         {
             var template = templateFactory(model);
             instance.Render(new RenderTemplateRequest(template, model, generationEnvironment, string.Empty, null, null));
         }
     }
 
-    public static void RenderChildTemplates(this ITemplateEngine instance, IEnumerable models, IGenerationEnvironment generationEnvironment, ITemplateContext context, Func<object?, ICreateTemplateRequest> createTemplateRequestFactory)
+    public static void RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, ITemplateContext context, Func<object?, ICreateTemplateRequest> createTemplateRequestFactory)
     {
-        Guard.IsNotNull(models);
+        Guard.IsNotNull(childModels);
         Guard.IsNotNull(context);
         Guard.IsNotNull(createTemplateRequestFactory);
 
-        var items = models.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
+        var items = childModels.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
         foreach (var item in items)
         {
             var template = context.Provider.Create(createTemplateRequestFactory(item.Model));
@@ -65,13 +65,13 @@ public static class TemplateEngineExtensions
         }
     }
 
-    public static void RenderChildTemplates(this ITemplateEngine instance, IEnumerable models, IGenerationEnvironment generationEnvironment, ITemplateContext context, Func<object?, object> createTemplateFactory)
+    public static void RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, ITemplateContext context, Func<object?, object> createTemplateFactory)
     {
-        Guard.IsNotNull(models);
+        Guard.IsNotNull(childModels);
         Guard.IsNotNull(context);
         Guard.IsNotNull(createTemplateFactory);
 
-        var items = models.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
+        var items = childModels.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
         foreach (var item in items)
         {
             var template = createTemplateFactory(item.Model);
@@ -79,33 +79,33 @@ public static class TemplateEngineExtensions
         }
     }
 
-    public static void RenderChildTemplates(this ITemplateEngine instance, IEnumerable models, IGenerationEnvironment generationEnvironment, ITemplateContext context, object template)
+    public static void RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, ITemplateContext context, object template)
     {
-        Guard.IsNotNull(models);
+        Guard.IsNotNull(childModels);
         Guard.IsNotNull(context);
         Guard.IsNotNull(template);
 
-        var items = models.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
+        var items = childModels.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
         foreach (var item in items)
         {
             instance.Render(new RenderTemplateRequest(template, item.Model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(template, item, item.Index, items.Length))));
         }
     }
 
-    public static void RenderChildTemplate(this ITemplateEngine instance, object? model, IGenerationEnvironment generationEnvironment, object template, ITemplateContext context)
+    public static void RenderChildTemplate(this ITemplateEngine instance, object? childModel, IGenerationEnvironment generationEnvironment, object template, ITemplateContext context)
     {
         Guard.IsNotNull(context);
 
-        instance.Render(new RenderTemplateRequest(template, model, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(template, model))));
+        instance.Render(new RenderTemplateRequest(template, childModel, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(template, childModel))));
     }
 
-    public static void RenderChildTemplate(this ITemplateEngine instance, object? model, IGenerationEnvironment generationEnvironment, Func<object?, object> templateFactory, ITemplateContext context)
+    public static void RenderChildTemplate(this ITemplateEngine instance, object? childModel, IGenerationEnvironment generationEnvironment, Func<object?, object> templateFactory, ITemplateContext context)
     {
         Guard.IsNotNull(context);
         Guard.IsNotNull(templateFactory);
 
-        var template = templateFactory(model);
-        instance.Render(new RenderTemplateRequest(template, model, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(template, model))));
+        var template = templateFactory(childModel);
+        instance.Render(new RenderTemplateRequest(template, childModel, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(template, childModel))));
     }
 
     public static void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, object template, ITemplateContext context)
@@ -124,17 +124,17 @@ public static class TemplateEngineExtensions
         instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(template))));
     }
 
-    public static void RenderChildTemplate(this ITemplateEngine instance, object? model, IGenerationEnvironment generationEnvironment, object template)
+    public static void RenderChildTemplate(this ITemplateEngine instance, object? childModel, IGenerationEnvironment generationEnvironment, object template)
     {
-        instance.Render(new RenderTemplateRequest(template, model, generationEnvironment, string.Empty, null, null));
+        instance.Render(new RenderTemplateRequest(template, childModel, generationEnvironment, string.Empty, null, null));
     }
 
-    public static void RenderChildTemplate(this ITemplateEngine instance, object? model, IGenerationEnvironment generationEnvironment, Func<object?, object> templateFactory)
+    public static void RenderChildTemplate(this ITemplateEngine instance, object? childModel, IGenerationEnvironment generationEnvironment, Func<object?, object> templateFactory)
     {
         Guard.IsNotNull(templateFactory);
 
-        var template = templateFactory(model);
-        instance.Render(new RenderTemplateRequest(template, model, generationEnvironment, string.Empty, null, null));
+        var template = templateFactory(childModel);
+        instance.Render(new RenderTemplateRequest(template, childModel, generationEnvironment, string.Empty, null, null));
     }
 
     public static void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, object template)
@@ -150,13 +150,13 @@ public static class TemplateEngineExtensions
         instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, string.Empty, null, null));
     }
 
-    public static void RenderChildTemplate(this ITemplateEngine instance, object? model, IGenerationEnvironment generationEnvironment, ITemplateContext context, ICreateTemplateRequest createTemplateRequest)
+    public static void RenderChildTemplate(this ITemplateEngine instance, object? childModel, IGenerationEnvironment generationEnvironment, ITemplateContext context, ICreateTemplateRequest createTemplateRequest)
     {
         Guard.IsNotNull(context);
         Guard.IsNotNull(createTemplateRequest);
 
         var template = context.Provider.Create(createTemplateRequest);
-        instance.Render(new RenderTemplateRequest(template, model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(template, model))));
+        instance.Render(new RenderTemplateRequest(template, childModel, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(template, childModel))));
     }
 
     public static void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, ITemplateContext context, ICreateTemplateRequest createTemplateRequest)
