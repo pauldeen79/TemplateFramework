@@ -3,8 +3,10 @@
 public partial class TemplateEngineExtensionsTests
 {
     protected Mock<ITemplateEngine> TemplateEngineMock { get; } = new();
+    protected Mock<ITemplateProvider> TemplateProviderMock { get; } = new();
     protected Mock<IGenerationEnvironment> GenerationEnvironmentMock { get; } = new();
     protected Mock<ITemplateContext> ContextMock { get; } = new();
+    protected Mock<ICreateTemplateRequest> CreateTemplateRequestMock { get; } = new();
 
     protected object Template { get; } = new object();
     protected object AdditionalParameters { get; } = new object();
