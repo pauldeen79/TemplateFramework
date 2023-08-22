@@ -168,6 +168,7 @@ public static class TemplateEngineExtensions
         instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(template))));
     }
 
+    //TODO: Make public, move to Core, and add unit tests
     private sealed class ChildTemplateContext : IChildTemplateContext
     {
         public ChildTemplateContext(object template) : this(template, null, null, null)

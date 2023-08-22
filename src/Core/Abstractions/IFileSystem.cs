@@ -1,5 +1,6 @@
 ﻿namespace TemplateFramework.Core.Abstractions;
 
+//TODO: Make public, so it can be injected into CommandBase.
 internal interface IFileSystem
 {
     bool FileExists(string path);

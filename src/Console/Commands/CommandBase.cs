@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Console.Commands;
 
-[ExcludeFromCodeCoverage]
+//TODO: Add unit tests, using class in unit test project which makes the protected methods public.
 public abstract class CommandBase : ICommandLineCommand
 {
     internal IClipboard _clipboard { get; }
