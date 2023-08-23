@@ -378,7 +378,67 @@ TemplateOutput
 
     public class WriteOutputToClipboard : CommandBaseTests
     {
-        // TODO: Add tests
+        [Fact]
+        public void Throws_On_Null_App()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act & Assert
+            sut.Invoking(x => CommandLineCommandHelper.ExecuteCommand(_ => x.WriteOutputToClipboardPublic(app: null!, "TemplateOutput", true)))
+               .Should().Throw<ArgumentNullException>().WithParameterName("app");
+        }
+
+        [Fact]
+        public void Throws_On_Null_TemplateOutput()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act & Assert
+            sut.Invoking(x => CommandLineCommandHelper.ExecuteCommand(app => x.WriteOutputToClipboardPublic(app, templateOutput: null!, true)))
+               .Should().Throw<ArgumentNullException>().WithParameterName("templateOutput");
+        }
+
+        [Fact]
+        public void Copies_Output_To_Clipboard()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            _ = CommandLineCommandHelper.ExecuteCommand(app => sut.WriteOutputToClipboardPublic(app, "TemplateOutput", true));
+
+            // Assert
+            ClipboardMock.Verify(x => x.SetText("TemplateOutput"), Times.Once);
+        }
+
+        [Fact]
+        public void Writes_Message_To_Host_When_Base_Is_False()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = CommandLineCommandHelper.ExecuteCommand(app => sut.WriteOutputToClipboardPublic(app, "TemplateOutput", false));
+
+            // Assert
+            result.Should().Be("Copied code generation output to clipboard" + Environment.NewLine);
+        }
+
+        [Fact]
+        public void Does_Not_Write_Message_To_Host_When_Base_Is_True()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = CommandLineCommandHelper.ExecuteCommand(app => sut.WriteOutputToClipboardPublic(app, "TemplateOutput", true));
+
+            // Assert
+            result.Should().BeEmpty();
+        }
+
     }
 
     public class GetDryRun : CommandBaseTests
