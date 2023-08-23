@@ -167,8 +167,9 @@ internal static class TestData
         public void Render(StringBuilder builder)
         {
             Guard.IsNotNull(builder);
+            Guard.IsNotNull(Model);
 
-            if (Model?.CreateCodeGenerationHeader != true)
+            if (!Model.CreateCodeGenerationHeader)
             {
                 return;
             }
