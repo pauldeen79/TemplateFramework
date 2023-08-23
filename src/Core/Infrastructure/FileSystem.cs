@@ -34,4 +34,7 @@ internal sealed class FileSystem : IFileSystem
         => recurse
             ? SearchOption.AllDirectories
             : SearchOption.TopDirectoryOnly;
+
+    public DateTime GetFileLastWriteTime(string fileName)
+        => new FileInfo(fileName).LastWriteTime;
 }

@@ -1,6 +1,6 @@
-﻿namespace TemplateFramework.Core.Abstractions;
+﻿namespace TemplateFramework.Abstractions.Infrastructure;
 
-internal interface IFileSystem
+public interface IFileSystem
 {
     bool FileExists(string path);
     void FileDelete(string path);
@@ -15,4 +15,5 @@ internal interface IFileSystem
 
     void WriteAllText(string path, string contents, Encoding encoding);
     void WriteAllLines(string path, IEnumerable<string> contents, Encoding encoding);
+    DateTime GetFileLastWriteTime(string fileName);
 }

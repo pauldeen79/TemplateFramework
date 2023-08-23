@@ -81,7 +81,7 @@ public class WrappedTextTransformTemplateRendererTests
             var templateMock = new Mock<ITextTransformTemplate>();
 
             // Act
-            var result = sut.TryRender(instance: templateMock.Object, Builder);
+            _ = sut.TryRender(instance: templateMock.Object, Builder);
 
             // Assert
             templateMock.Verify(x => x.TransformText(), Times.Once);

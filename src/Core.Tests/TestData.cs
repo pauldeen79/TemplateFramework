@@ -1,5 +1,22 @@
 ﻿namespace TemplateFramework.Core.Tests;
 
+public sealed class PlainTemplateWithAdditionalParameters : IParameterizedTemplate
+{
+    public string AdditionalParameter { get; set; } = "";
+
+    public void SetParameter(string name, object? value)
+    {
+        if (name == nameof(AdditionalParameter))
+        {
+            AdditionalParameter = value?.ToString() ?? string.Empty;
+        }
+    }
+
+    public ITemplateParameter[] GetParameters() => new[] { new TemplateParameter(nameof(AdditionalParameter), typeof(string)) };
+
+    public override string ToString() => AdditionalParameter;
+}
+
 internal static class TestData
 {
 #if Windows
@@ -32,17 +49,6 @@ internal static class TestData
         public void Render(StringBuilder builder) => _delegate(builder);
     }
 
-    internal sealed class TemplateWithEngine : IStringBuilderTemplate, ITemplateEngineContainer
-    {
-        public ITemplateEngine Engine { get; set; } = default!;
-
-        private readonly Action<StringBuilder> _delegate;
-
-        public TemplateWithEngine(Action<StringBuilder> @delegate) => _delegate = @delegate;
-
-        public void Render(StringBuilder builder) => _delegate(builder);
-    }
-
     internal sealed class TemplateWithViewModel<T> : IStringBuilderTemplate, IParameterizedTemplate
     {
         public T? ViewModel { get; set; } = default!;
@@ -62,23 +68,6 @@ internal static class TestData
         }
 
         public ITemplateParameter[] GetParameters() => new[] { new TemplateParameter(nameof(ViewModel), typeof(T?)) };
-    }
-
-    internal sealed class PlainTemplateWithAdditionalParameters : IParameterizedTemplate
-    {
-        public string AdditionalParameter { get; set; } = "";
-
-        public void SetParameter(string name, object? value)
-        {
-            if (name == nameof(AdditionalParameter))
-            {
-                AdditionalParameter = value?.ToString() ?? string.Empty;
-            }
-        }
-
-        public ITemplateParameter[] GetParameters() => new[] { new TemplateParameter(nameof(AdditionalParameter), typeof(string)) };
-
-        public override string ToString() => AdditionalParameter;
     }
 
     internal sealed class PlainTemplateWithModelAndAdditionalParameters<T> : IModelContainer<T>, IParameterizedTemplate

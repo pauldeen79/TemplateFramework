@@ -1,8 +1,9 @@
 {
   "profiles": {
     "TemplateFramework.Console": {
-      "commandName": "Project",
-      "commandLineArgs": "assembly --name templateframework.core.codegeneration.tests --directory C:\\git\\TemplateFramework\\src\\Core.CodeGeneration.Tests\\bin\\debug\\net7.0 --dryrun --default myfile.txt"
+        "commandName": "Project",
+        //"commandLineArgs": "assembly --name templateframework.core.codegeneration.tests --directory D:\\git\\TemplateFramework\\src\\Core.CodeGeneration.Tests\\bin\\debug\\net7.0 --dryrun --default myfile.txt"
+        "commandLineArgs": "template --assembly templateframework.core.tests --classname TemplateFramework.Core.Tests.PlainTemplateWithAdditionalParameters --directory D:\\git\\TemplateFramework\\src\\Core.Tests\\bin\\debug\\net7.0 --dryrun --default myfile.txt \"AdditionalParameter:Hello world!\""
     }
   }
 }

@@ -1,8 +1,8 @@
 ﻿namespace TemplateFramework.TemplateProviders.CompiledTemplateProvider.Tests;
 
-public partial class ProviderTests
+public partial class ProviderComponentTests
 {
-    public class Create : ProviderTests
+    public class Create : ProviderComponentTests
     {
         public Create()
         {
@@ -44,7 +44,7 @@ public partial class ProviderTests
 
             // Assert
             instance.Should().NotBeNull();
-            instance.GetType().FullName.Should().Be(GetType().FullName);
+            instance.Should().BeOfType<TemplateWrapper>();
         }
 
         [Fact]

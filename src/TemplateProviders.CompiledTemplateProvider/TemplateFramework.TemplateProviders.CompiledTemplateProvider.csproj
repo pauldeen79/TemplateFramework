@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Abstractions\TemplateFramework.Abstractions.csproj" />
+    <ProjectReference Include="..\Core\TemplateFramework.Core.csproj" />
     <ProjectReference Include="..\Runtime\TemplateFramework.Runtime.csproj" />
   </ItemGroup>
 
@@ -29,7 +30,13 @@
   <ItemGroup>
     <Using Include="CommunityToolkit.Diagnostics" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="System.Collections" />
+    <Using Include="System.Reflection" />
+    <Using Include="System.Text" />
     <Using Include="TemplateFramework.Abstractions" />
+    <Using Include="TemplateFramework.Abstractions.Requests" />
+    <Using Include="TemplateFramework.Abstractions.Templates" />
+    <Using Include="TemplateFramework.Core.MultipleContentBuilderTemplateCreators" />
     <Using Include="TemplateFramework.Runtime" />
     <Using Include="TemplateFramework.Runtime.Abstractions" />
     <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.Requests" />

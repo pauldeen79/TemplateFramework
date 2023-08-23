@@ -1,10 +1,10 @@
 ﻿namespace TemplateFramework.TemplateProviders.CompiledTemplateProvider;
 
-public sealed class Provider : ITemplateProvider
+public sealed class ProviderComponent : ITemplateProviderComponent
 {
     private readonly IAssemblyService _assemblyService;
 
-    public Provider(IAssemblyService assemblyService)
+    public ProviderComponent(IAssemblyService assemblyService)
     {
         Guard.IsNotNull(assemblyService);
         _assemblyService = assemblyService;
@@ -25,6 +25,6 @@ public sealed class Provider : ITemplateProvider
             throw new InvalidOperationException($"Could not create instance of type {createCompiledTemplateRequest.ClassName}");
         }
 
-        return template;
+        return new TemplateWrapper(template);
     }
 }

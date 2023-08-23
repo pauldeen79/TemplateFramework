@@ -41,6 +41,7 @@
     <Using Include="System.Text" />
     <Using Include="TemplateFramework.Abstractions" />
     <Using Include="TemplateFramework.Abstractions.CodeGeneration" />
+    <Using Include="TemplateFramework.Abstractions.Infrastructure" />
     <Using Include="TemplateFramework.Console.Abstractions" />
     <Using Include="TemplateFramework.Console.Commands" />
     <Using Include="TemplateFramework.Console.Extensions" />
@@ -49,8 +50,10 @@
     <Using Include="TemplateFramework.Core.CodeGeneration.Extensions" />
     <Using Include="TemplateFramework.Core.Extensions" />
     <Using Include="TemplateFramework.Core.GenerationEnvironments" />
+    <Using Include="TemplateFramework.Core.Requests" />
     <Using Include="TemplateFramework.Runtime.Extensions" />
     <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.Extensions" />
+    <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.Requests" />
     <Using Include="TextCopy" />
   </ItemGroup>
 

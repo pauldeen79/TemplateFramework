@@ -2,34 +2,61 @@
 
 public sealed class TemplateContext : ITemplateContext
 {
-    public TemplateContext(object template)
-        : this(template, null, null, null, null)
+    public TemplateContext(ITemplateEngine engine,
+                           ITemplateProvider provider,
+                           string defaultFilename,
+                           object template)
+        : this(engine, provider, defaultFilename, template, null, null, null, null)
     {
     }
 
-    public TemplateContext(object template, ITemplateContext parentContext)
-        : this(template, null, parentContext, null, null)
+    public TemplateContext(ITemplateEngine engine,
+                           ITemplateProvider provider,
+                           string defaultFilename,
+                           object template,
+                           ITemplateContext parentContext)
+        : this(engine, provider, defaultFilename, template, null, parentContext, null, null)
     {
     }
 
-    public TemplateContext(object template, object? model)
-        : this(template, model, null, null, null)
+    public TemplateContext(ITemplateEngine engine,
+                           ITemplateProvider provider,
+                           string defaultFilename,
+                           object template,
+                           object? model)
+        : this(engine, provider, defaultFilename, template, model, null, null, null)
     {
     }
 
-    public TemplateContext(object template, object? model, ITemplateContext parentContext)
-        : this(template, model, parentContext, null, null)
+    public TemplateContext(ITemplateEngine engine,
+                           ITemplateProvider provider,
+                           string defaultFilename,
+                           object template,
+                           object? model,
+                           ITemplateContext parentContext)
+        : this(engine, provider, defaultFilename, template, model, parentContext, null, null)
     {
     }
 
-    public TemplateContext(object template,
+#pragma warning disable S107
+    public TemplateContext(ITemplateEngine engine,
+                           ITemplateProvider provider,
+                           string defaultFilename,
+                           object template,
                            object? model,
                            ITemplateContext? parentContext,
                            int? iterationNumber,
                            int? iterationCount)
+#pragma warning restore S107
     {
+        Guard.IsNotNull(engine);
+        Guard.IsNotNull(provider);
+        Guard.IsNotNull(defaultFilename);
         Guard.IsNotNull(template);
 
+        Engine = engine;
+        Provider = provider;
+        DefaultFilename = defaultFilename;
         Template = template;
         Model = model;
         ParentContext = parentContext;
@@ -40,6 +67,9 @@ public sealed class TemplateContext : ITemplateContext
     public object Template { get; }
     public object? Model { get; }
     public ITemplateContext? ParentContext { get; }
+    public ITemplateEngine Engine { get; }
+    public ITemplateProvider Provider { get; }
+    public string DefaultFilename { get; }
 
     public ITemplateContext RootContext
     {
@@ -95,6 +125,9 @@ public sealed class TemplateContext : ITemplateContext
 
         return new TemplateContext
         (
+            engine: Engine,
+            provider: Provider,
+            defaultFilename: DefaultFilename,
             template: childContext.Template,
             model: childContext.Model,
             parentContext: this,
@@ -103,8 +136,8 @@ public sealed class TemplateContext : ITemplateContext
         );
     }
 
-    public int? IterationNumber { get; set; }
-    public int? IterationCount { get; set; }
+    public int? IterationNumber { get; }
+    public int? IterationCount { get; }
 
     public bool HasIterations => IterationNumber is not null && IterationCount is not null;
 
@@ -133,10 +166,4 @@ public sealed class TemplateContext : ITemplateContext
             return IterationNumber.Value + 1 == IterationCount.Value;
         }
     }
-
-    public static ITemplateContext CreateRootContext(object template)
-        => new TemplateContext
-        (
-            template: template
-        );
 }

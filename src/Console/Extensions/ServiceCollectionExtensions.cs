@@ -7,5 +7,6 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IUserInput, UserInput>()
             .AddSingleton<ICommandLineProcessor, CommandLineProcessor>()
             .AddSingleton<ICommandLineCommand, VersionCommand>()
-            .AddSingleton<ICommandLineCommand, CodeGenerationAssemblyCommand>();
+            .AddSingleton<ICommandLineCommand, CodeGenerationAssemblyCommand>()
+            .AddSingleton<ICommandLineCommand, RunTemplateCommand>();
 }

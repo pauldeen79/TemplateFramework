@@ -1,7 +1,7 @@
 ﻿namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests;
 
-public partial class ProviderTests
+public partial class ProviderComponentTests
 {
-    protected Provider CreateSut() => new(new[] { TemplateCreatorMock.Object });
+    protected ProviderComponent CreateSut() => new(new[] { TemplateCreatorMock.Object });
     protected Mock<ITemplateCreator> TemplateCreatorMock { get; } = new();
 }
