@@ -325,7 +325,55 @@ Contents from file2
 
     public class WriteOutputToHost : CommandBaseTests
     {
-        // TODO: Add tests
+        [Fact]
+        public void Throws_On_Null_App()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act & Assert
+            sut.Invoking(x => CommandLineCommandHelper.ExecuteCommand(_ => x.WriteOutputToHostPublic(app: null!, "TemplateOutput", true)))
+               .Should().Throw<ArgumentNullException>().WithParameterName("app");
+        }
+
+        [Fact]
+        public void Throws_On_Null_TemplateOutput()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act & Assert
+            sut.Invoking(x => CommandLineCommandHelper.ExecuteCommand(app => x.WriteOutputToHostPublic(app, templateOutput: null!, true)))
+               .Should().Throw<ArgumentNullException>().WithParameterName("templateOutput");
+        }
+
+        [Fact]
+        public void Writes_Output_To_Host_Correctly_When_Bare_Is_True()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = CommandLineCommandHelper.ExecuteCommand(app => sut.WriteOutputToHostPublic(app, "TemplateOutput", true));
+
+            // Assert
+            result.Should().Be("TemplateOutput" + Environment.NewLine);
+        }
+
+        [Fact]
+        public void Writes_Output_To_Host_Correctly_When_Bare_Is_False()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = CommandLineCommandHelper.ExecuteCommand(app => sut.WriteOutputToHostPublic(app, "TemplateOutput", false));
+
+            // Assert
+            result.Should().Be(@"Code generation output:
+TemplateOutput
+");
+        }
     }
 
     public class WriteOutputToClipboard : CommandBaseTests
