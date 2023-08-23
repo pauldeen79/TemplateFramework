@@ -484,7 +484,21 @@ TemplateOutput
 
     public class GetBasePath : CommandBaseTests
     {
-        // TODO: Add tests
+        [Theory,
+            InlineData("Filled", "Filled"),
+            InlineData("", ""),
+            InlineData(null, "")]
+        public void Returns_Correct_Result(string? basePath, string expectedResult)
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.GetBasePathPublic(basePath);
+
+            // Assert
+            result.Should().Be(expectedResult);
+        }
     }
 
     public sealed class CommandBaseTest : CommandBase
