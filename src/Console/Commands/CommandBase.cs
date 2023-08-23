@@ -4,6 +4,8 @@ public abstract class CommandBase : ICommandLineCommand
 {
     internal IClipboard _clipboard { get; }
     protected IFileSystem FileSystem { get; }
+
+    // Added for unit testing purpose only (is not changed by real implementations)
     protected bool Abort { get; set; }
     protected int SleepTimeInMs { get; set; } = 1000;
 
