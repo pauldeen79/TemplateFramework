@@ -11,6 +11,22 @@ public class CommandBaseTests
     protected const string AssemblyName = "MyAssemblyName";
     protected const string Filename = "MyFile.txt";
 
+    protected void SetupMultipleContentBuilderMock(string filenamePrefix)
+    {
+        var contentBuilderMock1 = new Mock<IContent>();
+        contentBuilderMock1.SetupGet(x => x.Filename).Returns($"{filenamePrefix}File1.txt");
+        contentBuilderMock1.SetupGet(x => x.Contents).Returns("Contents from file1");
+
+        var contentBuilderMock2 = new Mock<IContent>();
+        contentBuilderMock2.SetupGet(x => x.Filename).Returns($"{filenamePrefix}File2.txt");
+        contentBuilderMock2.SetupGet(x => x.Contents).Returns("Contents from file2");
+
+        var multipleContentMock = new Mock<IMultipleContent>();
+        multipleContentMock.SetupGet(x => x.Contents).Returns(new[] { contentBuilderMock1.Object, contentBuilderMock2.Object });
+
+        MultipleContentBuilderMock.Setup(x => x.Build()).Returns(multipleContentMock.Object);
+    }
+
     public class Constructor
     {
         [Fact]
@@ -231,6 +247,79 @@ Error: Could not find file [MyFile.txt]. Could not watch file for changes.
             // Act & Assert
             sut.Invoking(x => x.GenerateSingleOutputPublic(MultipleContentBuilderMock.Object, basePath: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("basePath");
+        }
+
+        [Fact]
+        public void Uses_Filename_From_Content_When_BasePath_Is_Empty()
+        {
+            // Arrange
+            SetupMultipleContentBuilderMock(string.Empty);
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.GenerateSingleOutputPublic(MultipleContentBuilderMock.Object, string.Empty);
+
+            // Assert
+            result.Should().Be(@"File1.txt:
+Contents from file1
+File2.txt:
+Contents from file2
+");
+        }
+
+        [Fact]
+        public void Uses_Combined_Filename_When_Content_Filename_Is_PathRooted_And_BasePath_Is_Filled()
+        {
+            // Arrange
+            SetupMultipleContentBuilderMock(Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar);
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.GenerateSingleOutputPublic(MultipleContentBuilderMock.Object, "BasePath" + Path.DirectorySeparatorChar);
+
+            // Assert
+            result.Should().Be($@"{Directory.GetCurrentDirectory()}{Path.DirectorySeparatorChar}File1.txt:
+Contents from file1
+{Directory.GetCurrentDirectory()}{Path.DirectorySeparatorChar}File2.txt:
+Contents from file2
+");
+        }
+
+        [Fact]
+        public void Uses_Combined_Filename_When_Content_Filename_Is_PathRooted_And_BasePath_Is_Not_Filled()
+        {
+            // Arrange
+            SetupMultipleContentBuilderMock(string.Empty);
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.GenerateSingleOutputPublic(MultipleContentBuilderMock.Object, "BasePath" + Path.DirectorySeparatorChar);
+
+            // Assert
+            result.Should().Be($@"BasePath{Path.DirectorySeparatorChar}File1.txt:
+Contents from file1
+BasePath{Path.DirectorySeparatorChar}File2.txt:
+Contents from file2
+");
+
+        }
+
+        [Fact]
+        public void Uses_Filename_From_Content_When_Content_Filename_Is_Not_PathRooted_And_BasePath_Is_Empty()
+        {
+            // Arrange
+            SetupMultipleContentBuilderMock(string.Empty);
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.GenerateSingleOutputPublic(MultipleContentBuilderMock.Object, string.Empty);
+
+            // Assert
+            result.Should().Be($@"File1.txt:
+Contents from file1
+File2.txt:
+Contents from file2
+");
         }
     }
 
