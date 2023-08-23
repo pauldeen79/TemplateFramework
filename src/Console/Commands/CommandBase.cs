@@ -5,6 +5,7 @@ public abstract class CommandBase : ICommandLineCommand
     internal IClipboard _clipboard { get; }
     protected IFileSystem FileSystem { get; }
     protected bool Abort { get; set; }
+    protected int SleepTimeInMs { get; set; } = 1000;
 
     protected CommandBase(IClipboard clipboard, IFileSystem fileSystem)
     {
@@ -15,11 +16,17 @@ public abstract class CommandBase : ICommandLineCommand
         FileSystem = fileSystem;
     }
 
-    protected void Watch(CommandLineApplication app, bool watch, string fileName, Action action)
+    protected void Watch(CommandLineApplication app, bool watch, string filename, Action action)
     {
         Guard.IsNotNull(app);
-        Guard.IsNotNull(fileName);
+        Guard.IsNotNull(filename);
         Guard.IsNotNull(action);
+
+        if (watch && !FileSystem.FileExists(filename))
+        {
+            app.Out.WriteLine($"Error: Could not find file [{filename}]. Could not watch file for changes.");
+            return;
+        }
 
         action();
 
@@ -28,30 +35,24 @@ public abstract class CommandBase : ICommandLineCommand
             return;
         }
 
-        if (!FileSystem.FileExists(fileName))
-        {
-            app.Out.WriteLine($"Error: Could not find file [{fileName}]. Could not watch file for changes.");
-            return;
-        }
-
-        app.Out.WriteLine($"Watching file [{fileName}] for changes...");
-        var previousLastWriteTime = FileSystem.GetFileLastWriteTime(fileName);
+        app.Out.WriteLine($"Watching file [{filename}] for changes...");
+        var previousLastWriteTime = FileSystem.GetFileLastWriteTime(filename);
         while (!Abort)
         {
-            if (!FileSystem.FileExists(fileName))
+            if (!FileSystem.FileExists(filename))
             {
-                app.Out.WriteLine($"Error: Could not find file [{fileName}]. Could not watch file for changes.");
+                app.Out.WriteLine($"Error: Could not find file [{filename}]. Could not watch file for changes.");
                 return;
             }
 
-            var currentLastWriteTime = FileSystem.GetFileLastWriteTime(fileName);
+            var currentLastWriteTime = FileSystem.GetFileLastWriteTime(filename);
             if (currentLastWriteTime != previousLastWriteTime)
             {
                 previousLastWriteTime = currentLastWriteTime;
                 action();
             }
 
-            Thread.Sleep(1000);
+            Thread.Sleep(SleepTimeInMs);
         }
     }
 
