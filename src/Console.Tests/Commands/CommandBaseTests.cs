@@ -1,4 +1,6 @@
-﻿namespace TemplateFramework.Console.Tests.Commands;
+﻿using TextCopy;
+
+namespace TemplateFramework.Console.Tests.Commands;
 
 public class CommandBaseTests
 {
@@ -463,7 +465,21 @@ TemplateOutput
 
     public class GetDefaultFilename : CommandBaseTests
     {
-        // TODO: Add tests
+        [Theory,
+            InlineData("Filled", "Filled"),
+            InlineData("", ""),
+            InlineData(null, "")]
+        public void Returns_Correct_Result(string? defaultFilename, string expectedResult)
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.GetDefaultFilenamePublic(defaultFilename);
+
+            // Assert
+            result.Should().Be(expectedResult);
+        }
     }
 
     public class GetBasePath : CommandBaseTests
