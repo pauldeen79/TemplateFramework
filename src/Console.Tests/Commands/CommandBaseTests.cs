@@ -443,7 +443,22 @@ TemplateOutput
 
     public class GetDryRun : CommandBaseTests
     {
-        // TODO: Add tests
+        [Theory,
+            InlineData(true, false, true),
+            InlineData(true, true, true),
+            InlineData(false, true, true),
+            InlineData(false, false, false)]
+        public void Returns_Correct_Result(bool dryRun, bool clipboard, bool expectedResult)
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.GetDryRunPublic(dryRun, clipboard);
+
+            // Assert
+            result.Should().Be(expectedResult);
+        }
     }
 
     public class GetDefaultFilename : CommandBaseTests
