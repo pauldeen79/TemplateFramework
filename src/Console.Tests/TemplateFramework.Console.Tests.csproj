@@ -25,9 +25,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentAssertions" Version="6.11.0" />
+    <PackageReference Include="FluentAssertions" Version="6.12.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.1" />
     <PackageReference Include="Moq" Version="4.18.4" />
     <PackageReference Include="pauldeen79.CrossCutting.Common.Testing" Version="2.7.55" />
     <PackageReference Include="xunit" Version="2.5.0" />
@@ -58,7 +58,7 @@
     <Using Include="TemplateFramework.Abstractions.Extensions" />
     <Using Include="TemplateFramework.Abstractions.Infrastructure" />
     <Using Include="TemplateFramework.Abstractions.Requests" />
-    <Using Include="TemplateFramework.Abstractions.Templates "/>
+    <Using Include="TemplateFramework.Abstractions.Templates " />
     <Using Include="TemplateFramework.Console.Abstractions" />
     <Using Include="TemplateFramework.Console.Commands" />
     <Using Include="TemplateFramework.Console.Extensions" />
@@ -66,7 +66,7 @@
     <Using Include="TemplateFramework.Core" />
     <Using Include="TemplateFramework.Core.CodeGeneration.Extensions" />
     <Using Include="TemplateFramework.Core.Extensions" />
-    <Using Include="TemplateFramework.Core.GenerationEnvironments"/>
+    <Using Include="TemplateFramework.Core.GenerationEnvironments" />
     <Using Include="TemplateFramework.Runtime.Extensions" />
     <Using Include="TextCopy" />
     <Using Include="Xunit" />
