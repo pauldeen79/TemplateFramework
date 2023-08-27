@@ -117,7 +117,7 @@ internal static class TestData
                     Model.Settings,
                     generationEnvironment,
                     Context,
-                    new ChildTemplateByNameRequest("CodeGenerationHeader"));
+                    new CreateChildTemplateByNameRequest("CodeGenerationHeader"));
 
                 if (Context.IsRootContext)
                 {
@@ -125,7 +125,7 @@ internal static class TestData
                         Model,
                         generationEnvironment,
                         Context,
-                        new ChildTemplateByNameRequest("DefaultUsings")
+                        new CreateChildTemplateByNameRequest("DefaultUsings")
                         );
                 }
             }
@@ -146,7 +146,7 @@ internal static class TestData
                     typeBaseItems,
                     generationEnvironment,
                     Context,
-                    typeBase => new ChildTemplateByModelRequest(((CsharpClassGeneratorViewModel<TypeBase>)typeBase!).Data)
+                    typeBase => new CreateChildTemplateByModelRequest(((CsharpClassGeneratorViewModel<TypeBase>)typeBase!).Data)
                     );
 
                 if (Context.IsRootContext && !Model.Settings.GenerateMultipleFiles)
@@ -251,13 +251,13 @@ internal static class TestData
                     Model.Settings,
                     generationEnvironment,
                     Context,
-                    new ChildTemplateByNameRequest("CodeGenerationHeader")
+                    new CreateChildTemplateByNameRequest("CodeGenerationHeader")
                     );
                 Context.Engine.RenderChildTemplate(
                     new CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>(new[] { Model.Data }, Model.Settings),
                     generationEnvironment,
                     Context,
-                    new ChildTemplateByNameRequest("DefaultUsings")
+                    new CreateChildTemplateByNameRequest("DefaultUsings")
                     );
                 contentBuilder.Builder.AppendLine(Model.Settings.CultureInfo, $"namespace {Model.Data.Namespace}");
                 contentBuilder.Builder.AppendLine("{"); // start namespace

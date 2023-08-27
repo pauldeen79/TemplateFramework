@@ -60,8 +60,4 @@
     <Using Include="TemplateFramework.Core.TemplateRenderers" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="WrappedRequestCreatorComponents\" />
-  </ItemGroup>
-
 </Project>

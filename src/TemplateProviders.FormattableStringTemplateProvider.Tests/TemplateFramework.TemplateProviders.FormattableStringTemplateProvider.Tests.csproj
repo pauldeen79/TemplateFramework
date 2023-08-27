@@ -8,20 +8,6 @@
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-
-    <IsWindows Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">true</IsWindows> 
-    <IsOSX Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">true</IsOSX> 
-    <IsLinux Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">true</IsLinux> 
-  </PropertyGroup>
-    
-  <PropertyGroup Condition="'$(IsWindows)'=='true'">
-    <DefineConstants>Windows</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(IsOSX)'=='true'">
-    <DefineConstants>OSX</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(IsLinux)'=='true'">
-    <DefineConstants>Linux</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -42,25 +28,26 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\TemplateFramework.Core.csproj" />
-    <ProjectReference Include="..\TemplateProviders.CompiledTemplateProvider\TemplateFramework.TemplateProviders.CompiledTemplateProvider.csproj" />
+    <ProjectReference Include="..\TemplateProviders.FormattableStringTemplateProvider\TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="CrossCutting.Common.Results" />
+    <Using Include="CrossCutting.Utilities.Parsers" />
+    <Using Include="CrossCutting.Utilities.Parsers.Contracts" />
+    <Using Include="CrossCutting.Utilities.Parsers.Extensions" />
     <Using Include="FluentAssertions" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
     <Using Include="Moq" />
+    <Using Include="System.Globalization" />
     <Using Include="System.Text" />
     <Using Include="TemplateFramework.Abstractions" />
     <Using Include="TemplateFramework.Abstractions.Templates" />
-    <Using Include="TemplateFramework.Core" />
     <Using Include="TemplateFramework.Core.Extensions" />
     <Using Include="TemplateFramework.Core.Requests" />
-    <Using Include="TemplateFramework.Runtime" />
-    <Using Include="TemplateFramework.Runtime.Abstractions" />
-    <Using Include="TemplateFramework.Runtime.Extensions" />
-    <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.Extensions" />
-    <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.Requests" />
+    <Using Include="TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.Extensions" />
+    <Using Include="TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.Requests" />
     <Using Include="Xunit" />
   </ItemGroup>
-
+    
 </Project>

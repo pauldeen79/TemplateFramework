@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AnalysisLevel>latest-All</AnalysisLevel>
-    <PackageId>pauldeen79.TemplateFramework.TemplateProviders.CompiledTemplateProvider</PackageId>
+    <PackageId>pauldeen79.TemplateFramework.TemplateProviders.FormattableStringTemplateProvider</PackageId>
     <Description>Framework for template processing and code generation</Description>
     <PackageTags>templateengine;codegeneration</PackageTags>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
@@ -15,12 +15,7 @@
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.2.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Abstractions\TemplateFramework.Abstractions.csproj" />
-    <ProjectReference Include="..\Core\TemplateFramework.Core.csproj" />
-    <ProjectReference Include="..\Runtime\TemplateFramework.Runtime.csproj" />
+    <PackageReference Include="pauldeen79.CrossCutting.Utilities.Parsers" Version="2.7.55" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,20 +23,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="CommunityToolkit.Diagnostics" />
-    <Using Include="Microsoft.Extensions.DependencyInjection" />
-    <Using Include="System.Collections" />
-    <Using Include="System.Reflection" />
-    <Using Include="System.Text" />
-    <Using Include="TemplateFramework.Abstractions" />
-    <Using Include="TemplateFramework.Abstractions.Requests" />
-    <Using Include="TemplateFramework.Abstractions.Templates" />
-    <Using Include="TemplateFramework.Core" />
-    <Using Include="TemplateFramework.Core.Extensions" />
-    <Using Include="TemplateFramework.Core.MultipleContentBuilderTemplateCreators" />
-    <Using Include="TemplateFramework.Runtime" />
-    <Using Include="TemplateFramework.Runtime.Abstractions" />
-    <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.Requests" />
+    <ProjectReference Include="..\Core\TemplateFramework.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Using Include="CommunityToolkit.Diagnostics" />
+    <Using Include="CrossCutting.Common.Results" />
+    <Using Include="CrossCutting.Utilities.Parsers" />
+    <Using Include="CrossCutting.Utilities.Parsers.Contracts" />
+    <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="System.Globalization" />
+    <Using Include="System.Text" />
+    <Using Include="TemplateFramework.Abstractions" />
+    <Using Include="TemplateFramework.Abstractions.Templates" />
+    <Using Include="TemplateFramework.Core" />
+    <Using Include="TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.Requests" />
+  </ItemGroup>
 </Project>

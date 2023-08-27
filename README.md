@@ -26,6 +26,7 @@ If you want to use the template abstraction level, then you have to make sure th
 - TemplateFramework.Console: Dotnet tool that can be launched from command line (using tf command)
 - TemplateFramework.TemplateProviders.ChildTemplateProvider: Adds support for child templates
 - TemplateFramework.TemplateProviders.CompiledTemplateProvider: Adds support for compiled templates
+- TemplateProviders.FormattableStringTemplateProvider: Adds support for text-based templates with formattable strings
 
 # How to create a template
 You have to write a class in a .NET 7.0 project (class library project is good enough), and compile this project.
