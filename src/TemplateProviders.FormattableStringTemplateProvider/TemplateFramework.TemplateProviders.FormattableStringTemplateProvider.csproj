@@ -19,11 +19,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Abstractions\TemplateFramework.Abstractions.csproj" />
+    <None Include="..\..\Readme.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\Readme.md" Pack="true" PackagePath="\" />
+    <ProjectReference Include="..\Core\TemplateFramework.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,6 +36,7 @@
     <Using Include="System.Text" />
     <Using Include="TemplateFramework.Abstractions" />
     <Using Include="TemplateFramework.Abstractions.Templates" />
+    <Using Include="TemplateFramework.Core" />
     <Using Include="TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.Requests" />
   </ItemGroup>
 </Project>
