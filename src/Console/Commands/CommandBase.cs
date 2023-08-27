@@ -80,16 +80,7 @@ public abstract class CommandBase : ICommandLineCommand
         var stringBuilder = new StringBuilder();
         var output = builder.Build();
 
-        foreach (var content in output.Contents)
-        {
-            var path = string.IsNullOrEmpty(basePath) || Path.IsPathRooted(content.Filename)
-                ? content.Filename
-                : Path.Combine(basePath, content.Filename);
-
-            stringBuilder.Append(path);
-            stringBuilder.AppendLine(":");
-            stringBuilder.AppendLine(content.Contents);
-        }
+        stringBuilder.AppendMultipleContents(output, basePath);
 
         return stringBuilder.ToString();
     }

@@ -36,6 +36,8 @@
     <Using Include="TemplateFramework.Abstractions" />
     <Using Include="TemplateFramework.Abstractions.Requests" />
     <Using Include="TemplateFramework.Abstractions.Templates" />
+    <Using Include="TemplateFramework.Core" />
+    <Using Include="TemplateFramework.Core.Extensions" />
     <Using Include="TemplateFramework.Core.MultipleContentBuilderTemplateCreators" />
     <Using Include="TemplateFramework.Runtime" />
     <Using Include="TemplateFramework.Runtime.Abstractions" />

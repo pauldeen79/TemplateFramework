@@ -69,7 +69,7 @@ public class TemplateWrapperTests
         }
     }
 
-    public class Render : TemplateWrapperTests
+    public class Render_MultipleContentBuilder : TemplateWrapperTests
     {
         [Fact]
         public void Throws_On_Null_Builder()
@@ -79,7 +79,7 @@ public class TemplateWrapperTests
             var sut = new TemplateWrapper(wrappedInstance);
 
             // Act & Assert
-            sut.Invoking(x => x.Render(builder: null!))
+            sut.Invoking(x => x.Render(builder: default(IMultipleContentBuilder)!))
                .Should().Throw<ArgumentNullException>().WithParameterName("builder");
         }
 
@@ -298,6 +298,148 @@ public class TemplateWrapperTests
 
             // Assert
             wrappedInstance.Context.Should().BeSameAs(sut.Context);
+        }
+    }
+
+    public class Render_StringBuilder : TemplateWrapperTests
+    {
+        [Fact]
+        public void Throws_On_Null_Builder()
+        {
+            // Arrange
+            var wrappedInstance = new TestData.PlainTemplateWithAdditionalParameters();
+            var sut = new TemplateWrapper(wrappedInstance);
+
+            // Act & Assert
+            sut.Invoking(x => x.Render(builder: default(StringBuilder)!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("builder");
+        }
+
+        [Fact]
+        public void Initializes_Model_Correctly_When_Available()
+        {
+            // Arrange
+            var wrappedInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<int>();
+            var sut = new TemplateWrapper(wrappedInstance)
+            {
+                Model = 13 // Note that normally, this would get set using RenderTemplateRequest in the TemplateEngine. But we're unit testing here...
+            };
+            var builder = new StringBuilder();
+
+            // Act
+            sut.Render(builder);
+
+            // Assert
+            wrappedInstance.Model.Should().Be(13);
+        }
+
+        [Fact]
+        public void Sets_Context_On_Wrapped_Template_When_Context_Is_Typed()
+        {
+            // Arrange
+            var wrappedInstance = new TestData.PlainTemplateWithTypedTemplateContext(_ => "Hello world!");
+            var sut = new TemplateWrapper(wrappedInstance);
+            sut.Context = TemplateContextMock.Object;
+            var builder = new StringBuilder();
+
+            // Act
+            sut.Render(builder);
+
+            // Assert
+            wrappedInstance.Context.Should().BeSameAs(sut.Context);
+        }
+
+        [Fact]
+        public void Renders_To_Wrapped_TransformText_Template_Correctly()
+        {
+            // Arrange
+            var wrappedInstance = new TestData.TextTransformTemplate(() => "Hello world!");
+            var sut = new TemplateWrapper(wrappedInstance);
+            var builder = new StringBuilder();
+
+            // Act
+            sut.Render(builder);
+
+            // Assert
+            builder.ToString().Should().Be("Hello world!");
+        }
+
+        [Fact]
+        public void Renders_To_Wrapped_Plain_Template_Correctly()
+        {
+            // Arrange
+            var wrappedInstance = new TestData.PlainTemplateWithAdditionalParameters();
+            var sut = new TemplateWrapper(wrappedInstance);
+            sut.SetParameter(nameof(TestData.PlainTemplateWithAdditionalParameters.AdditionalParameter), "Hello world!");
+            var builder = new StringBuilder();
+
+            // Act
+            sut.Render(builder);
+
+            // Assert
+            builder.ToString().Should().Be("Hello world!");
+        }
+
+        [Fact]
+        public void Renders_To_Wrapped_Template_With_Invalid_Render_Method_Signature_Two_Arguments_Correctly()
+        {
+            // Arrange
+            var wrappedInstance = new TestData.MultipleContentBuilderTwoWrongArgumentsTemplate(() => "Hello world!");
+            var sut = new TemplateWrapper(wrappedInstance);
+            var builder = new StringBuilder();
+
+            // Act
+            sut.Render(builder);
+
+            // Assert
+            builder.ToString().Should().Be("Hello world!");
+        }
+
+        [Fact]
+        public void Renders_To_Wrapped_MultipleContentBuilder_Template_Correctly()
+        {
+            // Arrange
+            var wrappedInstance = new TestData.MultipleContentBuilderTemplate(x => x.AddContent("Filename.txt", false, null).Builder.Append("Hello world!"));
+            var sut = new TemplateWrapper(wrappedInstance);
+            var builder = new StringBuilder();
+
+            // Act
+            sut.Render(builder);
+
+            // Assert
+            builder.ToString().Should().Be(@"Filename.txt:
+Hello world!
+");
+        }
+
+        [Fact]
+        public void Renders_To_Wrapped_StringBuilder_Template_Correctly()
+        {
+            // Arrange
+            var wrappedInstance = new TestData.StringBuilderTemplate(stringBuilder => stringBuilder.Append("Hello world!"));
+            var sut = new TemplateWrapper(wrappedInstance);
+            var builder = new StringBuilder();
+
+            // Act
+            sut.Render(builder);
+
+            // Assert
+            builder.ToString().Should().Be("Hello world!");
+        }
+
+        [Fact]
+        public void Renders_To_Wrapped_Template_With_Invalid_Render_Method_Signature_One_Argument_Correctly()
+        {
+            // Arrange
+            var wrappedInstance = new TestData.MultipleContentBuilderOneWrongArgumentTemplate(() => "Hello world!");
+            var sut = new TemplateWrapper(wrappedInstance);
+            var builder = new StringBuilder();
+
+            // Act
+            sut.Render(builder);
+
+            // Assert
+            builder.ToString().Should().Be("Hello world!");
         }
     }
 

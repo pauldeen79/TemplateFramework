@@ -11,10 +11,12 @@ public class IntegrationTests
             .AddTemplateFramework()
             .AddTemplateFrameworkFormattableStringTemplateProvider()
             .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
+        var templateProvider = provider.GetRequiredService<ITemplateProvider>();
+        var template = templateProvider.Create(new CreateFormattableStringTemplateRequest("Hello {Name}!", CultureInfo.CurrentCulture));
         var templateEngine = provider.GetRequiredService<ITemplateEngine>();
         var formattableStringParser = provider.GetRequiredService<IFormattableStringParser>();
         var builder = new StringBuilder();
-        var request = new RenderTemplateRequest(new FormattableStringTemplate(new CreateFormattableStringTemplateRequest("Hello {Name}!", CultureInfo.CurrentCulture), formattableStringParser), builder, new { Name = "world" });
+        var request = new RenderTemplateRequest(template, builder, new { Name = "world" });
 
         // Act
         templateEngine.Render(request);
@@ -33,7 +35,6 @@ public class IntegrationTests
             .AddTemplateFrameworkFormattableStringTemplateProvider()
             .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
         var formattableStringParser = provider.GetRequiredService<IFormattableStringParser>();
-        var builder = new StringBuilder();
         var template = new FormattableStringTemplate(new CreateFormattableStringTemplateRequest("Hello {Prefix} {Name}!", CultureInfo.CurrentCulture), formattableStringParser);
 
         // Act 
