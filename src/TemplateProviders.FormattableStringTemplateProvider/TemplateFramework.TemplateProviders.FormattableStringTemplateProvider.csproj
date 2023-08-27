@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AnalysisLevel>latest-All</AnalysisLevel>
+    <PackageId>pauldeen79.TemplateFramework.TemplateProviders.FormattableStringTemplateProvider</PackageId>
+    <Description>Framework for template processing and code generation</Description>
+    <PackageTags>templateengine;codegeneration</PackageTags>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/pauldeen79/TemplateFramework</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.2.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    <PackageReference Include="pauldeen79.CrossCutting.Utilities.Parsers" Version="2.7.55" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Abstractions\TemplateFramework.Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\Readme.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="CommunityToolkit.Diagnostics" />
+    <Using Include="CrossCutting.Common.Results" />
+    <Using Include="CrossCutting.Utilities.Parsers" />
+    <Using Include="CrossCutting.Utilities.Parsers.Contracts" />
+    <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="System.Globalization" />
+    <Using Include="System.Text" />
+    <Using Include="TemplateFramework.Abstractions" />
+    <Using Include="TemplateFramework.Abstractions.Templates" />
+    <Using Include="TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.Requests" />
+  </ItemGroup>
+</Project>
