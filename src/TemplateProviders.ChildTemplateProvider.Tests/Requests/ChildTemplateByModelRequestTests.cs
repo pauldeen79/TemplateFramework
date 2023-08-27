@@ -5,7 +5,7 @@ public class ChildTemplateByModelRequestTests
     [Fact]
     public void Does_Not_Throw_On_Null_Argument()
     {
-        this.Invoking(_ => new ChildTemplateByModelRequest(null))
+        this.Invoking(_ => new CreateChildTemplateByModelRequest(null))
             .Should().NotThrow();
     }
 }
