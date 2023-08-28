@@ -16,10 +16,14 @@ public class TemplateWrapper : ITemplateContextContainer, IParameterizedTemplate
 
     public ITemplateParameter[] GetParameters()
     {
-        var method = _instance.GetType().GetMethod(nameof(GetParameters));
+        var type = _instance.GetType();
+        var method = type.GetMethod(nameof(GetParameters));
         if (method is null)
         {
-            return Array.Empty<ITemplateParameter>();
+            return type.GetProperties()
+                .Where(p => p.CanRead && p.CanWrite)
+                .Select(p => new TemplateParameter(p.Name, p.PropertyType))
+                .ToArray();
         }
 
         var methodResult = method.Invoke(_instance, Array.Empty<object>());

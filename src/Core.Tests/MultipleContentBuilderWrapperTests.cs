@@ -120,9 +120,7 @@ public class MultipleContentBuilderWrapperTests
 
         public IEnumerable<IContentBuilder>? Contents => _list;
 
-#pragma warning disable S3241 // Methods should not return values that are never used
         public IContentBuilder AddContent(string filename, bool skipWhenFileExists, StringBuilder? builder)
-#pragma warning restore S3241 // Methods should not return values that are never used
         {
             var contentBuilder = new MyContentBuilder
             {

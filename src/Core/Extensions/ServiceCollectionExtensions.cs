@@ -18,8 +18,12 @@ public static class ServiceCollectionExtensions
             .AddSingleton<ITemplateInitializerComponent, ModelInitializer>()
             .AddSingleton<ITemplateInitializerComponent, ParameterInitializer>()
             .AddSingleton<ITemplateInitializerComponent, ContextInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, DefaultFilenameInitializer>()
+            .AddSingleton<ITemplateParameterExtractorComponent, TypedExtractor>()
             .AddSingleton<IValueConverter, ValueConverter>()
             .AddSingleton<ITemplateProvider, TemplateProvider>()
+            .AddSingleton<IRetryMechanism, RetryMechanism>()
+            .AddSingleton<ITemplateParameterExtractor, TemplateParameterExtractor>()
             .AddSingleton<ISingleContentTemplateRenderer, StringBuilderTemplateRenderer>() // also register using its own type, so we can render a single template from  multiple content template renderer
             ;
 }

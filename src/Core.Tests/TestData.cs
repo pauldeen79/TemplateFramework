@@ -49,6 +49,17 @@ internal static class TestData
         public void Render(StringBuilder builder) => _delegate(builder);
     }
 
+    internal sealed class TemplateWithDefaultFilename : IStringBuilderTemplate, IDefaultFilenameContainer
+    {
+        private readonly Action<StringBuilder> _delegate;
+
+        public TemplateWithDefaultFilename(Action<StringBuilder> @delegate) => _delegate = @delegate;
+
+        public string DefaultFilename { get; set; } = "";
+
+        public void Render(StringBuilder builder) => _delegate(builder);
+    }
+
     internal sealed class TemplateWithViewModel<T> : IStringBuilderTemplate, IParameterizedTemplate
     {
         public T? ViewModel { get; set; } = default!;

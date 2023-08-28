@@ -14,7 +14,6 @@ public class IntegrationTests
         var templateProvider = provider.GetRequiredService<ITemplateProvider>();
         var template = templateProvider.Create(new CreateFormattableStringTemplateRequest("Hello {Name}!", CultureInfo.CurrentCulture));
         var templateEngine = provider.GetRequiredService<ITemplateEngine>();
-        var formattableStringParser = provider.GetRequiredService<IFormattableStringParser>();
         var builder = new StringBuilder();
         var request = new RenderTemplateRequest(template, builder, new { Name = "world" });
 

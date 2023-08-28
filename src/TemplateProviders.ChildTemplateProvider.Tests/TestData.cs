@@ -88,19 +88,30 @@ internal static class TestData
             => new(false, SkipWhenFileExists, false, null, null, null, false, IndentCount + 1, CultureInfo);
     }
 
-    internal abstract class CsharpClassGeneratorBase : ITemplateContextContainer
+    internal abstract class CsharpClassGeneratorBase<TModel> : IModelContainer<TModel>, IDefaultFilenameContainer
     {
-        // Properties that are injected by the template engine
-        public ITemplateContext Context { get; set; } = default!;
-    }
+        protected ITemplateContext Context => new TemplateContext(Engine, Provider, DefaultFilename, this, Model);
+        protected ITemplateEngine Engine { get; }
+        protected ITemplateProvider Provider { get; }
 
-    internal abstract class CsharpClassGeneratorBase<TModel> : CsharpClassGeneratorBase, IModelContainer<TModel>
-    {
+        public string DefaultFilename { get; set; } = "";
         public TModel? Model { get; set; }
+
+        protected CsharpClassGeneratorBase(ITemplateEngine engine, ITemplateProvider provider)
+        {
+            Engine = engine ?? throw new ArgumentNullException(nameof(engine));
+            Provider = provider ?? throw new ArgumentNullException(nameof(provider));
+        }
     }
 
-    internal sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>>, IMultipleContentBuilderTemplate
+// False positive, it gets created through DI container
+#pragma warning disable CA1812 // Avoid uninstantiated internal classes
+    internal sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>>, IMultipleContentBuilderTemplate, IStringBuilderTemplate
     {
+        public CsharpClassGenerator(ITemplateEngine engine, ITemplateProvider provider) : base(engine, provider)
+        {
+        }
+
         public void Render(IMultipleContentBuilder builder)
         {
             Guard.IsNotNull(builder);
@@ -111,30 +122,56 @@ internal static class TestData
 
             if (!Model.Settings.GenerateMultipleFiles)
             {
+                // Generate a single generation environment, so we create only a single file in the multiple content builder environment.
                 singleStringBuilder = builder.AddContent(Context.DefaultFilename, Model.Settings.SkipWhenFileExists).Builder;
                 generationEnvironment = new StringBuilderEnvironment(singleStringBuilder);
-                Context.Engine.RenderChildTemplate(
-                    Model.Settings,
-                    generationEnvironment,
-                    Context,
-                    new CreateChildTemplateByNameRequest("CodeGenerationHeader"));
-
-                if (Context.IsRootContext)
-                {
-                    Context.Engine.RenderChildTemplate(
-                        Model,
-                        generationEnvironment,
-                        Context,
-                        new CreateChildTemplateByNameRequest("DefaultUsings")
-                        );
-                }
+                RenderHeader(generationEnvironment);
             }
 
-            foreach (var ns in Model.Data.GroupBy(x => x.Namespace).OrderBy(x => x.Key))
+            RenderNamespaceHierarchy(generationEnvironment, singleStringBuilder);
+        }
+
+        public void Render(StringBuilder builder)
+        {
+            Guard.IsNotNull(builder);
+            Guard.IsNotNull(Model);
+
+            if (Model.Settings.GenerateMultipleFiles)
             {
-                if (Context.IsRootContext && !Model.Settings.GenerateMultipleFiles)
+                throw new NotSupportedException("Can't generate multiple files, because the generation environment has a single StringBuilder instance");
+            }
+
+            var generationEnvironment = new StringBuilderEnvironment(builder);
+            RenderHeader(generationEnvironment);
+            RenderNamespaceHierarchy(generationEnvironment, builder);
+        }
+
+        private void RenderHeader(IGenerationEnvironment generationEnvironment)
+        {
+            Context.Engine.RenderChildTemplate(
+                Model!.Settings,
+                generationEnvironment,
+                Context,
+                new CreateChildTemplateByNameRequest("CodeGenerationHeader"));
+
+            if (Context.IsRootContext)
+            {
+                Context.Engine.RenderChildTemplate(
+                    Model,
+                    generationEnvironment,
+                    Context,
+                    new CreateChildTemplateByNameRequest("DefaultUsings")
+                    );
+            }
+        }
+
+        private void RenderNamespaceHierarchy(IGenerationEnvironment generationEnvironment, StringBuilder? singleStringBuilder)
+        {
+            foreach (var ns in Model!.Data.GroupBy(x => x.Namespace).OrderBy(x => x.Key))
+            {
+                if (Context.IsRootContext && singleStringBuilder is not null)
                 {
-                    singleStringBuilder!.AppendLine(Model.Settings.CultureInfo, $"namespace {ns.Key}");
+                    singleStringBuilder.AppendLine(Model.Settings.CultureInfo, $"namespace {ns.Key}");
                     singleStringBuilder.AppendLine("{"); // open namespace
                 }
 
@@ -149,9 +186,9 @@ internal static class TestData
                     typeBase => new CreateChildTemplateByModelRequest(((CsharpClassGeneratorViewModel<TypeBase>)typeBase!).Data)
                     );
 
-                if (Context.IsRootContext && !Model.Settings.GenerateMultipleFiles)
+                if (Context.IsRootContext && singleStringBuilder is not null)
                 {
-                    singleStringBuilder!.AppendLine("}"); // close namespace
+                    singleStringBuilder.AppendLine("}"); // close namespace
                 }
             }
         }
@@ -159,6 +196,10 @@ internal static class TestData
 
     internal sealed class CodeGenerationHeaderTemplate : CsharpClassGeneratorBase<CsharpClassGeneratorSettings>, IStringBuilderTemplate
     {
+        public CodeGenerationHeaderTemplate(ITemplateEngine engine, ITemplateProvider provider) : base(engine, provider)
+        {
+        }
+
         public string Version
             => !string.IsNullOrEmpty(Model?.EnvironmentVersion)
                 ? Model.EnvironmentVersion
@@ -216,6 +257,10 @@ internal static class TestData
             "System.Text"
         };
 
+        public DefaultUsingsTemplate(ITemplateEngine engine, ITemplateProvider provider) : base(engine, provider)
+        {
+        }
+
         public IEnumerable<string> Usings
             => DefaultUsings
                 .Union(Model?.Data.SelectMany(classItem => classItem.Usings) ?? Enumerable.Empty<string>())
@@ -225,6 +270,10 @@ internal static class TestData
 
     internal sealed class ClassTemplate : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel<TypeBase>>, IMultipleContentBuilderTemplate
     {
+        public ClassTemplate(ITemplateEngine engine, ITemplateProvider provider) : base(engine, provider)
+        {
+        }
+
         public void Render(IMultipleContentBuilder builder)
         {
             Guard.IsNotNull(builder);
@@ -281,12 +330,11 @@ internal static class TestData
             //TODO: Render child items
             if (Model.Data.SubClasses?.Any() == true)
             {
-                var childTemplateInstance = new ClassTemplate();
                 Context.Engine.RenderChildTemplates(
                     Model.Data.SubClasses.Select(typeBase => new CsharpClassGeneratorViewModel<TypeBase>(typeBase, Model.Settings.ForSubclasses())),
                     new MultipleContentBuilderEnvironment(builder),
                     Context,
-                    _ => childTemplateInstance
+                    model => Provider.Create(new CreateChildTemplateByModelRequest(model!.GetType().GetProperty(nameof(CsharpClassGeneratorViewModel<TypeBase>.Data))!.GetValue(model)))
                     );
             }
 
@@ -303,6 +351,7 @@ internal static class TestData
             }
         }
     }
+#pragma warning restore CA1812 // Avoid uninstantiated internal classes
 
     internal sealed class TypeBase
     {

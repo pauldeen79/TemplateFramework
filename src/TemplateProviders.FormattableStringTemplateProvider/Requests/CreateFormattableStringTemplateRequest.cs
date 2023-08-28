@@ -4,7 +4,7 @@ public sealed class CreateFormattableStringTemplateRequest : ICreateTemplateRequ
 {
     public CreateFormattableStringTemplateRequest(string template, IFormatProvider formatProvider)
     {
-        Guard.IsNotNullOrEmpty(template);
+        Guard.IsNotNull(template);
         Guard.IsNotNull(formatProvider);
 
         Template = template;

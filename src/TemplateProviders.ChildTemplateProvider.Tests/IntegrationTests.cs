@@ -35,12 +35,21 @@ public class IntegrationTests
         using var provider = new ServiceCollection()
             .AddTemplateFramework()
             .AddTemplateFrameworkChildTemplateProvider()
-            .AddChildTemplate("CodeGenerationHeader", _ => new TestData.CodeGenerationHeaderTemplate())
-            .AddChildTemplate("DefaultUsings", _ => new TestData.DefaultUsingsTemplate())
-            .AddChildTemplate(typeof(TestData.TypeBase), _ => new TestData.ClassTemplate())
+            .AddTransient<TestData.CsharpClassGenerator>()
+
+            // Note that this can be done using reflection maybe, if the list of child templates grows large...
+            .AddTransient<TestData.CodeGenerationHeaderTemplate>()
+            .AddTransient<TestData.DefaultUsingsTemplate>()
+            .AddTransient<TestData.ClassTemplate>()
+
+            .AddChildTemplate<TestData.CodeGenerationHeaderTemplate>("CodeGenerationHeader")
+            .AddChildTemplate<TestData.DefaultUsingsTemplate>("DefaultUsings")
+            .AddChildTemplate<TestData.ClassTemplate>(typeof(TestData.TypeBase))
+
             .BuildServiceProvider();
+
         var engine = provider.GetRequiredService<ITemplateEngine>();
-        var template = new TestData.CsharpClassGenerator();
+        var template = provider.GetRequiredService<TestData.CsharpClassGenerator>();
         var generationEnvironment = new MultipleContentBuilder();
         var model = new[]
         {
@@ -64,7 +73,7 @@ public class IntegrationTests
         var viewModel = new TestData.CsharpClassGeneratorViewModel<IEnumerable<TestData.TypeBase>>(model, settings);
 
         // Act
-        engine.Render(new RenderTemplateRequest(template, viewModel, generationEnvironment, settings));
+        engine.Render(new RenderTemplateRequest(template, viewModel, generationEnvironment, "GeneratedCode.cs", settings));
 
         // Assert
         generationEnvironment.Contents.Should().HaveCount(4);

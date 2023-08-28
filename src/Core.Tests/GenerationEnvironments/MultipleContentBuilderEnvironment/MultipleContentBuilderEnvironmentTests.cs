@@ -7,8 +7,9 @@ public partial class MultipleContentBuilderEnvironmentTests
     protected Mock<IMultipleContentBuilder> MultipleContentBuilderMock { get; } = new();
     protected Mock<IMultipleContent> MultipleContentMock { get; } = new();
     protected Mock<IContent> ContentMock { get; } = new();
+    protected IRetryMechanism RetryMechanism { get; } = new FastRetryMechanism();
 
-    protected MultipleContentBuilderEnvironment CreateSut() => new(FileSystemMock.Object, MultipleContentBuilderMock.Object);
+    protected MultipleContentBuilderEnvironment CreateSut() => new(FileSystemMock.Object, RetryMechanism, MultipleContentBuilderMock.Object);
 
     protected IEnumerable<IContent> CreateContents(bool skipWhenFileExists = false)
     {
@@ -18,5 +19,10 @@ public partial class MultipleContentBuilderEnvironmentTests
         var c2 = builder.AddContent("File2.txt", skipWhenFileExists: skipWhenFileExists);
         c2.Builder.AppendLine("Test2");
         return builder.Build().Contents;
+    }
+
+    private sealed class FastRetryMechanism : RetryMechanism
+    {
+        protected override int WaitTimeInMs => 1;
     }
 }

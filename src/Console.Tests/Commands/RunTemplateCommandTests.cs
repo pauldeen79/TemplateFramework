@@ -6,8 +6,9 @@ public class RunTemplateCommandTests
     protected Mock<IFileSystem> FileSystemMock { get; } = new();
     protected Mock<ITemplateProvider> TemplateProviderMock { get; } = new();
     protected Mock<ITemplateEngine> TemplateEngineMock { get; } = new();
+    protected Mock<IUserInput> UserInputMock { get; } = new();
 
-    private RunTemplateCommand CreateSut() => new(ClipboardMock.Object, TemplateProviderMock.Object, TemplateEngineMock.Object, FileSystemMock.Object);
+    private RunTemplateCommand CreateSut() => new(ClipboardMock.Object, TemplateProviderMock.Object, TemplateEngineMock.Object, FileSystemMock.Object, UserInputMock.Object);
 
     public class Constructor
     {
@@ -84,6 +85,21 @@ public class RunTemplateCommandTests
                 && req.AdditionalParameters.ToKeyValuePairs().First().Key == "MyArgumentName"
                 && req.AdditionalParameters.ToKeyValuePairs().First().Value != null
                 && req.AdditionalParameters.ToKeyValuePairs().First().Value!.ToString() == "MyArgumentValue")), Times.Once);
+        }
+
+        [Fact]
+        public void Gets_Parameter_Values_Interactively_When_Asked()
+        {
+            // Arrange
+            var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
+            TemplateProviderMock.Setup(x => x.Create(It.IsAny<ICreateTemplateRequest>())).Returns(templateInstance);
+            TemplateEngineMock.Setup(x => x.GetParameters(It.IsAny<object>())).Returns(new[] { new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string)) });
+
+            // Act
+            _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, "--assembly MyAssembly", "--classname MyClass", "--interactive");
+
+            // Assert
+            UserInputMock.Verify(x => x.GetValue(It.IsAny<ITemplateParameter>()), Times.Once);
         }
     }
 }

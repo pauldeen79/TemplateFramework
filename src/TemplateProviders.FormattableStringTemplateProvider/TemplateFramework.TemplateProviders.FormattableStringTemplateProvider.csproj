@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\TemplateFramework.Core.csproj" />
+    <ProjectReference Include="..\TemplateProviders.CompiledTemplateProvider.Tests\TemplateFramework.TemplateProviders.CompiledTemplateProvider.Tests.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,6 +38,7 @@
     <Using Include="TemplateFramework.Abstractions" />
     <Using Include="TemplateFramework.Abstractions.Templates" />
     <Using Include="TemplateFramework.Core" />
+    <Using Include="TemplateFramework.Core.Extensions" />
     <Using Include="TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.Requests" />
   </ItemGroup>
 </Project>

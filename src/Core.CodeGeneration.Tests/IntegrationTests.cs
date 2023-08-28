@@ -16,7 +16,7 @@ public class IntegrationTests
         var sut = serviceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = new IntegrationProvider();
         var builder = new MultipleContentBuilder();
-        var generationEnvironment = new MultipleContentBuilderEnvironment(serviceProvider.GetRequiredService<IFileSystem>(), builder);
+        var generationEnvironment = new MultipleContentBuilderEnvironment(serviceProvider.GetRequiredService<IFileSystem>(), serviceProvider.GetRequiredService<IRetryMechanism>(), builder);
 
         // Act
         sut.Generate(codeGenerationProvider, generationEnvironment, new CodeGenerationSettings(TestData.BasePath, "DefaultFilename.txt", false));

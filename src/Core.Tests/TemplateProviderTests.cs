@@ -41,7 +41,7 @@ public class TemplateProviderTests
         }
 
         [Fact]
-        public void Returns_Template_Instance_From_Provider_On_Supported_Type()
+        public void Returns_Template_Instance_From_Component_On_Supported_Type()
         {
             // Arrange
             var sut = CreateSut();

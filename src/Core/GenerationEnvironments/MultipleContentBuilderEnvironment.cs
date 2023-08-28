@@ -3,24 +3,26 @@
 public sealed class MultipleContentBuilderEnvironment : IGenerationEnvironment
 {
     public MultipleContentBuilderEnvironment()
-        : this(new FileSystem(), new MultipleContentBuilder())
+        : this(new FileSystem(), new RetryMechanism(), new MultipleContentBuilder())
     {
     }
 
     public MultipleContentBuilderEnvironment(IMultipleContentBuilder builder)
-        : this(new FileSystem(), builder)
+        : this(new FileSystem(), new RetryMechanism(), builder)
     {
     }
 
-    internal MultipleContentBuilderEnvironment(IFileSystem fileSystem, IMultipleContentBuilder builder)
+    internal MultipleContentBuilderEnvironment(IFileSystem fileSystem, IRetryMechanism retryMechanism, IMultipleContentBuilder builder)
     {
         Guard.IsNotNull(builder);
 
         _fileSystem = fileSystem;
+        _retryMechanism = retryMechanism;
         Builder = builder;
     }
 
     private readonly IFileSystem _fileSystem;
+    private readonly IRetryMechanism _retryMechanism;
 
     public IMultipleContentBuilder Builder { get; }
 
@@ -66,7 +68,7 @@ public sealed class MultipleContentBuilderEnvironment : IGenerationEnvironment
             }
 
             var normalizedContents = content.Contents.NormalizeLineEndings();
-            Retry(() => fileSystem.WriteAllText(path, normalizedContents, encoding));
+            _retryMechanism.Retry(() => fileSystem.WriteAllText(path, normalizedContents, encoding));
         }
     }
 
@@ -147,22 +149,6 @@ public sealed class MultipleContentBuilderEnvironment : IGenerationEnvironment
 
     private string[] GetFiles(IFileSystem fileSystem, string basePath, string lastGeneratedFilesPath, bool recurse)
         => fileSystem.GetFiles(basePath, lastGeneratedFilesPath, recurse);
-
-    private static void Retry(Action action)
-    {
-        for (int i = 1; i <= 3; i++)
-        {
-            try
-            {
-                action();
-                return;
-            }
-            catch (IOException x) when (x.Message.Contains("because it is being used by another process", StringComparison.InvariantCulture))
-            {
-                Thread.Sleep(i * 500);
-            }
-        }
-    }
 
     private static string GetFullPath(string basePath, string lastGeneratedFilesPath)
         => string.IsNullOrEmpty(basePath) || Path.IsPathRooted(lastGeneratedFilesPath)

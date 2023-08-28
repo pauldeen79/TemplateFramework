@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.Design.Serialization;
-
-namespace TemplateFramework.Core.CodeGeneration.Tests;
+﻿namespace TemplateFramework.Core.CodeGeneration.Tests;
 
 public partial class CodeGenerationAssemblySettingsTests
 {
