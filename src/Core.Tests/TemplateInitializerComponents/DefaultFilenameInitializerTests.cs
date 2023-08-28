@@ -1,26 +1,14 @@
 ﻿namespace TemplateFramework.Core.Tests.TemplateInitializerComponents;
 
-public class ModelInitializerTests
+public class DefaultFilenameInitializerTests
 {
-    protected ModelInitializer CreateSut() => new(ValueConverterMock.Object);
+    protected DefaultFilenameInitializer CreateSut() => new();
     
-    protected Mock<IValueConverter> ValueConverterMock { get; } = new();
     protected Mock<ITemplateEngine> TemplateEngineMock { get; } = new();
     
     protected const string DefaultFilename = "DefaultFilename.txt";
 
-    public class Constructor
-    {
-        [Fact]
-        public void Throws_On_Null_Converter()
-        {
-            // Act & Assert
-            this.Invoking(_ => new ModelInitializer(converter: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("converter");
-        }
-    }
-
-    public class Initialize : ModelInitializerTests
+    public class Initialize : DefaultFilenameInitializerTests
     {
         [Fact]
         public void Throws_On_Null_Request()
@@ -47,20 +35,18 @@ public class ModelInitializerTests
         }
 
         [Fact]
-        public void Sets_Model_When_Possible()
+        public void Sets_DefaultFilename_When_Possible()
         {
             // Arrange
             var sut = CreateSut();
-            var model = "Hello world!";
-            var template = new TestData.TemplateWithModel<string>(_ => { });
-            var request = new RenderTemplateRequest(template, model, new StringBuilder(), DefaultFilename);
-            ValueConverterMock.Setup(x => x.Convert(It.IsAny<object?>(), It.IsAny<Type>())).Returns<object?, Type>((value, type) => value);
+            var template = new TestData.TemplateWithDefaultFilename(_ => { });
+            var request = new RenderTemplateRequest(template, null, new StringBuilder(), DefaultFilename);
 
             // Act
             sut.Initialize(request, TemplateEngineMock.Object);
 
             // Assert
-            template.Model.Should().Be(model);
+            template.DefaultFilename.Should().Be(DefaultFilename);
         }
     }
 }
