@@ -1,4 +1,6 @@
-﻿namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests;
+﻿using static TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests.TestData;
+
+namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests;
 
 internal static class TestData
 {
@@ -88,19 +90,29 @@ internal static class TestData
             => new(false, SkipWhenFileExists, false, null, null, null, false, IndentCount + 1, CultureInfo);
     }
 
-    internal abstract class CsharpClassGeneratorBase : ITemplateContextContainer
+    internal abstract class CsharpClassGeneratorBase<TModel> : IModelContainer<TModel>
     {
-        // Properties that are injected by the template engine
-        public ITemplateContext Context { get; set; } = default!;
-    }
+        protected ITemplateContext Context { get; }
+        protected ITemplateEngine Engine { get; }
+        protected ITemplateProvider Provider { get; }
 
-    internal abstract class CsharpClassGeneratorBase<TModel> : CsharpClassGeneratorBase, IModelContainer<TModel>
-    {
+        public string DefaultFilename { get; set; } = "";
         public TModel? Model { get; set; }
+
+        protected CsharpClassGeneratorBase(ITemplateEngine engine, ITemplateProvider provider)
+        {
+            Engine = engine ?? throw new ArgumentNullException(nameof(engine));
+            Provider = provider ?? throw new ArgumentNullException(nameof(provider));
+            Context = new TemplateContext(Engine, Provider, DefaultFilename, this, Model);
+        }
     }
 
     internal sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>>, IMultipleContentBuilderTemplate
     {
+        public CsharpClassGenerator(ITemplateEngine engine, ITemplateProvider provider) : base(engine, provider)
+        {
+        }
+
         public void Render(IMultipleContentBuilder builder)
         {
             Guard.IsNotNull(builder);
@@ -159,6 +171,10 @@ internal static class TestData
 
     internal sealed class CodeGenerationHeaderTemplate : CsharpClassGeneratorBase<CsharpClassGeneratorSettings>, IStringBuilderTemplate
     {
+        public CodeGenerationHeaderTemplate(ITemplateEngine engine, ITemplateProvider provider) : base(engine, provider)
+        {
+        }
+
         public string Version
             => !string.IsNullOrEmpty(Model?.EnvironmentVersion)
                 ? Model.EnvironmentVersion
@@ -216,6 +232,10 @@ internal static class TestData
             "System.Text"
         };
 
+        public DefaultUsingsTemplate(ITemplateEngine engine, ITemplateProvider provider) : base(engine, provider)
+        {
+        }
+
         public IEnumerable<string> Usings
             => DefaultUsings
                 .Union(Model?.Data.SelectMany(classItem => classItem.Usings) ?? Enumerable.Empty<string>())
@@ -225,6 +245,10 @@ internal static class TestData
 
     internal sealed class ClassTemplate : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel<TypeBase>>, IMultipleContentBuilderTemplate
     {
+        public ClassTemplate(ITemplateEngine engine, ITemplateProvider provider) : base(engine, provider)
+        {
+        }
+
         public void Render(IMultipleContentBuilder builder)
         {
             Guard.IsNotNull(builder);
@@ -281,12 +305,11 @@ internal static class TestData
             //TODO: Render child items
             if (Model.Data.SubClasses?.Any() == true)
             {
-                var childTemplateInstance = new ClassTemplate();
                 Context.Engine.RenderChildTemplates(
                     Model.Data.SubClasses.Select(typeBase => new CsharpClassGeneratorViewModel<TypeBase>(typeBase, Model.Settings.ForSubclasses())),
                     new MultipleContentBuilderEnvironment(builder),
                     Context,
-                    _ => childTemplateInstance
+                    model => Provider.Create(new CreateChildTemplateByModelRequest(model!.GetType().GetProperty(nameof(CsharpClassGeneratorViewModel<TypeBase>.Data))!.GetValue(model)))
                     );
             }
 

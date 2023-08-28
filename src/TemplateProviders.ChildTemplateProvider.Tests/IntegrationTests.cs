@@ -35,12 +35,13 @@ public class IntegrationTests
         using var provider = new ServiceCollection()
             .AddTemplateFramework()
             .AddTemplateFrameworkChildTemplateProvider()
-            .AddChildTemplate("CodeGenerationHeader", _ => new TestData.CodeGenerationHeaderTemplate())
-            .AddChildTemplate("DefaultUsings", _ => new TestData.DefaultUsingsTemplate())
-            .AddChildTemplate(typeof(TestData.TypeBase), _ => new TestData.ClassTemplate())
+            .AddChildTemplate("CodeGenerationHeader", services => new TestData.CodeGenerationHeaderTemplate(services.GetRequiredService<ITemplateEngine>(), services.GetRequiredService<ITemplateProvider>()))
+            .AddChildTemplate("DefaultUsings", services => new TestData.DefaultUsingsTemplate(services.GetRequiredService<ITemplateEngine>(), services.GetRequiredService<ITemplateProvider>()))
+            .AddChildTemplate(typeof(TestData.TypeBase), services => new TestData.ClassTemplate(services.GetRequiredService<ITemplateEngine>(), services.GetRequiredService<ITemplateProvider>()))
+            .AddTransient(services => new TestData.CsharpClassGenerator(services.GetRequiredService<ITemplateEngine>(), services.GetRequiredService<ITemplateProvider>()))
             .BuildServiceProvider();
         var engine = provider.GetRequiredService<ITemplateEngine>();
-        var template = new TestData.CsharpClassGenerator();
+        var template = provider.GetRequiredService<TestData.CsharpClassGenerator>();
         var generationEnvironment = new MultipleContentBuilder();
         var model = new[]
         {
