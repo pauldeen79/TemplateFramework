@@ -104,6 +104,8 @@ internal static class TestData
         }
     }
 
+// False positive, it gets created through DI container
+#pragma warning disable CA1812 // Avoid uninstantiated internal classes
     internal sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>>, IMultipleContentBuilderTemplate
     {
         public CsharpClassGenerator(ITemplateEngine engine, ITemplateProvider provider) : base(engine, provider)
@@ -323,6 +325,7 @@ internal static class TestData
             }
         }
     }
+#pragma warning restore CA1812 // Avoid uninstantiated internal classes
 
     internal sealed class TypeBase
     {
