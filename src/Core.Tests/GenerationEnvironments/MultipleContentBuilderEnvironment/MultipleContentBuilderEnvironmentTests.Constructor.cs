@@ -8,7 +8,7 @@ public partial class MultipleContentBuilderEnvironmentTests
         public void Throws_On_Null_Builder()
         {
             // Act & Assert
-            this.Invoking(_ => new MultipleContentBuilderEnvironment(FileSystemMock.Object, builder: null!))
+            this.Invoking(_ => new MultipleContentBuilderEnvironment(FileSystemMock.Object, RetryMechanism, builder: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("builder");
         }
 
