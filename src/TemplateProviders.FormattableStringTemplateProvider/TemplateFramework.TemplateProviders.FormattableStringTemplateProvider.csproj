@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\TemplateFramework.Core.csproj" />
+    <ProjectReference Include="..\TemplateProviders.CompiledTemplateProvider.Tests\TemplateFramework.TemplateProviders.CompiledTemplateProvider.Tests.csproj" />
   </ItemGroup>
 
   <ItemGroup>
