@@ -19,6 +19,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<ITemplateInitializerComponent, ParameterInitializer>()
             .AddSingleton<ITemplateInitializerComponent, ContextInitializer>()
             .AddSingleton<ITemplateInitializerComponent, DefaultFilenameInitializer>()
+            .AddSingleton<ITemplateParameterExtractorComponent, TypedExtractor>()
             .AddSingleton<IValueConverter, ValueConverter>()
             .AddSingleton<ITemplateProvider, TemplateProvider>()
             .AddSingleton<IRetryMechanism, RetryMechanism>()

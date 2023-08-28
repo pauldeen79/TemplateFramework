@@ -85,16 +85,22 @@ public class TemplateWrapperTests
 
         private sealed class TemplateWithTypedParameters
         {
+#pragma warning disable S3459 // Unassigned members should be removed
             public string? Prop1 { get; set; }
             public string? Prop2 { get; set; }
+#pragma warning restore S3459 // Unassigned members should be removed
             public string? Skip1 { get; }
 #pragma warning disable S2376 // Write-only properties should not be used
-#pragma warning disable S3237 // "value" contextual keyword should be used
-#pragma warning disable S108 // Nested blocks of code should not be left empty
-            public string? Skip2 { set { } }
-#pragma warning restore S108 // Nested blocks of code should not be left empty
-#pragma warning restore S3237 // "value" contextual keyword should be used
+            public string? Skip2
 #pragma warning restore S2376 // Write-only properties should not be used
+            {
+#pragma warning disable S3237 // "value" contextual keyword should be used
+                set
+#pragma warning restore S3237 // "value" contextual keyword should be used
+                {
+                    // Left empty intentionally
+                }
+            }
         }
     }
 

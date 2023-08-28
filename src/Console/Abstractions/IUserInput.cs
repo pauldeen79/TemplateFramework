@@ -2,5 +2,5 @@
 
 public interface IUserInput
 {
-    string GetValue(TemplateParameter parameter);
+    string GetValue(ITemplateParameter parameter);
 }

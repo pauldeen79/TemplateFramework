@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class UserInput : IUserInput
 {
-    public string GetValue(TemplateParameter parameter)
+    public string GetValue(ITemplateParameter parameter)
     {
         Guard.IsNotNull(parameter);
 
