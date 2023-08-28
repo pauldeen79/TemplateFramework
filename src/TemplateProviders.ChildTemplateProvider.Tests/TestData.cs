@@ -1,6 +1,4 @@
-﻿using static TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests.TestData;
-
-namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests;
+﻿namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests;
 
 internal static class TestData
 {
@@ -90,9 +88,9 @@ internal static class TestData
             => new(false, SkipWhenFileExists, false, null, null, null, false, IndentCount + 1, CultureInfo);
     }
 
-    internal abstract class CsharpClassGeneratorBase<TModel> : IModelContainer<TModel>
+    internal abstract class CsharpClassGeneratorBase<TModel> : IModelContainer<TModel>, IDefaultFilenameContainer
     {
-        protected ITemplateContext Context { get; }
+        protected ITemplateContext Context => new TemplateContext(Engine, Provider, DefaultFilename, this, Model);
         protected ITemplateEngine Engine { get; }
         protected ITemplateProvider Provider { get; }
 
@@ -103,7 +101,6 @@ internal static class TestData
         {
             Engine = engine ?? throw new ArgumentNullException(nameof(engine));
             Provider = provider ?? throw new ArgumentNullException(nameof(provider));
-            Context = new TemplateContext(Engine, Provider, DefaultFilename, this, Model);
         }
     }
 

@@ -65,7 +65,7 @@ public class IntegrationTests
         var viewModel = new TestData.CsharpClassGeneratorViewModel<IEnumerable<TestData.TypeBase>>(model, settings);
 
         // Act
-        engine.Render(new RenderTemplateRequest(template, viewModel, generationEnvironment, settings));
+        engine.Render(new RenderTemplateRequest(template, viewModel, generationEnvironment, "GeneratedCode.cs", settings));
 
         // Assert
         generationEnvironment.Contents.Should().HaveCount(4);
