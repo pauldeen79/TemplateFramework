@@ -2,6 +2,7 @@
 
 public class RetryMechanism : IRetryMechanism
 {
+    [ExcludeFromCodeCoverage]
     protected virtual int WaitTimeInMs => 500;
 
     public void Retry(Action action)
