@@ -43,7 +43,7 @@ public class TemplateWrapperTests
         }
 
         [Fact]
-        public void Returns_Empty_Array_When_Wrapped_Instance_Does_Not_Have_GetParameters_Method()
+        public void Returns_Empty_Array_When_Wrapped_Instance_Does_Not_Have_GetParameters_Method_And_Does_Not_Have_Public_Properties()
         {
             // Arrange
             var wrappedInstance = new object();
@@ -57,6 +57,21 @@ public class TemplateWrapperTests
         }
 
         [Fact]
+        public void Returns_Public_Properties_When_Wrapped_Instance_Does_Not_Have_GetParameters_Method_But_Has_Public_Properties()
+        {
+            // Arrange
+            var wrappedInstance = new TemplateWithTypedParameters();
+            var sut = new TemplateWrapper(wrappedInstance);
+
+            // Act
+            var result = sut.GetParameters();
+
+            // Assert
+            result.Select(x => x.Name).Should().BeEquivalentTo(nameof(TemplateWithTypedParameters.Prop1), nameof(TemplateWithTypedParameters.Prop2));
+            result.Select(x => x.Type).Should().AllBeEquivalentTo(typeof(string));
+        }
+
+        [Fact]
         public void Throws_When_Wrapped_Instance_Returns_Result_From_GetParameters_Using_Wrong_Type()
         {
             // Arrange
@@ -66,6 +81,12 @@ public class TemplateWrapperTests
             // Act & Assert
             sut.Invoking(x => x.GetParameters())
                .Should().Throw<NotSupportedException>();
+        }
+
+        private sealed class TemplateWithTypedParameters
+        {
+            public string? Prop1 { get; set; }
+            public string? Prop2 { get; set; }
         }
     }
 
