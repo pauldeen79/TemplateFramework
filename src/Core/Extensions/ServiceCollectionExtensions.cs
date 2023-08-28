@@ -22,6 +22,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IValueConverter, ValueConverter>()
             .AddSingleton<ITemplateProvider, TemplateProvider>()
             .AddSingleton<IRetryMechanism, RetryMechanism>()
+            .AddSingleton<ITemplateParameterExtractor, TemplateParameterExtractor>()
             .AddSingleton<ISingleContentTemplateRenderer, StringBuilderTemplateRenderer>() // also register using its own type, so we can render a single template from  multiple content template renderer
             ;
 }

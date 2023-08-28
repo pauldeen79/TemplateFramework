@@ -3,14 +3,28 @@
 public sealed class TemplateEngine : ITemplateEngine
 {
     private readonly ITemplateInitializer _templateInitializer;
+    private readonly ITemplateParameterExtractor _templateParameterExtractor;
     private readonly IEnumerable<ITemplateRenderer> _templateRenderers;
 
-    public TemplateEngine(ITemplateInitializer templateInitializer, IEnumerable<ITemplateRenderer> templateRenderers)
+    public TemplateEngine(
+        ITemplateInitializer templateInitializer,
+        ITemplateParameterExtractor templateParameterExtractor,
+        IEnumerable<ITemplateRenderer> templateRenderers)
     {
         Guard.IsNotNull(templateInitializer);
+        Guard.IsNotNull(templateParameterExtractor);
         Guard.IsNotNull(templateRenderers);
+
         _templateInitializer = templateInitializer;
+        _templateParameterExtractor = templateParameterExtractor;
         _templateRenderers = templateRenderers;
+    }
+
+    public ITemplateParameter[] GetParameters(object templateInstance)
+    {
+        Guard.IsNotNull(templateInstance);
+
+        return _templateParameterExtractor.Extract(templateInstance);
     }
 
     public void Render(IRenderTemplateRequest request)

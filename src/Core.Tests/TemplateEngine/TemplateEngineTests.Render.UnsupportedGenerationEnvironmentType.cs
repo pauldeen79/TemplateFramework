@@ -8,7 +8,7 @@ public partial class TemplateEngineTests
         public void Throws()
         {
             // Arrange
-            var sut = new TemplateEngine(TemplateInitializerMock.Object, Array.Empty<ITemplateRenderer>()); // we are specifying here that no renderers are known, so even StringBuilder throws an exception :)
+            var sut = new TemplateEngine(TemplateInitializerMock.Object, TemplateParameterExtractorMock.Object, Array.Empty<ITemplateRenderer>()); // we are specifying here that no renderers are known, so even StringBuilder throws an exception :)
             var request = new RenderTemplateRequest(new TestData.Template(_ => { }), new StringBuilder()); // note that we can't put a non-supported type in here because the interface prevents that. But the construction above accomplishes that.
 
             // Act & Assert
