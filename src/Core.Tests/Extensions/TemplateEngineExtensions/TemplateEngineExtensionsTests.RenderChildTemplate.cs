@@ -235,7 +235,7 @@ public partial class TemplateEngineExtensionsTests
             ContextMock.SetupGet(x => x.DefaultFilename).Returns(DefaultFilename);
             ContextMock.SetupGet(x => x.Provider).Returns(TemplateProviderMock.Object);
             ContextMock.Setup(x => x.CreateChildContext(It.IsAny<IChildTemplateContext>())).Returns(ContextMock.Object);
-            TemplateProviderMock.Setup(x => x.Create(It.IsAny<ICreateTemplateRequest>())).Returns(Template);
+            TemplateProviderMock.Setup(x => x.Create(It.IsAny<ITemplateIdentifier>())).Returns(Template);
 
             // Act
             TemplateEngineMock.Object.RenderChildTemplate(Model, GenerationEnvironmentMock.Object, ContextMock.Object, CreateTemplateRequestMock.Object);
@@ -273,7 +273,7 @@ public partial class TemplateEngineExtensionsTests
             ContextMock.SetupGet(x => x.DefaultFilename).Returns(DefaultFilename);
             ContextMock.SetupGet(x => x.Provider).Returns(TemplateProviderMock.Object);
             ContextMock.Setup(x => x.CreateChildContext(It.IsAny<IChildTemplateContext>())).Returns(ContextMock.Object);
-            TemplateProviderMock.Setup(x => x.Create(It.IsAny<ICreateTemplateRequest>())).Returns(Template);
+            TemplateProviderMock.Setup(x => x.Create(It.IsAny<ITemplateIdentifier>())).Returns(Template);
 
             // Act
             TemplateEngineMock.Object.RenderChildTemplate(GenerationEnvironmentMock.Object, ContextMock.Object, CreateTemplateRequestMock.Object);

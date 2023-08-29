@@ -11,9 +11,9 @@ public class ProviderComponent : ITemplateProviderComponent
         _formattableStringParser = formattableStringParser;
     }
 
-    public bool Supports(ICreateTemplateRequest request) => request is CreateFormattableStringTemplateRequest;
+    public bool Supports(ITemplateIdentifier request) => request is CreateFormattableStringTemplateRequest;
 
-    public object Create(ICreateTemplateRequest request)
+    public object Create(ITemplateIdentifier request)
     {
         Guard.IsNotNull(request);
         Guard.IsOfType<CreateFormattableStringTemplateRequest>(request);

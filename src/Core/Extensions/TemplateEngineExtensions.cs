@@ -51,7 +51,7 @@ public static class TemplateEngineExtensions
         }
     }
 
-    public static void RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, ITemplateContext context, Func<object?, ICreateTemplateRequest> createTemplateRequestFactory)
+    public static void RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, ITemplateContext context, Func<object?, ITemplateIdentifier> createTemplateRequestFactory)
     {
         Guard.IsNotNull(childModels);
         Guard.IsNotNull(context);
@@ -150,7 +150,7 @@ public static class TemplateEngineExtensions
         instance.Render(new RenderTemplateRequest(template, null, generationEnvironment, string.Empty, null, null));
     }
 
-    public static void RenderChildTemplate(this ITemplateEngine instance, object? childModel, IGenerationEnvironment generationEnvironment, ITemplateContext context, ICreateTemplateRequest createTemplateRequest)
+    public static void RenderChildTemplate(this ITemplateEngine instance, object? childModel, IGenerationEnvironment generationEnvironment, ITemplateContext context, ITemplateIdentifier createTemplateRequest)
     {
         Guard.IsNotNull(context);
         Guard.IsNotNull(createTemplateRequest);
@@ -159,7 +159,7 @@ public static class TemplateEngineExtensions
         instance.Render(new RenderTemplateRequest(template, childModel, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(template, childModel))));
     }
 
-    public static void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, ITemplateContext context, ICreateTemplateRequest createTemplateRequest)
+    public static void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, ITemplateContext context, ITemplateIdentifier createTemplateRequest)
     {
         Guard.IsNotNull(context);
         Guard.IsNotNull(createTemplateRequest);

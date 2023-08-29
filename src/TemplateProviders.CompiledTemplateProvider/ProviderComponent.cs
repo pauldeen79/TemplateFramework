@@ -10,9 +10,9 @@ public sealed class ProviderComponent : ITemplateProviderComponent
         _assemblyService = assemblyService;
     }
 
-    public bool Supports(ICreateTemplateRequest request) => request is CreateCompiledTemplateRequest;
+    public bool Supports(ITemplateIdentifier request) => request is CreateCompiledTemplateRequest;
 
-    public object Create(ICreateTemplateRequest request)
+    public object Create(ITemplateIdentifier request)
     {
         Guard.IsNotNull(request);
         Guard.IsOfType<CreateCompiledTemplateRequest>(request);

@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.Requests;
 
-public sealed class CreateFormattableStringTemplateRequest : ICreateTemplateRequest
+public sealed class CreateFormattableStringTemplateRequest : ITemplateIdentifier
 {
     public CreateFormattableStringTemplateRequest(string template, IFormatProvider formatProvider)
     {

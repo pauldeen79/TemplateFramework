@@ -24,7 +24,7 @@ public partial class ProviderComponentTests
             var sut = CreateSut();
 
             // Act
-            var result = sut.Supports(new Mock<ICreateTemplateRequest>().Object);
+            var result = sut.Supports(new Mock<ITemplateIdentifier>().Object);
 
             // Assert
             result.Should().BeFalse();

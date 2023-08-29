@@ -2,5 +2,5 @@
 
 public interface ITemplateProviderComponent : ITemplateProvider
 {
-    bool Supports(ICreateTemplateRequest request);
+    bool Supports(ITemplateIdentifier request);
 }

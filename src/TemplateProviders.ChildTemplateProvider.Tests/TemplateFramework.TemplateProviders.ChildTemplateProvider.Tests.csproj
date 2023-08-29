@@ -61,7 +61,7 @@
     <Using Include="TemplateFramework.Core.Requests" />
     <Using Include="TemplateFramework.TemplateProviders.ChildTemplateProvider.Abstractions" />
     <Using Include="TemplateFramework.TemplateProviders.ChildTemplateProvider.Extensions" />
-    <Using Include="TemplateFramework.TemplateProviders.ChildTemplateProvider.Requests" />
+    <Using Include="TemplateFramework.TemplateProviders.ChildTemplateProvider.TemplateIdentifiers" />
     <Using Include="Xunit" />
   </ItemGroup>
 

@@ -39,7 +39,7 @@ public class ProviderComponentTests
             var sut = CreateSut();
 
             // Act
-            var result = sut.Supports(new Mock<ICreateTemplateRequest>().Object);
+            var result = sut.Supports(new Mock<ITemplateIdentifier>().Object);
 
             // Assert
             result.Should().BeFalse();
@@ -79,7 +79,7 @@ public class ProviderComponentTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Create(request: new Mock<ICreateTemplateRequest>().Object))
+            sut.Invoking(x => x.Create(request: new Mock<ITemplateIdentifier>().Object))
                .Should().Throw<ArgumentException>().WithParameterName("request");
         }
         

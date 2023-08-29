@@ -11,7 +11,7 @@ public class TemplateProvider : ITemplateProvider
         _components = components;
     }
 
-    public object Create(ICreateTemplateRequest request)
+    public object Create(ITemplateIdentifier request)
     {
         Guard.IsNotNull(request);
 

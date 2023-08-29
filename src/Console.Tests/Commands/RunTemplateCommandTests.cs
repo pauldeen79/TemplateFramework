@@ -74,7 +74,7 @@ public class RunTemplateCommandTests
         {
             // Arrange
             var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
-            TemplateProviderMock.Setup(x => x.Create(It.IsAny<ICreateTemplateRequest>())).Returns(templateInstance);
+            TemplateProviderMock.Setup(x => x.Create(It.IsAny<ITemplateIdentifier>())).Returns(templateInstance);
 
             // Act
             _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, "--assembly MyAssembly", "--classname MyClass", "MyArgumentName:MyArgumentValue");
@@ -92,7 +92,7 @@ public class RunTemplateCommandTests
         {
             // Arrange
             var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
-            TemplateProviderMock.Setup(x => x.Create(It.IsAny<ICreateTemplateRequest>())).Returns(templateInstance);
+            TemplateProviderMock.Setup(x => x.Create(It.IsAny<ITemplateIdentifier>())).Returns(templateInstance);
             TemplateEngineMock.Setup(x => x.GetParameters(It.IsAny<object>())).Returns(new[] { new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string)) });
 
             // Act

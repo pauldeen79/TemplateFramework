@@ -22,7 +22,7 @@ public partial class ProviderComponentTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Create(new Mock<ICreateTemplateRequest>().Object))
+            sut.Invoking(x => x.Create(new Mock<ITemplateIdentifier>().Object))
                .Should().Throw<NotSupportedException>();
         }
     }

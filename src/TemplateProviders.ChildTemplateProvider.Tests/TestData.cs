@@ -152,7 +152,7 @@ internal static class TestData
                 Model!.Settings,
                 generationEnvironment,
                 Context,
-                new CreateChildTemplateByNameRequest("CodeGenerationHeader"));
+                new TemplateByNameIdentifier("CodeGenerationHeader"));
 
             if (Context.IsRootContext)
             {
@@ -160,7 +160,7 @@ internal static class TestData
                     Model,
                     generationEnvironment,
                     Context,
-                    new CreateChildTemplateByNameRequest("DefaultUsings")
+                    new TemplateByNameIdentifier("DefaultUsings")
                     );
             }
         }
@@ -183,7 +183,7 @@ internal static class TestData
                     typeBaseItems,
                     generationEnvironment,
                     Context,
-                    typeBase => new CreateChildTemplateByModelRequest(((CsharpClassGeneratorViewModel<TypeBase>)typeBase!).Data)
+                    typeBase => new TemplateByModelIdentifier(((CsharpClassGeneratorViewModel<TypeBase>)typeBase!).Data)
                     );
 
                 if (Context.IsRootContext && singleStringBuilder is not null)
@@ -300,13 +300,13 @@ internal static class TestData
                     Model.Settings,
                     generationEnvironment,
                     Context,
-                    new CreateChildTemplateByNameRequest("CodeGenerationHeader")
+                    new TemplateByNameIdentifier("CodeGenerationHeader")
                     );
                 Context.Engine.RenderChildTemplate(
                     new CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>(new[] { Model.Data }, Model.Settings),
                     generationEnvironment,
                     Context,
-                    new CreateChildTemplateByNameRequest("DefaultUsings")
+                    new TemplateByNameIdentifier("DefaultUsings")
                     );
                 contentBuilder.Builder.AppendLine(Model.Settings.CultureInfo, $"namespace {Model.Data.Namespace}");
                 contentBuilder.Builder.AppendLine("{"); // start namespace
@@ -334,7 +334,7 @@ internal static class TestData
                     Model.Data.SubClasses.Select(typeBase => new CsharpClassGeneratorViewModel<TypeBase>(typeBase, Model.Settings.ForSubclasses())),
                     new MultipleContentBuilderEnvironment(builder),
                     Context,
-                    model => Provider.Create(new CreateChildTemplateByModelRequest(model!.GetType().GetProperty(nameof(CsharpClassGeneratorViewModel<TypeBase>.Data))!.GetValue(model)))
+                    model => Provider.Create(new TemplateByModelIdentifier(model!.GetType().GetProperty(nameof(CsharpClassGeneratorViewModel<TypeBase>.Data))!.GetValue(model)))
                     );
             }
 

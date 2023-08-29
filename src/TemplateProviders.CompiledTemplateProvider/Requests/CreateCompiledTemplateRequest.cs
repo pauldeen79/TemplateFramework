@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.TemplateProviders.CompiledTemplateProvider.Requests;
 
-public sealed class CreateCompiledTemplateRequest : ICreateTemplateRequest
+public sealed class CreateCompiledTemplateRequest : ITemplateIdentifier
 {
     public CreateCompiledTemplateRequest(string assemblyName, string className) : this(assemblyName, className, string.Empty)
     {
