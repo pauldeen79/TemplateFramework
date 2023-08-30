@@ -364,3 +364,35 @@ internal static class TestData
         public string[] Usings { get; set; } = Array.Empty<string>();
     }
 }
+
+public sealed class CsharpClassGeneratorCodeGenerationProvider : ICodeGenerationProvider
+{
+    public string Path => string.Empty;
+    public bool RecurseOnDeleteGeneratedFiles => false;
+    public string LastGeneratedFilesFilename => string.Empty;
+    public Encoding Encoding => Encoding.UTF8;
+
+    public object? CreateAdditionalParameters() => null;
+
+    public object CreateGenerator() => new TestData.CsharpClassGenerator();
+
+    public object? CreateModel()
+    {
+        var settings = new TestData.CsharpClassGeneratorSettings
+        (
+            generateMultipleFiles: true,
+            skipWhenFileExists: false,
+            createCodeGenerationHeader: true,
+            environmentVersion: "1.0",
+            filenamePrefix: "Entities/",
+            filenameSuffix: ".generated",
+            enableNullableContext: true,
+            indentCount: 1,
+            cultureInfo: CultureInfo.CurrentCulture
+        );
+        var model = new[] { new TestData.TypeBase { Namespace = "MyNamespace", Name = "MyClass" } };
+        var viewModel = new TestData.CsharpClassGeneratorViewModel<IEnumerable<TestData.TypeBase>>(model, settings);
+
+        return viewModel;
+    }
+}
