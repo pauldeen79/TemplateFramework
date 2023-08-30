@@ -39,6 +39,6 @@
     <Using Include="TemplateFramework.Abstractions.Templates" />
     <Using Include="TemplateFramework.Core" />
     <Using Include="TemplateFramework.Core.Extensions" />
-    <Using Include="TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.Requests" />
+    <Using Include="TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.TemplateIdentifiers" />
   </ItemGroup>
 </Project>

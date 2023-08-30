@@ -1,27 +1,27 @@
 ﻿namespace TemplateFramework.Core.TemplateInitializerComponents;
 
-public class ModelInitializer : ITemplateInitializerComponent
+public class ModelInitializerComponent : ITemplateInitializerComponent
 {
     private readonly IValueConverter _converter;
 
-    public ModelInitializer(IValueConverter converter)
+    public ModelInitializerComponent(IValueConverter converter)
     {
         Guard.IsNotNull(converter);
 
         _converter = converter;
     }
 
-    public void Initialize(IRenderTemplateRequest request, ITemplateEngine engine)
+    public void Initialize(ITemplateEngineContext context)
     {
-        Guard.IsNotNull(request);
-        Guard.IsNotNull(engine);
+        Guard.IsNotNull(context);
+        Guard.IsNotNull(context.Template);
 
-        var templateType = request.Template.GetType();
+        var templateType = context.Template.GetType();
         
         if (Array.Exists(templateType.GetInterfaces(), t => t.FullName?.StartsWith("TemplateFramework.Abstractions.IModelContainer", StringComparison.InvariantCulture) == true))
         {
             var modelProperty = templateType.GetProperty(nameof(IModelContainer<object?>.Model))!;
-            modelProperty.SetValue(request.Template, _converter.Convert(request.Model, modelProperty.PropertyType));
+            modelProperty.SetValue(context.Template, _converter.Convert(context.Model, modelProperty.PropertyType));
         }
     }
 }

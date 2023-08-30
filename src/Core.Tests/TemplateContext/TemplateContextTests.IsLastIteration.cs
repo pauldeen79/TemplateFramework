@@ -13,7 +13,7 @@ public partial class TemplateContextTests
         public void Returns_Correct_Result(int? iterationNumber, int? iterationCount, bool? expectedResult)
         {
             // Arrange
-            var sut = new TemplateContext(EngineMock.Object, ProviderMock.Object, DefaultFilename, this, model: "test", parentContext: new TemplateContext(EngineMock.Object, ProviderMock.Object, DefaultFilename, this, model: "parent"), iterationNumber: iterationNumber, iterationCount: iterationCount);
+            var sut = new TemplateContext(EngineMock.Object, ProviderMock.Object, DefaultFilename, new TemplateInstanceIdentifier(this), this, model: "test", parentContext: new TemplateContext(EngineMock.Object, ProviderMock.Object, DefaultFilename, new TemplateInstanceIdentifier(this), this, model: "parent"), iterationNumber: iterationNumber, iterationCount: iterationCount);
 
             // Act
             var result = sut.IsLastIteration;

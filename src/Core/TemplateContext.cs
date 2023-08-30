@@ -5,36 +5,40 @@ public sealed class TemplateContext : ITemplateContext
     public TemplateContext(ITemplateEngine engine,
                            ITemplateProvider provider,
                            string defaultFilename,
+                           ITemplateIdentifier identifier,
                            object template)
-        : this(engine, provider, defaultFilename, template, null, null, null, null)
+        : this(engine, provider, defaultFilename, identifier, template, null, null, null, null)
     {
     }
 
     public TemplateContext(ITemplateEngine engine,
                            ITemplateProvider provider,
                            string defaultFilename,
+                           ITemplateIdentifier identifier,
                            object template,
                            ITemplateContext parentContext)
-        : this(engine, provider, defaultFilename, template, null, parentContext, null, null)
+        : this(engine, provider, defaultFilename, identifier, template, null, parentContext, null, null)
     {
     }
 
     public TemplateContext(ITemplateEngine engine,
                            ITemplateProvider provider,
                            string defaultFilename,
+                           ITemplateIdentifier identifier,
                            object template,
                            object? model)
-        : this(engine, provider, defaultFilename, template, model, null, null, null)
+        : this(engine, provider, defaultFilename, identifier, template, model, null, null, null)
     {
     }
 
     public TemplateContext(ITemplateEngine engine,
                            ITemplateProvider provider,
                            string defaultFilename,
+                           ITemplateIdentifier identifier,
                            object template,
                            object? model,
                            ITemplateContext parentContext)
-        : this(engine, provider, defaultFilename, template, model, parentContext, null, null)
+        : this(engine, provider, defaultFilename, identifier, template, model, parentContext, null, null)
     {
     }
 
@@ -42,6 +46,7 @@ public sealed class TemplateContext : ITemplateContext
     public TemplateContext(ITemplateEngine engine,
                            ITemplateProvider provider,
                            string defaultFilename,
+                           ITemplateIdentifier identifier,
                            object template,
                            object? model,
                            ITemplateContext? parentContext,
@@ -52,11 +57,13 @@ public sealed class TemplateContext : ITemplateContext
         Guard.IsNotNull(engine);
         Guard.IsNotNull(provider);
         Guard.IsNotNull(defaultFilename);
+        Guard.IsNotNull(identifier);
         Guard.IsNotNull(template);
 
         Engine = engine;
         Provider = provider;
         DefaultFilename = defaultFilename;
+        Identifier = identifier;
         Template = template;
         Model = model;
         ParentContext = parentContext;
@@ -64,6 +71,7 @@ public sealed class TemplateContext : ITemplateContext
         IterationCount = iterationCount;
     }
 
+    public ITemplateIdentifier Identifier { get; }
     public object Template { get; }
     public object? Model { get; }
     public ITemplateContext? ParentContext { get; }
@@ -128,7 +136,8 @@ public sealed class TemplateContext : ITemplateContext
             engine: Engine,
             provider: Provider,
             defaultFilename: DefaultFilename,
-            template: childContext.Template,
+            identifier: childContext.Identifier,
+            template: childContext.Identifier,
             model: childContext.Model,
             parentContext: this,
             iterationNumber: childContext.IterationNumber,

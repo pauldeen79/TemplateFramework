@@ -16,12 +16,12 @@ public class IntegrationTests
         var template = new TestData.MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine((builder, context) =>
         {
             var childTemplate = context.Provider.Create(new TemplateByNameIdentifier("MyTemplate"));
-            context.Engine.Render(new RenderTemplateRequest(childTemplate, builder, context.CreateChildContext(new ChildTemplateContext(childTemplate))));
+            context.Engine.Render(new RenderTemplateRequest(new TemplateInstanceIdentifier(childTemplate), builder, context.CreateChildContext(new ChildTemplateContext(new TemplateInstanceIdentifier(childTemplate)))));
         });
         var generationEnvironment = new MultipleContentBuilder();
 
         // Act
-        engine.Render(new RenderTemplateRequest(template, generationEnvironment));
+        engine.Render(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), generationEnvironment));
 
         // Assert
         generationEnvironment.Contents.Should().ContainSingle();
@@ -73,7 +73,7 @@ public class IntegrationTests
         var viewModel = new TestData.CsharpClassGeneratorViewModel<IEnumerable<TestData.TypeBase>>(model, settings);
 
         // Act
-        engine.Render(new RenderTemplateRequest(template, viewModel, generationEnvironment, "GeneratedCode.cs", settings));
+        engine.Render(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), viewModel, generationEnvironment, "GeneratedCode.cs", settings));
 
         // Assert
         generationEnvironment.Contents.Should().HaveCount(4);

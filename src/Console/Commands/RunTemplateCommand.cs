@@ -69,7 +69,8 @@ public class RunTemplateCommand : CommandBase
                         parameters = MergeParameters(parameters, GetInteractiveParameterValues(_templateEngine.GetParameters(template)));
                     }
 
-                    _templateEngine.Render(new RenderTemplateRequest(template, null, generationEnvironment, defaultFilename, parameters, null));
+                    _templateEngine.Render(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), null, generationEnvironment, defaultFilename, parameters, null));
+
                     WriteOutput(app, generationEnvironment, basePath, bareOption.HasValue(), clipboardOption.HasValue(), dryRun);
                 });
             });

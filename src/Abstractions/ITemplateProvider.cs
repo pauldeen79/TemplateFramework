@@ -2,5 +2,5 @@
 
 public interface ITemplateProvider
 {
-    object Create(ITemplateIdentifier request);
+    object Create(ITemplateIdentifier identifier);
 }

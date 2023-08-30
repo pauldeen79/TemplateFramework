@@ -26,7 +26,7 @@ public class TestFormattableStringTemplate : IParameterizedTemplate, IStringBuil
 
         var formattableStringParser = provider.GetRequiredService<IFormattableStringParser>();
 
-        return new FormattableStringTemplate(new CreateFormattableStringTemplateRequest(Template, CultureInfo.CurrentCulture), formattableStringParser).GetParameters();
+        return new FormattableStringTemplate(new FormattableStringTemplateIdentifier(Template, CultureInfo.CurrentCulture), formattableStringParser).GetParameters();
     }
 
     public void Render(StringBuilder builder)

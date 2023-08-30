@@ -13,19 +13,20 @@ public sealed class StringBuilderTemplateRenderer : ISingleContentTemplateRender
 
     public bool Supports(IGenerationEnvironment generationEnvironment) => generationEnvironment is StringBuilderEnvironment;
     
-    public void Render(IRenderTemplateRequest request)
+    public void Render(ITemplateEngineContext context)
     {
-        Guard.IsNotNull(request);
+        Guard.IsNotNull(context);
+        Guard.IsNotNull(context.Template);
 
-        var environment = request.GenerationEnvironment as StringBuilderEnvironment;
+        var environment = context.GenerationEnvironment as StringBuilderEnvironment;
         if (environment is null)
         {
-            throw new NotSupportedException($"Type of GenerationEnvironment ({request.GenerationEnvironment?.GetType().FullName}) is not supported");
+            throw new NotSupportedException($"Type of GenerationEnvironment ({context.GenerationEnvironment?.GetType().FullName}) is not supported");
         }
 
-        if (!_renderers.Any(x => x.TryRender(request.Template, environment.Builder)))
+        if (!_renderers.Any(x => x.TryRender(context.Template, environment.Builder)))
         {
-            var output = request.Template.ToString();
+            var output = context.Template.ToString();
 
             if (!string.IsNullOrEmpty(output))
             {

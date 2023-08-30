@@ -90,7 +90,7 @@ internal static class TestData
 
     internal abstract class CsharpClassGeneratorBase<TModel> : IModelContainer<TModel>, IDefaultFilenameContainer
     {
-        protected ITemplateContext Context => new TemplateContext(Engine, Provider, DefaultFilename, this, Model);
+        protected ITemplateContext Context => new TemplateContext(Engine, Provider, DefaultFilename, new TemplateInstanceIdentifier(this), this, Model);
         protected ITemplateEngine Engine { get; }
         protected ITemplateProvider Provider { get; }
 
@@ -334,7 +334,7 @@ internal static class TestData
                     Model.Data.SubClasses.Select(typeBase => new CsharpClassGeneratorViewModel<TypeBase>(typeBase, Model.Settings.ForSubclasses())),
                     new MultipleContentBuilderEnvironment(builder),
                     Context,
-                    model => Provider.Create(new TemplateByModelIdentifier(model!.GetType().GetProperty(nameof(CsharpClassGeneratorViewModel<TypeBase>.Data))!.GetValue(model)))
+                    model => new TemplateByModelIdentifier(model!.GetType().GetProperty(nameof(CsharpClassGeneratorViewModel<TypeBase>.Data))!.GetValue(model))
                     );
             }
 

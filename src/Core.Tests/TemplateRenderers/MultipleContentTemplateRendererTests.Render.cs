@@ -7,19 +7,19 @@ public partial class MultipleContentTemplateRendererTests
         public Render()
         {
             SingleContentTemplateRendererMock
-                .Setup(x => x.Render(It.IsAny<IRenderTemplateRequest>()))
-                .Callback<IRenderTemplateRequest>(req => ((StringBuilderEnvironment)req.GenerationEnvironment).Builder.Append(req.Template.ToString()));
+                .Setup(x => x.Render(It.IsAny<ITemplateEngineContext>()))
+                .Callback<ITemplateEngineContext>(req => ((StringBuilderEnvironment)req.GenerationEnvironment).Builder.Append(req.Template?.ToString()));
         }
 
         [Fact]
-        public void Throws_When_Request_Is_Null()
+        public void Throws_When_Context_Is_Null()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Render(request: null!))
-               .Should().Throw<ArgumentException>().WithParameterName("request");
+            sut.Invoking(x => x.Render(context: null!))
+               .Should().Throw<ArgumentException>().WithParameterName("context");
         }
 
         [Fact]
@@ -27,10 +27,12 @@ public partial class MultipleContentTemplateRendererTests
         {
             // Arrange
             var sut = CreateSut();
-            var request = new RenderTemplateRequest(new TestData.Template(_ => { }), DefaultFilename, new StringBuilder());
+            var template = new TestData.Template(_ => { });
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), DefaultFilename, new StringBuilder());
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, template);
 
             // Act & Assert
-            sut.Invoking(x => x.Render(request))
+            sut.Invoking(x => x.Render(engineContext))
                .Should().Throw<NotSupportedException>();
         }
 
@@ -41,11 +43,12 @@ public partial class MultipleContentTemplateRendererTests
             var sut = CreateSut();
             var templateMock = new Mock<IMultipleContentBuilderTemplate>();
             var generationEnvironment = new Mock<IMultipleContentBuilder>();
-            var request = new RenderTemplateRequest(templateMock.Object, DefaultFilename, generationEnvironment.Object);
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(templateMock.Object), DefaultFilename, generationEnvironment.Object);
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, templateMock.Object);
             MultipleContentBuilderTemplateCreatorMock.Setup(x => x.TryCreate(It.IsAny<object>())).Returns(templateMock.Object);
 
             // Act
-            sut.Render(request);
+            sut.Render(engineContext);
 
             // Assert
             templateMock.Verify(x => x.Render(It.IsAny<IMultipleContentBuilder>()), Times.Once);
@@ -56,7 +59,7 @@ public partial class MultipleContentTemplateRendererTests
         {
             // Arrange
             var sut = CreateSut();
-            var templateMock = new TestData.TextTransformTemplate(() => "Hello world!");
+            var template = new TestData.TextTransformTemplate(() => "Hello world!");
             var generationEnvironment = new Mock<IMultipleContentBuilder>();
             var contentBuilderMock = new Mock<IContentBuilder>();
             generationEnvironment.Setup(x => x.AddContent(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<StringBuilder?>()))
@@ -66,10 +69,12 @@ public partial class MultipleContentTemplateRendererTests
 
                                      return contentBuilderMock.Object;
                                  });
-            var request = new RenderTemplateRequest(templateMock, DefaultFilename, generationEnvironment.Object);
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), DefaultFilename, generationEnvironment.Object);
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, template);
+            TemplateProviderMock.Setup(x => x.Create(It.IsAny<TemplateInstanceIdentifier>())).Returns(template);
 
             // Act
-            sut.Render(request);
+            sut.Render(engineContext);
 
             // Assert
             contentBuilderMock.Object.Builder.Should().NotBeNull();

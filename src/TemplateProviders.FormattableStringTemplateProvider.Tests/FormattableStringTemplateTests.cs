@@ -4,7 +4,7 @@ public class FormattableStringTemplateTests
 {
     protected const string Template = "Hello {Name}!";
     protected Mock<IFormattableStringParser> FormattableStringParserMock { get; } = new();
-    protected CreateFormattableStringTemplateRequest Request { get; } = new CreateFormattableStringTemplateRequest(Template, CultureInfo.CurrentCulture);
+    protected FormattableStringTemplateIdentifier Request { get; } = new FormattableStringTemplateIdentifier(Template, CultureInfo.CurrentCulture);
 
     protected FormattableStringTemplate CreateSut() => new(Request, FormattableStringParserMock.Object);
 

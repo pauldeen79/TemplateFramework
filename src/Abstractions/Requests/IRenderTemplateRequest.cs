@@ -2,7 +2,7 @@
 
 public interface IRenderTemplateRequest
 {
-    object Template { get; }
+    ITemplateIdentifier Identifier { get; }
     IGenerationEnvironment GenerationEnvironment { get; }
     string DefaultFilename { get; }
     object? Model { get; }

@@ -8,7 +8,7 @@ public partial class TemplateEngineExtensionsTests
         public void RenderChildTemplate_Throws_On_Null_Context_1()
         {
             // Act & Assert
-            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplate(Model, GenerationEnvironmentMock.Object, Template, context: null!))
+            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplate(Model, GenerationEnvironmentMock.Object, Identifier, context: null!))
                                      .Should().Throw<ArgumentNullException>().WithParameterName("context");
         }
 
@@ -19,7 +19,7 @@ public partial class TemplateEngineExtensionsTests
             ContextMock.Setup(x => x.CreateChildContext(It.IsAny<IChildTemplateContext>())).Returns(ContextMock.Object);
 
             // Act
-            TemplateEngineMock.Object.RenderChildTemplate(Model, GenerationEnvironmentMock.Object, Template, ContextMock.Object);
+            TemplateEngineMock.Object.RenderChildTemplate(Model, GenerationEnvironmentMock.Object, Identifier, ContextMock.Object);
 
             // Assert
             TemplateEngineMock.Verify(x => x.Render(It.Is<IRenderTemplateRequest>(request =>
@@ -28,7 +28,7 @@ public partial class TemplateEngineExtensionsTests
                 && request.DefaultFilename == string.Empty
                 && request.GenerationEnvironment == GenerationEnvironmentMock.Object
                 && request.Model == Model
-                && request.Template == Template)), Times.Once());
+                && request.Identifier == Identifier)), Times.Once());
             ContextMock.Verify(x => x.CreateChildContext(It.IsAny<IChildTemplateContext>()), Times.Once());
         }
 
@@ -36,16 +36,16 @@ public partial class TemplateEngineExtensionsTests
         public void RenderChildTemplate_Throws_On_Null_Context_2()
         {
             // Act & Assert
-            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplate(Model, GenerationEnvironmentMock.Object, () => Template, context: null!))
+            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplate(Model, GenerationEnvironmentMock.Object, _ => Identifier, context: null!))
                                      .Should().Throw<ArgumentNullException>().WithParameterName("context");
         }
 
         [Fact]
-        public void RenderChildTemplate_Throws_On_Null_TemplateFactory_2()
+        public void RenderChildTemplate_Throws_On_Null_IdentifierFactory_2()
         {
             // Act & Assert
-            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplate(Model, GenerationEnvironmentMock.Object, templateFactory: null!, ContextMock.Object))
-                                     .Should().Throw<ArgumentNullException>().WithParameterName("templateFactory");
+            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplate(Model, GenerationEnvironmentMock.Object, identifierFactory: null!, ContextMock.Object))
+                                     .Should().Throw<ArgumentNullException>().WithParameterName("identifierFactory");
         }
 
         [Fact]
@@ -55,7 +55,7 @@ public partial class TemplateEngineExtensionsTests
             ContextMock.Setup(x => x.CreateChildContext(It.IsAny<IChildTemplateContext>())).Returns(ContextMock.Object);
 
             // Act
-            TemplateEngineMock.Object.RenderChildTemplate(Model, GenerationEnvironmentMock.Object, _ => Template, ContextMock.Object);
+            TemplateEngineMock.Object.RenderChildTemplate(Model, GenerationEnvironmentMock.Object, _ => Identifier, ContextMock.Object);
 
             // Assert
             TemplateEngineMock.Verify(x => x.Render(It.Is<IRenderTemplateRequest>(request =>
@@ -64,7 +64,7 @@ public partial class TemplateEngineExtensionsTests
                 && request.DefaultFilename == string.Empty
                 && request.GenerationEnvironment == GenerationEnvironmentMock.Object
                 && request.Model == Model
-                && request.Template == Template)), Times.Once());
+                && request.Identifier == Identifier)), Times.Once());
             ContextMock.Verify(x => x.CreateChildContext(It.IsAny<IChildTemplateContext>()), Times.Once());
         }
         
@@ -72,7 +72,7 @@ public partial class TemplateEngineExtensionsTests
         public void RenderChildTemplate_Throws_On_Null_Context_3()
         {
             // Act & Assert
-            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplate(GenerationEnvironmentMock.Object, Template, context: null!))
+            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplate(GenerationEnvironmentMock.Object, Identifier, context: null!))
                                      .Should().Throw<ArgumentNullException>().WithParameterName("context");
         }
 
@@ -83,7 +83,7 @@ public partial class TemplateEngineExtensionsTests
             ContextMock.Setup(x => x.CreateChildContext(It.IsAny<IChildTemplateContext>())).Returns(ContextMock.Object);
 
             // Act
-            TemplateEngineMock.Object.RenderChildTemplate(GenerationEnvironmentMock.Object, Template, ContextMock.Object);
+            TemplateEngineMock.Object.RenderChildTemplate(GenerationEnvironmentMock.Object, Identifier, ContextMock.Object);
 
             // Assert
             TemplateEngineMock.Verify(x => x.Render(It.Is<IRenderTemplateRequest>(request =>
@@ -92,7 +92,7 @@ public partial class TemplateEngineExtensionsTests
                 && request.DefaultFilename == string.Empty
                 && request.GenerationEnvironment == GenerationEnvironmentMock.Object
                 && request.Model == null
-                && request.Template == Template)), Times.Once());
+                && request.Identifier == Identifier)), Times.Once());
             ContextMock.Verify(x => x.CreateChildContext(It.IsAny<IChildTemplateContext>()), Times.Once());
         }
 
@@ -100,16 +100,16 @@ public partial class TemplateEngineExtensionsTests
         public void RenderChildTemplate_Throws_On_Null_Context_4()
         {
             // Act & Assert
-            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplate(GenerationEnvironmentMock.Object, () => Template, context: null!))
+            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplate(GenerationEnvironmentMock.Object, () => Identifier, context: null!))
                                      .Should().Throw<ArgumentNullException>().WithParameterName("context");
         }
 
         [Fact]
-        public void RenderChildTemplate_Throws_On_Null_TemplateFactory_4()
+        public void RenderChildTemplate_Throws_On_Null_IdentifierFactory_4()
         {
             // Act & Assert
-            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplate(GenerationEnvironmentMock.Object, templateFactory: null!, ContextMock.Object))
-                                     .Should().Throw<ArgumentNullException>().WithParameterName("templateFactory");
+            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplate(GenerationEnvironmentMock.Object, identifierFactory: null!, ContextMock.Object))
+                                     .Should().Throw<ArgumentNullException>().WithParameterName("identifierFactory");
         }
 
         [Fact]
@@ -119,7 +119,7 @@ public partial class TemplateEngineExtensionsTests
             ContextMock.Setup(x => x.CreateChildContext(It.IsAny<IChildTemplateContext>())).Returns(ContextMock.Object);
 
             // Act
-            TemplateEngineMock.Object.RenderChildTemplate(GenerationEnvironmentMock.Object, () => Template, ContextMock.Object);
+            TemplateEngineMock.Object.RenderChildTemplate(GenerationEnvironmentMock.Object, () => Identifier, ContextMock.Object);
 
             // Assert
             TemplateEngineMock.Verify(x => x.Render(It.Is<IRenderTemplateRequest>(request =>
@@ -128,7 +128,7 @@ public partial class TemplateEngineExtensionsTests
                 && request.DefaultFilename == string.Empty
                 && request.GenerationEnvironment == GenerationEnvironmentMock.Object
                 && request.Model == null
-                && request.Template == Template)), Times.Once());
+                && request.Identifier == Identifier)), Times.Once());
             ContextMock.Verify(x => x.CreateChildContext(It.IsAny<IChildTemplateContext>()), Times.Once());
         }
 
@@ -136,7 +136,7 @@ public partial class TemplateEngineExtensionsTests
         public void RenderChildTemplate_Renders_ChildTemplate_Correctly_5()
         {
             // Act
-            TemplateEngineMock.Object.RenderChildTemplate(Model, GenerationEnvironmentMock.Object, Template);
+            TemplateEngineMock.Object.RenderChildTemplate(Model, GenerationEnvironmentMock.Object, Identifier);
 
             // Assert
             TemplateEngineMock.Verify(x => x.Render(It.Is<IRenderTemplateRequest>(request =>
@@ -145,22 +145,22 @@ public partial class TemplateEngineExtensionsTests
                 && request.DefaultFilename == string.Empty
                 && request.GenerationEnvironment == GenerationEnvironmentMock.Object
                 && request.Model == Model
-                && request.Template == Template)), Times.Once());
+                && request.Identifier == Identifier)), Times.Once());
         }
 
         [Fact]
-        public void RenderChildTemplate_Throws_On_Null_TemplateFactory_6()
+        public void RenderChildTemplate_Throws_On_Null_IdentifierFactory_6()
         {
             // Act & Assert
-            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplate(Model, GenerationEnvironmentMock.Object, templateFactory: null!))
-                                     .Should().Throw<ArgumentNullException>().WithParameterName("templateFactory");
+            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplate(Model, GenerationEnvironmentMock.Object, identifierFactory: null!))
+                                     .Should().Throw<ArgumentNullException>().WithParameterName("identifierFactory");
         }
 
         [Fact]
         public void RenderChildTemplate_Renders_ChildTemplate_Correctly_6()
         {
             // Act
-            TemplateEngineMock.Object.RenderChildTemplate(Model, GenerationEnvironmentMock.Object, _ => Template);
+            TemplateEngineMock.Object.RenderChildTemplate(Model, GenerationEnvironmentMock.Object, _ => Identifier);
 
             // Assert
             TemplateEngineMock.Verify(x => x.Render(It.Is<IRenderTemplateRequest>(request =>
@@ -169,14 +169,14 @@ public partial class TemplateEngineExtensionsTests
                 && request.DefaultFilename == string.Empty
                 && request.GenerationEnvironment == GenerationEnvironmentMock.Object
                 && request.Model == Model
-                && request.Template == Template)), Times.Once());
+                && request.Identifier == Identifier)), Times.Once());
         }
 
         [Fact]
         public void RenderChildTemplate_Renders_ChildTemplate_Correctly_7()
         {
             // Act
-            TemplateEngineMock.Object.RenderChildTemplate(GenerationEnvironmentMock.Object, Template);
+            TemplateEngineMock.Object.RenderChildTemplate(GenerationEnvironmentMock.Object, Identifier);
 
             // Assert
             TemplateEngineMock.Verify(x => x.Render(It.Is<IRenderTemplateRequest>(request =>
@@ -185,22 +185,22 @@ public partial class TemplateEngineExtensionsTests
                 && request.DefaultFilename == string.Empty
                 && request.GenerationEnvironment == GenerationEnvironmentMock.Object
                 && request.Model == null
-                && request.Template == Template)), Times.Once());
+                && request.Identifier == Identifier)), Times.Once());
         }
 
         [Fact]
-        public void RenderChildTemplate_Throws_On_Null_TemplateFactory_8()
+        public void RenderChildTemplate_Throws_On_Null_IdentifierFactory_8()
         {
             // Act & Assert
-            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplate(GenerationEnvironmentMock.Object, templateFactory: null!))
-                                     .Should().Throw<ArgumentNullException>().WithParameterName("templateFactory");
+            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplate(GenerationEnvironmentMock.Object, identifierFactory: null!))
+                                     .Should().Throw<ArgumentNullException>().WithParameterName("identifierFactory");
         }
 
         [Fact]
         public void RenderChildTemplate_Renders_ChildTemplate_Correctly_8()
         {
             // Act
-            TemplateEngineMock.Object.RenderChildTemplate(GenerationEnvironmentMock.Object, () => Template);
+            TemplateEngineMock.Object.RenderChildTemplate(GenerationEnvironmentMock.Object, () => Identifier);
 
             // Assert
             TemplateEngineMock.Verify(x => x.Render(It.Is<IRenderTemplateRequest>(request =>
@@ -209,23 +209,23 @@ public partial class TemplateEngineExtensionsTests
                 && request.DefaultFilename == string.Empty
                 && request.GenerationEnvironment == GenerationEnvironmentMock.Object
                 && request.Model == null
-                && request.Template == Template)), Times.Once());
+                && request.Identifier == Identifier)), Times.Once());
         }
 
         [Fact]
         public void RenderChildTemplate_Throws_On_Null_Context_9()
         {
             // Act & Assert
-            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplate(Model, GenerationEnvironmentMock.Object, context: null!, CreateTemplateRequestMock.Object))
+            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplate(Model, GenerationEnvironmentMock.Object, context: null!, TemplateIdentifierMock.Object))
                                      .Should().Throw<ArgumentNullException>().WithParameterName("context");
         }
 
         [Fact]
-        public void RenderChildTemplate_Throws_On_Null_CreateTemplateRequest_9()
+        public void RenderChildTemplate_Throws_On_Null_Identifier_9()
         {
             // Act & Assert
-            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplate(Model, GenerationEnvironmentMock.Object, ContextMock.Object, createTemplateRequest: null!))
-                                     .Should().Throw<ArgumentNullException>().WithParameterName("createTemplateRequest");
+            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplate(Model, GenerationEnvironmentMock.Object, ContextMock.Object, identifier: null!))
+                                     .Should().Throw<ArgumentNullException>().WithParameterName("identifier");
         }
 
         [Fact]
@@ -238,7 +238,7 @@ public partial class TemplateEngineExtensionsTests
             TemplateProviderMock.Setup(x => x.Create(It.IsAny<ITemplateIdentifier>())).Returns(Template);
 
             // Act
-            TemplateEngineMock.Object.RenderChildTemplate(Model, GenerationEnvironmentMock.Object, ContextMock.Object, CreateTemplateRequestMock.Object);
+            TemplateEngineMock.Object.RenderChildTemplate(Model, GenerationEnvironmentMock.Object, ContextMock.Object, TemplateIdentifierMock.Object);
 
             // Assert
             TemplateEngineMock.Verify(x => x.Render(It.Is<IRenderTemplateRequest>(request =>
@@ -247,23 +247,23 @@ public partial class TemplateEngineExtensionsTests
                 && request.DefaultFilename == ContextMock.Object.DefaultFilename
                 && request.GenerationEnvironment == GenerationEnvironmentMock.Object
                 && request.Model == Model
-                && request.Template == Template)), Times.Once());
+                && request.Identifier == Identifier)), Times.Once());
         }
 
         [Fact]
         public void RenderChildTemplate_Throws_On_Null_Context_10()
         {
             // Act & Assert
-            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplate(GenerationEnvironmentMock.Object, context: null!, CreateTemplateRequestMock.Object))
+            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplate(GenerationEnvironmentMock.Object, context: null!, TemplateIdentifierMock.Object))
                                      .Should().Throw<ArgumentNullException>().WithParameterName("context");
         }
 
         [Fact]
-        public void RenderChildTemplate_Throws_On_Null_CreateTemplateRequest_10()
+        public void RenderChildTemplate_Throws_On_Null_Identifier_10()
         {
             // Act & Assert
-            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplate(GenerationEnvironmentMock.Object, ContextMock.Object, createTemplateRequest: null!))
-                                     .Should().Throw<ArgumentNullException>().WithParameterName("createTemplateRequest");
+            TemplateEngineMock.Object.Invoking(x => x.RenderChildTemplate(GenerationEnvironmentMock.Object, ContextMock.Object, identifier: null!))
+                                     .Should().Throw<ArgumentNullException>().WithParameterName("identifier");
         }
 
         [Fact]
@@ -276,7 +276,7 @@ public partial class TemplateEngineExtensionsTests
             TemplateProviderMock.Setup(x => x.Create(It.IsAny<ITemplateIdentifier>())).Returns(Template);
 
             // Act
-            TemplateEngineMock.Object.RenderChildTemplate(GenerationEnvironmentMock.Object, ContextMock.Object, CreateTemplateRequestMock.Object);
+            TemplateEngineMock.Object.RenderChildTemplate(GenerationEnvironmentMock.Object, ContextMock.Object, TemplateIdentifierMock.Object);
 
             // Assert
             TemplateEngineMock.Verify(x => x.Render(It.Is<IRenderTemplateRequest>(request =>
@@ -285,7 +285,7 @@ public partial class TemplateEngineExtensionsTests
                 && request.DefaultFilename == ContextMock.Object.DefaultFilename
                 && request.GenerationEnvironment == GenerationEnvironmentMock.Object
                 && request.Model == null
-                && request.Template == Template)), Times.Once());
+                && request.Identifier == Identifier)), Times.Once());
         }
     }
 }

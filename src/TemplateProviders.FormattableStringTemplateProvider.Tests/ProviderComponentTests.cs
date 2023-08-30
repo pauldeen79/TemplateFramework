@@ -52,7 +52,7 @@ public class ProviderComponentTests
             var sut = CreateSut();
 
             // Act
-            var result = sut.Supports(new CreateFormattableStringTemplateRequest("template", CultureInfo.CurrentCulture));
+            var result = sut.Supports(new FormattableStringTemplateIdentifier("template", CultureInfo.CurrentCulture));
 
             // Assert
             result.Should().BeTrue();
@@ -62,25 +62,25 @@ public class ProviderComponentTests
     public class Create : ProviderComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Request()
+        public void Throws_On_Null_Identifier()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Create(request: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("request");
+            sut.Invoking(x => x.Create(identifier: null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("identifier");
         }
 
         [Fact]
-        public void Throws_On_Request_Of_Wrong_Type()
+        public void Throws_On_Identifier_Of_Wrong_Type()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Create(request: new Mock<ITemplateIdentifier>().Object))
-               .Should().Throw<ArgumentException>().WithParameterName("request");
+            sut.Invoking(x => x.Create(identifier: new Mock<ITemplateIdentifier>().Object))
+               .Should().Throw<ArgumentException>().WithParameterName("identifier");
         }
         
         [Fact]
@@ -88,7 +88,7 @@ public class ProviderComponentTests
         {
             // Arrange
             var sut = CreateSut();
-            var request = new CreateFormattableStringTemplateRequest("template", CultureInfo.CurrentCulture);
+            var request = new FormattableStringTemplateIdentifier("template", CultureInfo.CurrentCulture);
 
             // Act
             var result = sut.Create(request);

@@ -2,7 +2,7 @@
 
 public class ModelInitializerTests
 {
-    protected ModelInitializer CreateSut() => new(ValueConverterMock.Object);
+    protected ModelInitializerComponent CreateSut() => new(ValueConverterMock.Object);
     
     protected Mock<IValueConverter> ValueConverterMock { get; } = new();
     protected Mock<ITemplateEngine> TemplateEngineMock { get; } = new();
@@ -15,7 +15,7 @@ public class ModelInitializerTests
         public void Throws_On_Null_Converter()
         {
             // Act & Assert
-            this.Invoking(_ => new ModelInitializer(converter: null!))
+            this.Invoking(_ => new ModelInitializerComponent(converter: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("converter");
         }
     }
@@ -23,27 +23,14 @@ public class ModelInitializerTests
     public class Initialize : ModelInitializerTests
     {
         [Fact]
-        public void Throws_On_Null_Request()
+        public void Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Initialize(request: null!, TemplateEngineMock.Object))
-               .Should().Throw<ArgumentNullException>().WithParameterName("request");
-        }
-
-        [Fact]
-        public void Throws_On_Null_Engine()
-        {
-            // Arrange
-            var sut = CreateSut();
-            var template = this;
-            var request = new RenderTemplateRequest(template, null, new StringBuilder(), DefaultFilename);
-
-            // Act & Assert
-            sut.Invoking(x => x.Initialize(request, engine: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("engine");
+            sut.Invoking(x => x.Initialize(context: null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("context");
         }
 
         [Fact]
@@ -53,11 +40,12 @@ public class ModelInitializerTests
             var sut = CreateSut();
             var model = "Hello world!";
             var template = new TestData.TemplateWithModel<string>(_ => { });
-            var request = new RenderTemplateRequest(template, model, new StringBuilder(), DefaultFilename);
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), model, new StringBuilder(), DefaultFilename);
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, template);
             ValueConverterMock.Setup(x => x.Convert(It.IsAny<object?>(), It.IsAny<Type>())).Returns<object?, Type>((value, type) => value);
 
             // Act
-            sut.Initialize(request, TemplateEngineMock.Object);
+            sut.Initialize(engineContext);
 
             // Assert
             template.Model.Should().Be(model);

@@ -15,7 +15,7 @@ public class IntegrationTests
         var template = templateProvider.Create(new CreateCompiledTemplateRequest(GetType().Assembly.FullName!, typeof(MyTemplate).FullName!));
         var templateEngine = provider.GetRequiredService<ITemplateEngine>();
         var builder = new StringBuilder();
-        var request = new RenderTemplateRequest(template, builder);
+        var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), builder);
 
         // Act
         templateEngine.Render(request);

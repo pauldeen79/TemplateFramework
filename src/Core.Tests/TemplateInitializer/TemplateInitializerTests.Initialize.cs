@@ -5,25 +5,14 @@ public partial class TemplateInitializerTests
     public class Initialize : TemplateInitializerTests
     {
         [Fact]
-        public void Throws_On_Null_Request()
+        public void Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Initialize(request: null!, TemplateEngineMock.Object))
-               .Should().Throw<ArgumentNullException>().WithParameterName("request");
-        }
-
-        [Fact]
-        public void Throws_On_Null_Engine()
-        {
-            // Arrange
-            var sut = CreateSut();
-
-            // Act & Assert
-            sut.Invoking(x => x.Initialize(RenderTemplateRequestMock.Object, engine: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("engine");
+            sut.Invoking(x => x.Initialize(context: null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("context");
         }
 
         [Fact]
@@ -33,10 +22,12 @@ public partial class TemplateInitializerTests
             var sut = CreateSut();
 
             // Act
-            sut.Initialize(RenderTemplateRequestMock.Object, TemplateEngineMock.Object);
+            sut.Initialize(new TemplateEngineContext(RenderTemplateRequestMock.Object, TemplateEngineMock.Object, new object()));
 
             // Assert
-            TemplateInitializerComponentMock.Verify(x => x.Initialize(RenderTemplateRequestMock.Object, TemplateEngineMock.Object), Times.Once);
+            TemplateInitializerComponentMock.Verify(x => x.Initialize(It.Is<ITemplateEngineContext>(x =>
+                x.Engine == TemplateEngineMock.Object
+                && x.Identifier == RenderTemplateRequestMock.Object.Identifier)), Times.Once);
         }
     }
 }

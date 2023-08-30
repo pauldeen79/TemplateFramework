@@ -5,14 +5,14 @@ public partial class ProviderComponentTests
     public class Create : ProviderComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Argument()
+        public void Throws_On_Null_Identifier()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Create(request: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("request");
+            sut.Invoking(x => x.Create(identifier: null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("identifier");
         }
 
         [Fact]

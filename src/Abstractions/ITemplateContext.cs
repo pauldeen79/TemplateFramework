@@ -2,6 +2,7 @@
 
 public interface ITemplateContext : IChildTemplateContext
 {
+    object Template { get; }
     ITemplateContext? ParentContext { get; }
     ITemplateContext RootContext { get; }
     ITemplateEngine Engine { get; }

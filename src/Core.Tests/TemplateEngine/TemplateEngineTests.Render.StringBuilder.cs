@@ -28,13 +28,14 @@ public partial class TemplateEngineTests
             var template = new PlainTemplateWithAdditionalParameters();
             StringBuilder? builder = StringBuilder;
             var additionalParameters = new { AdditionalParameter = "Some value" };
-            var request = new RenderTemplateRequest(template, additionalParameters, builder);
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), additionalParameters, builder);
+            TemplateProviderMock.Setup(x => x.Create(It.IsAny<TemplateInstanceIdentifier>())).Returns(template);
 
             // Act
             sut.Render(request);
 
             // Assert
-            TemplateInitializerMock.Verify(x => x.Initialize(request, sut), Times.Once);
+            TemplateInitializerMock.Verify(x => x.Initialize(It.IsAny<ITemplateEngineContext>()), Times.Once);
         }
 
         [Fact]
@@ -46,13 +47,17 @@ public partial class TemplateEngineTests
             StringBuilder? generationEnvironment = StringBuilder;
             var additionalParameters = new { AdditionalParameter = "Some value" };
             TemplateRendererMock.Setup(x => x.Supports(It.IsAny<IGenerationEnvironment>())).Returns(true);
-            var request = new RenderTemplateRequest(template, additionalParameters, generationEnvironment);
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), additionalParameters, generationEnvironment);
+            TemplateProviderMock.Setup(x => x.Create(It.IsAny<TemplateInstanceIdentifier>())).Returns(template);
 
             // Act
             sut.Render(request);
 
             // Assert
-            TemplateRendererMock.Verify(x => x.Render(It.Is<IRenderTemplateRequest>(req => req.Template == template && req.GenerationEnvironment.Type == GenerationEnvironmentType.StringBuilder && req.DefaultFilename == string.Empty)), Times.Once);
+            TemplateRendererMock.Verify(x => x.Render(It.Is<ITemplateEngineContext>(req =>
+                req.Template == template
+                && req.GenerationEnvironment.Type == GenerationEnvironmentType.StringBuilder
+                && req.DefaultFilename == string.Empty)), Times.Once);
         }
     }
 }
