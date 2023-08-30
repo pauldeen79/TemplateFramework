@@ -61,7 +61,6 @@ public static class TemplateEngineExtensions
         foreach (var item in items)
         {
             var identifier = templateIdentifierFactory(item.Model);
-            //var template = context.Provider.Create(identifier);
             instance.Render(new RenderTemplateRequest(identifier, item.Model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(identifier, item, item.Index, items.Length))));
         }
     }
@@ -156,7 +155,6 @@ public static class TemplateEngineExtensions
         Guard.IsNotNull(context);
         Guard.IsNotNull(identifier);
 
-        //var template = context.Provider.Create(identifier);
         instance.Render(new RenderTemplateRequest(identifier, childModel, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(identifier, childModel))));
     }
 
@@ -165,7 +163,6 @@ public static class TemplateEngineExtensions
         Guard.IsNotNull(context);
         Guard.IsNotNull(identifier);
 
-        //var template = context.Provider.Create(identifier);
         instance.Render(new RenderTemplateRequest(identifier, null, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(identifier))));
     }
 }
