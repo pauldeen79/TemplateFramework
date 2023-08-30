@@ -10,14 +10,14 @@ public sealed class ProviderComponent : ITemplateProviderComponent
         _assemblyService = assemblyService;
     }
 
-    public bool Supports(ICreateTemplateRequest request) => request is CreateCompiledTemplateRequest;
+    public bool Supports(ITemplateIdentifier identifier) => identifier is CreateCompiledTemplateRequest;
 
-    public object Create(ICreateTemplateRequest request)
+    public object Create(ITemplateIdentifier identifier)
     {
-        Guard.IsNotNull(request);
-        Guard.IsOfType<CreateCompiledTemplateRequest>(request);
+        Guard.IsNotNull(identifier);
+        Guard.IsOfType<CreateCompiledTemplateRequest>(identifier);
 
-        var createCompiledTemplateRequest = (CreateCompiledTemplateRequest)request;
+        var createCompiledTemplateRequest = (CreateCompiledTemplateRequest)identifier;
         var assembly = _assemblyService.GetAssembly(createCompiledTemplateRequest.AssemblyName, createCompiledTemplateRequest.CurrentDirectory);
         var template = assembly.CreateInstance(createCompiledTemplateRequest.ClassName);
         if (template is null)

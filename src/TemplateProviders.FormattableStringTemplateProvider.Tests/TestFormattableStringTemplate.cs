@@ -19,24 +19,25 @@ public class TestFormattableStringTemplate : IParameterizedTemplate, IStringBuil
 
     public ITemplateParameter[] GetParameters()
     {
-        using var provider = new ServiceCollection()
+        var services = new ServiceCollection()
             .AddParsers()
-            .AddTemplateFrameworkFormattableStringTemplateProvider()
-            .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
+            .AddTemplateFrameworkFormattableStringTemplateProvider();
 
+        using var provider = services.BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
         var formattableStringParser = provider.GetRequiredService<IFormattableStringParser>();
 
-        return new FormattableStringTemplate(new CreateFormattableStringTemplateRequest(Template, CultureInfo.CurrentCulture), formattableStringParser).GetParameters();
+        return new FormattableStringTemplate(new FormattableStringTemplateIdentifier(Template, CultureInfo.CurrentCulture), formattableStringParser).GetParameters();
     }
 
     public void Render(StringBuilder builder)
     {
         Guard.IsNotNull(builder);
 
-        using var provider = new ServiceCollection()
+        var services = new ServiceCollection()
             .AddParsers()
-            .AddTemplateFrameworkFormattableStringTemplateProvider()
-            .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
+            .AddTemplateFrameworkFormattableStringTemplateProvider();
+
+        using var provider = services.BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
 
         var formattableStringParser = provider.GetRequiredService<IFormattableStringParser>();
         var context = new TemplateFrameworkFormattableStringContext(_parameterValues);

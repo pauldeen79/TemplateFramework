@@ -19,14 +19,14 @@ public class TemplateProviderTests
     public class Create : TemplateProviderTests
     {
         [Fact]
-        public void Throws_On_Null_Request()
+        public void Throws_On_Null_Identifier()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Create(request: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("request");
+            sut.Invoking(x => x.Create(identifier: null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("identifier");
         }
 
         [Fact]
@@ -36,7 +36,7 @@ public class TemplateProviderTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Create(request: new Mock<ICreateTemplateRequest>().Object))
+            sut.Invoking(x => x.Create(identifier: new Mock<ITemplateIdentifier>().Object))
                .Should().Throw<NotSupportedException>();
         }
 
@@ -45,7 +45,7 @@ public class TemplateProviderTests
         {
             // Arrange
             var sut = CreateSut();
-            var request = new Mock<ICreateTemplateRequest>().Object;
+            var request = new Mock<ITemplateIdentifier>().Object;
             var expectedTemplate = new object();
             TemplateProviderComponentMock.Setup(x => x.Supports(request)).Returns(true);
             TemplateProviderComponentMock.Setup(x => x.Create(request)).Returns(expectedTemplate);

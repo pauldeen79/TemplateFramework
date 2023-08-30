@@ -2,43 +2,49 @@
 
 public sealed class TemplateEngine : ITemplateEngine
 {
-    private readonly ITemplateInitializer _templateInitializer;
-    private readonly ITemplateParameterExtractor _templateParameterExtractor;
-    private readonly IEnumerable<ITemplateRenderer> _templateRenderers;
+    private readonly ITemplateProvider _provider;
+    private readonly ITemplateInitializer _initializer;
+    private readonly ITemplateParameterExtractor _parameterExtractor;
+    private readonly IEnumerable<ITemplateRenderer> _renderers;
 
     public TemplateEngine(
-        ITemplateInitializer templateInitializer,
-        ITemplateParameterExtractor templateParameterExtractor,
-        IEnumerable<ITemplateRenderer> templateRenderers)
+        ITemplateProvider provider,
+        ITemplateInitializer initializer,
+        ITemplateParameterExtractor parameterExtractor,
+        IEnumerable<ITemplateRenderer> renderers)
     {
-        Guard.IsNotNull(templateInitializer);
-        Guard.IsNotNull(templateParameterExtractor);
-        Guard.IsNotNull(templateRenderers);
+        Guard.IsNotNull(provider);
+        Guard.IsNotNull(initializer);
+        Guard.IsNotNull(parameterExtractor);
+        Guard.IsNotNull(renderers);
 
-        _templateInitializer = templateInitializer;
-        _templateParameterExtractor = templateParameterExtractor;
-        _templateRenderers = templateRenderers;
+        _provider = provider;
+        _initializer = initializer;
+        _parameterExtractor = parameterExtractor;
+        _renderers = renderers;
     }
 
     public ITemplateParameter[] GetParameters(object templateInstance)
     {
         Guard.IsNotNull(templateInstance);
 
-        return _templateParameterExtractor.Extract(templateInstance);
+        return _parameterExtractor.Extract(templateInstance);
     }
 
     public void Render(IRenderTemplateRequest request)
     {
         Guard.IsNotNull(request);
 
-        _templateInitializer.Initialize(request, this);
+        var engineContext = new TemplateEngineContext(request, this, _provider.Create(request.Identifier));
+        
+        _initializer.Initialize(engineContext);
 
-        var renderer = _templateRenderers.FirstOrDefault(x => x.Supports(request.GenerationEnvironment));
+        var renderer = _renderers.FirstOrDefault(x => x.Supports(request.GenerationEnvironment));
         if (renderer is null)
         {
             throw new NotSupportedException($"Type of GenerationEnvironment ({request.GenerationEnvironment?.GetType().FullName}) is not supported");
         }
 
-        renderer.Render(request);
+        renderer.Render(engineContext);
     }
 }

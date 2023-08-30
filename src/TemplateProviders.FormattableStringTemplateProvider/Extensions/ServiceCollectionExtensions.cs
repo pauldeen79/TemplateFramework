@@ -4,6 +4,6 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddTemplateFrameworkFormattableStringTemplateProvider(this IServiceCollection services)
         => services
-            .AddSingleton<ITemplateProviderComponent, ProviderComponent>()
-            .AddSingleton<IPlaceholderProcessor, TemplateFrameworkContextPlaceholderProcessor>();
+            .AddScoped<ITemplateProviderComponent, ProviderComponent>()
+            .AddScoped<IPlaceholderProcessor, TemplateFrameworkContextPlaceholderProcessor>();
 }

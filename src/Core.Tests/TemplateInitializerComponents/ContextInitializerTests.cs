@@ -2,7 +2,7 @@
 
 public class ContextInitializerTests
 {
-    protected ContextInitializer CreateSut() => new(TemplateProviderMock.Object);
+    protected ContextInitializerComponent CreateSut() => new(TemplateProviderMock.Object);
     
     protected Mock<ITemplateEngine> TemplateEngineMock { get; } = new();
     protected Mock<ITemplateProvider> TemplateProviderMock { get; } = new();
@@ -12,27 +12,14 @@ public class ContextInitializerTests
     public class Initialize : ContextInitializerTests
     {
         [Fact]
-        public void Throws_On_Null_Request()
+        public void Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Initialize(request: null!, TemplateEngineMock.Object))
-               .Should().Throw<ArgumentNullException>().WithParameterName("request");
-        }
-
-        [Fact]
-        public void Throws_On_Null_Engine()
-        {
-            // Arrange
-            var sut = CreateSut();
-            var template = this;
-            var request = new RenderTemplateRequest(template, null, new StringBuilder(), DefaultFilename);
-
-            // Act & Assert
-            sut.Invoking(x => x.Initialize(request, engine: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("engine");
+            sut.Invoking(x => x.Initialize(context: null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("context");
         }
 
         [Fact]
@@ -41,11 +28,12 @@ public class ContextInitializerTests
             // Arrange
             var sut = CreateSut();
             var template = new TestData.PlainTemplateWithTemplateContext(_ => "Hello world!");
-            var context = new TemplateContext(TemplateEngineMock.Object, TemplateProviderMock.Object, DefaultFilename, template);
-            var request = new RenderTemplateRequest(template, new StringBuilder(), DefaultFilename, null, context);
+            var context = new TemplateContext(TemplateEngineMock.Object, TemplateProviderMock.Object, DefaultFilename, new TemplateInstanceIdentifier(template), template);
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, null, context);
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, template);
 
             // Act
-            sut.Initialize(request, TemplateEngineMock.Object);
+            sut.Initialize(engineContext);
 
             // Assert
             template.Context.Should().BeSameAs(context);
@@ -57,10 +45,11 @@ public class ContextInitializerTests
             // Arrange
             var sut = CreateSut();
             var template = new TestData.PlainTemplateWithTemplateContext(_ => "Hello world!");
-            var request = new RenderTemplateRequest(template, new StringBuilder(), DefaultFilename, null);
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, null);
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, template);
 
             // Act
-            sut.Initialize(request, TemplateEngineMock.Object);
+            sut.Initialize(engineContext);
 
             // Assert
             template.Context.Should().NotBeNull();
@@ -77,10 +66,11 @@ public class ContextInitializerTests
             var sut = CreateSut();
             var template = new TestData.PlainTemplateWithTemplateContext(ctx => ctx.Model?.ToString() ?? string.Empty); // note that this template type does not implement IModelContainer<T>, so the model property will not be set. But it will be available in the TemplateContext (untyped)
             var model = "Hello world!";
-            var request = new RenderTemplateRequest(template, model, new StringBuilder(), DefaultFilename, null, context: null);
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), model, new StringBuilder(), DefaultFilename, null, context: null);
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, template);
 
             // Act
-            sut.Initialize(request, TemplateEngineMock.Object);
+            sut.Initialize(engineContext);
 
             // Assert
             template.Context.Should().NotBeNull();

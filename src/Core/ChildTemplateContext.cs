@@ -2,25 +2,25 @@
 
 public class ChildTemplateContext : IChildTemplateContext
 {
-    public ChildTemplateContext(object template) : this(template, null, null, null)
+    public ChildTemplateContext(ITemplateIdentifier identifier) : this(identifier, null, null, null)
     {
     }
 
-    public ChildTemplateContext(object template, object? model) : this(template, model, null, null)
+    public ChildTemplateContext(ITemplateIdentifier identifier, object? model) : this(identifier, model, null, null)
     {
     }
 
-    public ChildTemplateContext(object template, object? model, int? iterationNumber, int? iterationCount)
+    public ChildTemplateContext(ITemplateIdentifier identifier, object? model, int? iterationNumber, int? iterationCount)
     {
-        Guard.IsNotNull(template);
+        Guard.IsNotNull(identifier);
 
-        Template = template;
+        Identifier = identifier;
         Model = model;
         IterationNumber = iterationNumber;
         IterationCount = iterationCount;
     }
 
-    public object Template { get; }
+    public ITemplateIdentifier Identifier { get; }
     public object? Model { get; }
 
     public int? IterationNumber { get; set; }

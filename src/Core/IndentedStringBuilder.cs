@@ -30,7 +30,7 @@ public class IndentedStringBuilder
         _stringBuilder = new(value);
     }
 
-    internal IndentedStringBuilder(StringBuilder s)
+    public IndentedStringBuilder(StringBuilder s)
     {
         Guard.IsNotNull(s);
         _stringBuilder = s;

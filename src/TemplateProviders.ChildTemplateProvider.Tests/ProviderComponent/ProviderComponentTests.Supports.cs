@@ -9,7 +9,7 @@ public partial class ProviderComponentTests
         {
             // Arrange
             var sut = CreateSut();
-            var request = (ICreateTemplateRequest)null!;
+            var request = (ITemplateIdentifier)null!;
 
             // Act
             var result = sut.Supports(request);
@@ -23,7 +23,7 @@ public partial class ProviderComponentTests
         {
             // Arrange
             var sut = CreateSut();
-            var request = new Mock<ICreateTemplateRequest>().Object;
+            var request = new Mock<ITemplateIdentifier>().Object;
 
             // Act
             var result = sut.Supports(request);
@@ -37,7 +37,7 @@ public partial class ProviderComponentTests
         {
             // Arrange
             var sut = CreateSut();
-            var request = new CreateChildTemplateByModelRequest(this);
+            var request = new TemplateByModelIdentifier(this);
 
             // Act
             var result = sut.Supports(request);
@@ -51,7 +51,7 @@ public partial class ProviderComponentTests
         {
             // Arrange
             var sut = CreateSut();
-            var request = new CreateChildTemplateByNameRequest(nameof(Returns_True_On_CreateTemplateByNameRequest));
+            var request = new TemplateByNameIdentifier(nameof(Returns_True_On_CreateTemplateByNameRequest));
 
             // Act
             var result = sut.Supports(request);

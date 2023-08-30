@@ -8,8 +8,8 @@ public partial class TemplateContextTests
 
     protected TemplateContext CreateSut()
     {
-        var rootTemplateContext = new TemplateContext(EngineMock.Object, ProviderMock.Object, DefaultFilename, template: this, model: 1);
-        var parentTemplateContext = new TemplateContext(EngineMock.Object, ProviderMock.Object, DefaultFilename, template: this, parentContext: rootTemplateContext, model: "test model");
-        return new TemplateContext(EngineMock.Object, ProviderMock.Object, DefaultFilename, template: this, parentContext: parentTemplateContext);
+        var rootTemplateContext = new TemplateContext(EngineMock.Object, ProviderMock.Object, DefaultFilename, identifier: new TemplateInstanceIdentifier(this), template: this, model: 1);
+        var parentTemplateContext = new TemplateContext(EngineMock.Object, ProviderMock.Object, DefaultFilename, identifier: new TemplateInstanceIdentifier(this), template: this, parentContext: rootTemplateContext, model: "test model");
+        return new TemplateContext(EngineMock.Object, ProviderMock.Object, DefaultFilename, identifier: new TemplateInstanceIdentifier(this), template: this, parentContext: parentTemplateContext);
     }
 }

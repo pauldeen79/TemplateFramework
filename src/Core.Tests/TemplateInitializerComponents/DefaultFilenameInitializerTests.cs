@@ -2,7 +2,7 @@
 
 public class DefaultFilenameInitializerTests
 {
-    protected DefaultFilenameInitializer CreateSut() => new();
+    protected DefaultFilenameInitializerComponent CreateSut() => new();
     
     protected Mock<ITemplateEngine> TemplateEngineMock { get; } = new();
     
@@ -11,27 +11,14 @@ public class DefaultFilenameInitializerTests
     public class Initialize : DefaultFilenameInitializerTests
     {
         [Fact]
-        public void Throws_On_Null_Request()
+        public void Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Initialize(request: null!, TemplateEngineMock.Object))
-               .Should().Throw<ArgumentNullException>().WithParameterName("request");
-        }
-
-        [Fact]
-        public void Throws_On_Null_Engine()
-        {
-            // Arrange
-            var sut = CreateSut();
-            var template = this;
-            var request = new RenderTemplateRequest(template, null, new StringBuilder(), DefaultFilename);
-
-            // Act & Assert
-            sut.Invoking(x => x.Initialize(request, engine: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("engine");
+            sut.Invoking(x => x.Initialize(context: null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("context");
         }
 
         [Fact]
@@ -40,10 +27,11 @@ public class DefaultFilenameInitializerTests
             // Arrange
             var sut = CreateSut();
             var template = new TestData.TemplateWithDefaultFilename(_ => { });
-            var request = new RenderTemplateRequest(template, null, new StringBuilder(), DefaultFilename);
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), null, new StringBuilder(), DefaultFilename);
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, template);
 
             // Act
-            sut.Initialize(request, TemplateEngineMock.Object);
+            sut.Initialize(engineContext);
 
             // Assert
             template.DefaultFilename.Should().Be(DefaultFilename);

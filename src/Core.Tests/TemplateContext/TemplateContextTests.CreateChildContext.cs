@@ -23,12 +23,12 @@ public partial class TemplateContextTests
             var template = new object();
 
             // Act
-            var childContext = sut.CreateChildContext(new TemplateContext(EngineMock.Object, ProviderMock.Object, DefaultFilename, template: template));
+            var childContext = sut.CreateChildContext(new TemplateContext(EngineMock.Object, ProviderMock.Object, DefaultFilename, new TemplateInstanceIdentifier(template), template: template));
 
             // Assert
             childContext.Should().NotBeNull();
             childContext.IsRootContext.Should().BeFalse();
-            childContext.Template.Should().BeSameAs(template);
+            childContext.Template.Should().BeOfType<TemplateInstanceIdentifier>().And.Match<TemplateInstanceIdentifier>(x => x.Instance == template);
             childContext.ParentContext.Should().BeSameAs(sut);
         }
     }

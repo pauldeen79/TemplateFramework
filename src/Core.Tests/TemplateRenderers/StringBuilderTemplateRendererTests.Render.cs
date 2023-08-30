@@ -12,14 +12,14 @@ public partial class StringBuilderTemplateRendererTests
         }
 
         [Fact]
-        public void Throws_When_Request_Is_Null()
+        public void Throws_When_Context_Is_Null()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Render(request: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("request");
+            sut.Invoking(x => x.Render(context: null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("context");
         }
 
         [Fact]
@@ -27,10 +27,12 @@ public partial class StringBuilderTemplateRendererTests
         {
             // Arrange
             var sut = CreateSut();
-            var request = new RenderTemplateRequest(new TestData.Template(_ => { }), new Mock<IMultipleContentBuilder>().Object);
+            var template = new TestData.Template(_ => { });
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new Mock<IMultipleContentBuilder>().Object);
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, template);
 
             // Act & Assert
-            sut.Invoking(x => x.Render(request))
+            sut.Invoking(x => x.Render(engineContext))
                .Should().Throw<NotSupportedException>();
         }
 
@@ -41,10 +43,11 @@ public partial class StringBuilderTemplateRendererTests
             var sut = CreateSut();
             var template = new TestData.Template(b => b.Append("Hello world!"));
             var generationEnvironment = new StringBuilder();
-            var request = new RenderTemplateRequest(template, generationEnvironment);
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), generationEnvironment);
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, template);
 
             // Act
-            sut.Render(request);
+            sut.Render(engineContext);
 
             // Assert
             StringBuilderTemplateRendererMock.Verify(x => x.TryRender(It.IsAny<object>(), It.IsAny<StringBuilder>()), Times.Once);
@@ -57,13 +60,14 @@ public partial class StringBuilderTemplateRendererTests
             var sut = CreateSut();
             var template = new TestData.Template(b => b.Append("Hello world!"));
             var generationEnvironment = new StringBuilder();
-            var request = new RenderTemplateRequest(template, generationEnvironment);
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), generationEnvironment);
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, template);
             StringBuilderTemplateRendererMock
                 .Setup(x => x.TryRender(It.IsAny<object>(), It.IsAny<StringBuilder>()))
                 .Returns(false);
 
             // Act
-            sut.Render(request);
+            sut.Render(engineContext);
 
             // Assert
             generationEnvironment.ToString().Should().Be("TemplateFramework.Core.Tests.TestData+Template");

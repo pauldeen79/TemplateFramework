@@ -11,20 +11,20 @@ public sealed class ProviderComponent : ITemplateProviderComponent
         _childTemplateCreators = childTemplateCreators;
     }
 
-    public object Create(ICreateTemplateRequest request)
+    public object Create(ITemplateIdentifier identifier)
     {
-        Guard.IsNotNull(request);
+        Guard.IsNotNull(identifier);
 
-        if (request is CreateChildTemplateByModelRequest createTemplateByModelRequest)
+        if (identifier is TemplateByModelIdentifier templateByModelIdentifier)
         {
-            return CreateByModel(createTemplateByModelRequest.Model);
+            return CreateByModel(templateByModelIdentifier.Model);
         }
-        else if (request is CreateChildTemplateByNameRequest createTemplateByNameRequest)
+        else if (identifier is TemplateByNameIdentifier templateByNameIdentifier)
         {
-            return CreateByName(createTemplateByNameRequest.Name);
+            return CreateByName(templateByNameIdentifier.Name);
         }
 
-        throw new NotSupportedException($"Unsupported create template request: {request.GetType().FullName}");
+        throw new NotSupportedException($"Unsupported template identifier: {identifier.GetType().FullName}");
     }
 
     private object CreateByModel(object? model)
@@ -49,5 +49,5 @@ public sealed class ProviderComponent : ITemplateProviderComponent
         return creator.CreateByName(name) ?? throw new InvalidOperationException("Child template creator returned a null instance");
     }
 
-    public bool Supports(ICreateTemplateRequest request) => request is CreateChildTemplateByModelRequest or CreateChildTemplateByNameRequest;
+    public bool Supports(ITemplateIdentifier identifier) => identifier is TemplateByModelIdentifier or TemplateByNameIdentifier;
 }

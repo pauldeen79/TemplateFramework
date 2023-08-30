@@ -88,34 +88,37 @@ internal static class TestData
             => new(false, SkipWhenFileExists, false, null, null, null, false, IndentCount + 1, CultureInfo);
     }
 
-    internal abstract class CsharpClassGeneratorBase<TModel> : IModelContainer<TModel>, IDefaultFilenameContainer
+    internal abstract class CsharpClassGeneratorBase<TModel> : IModelContainer<TModel>/*, IDefaultFilenameContainer*/, ITemplateContextContainer
     {
-        protected ITemplateContext Context => new TemplateContext(Engine, Provider, DefaultFilename, this, Model);
-        protected ITemplateEngine Engine { get; }
-        protected ITemplateProvider Provider { get; }
+        // Following properties (plus the constructor below, plus the IDefaultNameContainer interface, plus the constructor chaining to derived classes) fixes calling the template from sattelite assemblies.
+        //protected ITemplateContext Context => new TemplateContext(Engine, Provider, DefaultFilename, new TemplateInstanceIdentifier(this), this, Model);
+        //protected ITemplateEngine Engine { get; }
+        //protected ITemplateProvider Provider { get; }
+        //public string DefaultFilename { get; set; } = "";
 
-        public string DefaultFilename { get; set; } = "";
+        public ITemplateContext Context { get; set; } = default!;
         public TModel? Model { get; set; }
 
-        protected CsharpClassGeneratorBase(ITemplateEngine engine, ITemplateProvider provider)
-        {
-            Engine = engine ?? throw new ArgumentNullException(nameof(engine));
-            Provider = provider ?? throw new ArgumentNullException(nameof(provider));
-        }
+        //protected CsharpClassGeneratorBase(ITemplateEngine engine, ITemplateProvider provider)
+        //{
+        //    Engine = engine ?? throw new ArgumentNullException(nameof(engine));
+        //    Provider = provider ?? throw new ArgumentNullException(nameof(provider));
+        //}
     }
 
 // False positive, it gets created through DI container
 #pragma warning disable CA1812 // Avoid uninstantiated internal classes
     internal sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>>, IMultipleContentBuilderTemplate, IStringBuilderTemplate
     {
-        public CsharpClassGenerator(ITemplateEngine engine, ITemplateProvider provider) : base(engine, provider)
-        {
-        }
+        //public CsharpClassGenerator(ITemplateEngine engine, ITemplateProvider provider) : base(engine, provider)
+        //{
+        //}
 
         public void Render(IMultipleContentBuilder builder)
         {
             Guard.IsNotNull(builder);
             Guard.IsNotNull(Model);
+            Guard.IsNotNull(Context);
 
             StringBuilder? singleStringBuilder = null;
             IGenerationEnvironment generationEnvironment = new MultipleContentBuilderEnvironment(builder);
@@ -152,7 +155,7 @@ internal static class TestData
                 Model!.Settings,
                 generationEnvironment,
                 Context,
-                new CreateChildTemplateByNameRequest("CodeGenerationHeader"));
+                new TemplateByNameIdentifier("CodeGenerationHeader"));
 
             if (Context.IsRootContext)
             {
@@ -160,7 +163,7 @@ internal static class TestData
                     Model,
                     generationEnvironment,
                     Context,
-                    new CreateChildTemplateByNameRequest("DefaultUsings")
+                    new TemplateByNameIdentifier("DefaultUsings")
                     );
             }
         }
@@ -183,7 +186,7 @@ internal static class TestData
                     typeBaseItems,
                     generationEnvironment,
                     Context,
-                    typeBase => new CreateChildTemplateByModelRequest(((CsharpClassGeneratorViewModel<TypeBase>)typeBase!).Data)
+                    typeBase => new TemplateByModelIdentifier(((CsharpClassGeneratorViewModel<TypeBase>)typeBase!).Data)
                     );
 
                 if (Context.IsRootContext && singleStringBuilder is not null)
@@ -196,9 +199,9 @@ internal static class TestData
 
     internal sealed class CodeGenerationHeaderTemplate : CsharpClassGeneratorBase<CsharpClassGeneratorSettings>, IStringBuilderTemplate
     {
-        public CodeGenerationHeaderTemplate(ITemplateEngine engine, ITemplateProvider provider) : base(engine, provider)
-        {
-        }
+        //public CodeGenerationHeaderTemplate(ITemplateEngine engine, ITemplateProvider provider) : base(engine, provider)
+        //{
+        //}
 
         public string Version
             => !string.IsNullOrEmpty(Model?.EnvironmentVersion)
@@ -231,6 +234,10 @@ internal static class TestData
 
     internal sealed class DefaultUsingsTemplate : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>>, IStringBuilderTemplate
     {
+        //public DefaultUsingsTemplate(ITemplateEngine engine, ITemplateProvider provider) : base(engine, provider)
+        //{
+        //}
+
         public void Render(StringBuilder builder)
         {
             Guard.IsNotNull(builder);
@@ -257,10 +264,6 @@ internal static class TestData
             "System.Text"
         };
 
-        public DefaultUsingsTemplate(ITemplateEngine engine, ITemplateProvider provider) : base(engine, provider)
-        {
-        }
-
         public IEnumerable<string> Usings
             => DefaultUsings
                 .Union(Model?.Data.SelectMany(classItem => classItem.Usings) ?? Enumerable.Empty<string>())
@@ -270,9 +273,9 @@ internal static class TestData
 
     internal sealed class ClassTemplate : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel<TypeBase>>, IMultipleContentBuilderTemplate
     {
-        public ClassTemplate(ITemplateEngine engine, ITemplateProvider provider) : base(engine, provider)
-        {
-        }
+        //public ClassTemplate(ITemplateEngine engine, ITemplateProvider provider) : base(engine, provider)
+        //{
+        //}
 
         public void Render(IMultipleContentBuilder builder)
         {
@@ -300,13 +303,13 @@ internal static class TestData
                     Model.Settings,
                     generationEnvironment,
                     Context,
-                    new CreateChildTemplateByNameRequest("CodeGenerationHeader")
+                    new TemplateByNameIdentifier("CodeGenerationHeader")
                     );
                 Context.Engine.RenderChildTemplate(
                     new CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>(new[] { Model.Data }, Model.Settings),
                     generationEnvironment,
                     Context,
-                    new CreateChildTemplateByNameRequest("DefaultUsings")
+                    new TemplateByNameIdentifier("DefaultUsings")
                     );
                 contentBuilder.Builder.AppendLine(Model.Settings.CultureInfo, $"namespace {Model.Data.Namespace}");
                 contentBuilder.Builder.AppendLine("{"); // start namespace
@@ -334,7 +337,7 @@ internal static class TestData
                     Model.Data.SubClasses.Select(typeBase => new CsharpClassGeneratorViewModel<TypeBase>(typeBase, Model.Settings.ForSubclasses())),
                     new MultipleContentBuilderEnvironment(builder),
                     Context,
-                    model => Provider.Create(new CreateChildTemplateByModelRequest(model!.GetType().GetProperty(nameof(CsharpClassGeneratorViewModel<TypeBase>.Data))!.GetValue(model)))
+                    model => new TemplateByModelIdentifier(model!.GetType().GetProperty(nameof(CsharpClassGeneratorViewModel<TypeBase>.Data))!.GetValue(model))
                     );
             }
 
@@ -359,5 +362,37 @@ internal static class TestData
         public string Name { get; set; } = "";
         public TypeBase[]? SubClasses { get; set; }
         public string[] Usings { get; set; } = Array.Empty<string>();
+    }
+}
+
+public sealed class CsharpClassGeneratorCodeGenerationProvider : ICodeGenerationProvider
+{
+    public string Path => string.Empty;
+    public bool RecurseOnDeleteGeneratedFiles => false;
+    public string LastGeneratedFilesFilename => string.Empty;
+    public Encoding Encoding => Encoding.UTF8;
+
+    public object? CreateAdditionalParameters() => null;
+
+    public object CreateGenerator() => new TestData.CsharpClassGenerator();
+
+    public object? CreateModel()
+    {
+        var settings = new TestData.CsharpClassGeneratorSettings
+        (
+            generateMultipleFiles: true,
+            skipWhenFileExists: false,
+            createCodeGenerationHeader: true,
+            environmentVersion: "1.0",
+            filenamePrefix: "Entities/",
+            filenameSuffix: ".generated",
+            enableNullableContext: true,
+            indentCount: 1,
+            cultureInfo: CultureInfo.CurrentCulture
+        );
+        var model = new[] { new TestData.TypeBase { Namespace = "MyNamespace", Name = "MyClass" } };
+        var viewModel = new TestData.CsharpClassGeneratorViewModel<IEnumerable<TestData.TypeBase>>(model, settings);
+
+        return viewModel;
     }
 }

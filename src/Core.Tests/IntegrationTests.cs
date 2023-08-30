@@ -15,7 +15,7 @@ public class IntegrationTests
         var builder = new MultipleContentBuilder();
 
         // Act
-        sut.Render(new RenderTemplateRequest(template, builder));
+        sut.Render(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), builder));
 
         // Assert
         builder.Contents.Should().ContainSingle();

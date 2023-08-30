@@ -26,7 +26,7 @@ If you want to use the template abstraction level, then you have to make sure th
 - TemplateFramework.Console: Dotnet tool that can be launched from command line (using tf command)
 - TemplateFramework.TemplateProviders.ChildTemplateProvider: Adds support for child templates
 - TemplateFramework.TemplateProviders.CompiledTemplateProvider: Adds support for compiled templates
-- TemplateProviders.FormattableStringTemplateProvider: Adds support for text-based templates with formattable strings
+- TemplateFramework.TemplateProviders.FormattableStringTemplateProvider: Adds support for text-based templates with formattable strings
 
 # How to create a template
 You have to write a class in a .NET 7.0 project (class library project is good enough), and compile this project.
@@ -84,8 +84,10 @@ The third option is to add the following property to your template assembly:
   </PropertyGroup>
 ```
 
+The final option is to skip the TemplateFramework assemblies in the build output of your template assembly. This way, the same TemplateFramework assemblies referenced from the Console (host) app will be used.
+
 # How to call child templates from your main template
-If you want to render child templates from your main (root) template, then you have to implement these interfaces from the TemplateFramework.Abstractions package: ITemplateContextContainer and ITemplateEngineContainer.
+If you want to render child templates from your main (root) template, then you have to implement this interfaces from the TemplateFramework.Abstractions package: ITemplateContextContainer.
 
 ```C#
 public interface ITemplateContextContainer
@@ -94,14 +96,7 @@ public interface ITemplateContextContainer
 }
 ```
 
-```C#
-public interface ITemplateEngineContainer
-{
-    ITemplateEngine Engine { get; set; }
-}
-```
-
-Then, in your template, call the Render method on the TemplateEngine instance. (Engine property)
-As context, create a child context using the CreateChildContext method on the TemplateContext instance. (Context property)
+Then, in your template, call the Render method on the TemplateEngine instance. (Engine property of the Context)
+As context, create a child context using the CreateChildContext method on the TemplateContext instance.
 
 There is also an integration test in the TemplateFramework.TemplateProviders.ChildTemplateProvider test project to demonstrate this.

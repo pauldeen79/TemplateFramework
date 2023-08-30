@@ -11,14 +11,14 @@ public class ProviderComponent : ITemplateProviderComponent
         _formattableStringParser = formattableStringParser;
     }
 
-    public bool Supports(ICreateTemplateRequest request) => request is CreateFormattableStringTemplateRequest;
+    public bool Supports(ITemplateIdentifier identifier) => identifier is FormattableStringTemplateIdentifier;
 
-    public object Create(ICreateTemplateRequest request)
+    public object Create(ITemplateIdentifier identifier)
     {
-        Guard.IsNotNull(request);
-        Guard.IsOfType<CreateFormattableStringTemplateRequest>(request);
+        Guard.IsNotNull(identifier);
+        Guard.IsOfType<FormattableStringTemplateIdentifier>(identifier);
 
-        var createFormattableStringTemplateRequest = (CreateFormattableStringTemplateRequest)request;
+        var createFormattableStringTemplateRequest = (FormattableStringTemplateIdentifier)identifier;
 
         return new FormattableStringTemplate(createFormattableStringTemplateRequest, _formattableStringParser);
     }

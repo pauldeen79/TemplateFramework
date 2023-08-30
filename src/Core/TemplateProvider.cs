@@ -11,16 +11,16 @@ public class TemplateProvider : ITemplateProvider
         _components = components;
     }
 
-    public object Create(ICreateTemplateRequest request)
+    public object Create(ITemplateIdentifier identifier)
     {
-        Guard.IsNotNull(request);
+        Guard.IsNotNull(identifier);
 
-        var component = _components.FirstOrDefault(x => x.Supports(request));
+        var component = _components.FirstOrDefault(x => x.Supports(identifier));
         if (component is null)
         {
-            throw new NotSupportedException($"Type of create template request ({request.GetType().FullName}) is not supported");
+            throw new NotSupportedException($"Type of identifier {identifier.GetType().FullName} is not supported");
         }
 
-        return component.Create(request);
+        return component.Create(identifier);
     }
 }

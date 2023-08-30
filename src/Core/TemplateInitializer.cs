@@ -11,14 +11,13 @@ public sealed class TemplateInitializer : ITemplateInitializer
         _components = components;
     }
 
-    public void Initialize(IRenderTemplateRequest request, ITemplateEngine engine)
+    public void Initialize(ITemplateEngineContext context)
     {
-        Guard.IsNotNull(request);
-        Guard.IsNotNull(engine);
+        Guard.IsNotNull(context);
 
         foreach (var component in _components)
         {
-            component.Initialize(request, engine);
+            component.Initialize(context);
         }
     }
 }

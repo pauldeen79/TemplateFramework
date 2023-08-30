@@ -12,25 +12,25 @@ public partial class ProviderComponentTests
         }
 
         [Fact]
-        public void Throws_On_Null_Request()
+        public void Throws_On_Null_Identifier()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Create(request: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("request");
+            sut.Invoking(x => x.Create(identifier: null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("identifier");
         }
 
         [Fact]
-        public void Throws_On_Request_Other_Than_CreateCompiledTemplateRequest()
+        public void Throws_On_Identifier_Other_Than_CreateCompiledTemplateRequest()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Create(request: new Mock<ICreateTemplateRequest>().Object))
-               .Should().Throw<ArgumentException>().WithParameterName("request");
+            sut.Invoking(x => x.Create(identifier: new Mock<ITemplateIdentifier>().Object))
+               .Should().Throw<ArgumentException>().WithParameterName("identifier");
         }
 
         [Fact]

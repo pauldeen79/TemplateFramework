@@ -20,7 +20,7 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
         _templateEngine.Render(
             new RenderTemplateRequest
             (
-                template: provider.CreateGenerator(),
+                identifier: new TemplateInstanceIdentifier(provider.CreateGenerator()),
                 model: provider.CreateModel(),
                 generationEnvironment: generationEnvironment,
                 additionalParameters: provider.CreateAdditionalParameters(),

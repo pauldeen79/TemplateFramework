@@ -6,9 +6,10 @@ public partial class TemplateEngineExtensionsTests
     protected Mock<ITemplateProvider> TemplateProviderMock { get; } = new();
     protected Mock<IGenerationEnvironment> GenerationEnvironmentMock { get; } = new();
     protected Mock<ITemplateContext> ContextMock { get; } = new();
-    protected Mock<ICreateTemplateRequest> CreateTemplateRequestMock { get; } = new();
+    protected Mock<ITemplateIdentifier> TemplateIdentifierMock { get; } = new();
 
     protected object Template { get; } = new object();
+    protected ITemplateIdentifier Identifier => TemplateIdentifierMock.Object;
     protected IEnumerable<object?> Models { get; } = new[] { new object(), new object(), new object() };
     protected object Model { get; } = new object();
 

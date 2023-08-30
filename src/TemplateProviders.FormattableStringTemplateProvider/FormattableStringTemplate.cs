@@ -2,12 +2,12 @@
 
 public class FormattableStringTemplate : IParameterizedTemplate, IStringBuilderTemplate, IMultipleContentBuilderTemplate, IDefaultFilenameContainer
 {
-    private readonly CreateFormattableStringTemplateRequest _createFormattableStringTemplateRequest;
+    private readonly FormattableStringTemplateIdentifier _createFormattableStringTemplateRequest;
     private readonly IFormattableStringParser _formattableStringParser;
     private readonly IDictionary<string, object?> _parametersDictionary;
 
     public FormattableStringTemplate(
-        CreateFormattableStringTemplateRequest createFormattableStringTemplateRequest,
+        FormattableStringTemplateIdentifier createFormattableStringTemplateRequest,
         IFormattableStringParser formattableStringParser)
     {
         Guard.IsNotNull(createFormattableStringTemplateRequest);

@@ -1,27 +1,26 @@
 ﻿namespace TemplateFramework.Core.TemplateInitializerComponents;
 
-public class ParameterInitializer : ITemplateInitializerComponent
+public class ParameterInitializerComponent : ITemplateInitializerComponent
 {
     private readonly IValueConverter _converter;
 
-    public ParameterInitializer(IValueConverter converter)
+    public ParameterInitializerComponent(IValueConverter converter)
     {
         Guard.IsNotNull(converter);
 
         _converter = converter;
     }
 
-    public void Initialize(IRenderTemplateRequest request, ITemplateEngine engine)
+    public void Initialize(ITemplateEngineContext context)
     {
-        Guard.IsNotNull(request);
-        Guard.IsNotNull(engine);
+        Guard.IsNotNull(context);
 
-        if (request.Template is not IParameterizedTemplate parameterizedTemplate)
+        if (context.Template is not IParameterizedTemplate parameterizedTemplate)
         {
             return;
         }
 
-        var session = request.AdditionalParameters.ToKeyValuePairs();
+        var session = context.AdditionalParameters.ToKeyValuePairs();
         var parameters = parameterizedTemplate.GetParameters();
         foreach (var item in session.Where(x => x.Key != Constants.ModelKey))
         {
