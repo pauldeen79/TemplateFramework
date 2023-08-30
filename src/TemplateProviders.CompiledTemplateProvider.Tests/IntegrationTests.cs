@@ -11,9 +11,10 @@ public class IntegrationTests
             .AddTemplateFrameworkRuntime()
             .AddTemplateFrameworkCompiledTemplateProvider()
             .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
-        var templateProvider = provider.GetRequiredService<ITemplateProvider>();
+        using var scope = provider.CreateScope();
+        var templateProvider = scope.ServiceProvider.GetRequiredService<ITemplateProvider>();
         var template = templateProvider.Create(new CreateCompiledTemplateRequest(GetType().Assembly.FullName!, typeof(MyTemplate).FullName!));
-        var templateEngine = provider.GetRequiredService<ITemplateEngine>();
+        var templateEngine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
         var builder = new StringBuilder();
         var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), builder);
 

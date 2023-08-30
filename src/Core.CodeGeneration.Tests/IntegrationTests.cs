@@ -11,7 +11,7 @@ public class IntegrationTests
         using var serviceProvider = new ServiceCollection()
             .AddTemplateFramework()
             .AddTemplateFrameworkCodeGeneration()
-            .AddSingleton(_fileSystemMock.Object)
+            .AddScoped<IFileSystem>(_ => _fileSystemMock.Object)
             .BuildServiceProvider();
         var sut = serviceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = new IntegrationProvider();

@@ -25,11 +25,12 @@
   <ItemGroup>
     <ProjectReference Include="..\Core.CodeGeneration\TemplateFramework.Core.CodeGeneration.csproj" />
     <ProjectReference Include="..\Core\TemplateFramework.Core.csproj" />
+    <ProjectReference Include="..\TemplateProviders.ChildTemplateProvider\TemplateFramework.TemplateProviders.ChildTemplateProvider.csproj" />
     <ProjectReference Include="..\TemplateProviders.CompiledTemplateProvider\TemplateFramework.TemplateProviders.CompiledTemplateProvider.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\Readme.md" Pack="true" PackagePath="\"/>
+    <None Include="..\..\Readme.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -53,6 +54,7 @@
     <Using Include="TemplateFramework.Core.GenerationEnvironments" />
     <Using Include="TemplateFramework.Core.Requests" />
     <Using Include="TemplateFramework.Runtime.Extensions" />
+    <Using Include="TemplateFramework.TemplateProviders.ChildTemplateProvider.Extensions" />
     <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.Extensions" />
     <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.Requests" />
     <Using Include="TextCopy" />

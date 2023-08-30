@@ -4,7 +4,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddTemplateFrameworkRuntime(this IServiceCollection services)
         => services
-            .AddSingleton<IAssemblyService, PluginAssemblyService>()
-            .AddSingleton<IAssemblyService, CustomAssemblyService>()
+            .AddScoped<IAssemblyService, PluginAssemblyService>()
+            .AddScoped<IAssemblyService, CustomAssemblyService>()
             ;
 }

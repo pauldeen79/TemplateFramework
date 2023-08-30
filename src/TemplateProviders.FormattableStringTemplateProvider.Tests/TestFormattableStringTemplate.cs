@@ -19,11 +19,11 @@ public class TestFormattableStringTemplate : IParameterizedTemplate, IStringBuil
 
     public ITemplateParameter[] GetParameters()
     {
-        using var provider = new ServiceCollection()
+        var services = new ServiceCollection()
             .AddParsers()
-            .AddTemplateFrameworkFormattableStringTemplateProvider()
-            .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
+            .AddTemplateFrameworkFormattableStringTemplateProvider();
 
+        using var provider = services.BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
         var formattableStringParser = provider.GetRequiredService<IFormattableStringParser>();
 
         return new FormattableStringTemplate(new FormattableStringTemplateIdentifier(Template, CultureInfo.CurrentCulture), formattableStringParser).GetParameters();
@@ -33,10 +33,11 @@ public class TestFormattableStringTemplate : IParameterizedTemplate, IStringBuil
     {
         Guard.IsNotNull(builder);
 
-        using var provider = new ServiceCollection()
+        var services = new ServiceCollection()
             .AddParsers()
-            .AddTemplateFrameworkFormattableStringTemplateProvider()
-            .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
+            .AddTemplateFrameworkFormattableStringTemplateProvider();
+
+        using var provider = services.BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
 
         var formattableStringParser = provider.GetRequiredService<IFormattableStringParser>();
         var context = new TemplateFrameworkFormattableStringContext(_parameterValues);

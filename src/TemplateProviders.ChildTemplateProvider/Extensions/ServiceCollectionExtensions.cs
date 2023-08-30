@@ -4,29 +4,29 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddTemplateFrameworkChildTemplateProvider(this IServiceCollection services)
         => services
-            .AddSingleton<ITemplateProviderComponent, ProviderComponent>();
+            .AddScoped<ITemplateProviderComponent, ProviderComponent>();
 
     public static IServiceCollection AddChildTemplate<T>(this IServiceCollection services, Type modelType) where T : class
         => services
-            .AddSingleton<ITemplateCreator>(provider => new TemplateCreator<T>(() => provider.GetRequiredService<T>(), modelType, null));
+            .AddScoped<ITemplateCreator>(provider => new TemplateCreator<T>(() => provider.GetRequiredService<T>(), modelType, null));
 
     public static IServiceCollection AddChildTemplate<T>(this IServiceCollection services, Type modelType, Func<IServiceProvider, T> templateFactory) where T : class
         => services
-            .AddSingleton<ITemplateCreator>(provider => new TemplateCreator<T>(() => templateFactory(provider), modelType, null));
+            .AddScoped<ITemplateCreator>(provider => new TemplateCreator<T>(() => templateFactory(provider), modelType, null));
 
     public static IServiceCollection AddChildTemplate<T>(this IServiceCollection services, string name) where T : class
         => services
-            .AddSingleton<ITemplateCreator>(provider => new TemplateCreator<T>(() => provider.GetRequiredService<T>(), null, name));
+            .AddScoped<ITemplateCreator>(provider => new TemplateCreator<T>(() => provider.GetRequiredService<T>(), null, name));
 
     public static IServiceCollection AddChildTemplate<T>(this IServiceCollection services, string name, Func<IServiceProvider, T> templateFactory) where T : class
         => services
-            .AddSingleton<ITemplateCreator>(provider => new TemplateCreator<T>(() => templateFactory(provider), null, name));
+            .AddScoped<ITemplateCreator>(provider => new TemplateCreator<T>(() => templateFactory(provider), null, name));
 
     public static IServiceCollection AddChildTemplate<T>(this IServiceCollection services, Type modelType, string name) where T : class
         => services
-            .AddSingleton<ITemplateCreator>(provider => new TemplateCreator<T>(() => provider.GetRequiredService<T>(), modelType, name));
+            .AddScoped<ITemplateCreator>(provider => new TemplateCreator<T>(() => provider.GetRequiredService<T>(), modelType, name));
 
     public static IServiceCollection AddChildTemplate<T>(this IServiceCollection services, Type modelType, string name, Func<IServiceProvider, T> templateFactory) where T : class
         => services
-            .AddSingleton<ITemplateCreator>(provider => new TemplateCreator<T>(() => templateFactory(provider), modelType, name));
+            .AddScoped<ITemplateCreator>(provider => new TemplateCreator<T>(() => templateFactory(provider), modelType, name));
 }

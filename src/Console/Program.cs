@@ -17,6 +17,7 @@ public static class Program
             .AddTemplateFramework()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkCompiledTemplateProvider()
+            .AddTemplateFrameworkChildTemplateProvider()
             .AddTemplateFrameworkRuntime()
             .AddTemplateCommands();
         serviceCollection.InjectClipboard();
