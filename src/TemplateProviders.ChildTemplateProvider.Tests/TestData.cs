@@ -118,6 +118,7 @@ internal static class TestData
         {
             Guard.IsNotNull(builder);
             Guard.IsNotNull(Model);
+            Guard.IsNotNull(Context);
 
             StringBuilder? singleStringBuilder = null;
             IGenerationEnvironment generationEnvironment = new MultipleContentBuilderEnvironment(builder);
