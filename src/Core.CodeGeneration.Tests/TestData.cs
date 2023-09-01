@@ -27,7 +27,7 @@ public sealed class MyGeneratorProvider : ICodeGenerationProvider
 
     public object? CreateAdditionalParameters() => null;
 
-    public object CreateGenerator() => new MyGenerator();
+    public Type GetGeneratorType() => typeof(MyGenerator);
 
     public object? CreateModel() => null;
 }

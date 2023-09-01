@@ -346,7 +346,7 @@ public sealed class CsharpClassGeneratorCodeGenerationProvider : ICodeGeneration
 
     public object? CreateAdditionalParameters() => null;
 
-    public object CreateGenerator() => new TestData.CsharpClassGenerator();
+    public Type GetGeneratorType() => typeof(TestData.CsharpClassGenerator);
 
     public object? CreateModel()
     {

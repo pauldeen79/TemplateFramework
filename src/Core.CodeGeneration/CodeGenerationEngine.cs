@@ -2,14 +2,17 @@
 
 public sealed class CodeGenerationEngine : ICodeGenerationEngine
 {
-    public CodeGenerationEngine(ITemplateEngine templateEngine)
+    public CodeGenerationEngine(ITemplateEngine templateEngine, ITemplateFactory templateFactory)
     {
         Guard.IsNotNull(templateEngine);
+        Guard.IsNotNull(templateFactory);
 
         _templateEngine = templateEngine;
+        _templateFactory = templateFactory;
     }
 
     private readonly ITemplateEngine _templateEngine;
+    private readonly ITemplateFactory _templateFactory;
 
     public void Generate(ICodeGenerationProvider codeGenerationProvider, ITemplateProvider templateProvider, IGenerationEnvironment generationEnvironment, ICodeGenerationSettings settings)
     {
@@ -24,7 +27,7 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
         _templateEngine.Render(
             new RenderTemplateRequest
             (
-                identifier: new TemplateInstanceIdentifier(codeGenerationProvider.CreateGenerator()),
+                identifier: new TemplateTypeIdentifier(codeGenerationProvider.GetGeneratorType(), _templateFactory),
                 model: codeGenerationProvider.CreateModel(),
                 generationEnvironment: generationEnvironment,
                 additionalParameters: codeGenerationProvider.CreateAdditionalParameters(),

@@ -57,7 +57,7 @@ public partial class CodeGenerationEngineTests
             var sut = CreateSut();
             CodeGenerationProviderMock.SetupGet(x => x.Encoding).Returns(Encoding.Latin1);
             CodeGenerationProviderMock.SetupGet(x => x.Path).Returns(TestData.BasePath);
-            CodeGenerationProviderMock.Setup(x => x.CreateGenerator()).Returns(this);
+            CodeGenerationProviderMock.Setup(x => x.GetGeneratorType()).Returns(GetType());
             CodeGenerationSettingsMock.SetupGet(x => x.DryRun).Returns(false);
             CodeGenerationSettingsMock.SetupGet(x => x.BasePath).Returns(TestData.BasePath);
             CodeGenerationSettingsMock.SetupGet(x => x.DefaultFilename).Returns("Filename.txt");
@@ -76,7 +76,7 @@ public partial class CodeGenerationEngineTests
             var sut = CreateSut();
             CodeGenerationProviderMock.SetupGet(x => x.Encoding).Returns(Encoding.Latin1);
             CodeGenerationProviderMock.SetupGet(x => x.Path).Returns(TestData.BasePath);
-            CodeGenerationProviderMock.Setup(x => x.CreateGenerator()).Returns(this);
+            CodeGenerationProviderMock.Setup(x => x.GetGeneratorType()).Returns(GetType());
             CodeGenerationSettingsMock.SetupGet(x => x.DryRun).Returns(true);
             CodeGenerationSettingsMock.SetupGet(x => x.DefaultFilename).Returns("Filename.txt");
 
@@ -113,7 +113,7 @@ public partial class CodeGenerationEngineTests
             public Encoding Encoding => Encoding.UTF8;
 
             public object? CreateAdditionalParameters() => null;
-            public object CreateGenerator() => new object();
+            public Type GetGeneratorType() => typeof(object);
             public object? CreateModel() => null;
 
             private readonly Action<ITemplateProvider> _action;

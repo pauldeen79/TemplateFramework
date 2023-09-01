@@ -3,15 +3,15 @@
 public sealed class ProviderComponent : ITemplateProviderComponent
 {
     private readonly IAssemblyService _assemblyService;
-    private readonly ICompiledTemplateFactory _factory;
+    private readonly ITemplateFactory _templateFactory;
 
-    public ProviderComponent(IAssemblyService assemblyService, ICompiledTemplateFactory factory)
+    public ProviderComponent(IAssemblyService assemblyService, ITemplateFactory templateFactory)
     {
         Guard.IsNotNull(assemblyService);
-        Guard.IsNotNull(factory);
+        Guard.IsNotNull(templateFactory);
 
         _assemblyService = assemblyService;
-        _factory = factory;
+        _templateFactory = templateFactory;
     }
 
     public bool Supports(ITemplateIdentifier identifier) => identifier is CreateCompiledTemplateRequest;
@@ -29,7 +29,7 @@ public sealed class ProviderComponent : ITemplateProviderComponent
             throw new InvalidOperationException($"Could not get type for class {createCompiledTemplateRequest.ClassName}");
         }
 
-        var template = _factory.Create(type);
+        var template = _templateFactory.Create(type);
         if (template is null)
         {
             throw new InvalidOperationException($"Could not create instance of type {createCompiledTemplateRequest.ClassName}");

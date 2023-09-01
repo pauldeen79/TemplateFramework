@@ -22,6 +22,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IValueConverter, ValueConverter>()
             .AddScoped<ITemplateProvider, TemplateProvider>()
             .AddScoped<ITemplateProviderComponent, TemplateInstanceIdentifierComponent>()
+            .AddScoped<ITemplateProviderComponent, TemplateTypeIdentifierComponent>()
             .AddScoped<IRetryMechanism, RetryMechanism>()
             .AddScoped<ITemplateParameterExtractor, TemplateParameterExtractor>()
             .AddScoped<ISingleContentTemplateRenderer, StringBuilderTemplateRenderer>() // also register using its own type, so we can render a single template from  multiple content template renderer

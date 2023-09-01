@@ -58,7 +58,6 @@
     <Using Include="TemplateFramework.Runtime.Abstractions" />
     <Using Include="TemplateFramework.Runtime.Extensions" />
     <Using Include="TemplateFramework.TemplateProviders.ChildTemplateProvider.Extensions" />
-    <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.Abstractions" />
     <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.Extensions" />
     <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.Requests" />
     <Using Include="TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.Extensions" />

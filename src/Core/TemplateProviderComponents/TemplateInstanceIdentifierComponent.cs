@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.TemplateProviderComponente;
+﻿namespace TemplateFramework.Core.TemplateProviderComponents;
 
 public class TemplateInstanceIdentifierComponent : ITemplateProviderComponent
 {

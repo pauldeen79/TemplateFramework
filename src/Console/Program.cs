@@ -24,7 +24,7 @@ public static class Program
             .AddTemplateFrameworkRuntime()
             .AddTemplateCommands()
             .AddSingleton<IAssemblyInfoContextService, MyAssemblyInfoContextService>()
-            .AddSingleton<ICompiledTemplateFactory>(dynamicCompiledTemplateFactory);
+            .AddSingleton<ITemplateFactory>(dynamicCompiledTemplateFactory);
         serviceCollection.InjectClipboard();
         using var provider = serviceCollection.BuildServiceProvider();
         dynamicCompiledTemplateFactory.Provider = provider;
