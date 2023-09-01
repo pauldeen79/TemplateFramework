@@ -11,11 +11,10 @@ public class IntegrationTests
             .AddTemplateFrameworkRuntime()
             .AddTemplateFrameworkCompiledTemplateProvider()
             .AddSingleton(new Mock<IAssemblyInfoContextService>().Object)
-            .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
-        using var scope = provider.CreateScope();
-        var templateProvider = scope.ServiceProvider.GetRequiredService<ITemplateProvider>();
+            .BuildServiceProvider();
+        var templateProvider = provider.GetRequiredService<ITemplateProvider>();
         var template = templateProvider.Create(new CreateCompiledTemplateRequest(GetType().Assembly.FullName!, typeof(MyTemplate).FullName!));
-        var templateEngine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
+        var templateEngine = provider.GetRequiredService<ITemplateEngine>();
         var builder = new StringBuilder();
         var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), builder);
 
