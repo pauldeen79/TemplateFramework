@@ -5,28 +5,28 @@ public partial class ProviderComponentTests
     public class Supports : ProviderComponentTests
     {
         [Fact]
-        public void Returns_False_On_Null_Request()
+        public void Returns_False_On_Null_Identifier()
         {
             // Arrange
             var sut = CreateSut();
-            var request = (ITemplateIdentifier)null!;
+            var identifier = (ITemplateIdentifier)null!;
 
             // Act
-            var result = sut.Supports(request);
+            var result = sut.Supports(identifier);
 
             // Assert
             result.Should().BeFalse();
         }
 
         [Fact]
-        public void Returns_False_On_Unsupported_Request()
+        public void Returns_False_On_Unsupported_Identifier()
         {
             // Arrange
             var sut = CreateSut();
-            var request = new Mock<ITemplateIdentifier>().Object;
+            var identifier = new Mock<ITemplateIdentifier>().Object;
 
             // Act
-            var result = sut.Supports(request);
+            var result = sut.Supports(identifier);
 
             // Assert
             result.Should().BeFalse();
@@ -37,10 +37,10 @@ public partial class ProviderComponentTests
         {
             // Arrange
             var sut = CreateSut();
-            var request = new TemplateByModelIdentifier(this);
+            var identifier = new TemplateByModelIdentifier(this);
 
             // Act
-            var result = sut.Supports(request);
+            var result = sut.Supports(identifier);
 
             // Assert
             result.Should().BeTrue();
@@ -51,10 +51,10 @@ public partial class ProviderComponentTests
         {
             // Arrange
             var sut = CreateSut();
-            var request = new TemplateByNameIdentifier(nameof(Returns_True_On_CreateTemplateByNameRequest));
+            var identifier = new TemplateByNameIdentifier(nameof(Returns_True_On_CreateTemplateByNameRequest));
 
             // Act
-            var result = sut.Supports(request);
+            var result = sut.Supports(identifier);
 
             // Assert
             result.Should().BeTrue();
