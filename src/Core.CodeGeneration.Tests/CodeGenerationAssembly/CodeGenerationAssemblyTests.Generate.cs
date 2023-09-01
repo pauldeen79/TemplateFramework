@@ -9,7 +9,7 @@ public partial class CodeGenerationAssemblyTests
             CodeGenerationProviderCreatorMock
                 .Setup(x => x.TryCreateInstance(It.IsAny<Type>()))
                 .Returns<Type>(t => t.FullName == typeof(MyGeneratorProvider).FullName
-                    ? new CodeGenerationProviderWrapper(Activator.CreateInstance(t)!) /*as ICodeGenerationProvider*/
+                    ? Activator.CreateInstance(t) as ICodeGenerationProvider
                     : null);
             AssemblyServiceMock
                 .Setup(x => x.GetAssembly(It.IsAny<string>(), It.IsAny<string>()))

@@ -30,14 +30,16 @@ public class TemplateParameterExtractorTests
         }
 
         [Fact]
-        public void Throws_On_Unsupported_Type()
+        public void Returns_Empty_Result_On_Unsupported_Type()
         {
             // Arrange
             var sut = CreateSut();
 
-            // Act & Assert
-            sut.Invoking(x => x.Extract(templateInstance: new object()))
-               .Should().Throw<NotSupportedException>();
+            // Act
+            var result = sut.Extract(templateInstance: new object());
+
+            // Assert
+            result.Should().BeEmpty();
         }
 
         [Fact]

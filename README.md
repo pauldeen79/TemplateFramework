@@ -38,6 +38,9 @@ There are multiple types of templates supported out of the box:
 - Multiple Content Builder template, which allows to create more output files
 - POCO template. If the class is not of a supported type, then the ToString method will be called on the template instance
 
+Important: If you are not using a POCO template, make sure you reference the same package version of TemplateFramework.Abstractions as the host!
+So if you install version x.y of TemplateFramework.Console, then also reference version x.y of the TemplateFramework.Abstractions package from your template or code generation assembly.
+
 To create a StringBuilder template, implement this interface from the TemplateFramework.Abstractions package:
 
 ```C#
@@ -83,8 +86,6 @@ The third option is to add the following property to your template assembly:
     ...
   </PropertyGroup>
 ```
-
-The final option is to skip the TemplateFramework assemblies in the build output of your template assembly. This way, the same TemplateFramework assemblies referenced from the Console (host) app will be used.
 
 # How to call child templates from your main template
 If you want to render child templates from your main (root) template, then you have to implement this interfaces from the TemplateFramework.Abstractions package: ITemplateContextContainer.

@@ -142,4 +142,11 @@ internal static class TestData
 
         public ITemplateParameter[] GetParameters() => new[] { new TemplateParameter(nameof(Property), typeof(string)) };
     }
+
+    internal sealed class PocoParameterizedTemplate
+    {
+        public string Parameter { get; set; } = "";
+
+        public override string ToString() => Parameter;
+    }
 }

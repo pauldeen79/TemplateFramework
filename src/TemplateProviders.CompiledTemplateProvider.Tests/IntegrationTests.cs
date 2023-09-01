@@ -10,6 +10,7 @@ public class IntegrationTests
             .AddTemplateFramework()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFrameworkCompiledTemplateProvider()
+            .AddSingleton(new Mock<IAssemblyInfoContextService>().Object)
             .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
         using var scope = provider.CreateScope();
         var templateProvider = scope.ServiceProvider.GetRequiredService<ITemplateProvider>();

@@ -15,7 +15,7 @@ internal static class TestData
     internal static string GetAssemblyName() => typeof(TestData).Assembly.FullName!;
 }
 
-public sealed class MyGeneratorProvider //: ICodeGenerationProvider
+public sealed class MyGeneratorProvider : ICodeGenerationProvider
 {
     public string Path { get; } = "";
 
@@ -23,7 +23,7 @@ public sealed class MyGeneratorProvider //: ICodeGenerationProvider
 
     public string LastGeneratedFilesFilename { get; } = "";
 
-    public Encoding Encoding => Encoding.UTF8;
+    public Encoding Encoding => Encoding.UTF8; 
 
     public object? CreateAdditionalParameters() => null;
 
@@ -35,21 +35,4 @@ public sealed class MyGeneratorProvider //: ICodeGenerationProvider
 public sealed class MyGenerator
 {
     public override string ToString() => "Here is code from MyGenerator";
-}
-
-public sealed class MyTypedGeneratorProvider : ICodeGenerationProvider
-{
-    public string Path => string.Empty;
-
-    public bool RecurseOnDeleteGeneratedFiles => default;
-
-    public string LastGeneratedFilesFilename => string.Empty;
-
-    public Encoding Encoding => Encoding.Default;
-
-    public object? CreateAdditionalParameters() => throw new NotImplementedException();
-
-    public object CreateGenerator() => throw new NotImplementedException();
-
-    public object? CreateModel() => throw new NotImplementedException();
 }

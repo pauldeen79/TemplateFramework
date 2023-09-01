@@ -3,6 +3,15 @@
 [ExcludeFromCodeCoverage]
 public class CustomAssemblyService : IAssemblyService
 {
+    private readonly IAssemblyInfoContextService _assemblyInfoContextService;
+
+    public CustomAssemblyService(IAssemblyInfoContextService assemblyInfoContextService)
+    {
+        Guard.IsNotNull(assemblyInfoContextService);
+
+        _assemblyInfoContextService = assemblyInfoContextService;
+    }
+
     public Assembly GetAssembly(string assemblyName, string currentDirectory)
     {
         Guard.IsNotNull(assemblyName);
@@ -10,7 +19,7 @@ public class CustomAssemblyService : IAssemblyService
 
         // This is kind of quirk mode, with an assembly name.
         // Works as long as you are using the same package reference on both sides. (the host program and the plug-in assembly)
-        var context = new CustomAssemblyLoadContext("TemplateFramework.Core.CodeGeneration", true, () => new[] { currentDirectory });
+        var context = new CustomAssemblyLoadContext("TemplateFramework.Core.CodeGeneration", true, _assemblyInfoContextService, () => new[] { currentDirectory });
         return LoadAssembly(context, assemblyName, currentDirectory);
     }
 

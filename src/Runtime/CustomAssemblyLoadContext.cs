@@ -3,14 +3,18 @@
 [ExcludeFromCodeCoverage]
 public sealed class CustomAssemblyLoadContext : AssemblyLoadContext
 {
-    public CustomAssemblyLoadContext(string name, bool isCollectible, Func<IEnumerable<string>> customPathsDelegate)
+    public CustomAssemblyLoadContext(string name, bool isCollectible, IAssemblyInfoContextService assemblyInfoContextService, Func<IEnumerable<string>> customPathsDelegate)
         : base(name, isCollectible)
     {
         Guard.IsNotNull(customPathsDelegate);
+        Guard.IsNotNull(assemblyInfoContextService);
+
         CustomPathsDelegate = customPathsDelegate;
+        AssemblyInfoContextService = assemblyInfoContextService;
     }
 
     private Func<IEnumerable<string>> CustomPathsDelegate { get; }
+    private IAssemblyInfoContextService AssemblyInfoContextService { get; }
 
     protected override Assembly Load(AssemblyName assemblyName)
     {
@@ -20,6 +24,11 @@ public sealed class CustomAssemblyLoadContext : AssemblyLoadContext
         }
 
         if (assemblyName.Name == "netstandard")
+        {
+            return null!;
+        }
+
+        if (Array.Exists(AssemblyInfoContextService.GetExcludedAssemblies(), x => x == assemblyName.Name))
         {
             return null!;
         }

@@ -7,6 +7,5 @@ public static class ServiceCollectionExtensions
             .AddScoped<ICodeGenerationAssembly, CodeGenerationAssembly>()
             .AddScoped<ICodeGenerationEngine, CodeGenerationEngine>()
             .AddScoped<ICodeGenerationProviderCreator, TypedCreator>()
-            .AddScoped<ICodeGenerationProviderCreator, WrappedCreator>()
             ;
 }
