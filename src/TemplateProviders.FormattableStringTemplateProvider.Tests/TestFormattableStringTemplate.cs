@@ -3,6 +3,14 @@
 public class TestFormattableStringTemplate : IParameterizedTemplate, IStringBuilderTemplate
 {
     private readonly Dictionary<string, object?> _parameterValues = new();
+    private readonly IFormattableStringParser _formattableStringParser;
+
+    public TestFormattableStringTemplate(IFormattableStringParser formattableStringParser)
+    {
+        Guard.IsNotNull(formattableStringParser);
+
+        _formattableStringParser = formattableStringParser;
+    }
 
     const string Template = @"        [Fact]
         public void {UnittestName}()
@@ -18,31 +26,15 @@ public class TestFormattableStringTemplate : IParameterizedTemplate, IStringBuil
         }}";
 
     public ITemplateParameter[] GetParameters()
-    {
-        var services = new ServiceCollection()
-            .AddParsers()
-            .AddTemplateFrameworkFormattableStringTemplateProvider();
-
-        using var provider = services.BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
-        var formattableStringParser = provider.GetRequiredService<IFormattableStringParser>();
-
-        return new FormattableStringTemplate(new FormattableStringTemplateIdentifier(Template, CultureInfo.CurrentCulture), formattableStringParser).GetParameters();
-    }
+        => new FormattableStringTemplate(new FormattableStringTemplateIdentifier(Template, CultureInfo.CurrentCulture), _formattableStringParser).GetParameters();
 
     public void Render(StringBuilder builder)
     {
         Guard.IsNotNull(builder);
 
-        var services = new ServiceCollection()
-            .AddParsers()
-            .AddTemplateFrameworkFormattableStringTemplateProvider();
-
-        using var provider = services.BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
-
-        var formattableStringParser = provider.GetRequiredService<IFormattableStringParser>();
         var context = new TemplateFrameworkFormattableStringContext(_parameterValues);
 
-        builder.Append(formattableStringParser.Parse(Template, CultureInfo.CurrentCulture, context).GetValueOrThrow());
+        builder.Append(_formattableStringParser.Parse(Template, CultureInfo.CurrentCulture, context).GetValueOrThrow());
     }
 
     public void SetParameter(string name, object? value)
