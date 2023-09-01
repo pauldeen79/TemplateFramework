@@ -136,13 +136,29 @@ public class ParameterInitializerTests
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
             var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, template);
             ValueConverterMock.Setup(x => x.Convert(It.IsAny<object?>(), It.IsAny<Type>())).Returns<object?, Type>((value, type) => value);
-            TemplateEngineMock.Setup(x => x.GetParameters(It.IsAny<object>())).Returns(new[] { new TemplateParameter(nameof(additionalParameters.Parameter), typeof(string)) });
+            TemplateEngineMock.Setup(x => x.GetParameters(It.IsAny<object>())).Returns(new[] { new TemplateParameter(nameof(PocoParameterizedTemplate.Parameter), typeof(string)) });
 
             // Act
             sut.Initialize(engineContext);
 
             // Assert
             template.Parameter.Should().Be(additionalParameters.Parameter);
+        }
+
+        [Fact]
+        public void Skips_AdditionalParameters_When_Template_Does_Not_Implement_IParameterizedTemplate_And_Property_Is_Missing()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var additionalParameters = new { WrongParameter = "Hello world!" };
+            var template = new PocoParameterizedTemplate();
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, template);
+            ValueConverterMock.Setup(x => x.Convert(It.IsAny<object?>(), It.IsAny<Type>())).Returns<object?, Type>((value, type) => value);
+            TemplateEngineMock.Setup(x => x.GetParameters(It.IsAny<object>())).Returns(new[] { new TemplateParameter(nameof(PocoParameterizedTemplate.Parameter), typeof(string)) });
+
+            // Act & Assert
+            sut.Invoking(x => x.Initialize(engineContext)).Should().NotThrow();
         }
     }
 }
