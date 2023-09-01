@@ -33,7 +33,7 @@ public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
         }
     }
 
-    private IEnumerable<ICodeGenerationProvider> GetCodeGeneratorProviders(Assembly assembly, IEnumerable<string>? classNameFilter)
+    private IEnumerable<ICodeGenerationProvider> GetCodeGeneratorProviders(Assembly assembly, IEnumerable<string> classNameFilter)
         => assembly.GetExportedTypes().Where(t => !t.IsAbstract && !t.IsInterface && Array.Exists(t.GetConstructors(), c => c.GetParameters().Length == 0))
             .Where(t => FilterIsValid(t, classNameFilter))
             .Select(t => TryCreateInstance(t)!)
@@ -43,13 +43,8 @@ public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
         => _creators.Select(creator => creator.TryCreateInstance(type))
                     .FirstOrDefault(x => x is not null);
 
-    private static bool FilterIsValid(Type type, IEnumerable<string>? classNameFilter)
+    private static bool FilterIsValid(Type type, IEnumerable<string> classNameFilter)
     {
-        if (classNameFilter is null)
-        {
-            return true;
-        }
-
         var items = classNameFilter.ToArray();
 
         return !items.Any() || Array.Find(items, x => x == type.FullName) is not null;
