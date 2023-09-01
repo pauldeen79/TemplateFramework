@@ -14,10 +14,12 @@ public static class Program
         app.HelpOption();
 
         var serviceCollection = new ServiceCollection()
+            .AddParsers()
             .AddTemplateFramework()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkCompiledTemplateProvider()
             .AddTemplateFrameworkChildTemplateProvider()
+            .AddTemplateFrameworkFormattableStringTemplateProvider()
             .AddTemplateFrameworkRuntime()
             .AddTemplateCommands();
         serviceCollection.InjectClipboard();

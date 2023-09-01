@@ -18,7 +18,7 @@ public class TemplateParameterExtractor : ITemplateParameterExtractor
         var component = _components.FirstOrDefault(x => x.Supports(templateInstance));
         if (component is null)
         {
-            throw new NotSupportedException($"Type of create template request ({templateInstance.GetType().FullName}) is not supported");
+            return Array.Empty<ITemplateParameter>();
         }
 
         return component.Extract(templateInstance);

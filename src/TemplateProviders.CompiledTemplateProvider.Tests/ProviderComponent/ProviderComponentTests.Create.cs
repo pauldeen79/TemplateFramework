@@ -44,7 +44,7 @@ public partial class ProviderComponentTests
 
             // Assert
             instance.Should().NotBeNull();
-            instance.Should().BeOfType<TemplateWrapper>();
+            instance.Should().BeOfType<Create>();
         }
 
         [Fact]

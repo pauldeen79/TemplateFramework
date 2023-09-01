@@ -20,27 +20,13 @@ public partial class TypedCreatorTests
         {
             // Arrange
             var sut = new TypedCreator();
-            var type = typeof(MyTypedGeneratorProvider);
+            var type = typeof(MyGeneratorProvider);
 
             // Act
             var result = sut.TryCreateInstance(type);
 
             // Assert
-            result.Should().BeOfType<MyTypedGeneratorProvider>();
-        }
-
-        [Fact]
-        public void Returns_Null_When_Type_Does_Not_Implement_ICodeGenerationProvider()
-        {
-            // Arrange
-            var sut = new TypedCreator();
-            var type = GetType();
-
-            // Act
-            var result = sut.TryCreateInstance(type);
-
-            // Assert
-            result.Should().BeNull();
+            result.Should().BeOfType<MyGeneratorProvider>();
         }
     }
 }

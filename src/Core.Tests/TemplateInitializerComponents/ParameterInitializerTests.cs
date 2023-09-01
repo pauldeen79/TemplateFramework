@@ -1,4 +1,6 @@
-﻿namespace TemplateFramework.Core.Tests.TemplateInitializerComponents;
+﻿using static TemplateFramework.Core.Tests.TestData;
+
+namespace TemplateFramework.Core.Tests.TemplateInitializerComponents;
 
 public class ParameterInitializerTests
 {
@@ -122,6 +124,25 @@ public class ParameterInitializerTests
 
             // Assert
             template.ViewModel.Should().BeSameAs(viewModel);
+        }
+
+        [Fact]
+        public void Sets_AdditionalParameters_When_Template_Has_Public_Readable_And_Writable_Properties()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var additionalParameters = new { Parameter = "Hello world!" };
+            var template = new PocoParameterizedTemplate();
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, template);
+            ValueConverterMock.Setup(x => x.Convert(It.IsAny<object?>(), It.IsAny<Type>())).Returns<object?, Type>((value, type) => value);
+            TemplateEngineMock.Setup(x => x.GetParameters(It.IsAny<object>())).Returns(new[] { new TemplateParameter(nameof(additionalParameters.Parameter), typeof(string)) });
+
+            // Act
+            sut.Initialize(engineContext);
+
+            // Assert
+            template.Parameter.Should().Be(additionalParameters.Parameter);
         }
     }
 }

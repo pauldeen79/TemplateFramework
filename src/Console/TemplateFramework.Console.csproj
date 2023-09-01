@@ -27,6 +27,7 @@
     <ProjectReference Include="..\Core\TemplateFramework.Core.csproj" />
     <ProjectReference Include="..\TemplateProviders.ChildTemplateProvider\TemplateFramework.TemplateProviders.ChildTemplateProvider.csproj" />
     <ProjectReference Include="..\TemplateProviders.CompiledTemplateProvider\TemplateFramework.TemplateProviders.CompiledTemplateProvider.csproj" />
+    <ProjectReference Include="..\TemplateProviders.FormattableStringTemplateProvider\TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,10 +35,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="System.Diagnostics.CodeAnalysis" />
     <Using Include="CommunityToolkit.Diagnostics" />
+    <Using Include="CrossCutting.Utilities.Parsers.Extensions" />
     <Using Include="McMaster.Extensions.CommandLineUtils" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="System.Diagnostics.CodeAnalysis" />
     <Using Include="System.Globalization" />
     <Using Include="System.Text" />
     <Using Include="TemplateFramework.Abstractions" />
@@ -57,6 +59,7 @@
     <Using Include="TemplateFramework.TemplateProviders.ChildTemplateProvider.Extensions" />
     <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.Extensions" />
     <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.Requests" />
+    <Using Include="TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.Extensions" />
     <Using Include="TextCopy" />
   </ItemGroup>
 

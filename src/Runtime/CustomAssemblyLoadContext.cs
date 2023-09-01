@@ -24,6 +24,11 @@ public sealed class CustomAssemblyLoadContext : AssemblyLoadContext
             return null!;
         }
 
+        if (assemblyName.Name?.StartsWith("TemplateFramework", StringComparison.InvariantCulture) == true)
+        {
+            return null!;
+        }
+
         var customPath = CustomPathsDelegate.Invoke()
             .Select(directory => Path.Combine(directory, assemblyName.Name + ".dll"))
             .FirstOrDefault(File.Exists);
