@@ -35,6 +35,9 @@ public static class Program
     {
         public string[] GetExcludedAssemblies() => new[]
         {
+            "System.Runtime",
+            "System.Collections",
+            "System.ComponentModel",
             "TemplateFramework.Abstractions",
             "TemplateFramework.Console",
             "TemplateFramework.Core",
