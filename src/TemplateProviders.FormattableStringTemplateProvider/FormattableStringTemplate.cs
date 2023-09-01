@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.TemplateProviders.FormattableStringTemplateProvider;
 
-public class FormattableStringTemplate : IParameterizedTemplate, IStringBuilderTemplate, IMultipleContentBuilderTemplate, IDefaultFilenameContainer
+public class FormattableStringTemplate : IParameterizedTemplate, IStringBuilderTemplate
 {
     private readonly FormattableStringTemplateIdentifier _createFormattableStringTemplateRequest;
     private readonly IFormattableStringParser _formattableStringParser;
@@ -18,8 +18,6 @@ public class FormattableStringTemplate : IParameterizedTemplate, IStringBuilderT
 
         _parametersDictionary = new Dictionary<string, object?>();
     }
-
-    public string DefaultFilename { get; set; } = "";
 
     public ITemplateParameter[] GetParameters()
     {
@@ -40,14 +38,6 @@ public class FormattableStringTemplate : IParameterizedTemplate, IStringBuilderT
         var result = _formattableStringParser.Parse(_createFormattableStringTemplateRequest.Template, _createFormattableStringTemplateRequest.FormatProvider, context).GetValueOrThrow();
 
         builder.Append(result);
-    }
-
-    public void Render(IMultipleContentBuilder builder)
-    {
-        Guard.IsNotNull(builder);
-
-        // Convert single output to multiple output
-        this.RenderToMultipleContentBuilder(builder, DefaultFilename, false);
     }
 
     public void SetParameter(string name, object? value) => _parametersDictionary[name] = value;

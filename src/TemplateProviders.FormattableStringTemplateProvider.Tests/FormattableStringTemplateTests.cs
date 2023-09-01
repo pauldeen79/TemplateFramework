@@ -56,7 +56,7 @@ public class FormattableStringTemplateTests
         }
     }
 
-    public class Render_MultipleContentBuilder : FormattableStringTemplateTests
+    public class Render : FormattableStringTemplateTests
     {
         [Fact]
         public void Throws_On_Null_Builder()
@@ -65,7 +65,7 @@ public class FormattableStringTemplateTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Render(builder: default(IMultipleContentBuilder)!))
+            sut.Invoking(x => x.Render(builder: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("builder");
         }
 
