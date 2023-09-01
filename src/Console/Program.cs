@@ -21,11 +21,32 @@ public static class Program
             .AddTemplateFrameworkChildTemplateProvider()
             .AddTemplateFrameworkFormattableStringTemplateProvider()
             .AddTemplateFrameworkRuntime()
-            .AddTemplateCommands();
+            .AddTemplateCommands()
+            .AddSingleton<IAssemblyInfoContextService, MyAssemblyInfoContextService>();
         serviceCollection.InjectClipboard();
         using var provider = serviceCollection.BuildServiceProvider();
         var processor = provider.GetRequiredService<ICommandLineProcessor>();
         processor.Initialize(app);
+
         return app.Execute(args);
+    }
+
+    private sealed class MyAssemblyInfoContextService : IAssemblyInfoContextService
+    {
+        public string[] GetExcludedAssemblies() => new[]
+        {
+            "TemplateFramework.Abstractions",
+            "TemplateFramework.Console",
+            "TemplateFramework.Core",
+            "TemplateFramework.Core.CodeGeneration",
+            "TemplateFramework.Runtime",
+            "TemplateFramework.TemplateProviders.ChildTemplateProvider",
+            "TemplateFramework.TemplateProviders.CompiledTemplateProvider",
+            "TemplateFramework.TemplateProviders.FormattableStringTemplateProvider",
+            "CrossCutting.Common",
+            "CrossCutting.Utilities.Parsers",
+            "Microsoft.Extensions.DependencyInjection",
+            "Microsoft.Extensions.DependencyInjection.Abstractions"
+        };
     }
 }
