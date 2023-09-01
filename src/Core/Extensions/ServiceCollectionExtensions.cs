@@ -16,6 +16,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<ITemplateInitializerComponent, ParameterInitializerComponent>()
             .AddScoped<ITemplateInitializerComponent, ContextInitializerComponent>()
             .AddScoped<ITemplateInitializerComponent, DefaultFilenameInitializerComponent>()
+            .AddScoped<ITemplateInitializerComponent, ProviderPluginInitializerComponent>()
             .AddScoped<ITemplateParameterExtractorComponent, TypedExtractor>()
             .AddScoped<ITemplateParameterExtractorComponent, PropertyExtractor>()
             .AddScoped<IValueConverter, ValueConverter>()
