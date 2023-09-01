@@ -31,7 +31,7 @@ public static class Program
         return app.Execute(args);
     }
 
-    private sealed class MyAssemblyInfoContextService : IAssemblyInfoContextService
+    public sealed class MyAssemblyInfoContextService : IAssemblyInfoContextService
     {
         public string[] GetExcludedAssemblies() => new[]
         {
