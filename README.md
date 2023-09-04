@@ -24,6 +24,7 @@ If you want to use the template abstraction level, then you have to make sure th
 - TemplateFramework.Abstractions: Interfaces for templates, code generation providers and generation environments
 - TemplateFramework.Core: Template engine and code generation engine, and all needed implementations for abstractions
 - TemplateFramework.Console: Dotnet tool that can be launched from command line (using tf command)
+- TemplateFramework.Runtime: Run-time infrastructure, to load assemblies
 - TemplateFramework.TemplateProviders.ChildTemplateProvider: Adds support for child templates
 - TemplateFramework.TemplateProviders.CompiledTemplateProvider: Adds support for compiled templates
 - TemplateFramework.TemplateProviders.FormattableStringTemplateProvider: Adds support for text-based templates with formattable strings
