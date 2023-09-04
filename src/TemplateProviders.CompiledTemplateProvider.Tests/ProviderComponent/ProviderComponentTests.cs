@@ -3,5 +3,7 @@
 public partial class ProviderComponentTests
 {
     protected Mock<IAssemblyService> AssemblyServiceMock { get; } = new();
-    protected ProviderComponent CreateSut() => new(AssemblyServiceMock.Object);
+    protected Mock<ITemplateFactory> CompiledTemplateFactoryMock { get; } = new();
+
+    protected ProviderComponent CreateSut() => new(AssemblyServiceMock.Object, CompiledTemplateFactoryMock.Object);
 }

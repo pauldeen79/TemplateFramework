@@ -84,14 +84,14 @@ public class ProviderComponentTests
         }
         
         [Fact]
-        public void Returns_FormattableStringTemplate_On_Request_Of_Correct_Type()
+        public void Returns_FormattableStringTemplate_On_Identifier_Of_Correct_Type()
         {
             // Arrange
             var sut = CreateSut();
-            var request = new FormattableStringTemplateIdentifier("template", CultureInfo.CurrentCulture);
+            var identifier = new FormattableStringTemplateIdentifier("template", CultureInfo.CurrentCulture);
 
             // Act
-            var result = sut.Create(request);
+            var result = sut.Create(identifier);
 
             // Assert
             result.Should().BeOfType<FormattableStringTemplate>();

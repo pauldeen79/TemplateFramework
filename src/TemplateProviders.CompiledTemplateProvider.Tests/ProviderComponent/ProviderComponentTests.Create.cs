@@ -38,6 +38,7 @@ public partial class ProviderComponentTests
         {
             // Arrange
             var sut = CreateSut();
+            CompiledTemplateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
 
             // Act
             var instance = sut.Create(new CreateCompiledTemplateRequest(GetType().Assembly.FullName!, GetType().FullName!));
@@ -56,6 +57,17 @@ public partial class ProviderComponentTests
             // Act & Assert
             sut.Invoking(x => x.Create(new CreateCompiledTemplateRequest(GetType().Assembly.FullName!, "WrongName")))
                .Should().Throw<InvalidOperationException>();
+        }
+
+        [Fact]
+        public void Throws_When_Factory_Does_Not_Create_A_Template_Instance()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act & Assert
+            sut.Invoking(x => x.Create(new CreateCompiledTemplateRequest(GetType().Assembly.FullName!, GetType().FullName!)))
+               .Should().Throw<InvalidOperationException>().WithMessage("Could not create instance of type TemplateFramework.TemplateProviders.CompiledTemplateProvider.Tests.ProviderComponentTests+Create");
         }
     }
 }

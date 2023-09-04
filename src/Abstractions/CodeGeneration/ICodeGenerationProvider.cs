@@ -7,7 +7,7 @@ public interface ICodeGenerationProvider
     string LastGeneratedFilesFilename { get; }
     Encoding Encoding { get; }
 
-    object CreateGenerator();
+    Type GetGeneratorType();
     object? CreateAdditionalParameters();
     object? CreateModel();
 }

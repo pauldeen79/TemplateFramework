@@ -17,8 +17,6 @@ public class CustomAssemblyService : IAssemblyService
         Guard.IsNotNull(assemblyName);
         Guard.IsNotNull(currentDirectory);
 
-        // This is kind of quirk mode, with an assembly name.
-        // Works as long as you are using the same package reference on both sides. (the host program and the plug-in assembly)
         var context = new CustomAssemblyLoadContext("TemplateFramework.Core.CodeGeneration", true, _assemblyInfoContextService, () => new[] { currentDirectory });
         return LoadAssembly(context, assemblyName, currentDirectory);
     }

@@ -14,6 +14,8 @@ public class ServiceCollectionExtensionsTests
             .AddTemplateFrameworkRuntime()
             .AddTemplateCommands()
             .AddSingleton(new Mock<IAssemblyInfoContextService>().Object)
+            .AddSingleton(new Mock<ITemplateFactory>().Object)
+            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
             .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
 
         // Assert

@@ -95,7 +95,7 @@ public class ParameterInitializerTests
             var sut = CreateSut();
             var model = "Hello world!";
             var additionalParameters = new { AdditionalParameter = "Hello world!", Model = "Ignored" };
-            var template = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
+            var template = new PlainTemplateWithModelAndAdditionalParameters<string>();
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), model, new StringBuilder(), DefaultFilename, additionalParameters);
             var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, template);
             ValueConverterMock.Setup(x => x.Convert(It.IsAny<object?>(), It.IsAny<Type>())).Returns<object?, Type>((value, type) => value);
@@ -113,8 +113,8 @@ public class ParameterInitializerTests
         {
             // Arrange
             var sut = CreateSut();
-            var template = new TestData.TemplateWithViewModel<TestData.NonConstructableViewModel>(_ => { });
-            var viewModel = new TestData.NonConstructableViewModel("Some value");
+            var template = new TemplateWithViewModel<NonConstructableViewModel>(_ => { });
+            var viewModel = new NonConstructableViewModel("Some value");
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters: new { ViewModel = viewModel });
             var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, template);
             ValueConverterMock.Setup(x => x.Convert(It.IsAny<object?>(), It.IsAny<Type>())).Returns<object?, Type>((value, type) => value);
@@ -146,23 +146,7 @@ public class ParameterInitializerTests
         }
 
         [Fact]
-        public void Skips_AdditionalParameters_When_Template_Does_Not_Implement_IParameterizedTemplate_And_Property_Is_Missing_1()
-        {
-            // Arrange
-            var sut = CreateSut();
-            var additionalParameters = new { WrongParameter = "Hello world!" };
-            var template = new PocoParameterizedTemplate();
-            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
-            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, template);
-            ValueConverterMock.Setup(x => x.Convert(It.IsAny<object?>(), It.IsAny<Type>())).Returns<object?, Type>((value, type) => value);
-            TemplateEngineMock.Setup(x => x.GetParameters(It.IsAny<object>())).Returns(new[] { new TemplateParameter(nameof(additionalParameters.WrongParameter), typeof(string)) });
-
-            // Act & Assert
-            sut.Invoking(x => x.Initialize(engineContext)).Should().NotThrow();
-        }
-
-        [Fact]
-        public void Skips_AdditionalParameters_When_Template_Does_Not_Implement_IParameterizedTemplate_And_Property_Is_Missing_2()
+        public void Skips_AdditionalParameters_When_Template_Does_Not_Implement_IParameterizedTemplate_And_Property_Is_Missing()
         {
             // Arrange
             var sut = CreateSut();

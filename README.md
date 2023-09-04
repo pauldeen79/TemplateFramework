@@ -24,6 +24,7 @@ If you want to use the template abstraction level, then you have to make sure th
 - TemplateFramework.Abstractions: Interfaces for templates, code generation providers and generation environments
 - TemplateFramework.Core: Template engine and code generation engine, and all needed implementations for abstractions
 - TemplateFramework.Console: Dotnet tool that can be launched from command line (using tf command)
+- TemplateFramework.Runtime: Run-time infrastructure, to load assemblies
 - TemplateFramework.TemplateProviders.ChildTemplateProvider: Adds support for child templates
 - TemplateFramework.TemplateProviders.CompiledTemplateProvider: Adds support for compiled templates
 - TemplateFramework.TemplateProviders.FormattableStringTemplateProvider: Adds support for text-based templates with formattable strings
@@ -75,10 +76,7 @@ There are more options to choose from.
 
 The first option is to write a custom host. Add the references to the Core and TemplateProviders.CompiledTemplateProvider packages.
 
-The second option is to use the plug-in architecture as documented by Microsoft. (https://learn.microsoft.com/en-us/dotnet/core/tutorials/creating-app-with-plugin-support)
-Note that this option hasn't been tested yet.
-
-The third option is to add the following property to your template assembly:
+The second option is to add the following property to your template assembly, so your build output directory contains all referenced assemblies from package references:
 ```xml
   <PropertyGroup>
     ...
@@ -86,6 +84,25 @@ The third option is to add the following property to your template assembly:
     ...
   </PropertyGroup>
 ```
+
+The third option is to publish your template assembly, and use the publishing output directory.
+
+Note that the following assemblies will be loaded from the host (Console) command tool, so make sure you use the same versions referenced from there:
+- TemplateFramework.Abstractions
+- TemplateFramework.Console
+- TemplateFramework.Core
+- TemplateFramework.Core.CodeGeneration
+- TemplateFramework.Runtime
+- TemplateFramework.TemplateProviders.ChildTemplateProvider
+- TemplateFramework.TemplateProviders.CompiledTemplateProvider
+- TemplateFramework.TemplateProviders.FormattableStringTemplateProvider
+- CrossCutting.Common (2.7.57)
+- CrossCutting.Utilities.Parsers (2.7.57)
+- Microsoft.Extensions.DependencyInjection (7.0.0)
+- Microsoft.Extensions.DependencyInjection.Abstractions (7.0.0)
+
+Right now, the all TemplateFramework assemblies are built in one build pipeline within one GitHub repository, so all version numbers of the TemplateFramework assemblies are the same.
+This means, that if you install version x.y of TemplateFramework.Console, then your template assemblies should also use version x.y of TemplateFramework package references. (most likely TemplateFramework.Abstractions)
 
 # How to call child templates from your main template
 If you want to render child templates from your main (root) template, then you have to implement this interfaces from the TemplateFramework.Abstractions package: ITemplateContextContainer.
@@ -101,3 +118,22 @@ Then, in your template, call the Render method on the TemplateEngine instance. (
 As context, create a child context using the CreateChildContext method on the TemplateContext instance.
 
 There is also an integration test in the TemplateFramework.TemplateProviders.ChildTemplateProvider test project to demonstrate this.
+
+# How to register child templates to be used from a template
+In order to register child templates, so that they can be resolved from the (root) template that's being rendered, you have to create a class that implements the following interface, from the TemplateFramework.Abstractions package:
+
+```C#
+public interface ITemplateProviderPlugin
+{
+    void Initialize(ITemplateProvider provider);
+}
+```
+
+Then, from the command line, you have to specify the class name of this class, using the --templateproviderplugin or -t argument.
+Note that the current version expects this class to be in the same assembly as the template assembly.
+
+# How to register child templates to be used from a code generation provider
+
+If you use one or more code generation providers, then each code generation provider (ICodeGenerationProvider implementation) also can implement this ITemplateProviderPlugin interface, to register additional child templates.
+Note that if you don't supply a filter on the command line, then all code generation providers will be checked for this interace.
+If you have conflicting child template names or model types within the same assembly, you have to use a filter to run just one code generation provider instead of all types from the assembly.
