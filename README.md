@@ -75,10 +75,7 @@ There are more options to choose from.
 
 The first option is to write a custom host. Add the references to the Core and TemplateProviders.CompiledTemplateProvider packages.
 
-The second option is to use the plug-in architecture as documented by Microsoft. (https://learn.microsoft.com/en-us/dotnet/core/tutorials/creating-app-with-plugin-support)
-Note that this option hasn't been tested yet.
-
-The third option is to add the following property to your template assembly:
+The second option is to add the following property to your template assembly:
 ```xml
   <PropertyGroup>
     ...
@@ -86,6 +83,25 @@ The third option is to add the following property to your template assembly:
     ...
   </PropertyGroup>
 ```
+
+The third option is to publish your template assembly, and use the publishing output directory.
+
+Note that the following assemblies will be loaded from the host (Console) command tool, so make sure you use the same versions referenced from there:
+- TemplateFramework.Abstractions
+- TemplateFramework.Console
+- TemplateFramework.Core
+- TemplateFramework.Core.CodeGeneration
+- TemplateFramework.Runtime
+- TemplateFramework.TemplateProviders.ChildTemplateProvider
+- TemplateFramework.TemplateProviders.CompiledTemplateProvider
+- TemplateFramework.TemplateProviders.FormattableStringTemplateProvider
+- CrossCutting.Common (2.7.57)
+- CrossCutting.Utilities.Parsers (2.7.57)
+- Microsoft.Extensions.DependencyInjection (7.0.0)
+- Microsoft.Extensions.DependencyInjection.Abstractions (7.0.0)
+
+Right now, the all TemplateFramework assemblies are built in one build pipeline within one GitHub repository, so all version numbers of the TemplateFramework assemblies are the same.
+This means, that if you install version x.y of TemplateFramework.Console, then your template assemblies should also use version x.y of TemplateFramework package references. (most likely TemplateFramework.Abstractions)
 
 # How to call child templates from your main template
 If you want to render child templates from your main (root) template, then you have to implement this interfaces from the TemplateFramework.Abstractions package: ITemplateContextContainer.
