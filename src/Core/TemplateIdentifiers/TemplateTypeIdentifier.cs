@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core;
+﻿namespace TemplateFramework.Core.TemplateIdentifiers;
 
 public sealed class TemplateTypeIdentifier : ITemplateIdentifier
 {

@@ -60,6 +60,7 @@
     <Using Include="TemplateFramework.Core.Extensions" />
     <Using Include="TemplateFramework.Core.GenerationEnvironments" />
     <Using Include="TemplateFramework.Core.Requests" />
+    <Using Include="TemplateFramework.Core.TemplateIdentifiers" />
     <Using Include="TemplateFramework.TemplateProviders.ChildTemplateProvider.Abstractions" />
     <Using Include="TemplateFramework.TemplateProviders.ChildTemplateProvider.Extensions" />
     <Using Include="TemplateFramework.TemplateProviders.ChildTemplateProvider.TemplateIdentifiers" />

@@ -56,6 +56,7 @@
     <Using Include="TemplateFramework.Core.MultipleContentBuilderTemplateCreators" />
     <Using Include="TemplateFramework.Core.Requests" />
     <Using Include="TemplateFramework.Core.StringBuilderTemplateRenderers" />
+    <Using Include="TemplateFramework.Core.TemplateIdentifiers" />
     <Using Include="TemplateFramework.Core.TemplateInitializerComponents" />
     <Using Include="TemplateFramework.Core.TemplateParameterExtractorComponents" />
     <Using Include="TemplateFramework.Core.TemplateProviderComponents" />
