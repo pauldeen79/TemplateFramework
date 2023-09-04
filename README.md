@@ -76,7 +76,7 @@ There are more options to choose from.
 
 The first option is to write a custom host. Add the references to the Core and TemplateProviders.CompiledTemplateProvider packages.
 
-The second option is to add the following property to your template assembly:
+The second option is to add the following property to your template assembly, so your build output directory contains all referenced assemblies from package references:
 ```xml
   <PropertyGroup>
     ...
