@@ -19,13 +19,12 @@ public class IntegrationTests
             .BuildServiceProvider();
         var sut = serviceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = new IntegrationProvider();
-        var templateProvider = new Mock<ITemplateProvider>().Object;
         var builder = new MultipleContentBuilder();
         var generationEnvironment = new MultipleContentBuilderEnvironment(serviceProvider.GetRequiredService<IFileSystem>(), serviceProvider.GetRequiredService<IRetryMechanism>(), builder);
         _templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
 
         // Act
-        sut.Generate(codeGenerationProvider, templateProvider, generationEnvironment, new CodeGenerationSettings(TestData.BasePath, "DefaultFilename.txt", false));
+        sut.Generate(codeGenerationProvider, generationEnvironment, new CodeGenerationSettings(TestData.BasePath, "DefaultFilename.txt", false));
 
         // Assert
         builder.Contents.Should().ContainSingle();

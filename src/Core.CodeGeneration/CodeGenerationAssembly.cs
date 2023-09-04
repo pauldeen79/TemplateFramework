@@ -3,23 +3,19 @@
 public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
 {
     private readonly ICodeGenerationEngine _codeGenerationEngine;
-    private readonly ITemplateProvider _templateProvider;
     private readonly IAssemblyService _assemblyService;
     private readonly IEnumerable<ICodeGenerationProviderCreator> _creators;
 
     public CodeGenerationAssembly(
         ICodeGenerationEngine codeGenerationEngine,
-        ITemplateProvider templateProvider,
         IAssemblyService assemblyService,
         IEnumerable<ICodeGenerationProviderCreator> creators)
     {
         Guard.IsNotNull(codeGenerationEngine);
-        Guard.IsNotNull(templateProvider);
         Guard.IsNotNull(assemblyService);
         Guard.IsNotNull(creators);
 
         _codeGenerationEngine = codeGenerationEngine;
-        _templateProvider = templateProvider;
         _assemblyService = assemblyService;
         _creators = creators;
     }
@@ -33,7 +29,7 @@ public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
 
         foreach (var codeGenerationProvider in GetCodeGeneratorProviders(assembly, settings.ClassNameFilter))
         {
-            _codeGenerationEngine.Generate(codeGenerationProvider, _templateProvider, generationEnvironment, settings);
+            _codeGenerationEngine.Generate(codeGenerationProvider, generationEnvironment, settings);
         }
     }
 

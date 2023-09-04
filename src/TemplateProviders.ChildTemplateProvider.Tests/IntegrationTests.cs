@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests;
+﻿namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests;
 
 public class IntegrationTests
 {
@@ -46,12 +44,11 @@ public class IntegrationTests
             .BuildServiceProvider();
 
         var engine = provider.GetRequiredService<ICodeGenerationEngine>();
-        var templateProvider = provider.GetRequiredService<ITemplateProvider>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
         var settings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        engine.Generate(new CsharpClassGeneratorCodeGenerationProvider(), templateProvider, generationEnvironment, settings);
+        engine.Generate(new CsharpClassGeneratorCodeGenerationProvider(), generationEnvironment, settings);
 
         // Assert
         generationEnvironment.Builder.Contents.Should().HaveCount(4);
