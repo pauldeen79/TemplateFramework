@@ -38,6 +38,7 @@ public partial class ProviderComponentTests
             // Arrange
             var sut = CreateSut();
             var identifier = new TemplateByModelIdentifier(this);
+            TemplateCreatorMock.Setup(x => x.SupportsModel(It.IsAny<object?>())).Returns(true);
 
             // Act
             var result = sut.Supports(identifier);
@@ -52,6 +53,7 @@ public partial class ProviderComponentTests
             // Arrange
             var sut = CreateSut();
             var identifier = new TemplateByNameIdentifier(nameof(Returns_True_On_CreateTemplateByNameRequest));
+            TemplateCreatorMock.Setup(x => x.SupportsName(It.IsAny<string>())).Returns(true);
 
             // Act
             var result = sut.Supports(identifier);

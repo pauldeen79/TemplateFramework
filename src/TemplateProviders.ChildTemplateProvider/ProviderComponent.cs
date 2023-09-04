@@ -49,5 +49,7 @@ public sealed class ProviderComponent : ITemplateProviderComponent
         return creator.CreateByName(name) ?? throw new InvalidOperationException("Child template creator returned a null instance");
     }
 
-    public bool Supports(ITemplateIdentifier identifier) => identifier is TemplateByModelIdentifier or TemplateByNameIdentifier;
+    public bool Supports(ITemplateIdentifier identifier)
+        => identifier is TemplateByModelIdentifier m && _childTemplateCreators.Any(x => x.SupportsModel(m.Model))
+        || identifier is TemplateByNameIdentifier n && _childTemplateCreators.Any(x => x.SupportsName(n.Name));
 }
