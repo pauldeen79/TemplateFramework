@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.Metrics;
-
-namespace TemplateFramework.Core.CodeGeneration.Tests;
+﻿namespace TemplateFramework.Core.CodeGeneration.Tests;
 
 public partial class CodeGenerationEngineTests
 {
@@ -13,19 +11,8 @@ public partial class CodeGenerationEngineTests
             var sut = CreateSut();
 
             // Act
-            sut.Invoking(x => x.Generate(codeGenerationProvider: null!, TemplateProviderMock.Object, GenerationEnvironmentMock.Object, CodeGenerationSettingsMock.Object))
+            sut.Invoking(x => x.Generate(codeGenerationProvider: null!, GenerationEnvironmentMock.Object, CodeGenerationSettingsMock.Object))
                .Should().Throw<ArgumentNullException>().WithParameterName("codeGenerationProvider");
-        }
-
-        [Fact]
-        public void Throws_On_Null_TemplateProvider()
-        {
-            // Arrange
-            var sut = CreateSut();
-
-            // Act
-            sut.Invoking(x => x.Generate(CodeGenerationProviderMock.Object, templateProvider: null!, GenerationEnvironmentMock.Object, CodeGenerationSettingsMock.Object))
-               .Should().Throw<ArgumentNullException>().WithParameterName("templateProvider");
         }
 
         [Fact]
@@ -35,7 +22,7 @@ public partial class CodeGenerationEngineTests
             var sut = CreateSut();
 
             // Act
-            sut.Invoking(x => x.Generate(CodeGenerationProviderMock.Object, TemplateProviderMock.Object, generationEnvironment: null!, CodeGenerationSettingsMock.Object))
+            sut.Invoking(x => x.Generate(CodeGenerationProviderMock.Object, generationEnvironment: null!, CodeGenerationSettingsMock.Object))
                .Should().Throw<ArgumentNullException>().WithParameterName("generationEnvironment");
         }
 
@@ -46,7 +33,7 @@ public partial class CodeGenerationEngineTests
             var sut = CreateSut();
 
             // Act
-            sut.Invoking(x => x.Generate(CodeGenerationProviderMock.Object, TemplateProviderMock.Object, GenerationEnvironmentMock.Object, settings: null!))
+            sut.Invoking(x => x.Generate(CodeGenerationProviderMock.Object, GenerationEnvironmentMock.Object, settings: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("settings");
         }
 
@@ -63,7 +50,7 @@ public partial class CodeGenerationEngineTests
             CodeGenerationSettingsMock.SetupGet(x => x.DefaultFilename).Returns("Filename.txt");
 
             // Act
-            sut.Generate(CodeGenerationProviderMock.Object, TemplateProviderMock.Object, GenerationEnvironmentMock.Object, CodeGenerationSettingsMock.Object);
+            sut.Generate(CodeGenerationProviderMock.Object, GenerationEnvironmentMock.Object, CodeGenerationSettingsMock.Object);
 
             // Assert
             GenerationEnvironmentMock.Verify(x => x.SaveContents(CodeGenerationProviderMock.Object, TestData.BasePath, "Filename.txt"), Times.Once);
@@ -81,7 +68,7 @@ public partial class CodeGenerationEngineTests
             CodeGenerationSettingsMock.SetupGet(x => x.DefaultFilename).Returns("Filename.txt");
 
             // Act
-            sut.Generate(CodeGenerationProviderMock.Object, TemplateProviderMock.Object, GenerationEnvironmentMock.Object, CodeGenerationSettingsMock.Object);
+            sut.Generate(CodeGenerationProviderMock.Object, GenerationEnvironmentMock.Object, CodeGenerationSettingsMock.Object);
 
             // Assert
             GenerationEnvironmentMock.Verify(x => x.SaveContents(CodeGenerationProviderMock.Object, TestData.BasePath, "Filename.txt"), Times.Never);
@@ -99,7 +86,7 @@ public partial class CodeGenerationEngineTests
             CodeGenerationSettingsMock.SetupGet(x => x.DefaultFilename).Returns("Filename.txt");
 
             // Act
-            sut.Generate(provider, TemplateProviderMock.Object, GenerationEnvironmentMock.Object, CodeGenerationSettingsMock.Object);
+            sut.Generate(provider, GenerationEnvironmentMock.Object, CodeGenerationSettingsMock.Object);
 
             // Assert
             counter.Should().Be(1);

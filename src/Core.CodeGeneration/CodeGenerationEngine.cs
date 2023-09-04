@@ -2,27 +2,29 @@
 
 public sealed class CodeGenerationEngine : ICodeGenerationEngine
 {
-    public CodeGenerationEngine(ITemplateEngine templateEngine, ITemplateFactory templateFactory)
+    public CodeGenerationEngine(ITemplateEngine templateEngine, ITemplateFactory templateFactory, ITemplateProvider templateProvider)
     {
         Guard.IsNotNull(templateEngine);
         Guard.IsNotNull(templateFactory);
+        Guard.IsNotNull(templateProvider);
 
         _templateEngine = templateEngine;
         _templateFactory = templateFactory;
+        _templateProvider = templateProvider;
     }
 
     private readonly ITemplateEngine _templateEngine;
     private readonly ITemplateFactory _templateFactory;
+    private readonly ITemplateProvider _templateProvider;
 
-    public void Generate(ICodeGenerationProvider codeGenerationProvider, ITemplateProvider templateProvider, IGenerationEnvironment generationEnvironment, ICodeGenerationSettings settings)
+    public void Generate(ICodeGenerationProvider codeGenerationProvider, IGenerationEnvironment generationEnvironment, ICodeGenerationSettings settings)
     {
         Guard.IsNotNull(codeGenerationProvider);
-        Guard.IsNotNull(templateProvider);
         Guard.IsNotNull(generationEnvironment);
         Guard.IsNotNull(settings);
 
         var plugin = codeGenerationProvider as ITemplateProviderPlugin;
-        plugin?.Initialize(templateProvider);
+        plugin?.Initialize(_templateProvider);
 
         _templateEngine.Render(
             new RenderTemplateRequest
