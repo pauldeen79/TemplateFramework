@@ -61,7 +61,7 @@ public class RunTemplateCommand : CommandBase
                 Watch(app, watchOption.HasValue(), assemblyName, () =>
                 {
                     var generationEnvironment = new MultipleContentBuilderEnvironment();
-                    var createTemplateRequest = GetCreateTemplateRequest(assemblyName, className!, currentDirectory);
+                    var createTemplateRequest = new CreateCompiledTemplateRequest(assemblyName, className!, currentDirectory);
 
                     var template = _templateProvider.Create(createTemplateRequest);
                     if (interactiveOption.HasValue())
@@ -95,11 +95,6 @@ public class RunTemplateCommand : CommandBase
 
         return list.ToArray();
     }
-
-    private static CreateCompiledTemplateRequest GetCreateTemplateRequest(string assemblyName, string className, string? currentDirectory)
-        => string.IsNullOrEmpty(currentDirectory)
-            ? new CreateCompiledTemplateRequest(assemblyName, className!)
-            : new CreateCompiledTemplateRequest(assemblyName, className!, currentDirectory);
 
     private KeyValuePair<string, object?>[] MergeParameters(KeyValuePair<string, object?>[] parameters, KeyValuePair<string, object?>[] extractedTemplateParameters)
         => parameters

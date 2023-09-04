@@ -2,11 +2,11 @@
 
 public sealed class CreateCompiledTemplateRequest : ITemplateIdentifier
 {
-    public CreateCompiledTemplateRequest(string assemblyName, string className) : this(assemblyName, className, string.Empty)
+    public CreateCompiledTemplateRequest(string assemblyName, string className) : this(assemblyName, className, null)
     {
     }
 
-    public CreateCompiledTemplateRequest(string assemblyName, string className, string currentDirectory)
+    public CreateCompiledTemplateRequest(string assemblyName, string className, string? currentDirectory)
     {
         Guard.IsNotNullOrEmpty(assemblyName);
         Guard.IsNotNullOrEmpty(className);
