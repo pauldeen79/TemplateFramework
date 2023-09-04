@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Core.TemplateIdentifiers;
 
-public sealed class TemplateInstanceIdentifier : ITemplateIdentifier
+public class TemplateInstanceIdentifier : ITemplateIdentifier
 {
     public TemplateInstanceIdentifier(object instance)
     {

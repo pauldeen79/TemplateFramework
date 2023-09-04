@@ -19,7 +19,7 @@ public sealed class ProviderComponent : ITemplateProviderComponent
     public object Create(ITemplateIdentifier identifier)
     {
         Guard.IsNotNull(identifier);
-        Guard.IsOfType<CreateCompiledTemplateRequest>(identifier);
+        Guard.IsAssignableToType<CreateCompiledTemplateRequest>(identifier);
 
         var createCompiledTemplateRequest = (CreateCompiledTemplateRequest)identifier;
         var assembly = _assemblyService.GetAssembly(createCompiledTemplateRequest.AssemblyName, createCompiledTemplateRequest.CurrentDirectory);

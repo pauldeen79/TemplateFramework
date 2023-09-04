@@ -17,6 +17,13 @@ public sealed class PlainTemplateWithAdditionalParameters : IParameterizedTempla
     public override string ToString() => AdditionalParameter;
 }
 
+public sealed class TestTemplateProviderPlugin : ITemplateProviderPlugin
+{
+    public void Initialize(ITemplateProvider provider)
+    {
+    }
+}
+
 internal static class TestData
 {
 #if Windows

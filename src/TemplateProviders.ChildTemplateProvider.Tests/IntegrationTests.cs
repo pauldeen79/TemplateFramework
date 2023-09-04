@@ -12,6 +12,7 @@ public class IntegrationTests
             .AddTemplateFramework()
             .AddTemplateFrameworkChildTemplateProvider()
             .AddChildTemplate("MyTemplate", _ => new TestData.PlainTemplateWithTemplateContext(context => "Context IsRootContext: " + context.IsRootContext))
+            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
             .BuildServiceProvider();
         var engine = provider.GetRequiredService<ITemplateEngine>();
 
@@ -41,6 +42,7 @@ public class IntegrationTests
             .AddTemplateFrameworkChildTemplateProvider()
             .AddTemplateFrameworkCodeGeneration()
             .AddSingleton(templateFactoryMock.Object) // note that normally, this class needs to be implemented by the host. (like TemplateFramework.Console)
+            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object) // note that normally, this class needs to be implemented by the host. (like TemplateFramework.Console)
             .BuildServiceProvider();
 
         var engine = provider.GetRequiredService<ICodeGenerationEngine>();

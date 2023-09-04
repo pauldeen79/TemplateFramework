@@ -14,6 +14,7 @@ public class IntegrationTests
             .AddTemplateFrameworkCompiledTemplateProvider()
             .AddSingleton(new Mock<IAssemblyInfoContextService>().Object)
             .AddSingleton(templateFactoryMock.Object)
+            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
             .BuildServiceProvider();
         var templateProvider = provider.GetRequiredService<ITemplateProvider>();
         var template = templateProvider.Create(new CreateCompiledTemplateRequest(GetType().Assembly.FullName!, typeof(MyTemplate).FullName!));

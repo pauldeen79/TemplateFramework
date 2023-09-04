@@ -26,6 +26,7 @@ public class RunTemplateCommand : CommandBase
 
             var assemblyOption = command.Option<string>("-a|--assembly <ASSEMBLY>", "The assembly name", CommandOptionType.SingleValue);
             var classNameOption = command.Option<string>("-n|--classname <CLASSNAME>", "The template class name", CommandOptionType.SingleValue);
+            var templateProviderPluginClassNameOption = command.Option<string>("-t|--templateproviderplugin <CLASSNAME>", "Optional class name for a template provider plug-in", CommandOptionType.SingleValue);
             var watchOption = command.Option<string>("-w|--watch", "Watches for file changes", CommandOptionType.NoValue);
             var dryRunOption = command.Option<bool>("-r|--dryrun", "Indicator whether a dry run should be performed", CommandOptionType.NoValue);
             var basePathOption = command.Option<string>("-p|--path", "Base path for code generation", CommandOptionType.SingleValue);
@@ -53,6 +54,7 @@ public class RunTemplateCommand : CommandBase
                 }
 
                 var currentDirectory = GetCurrentDirectory(currentDirectoryOption.Value(), assemblyName!);
+                var templateProviderPluginClassName = templateProviderPluginClassNameOption.Value();
                 var basePath = GetBasePath(basePathOption.Value());
                 var defaultFilename = GetDefaultFilename(defaultFilenameOption.Value());
                 var dryRun = GetDryRun(dryRunOption.HasValue(), clipboardOption.HasValue());
@@ -61,7 +63,7 @@ public class RunTemplateCommand : CommandBase
                 Watch(app, watchOption.HasValue(), assemblyName, () =>
                 {
                     var generationEnvironment = new MultipleContentBuilderEnvironment();
-                    var createTemplateRequest = new CreateCompiledTemplateRequest(assemblyName, className!, currentDirectory);
+                    var createTemplateRequest = new CreateCompiledTemplateRequest(assemblyName, className, currentDirectory);
 
                     var template = _templateProvider.Create(createTemplateRequest);
                     if (interactiveOption.HasValue())
@@ -69,7 +71,8 @@ public class RunTemplateCommand : CommandBase
                         parameters = MergeParameters(parameters, GetInteractiveParameterValues(_templateEngine.GetParameters(template)));
                     }
 
-                    _templateEngine.Render(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), null, generationEnvironment, defaultFilename, parameters, null));
+                    var context = new TemplateContext(_templateEngine, _templateProvider, defaultFilename, createTemplateRequest, template);
+                    _templateEngine.Render(new RenderTemplateRequest(new TemplateInstanceIdentifierWithTemplateProvider(template, currentDirectory, assemblyName, templateProviderPluginClassName), null, generationEnvironment, defaultFilename, parameters, context));
 
                     WriteOutput(app, generationEnvironment, basePath, bareOption.HasValue(), clipboardOption.HasValue(), dryRun);
                 });

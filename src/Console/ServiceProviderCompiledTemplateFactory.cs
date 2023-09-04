@@ -1,7 +1,7 @@
 ﻿namespace TemplateFramework.Console;
 
 [ExcludeFromCodeCoverage]
-public class DynamicCompiledTemplateFactory : ITemplateFactory
+public class ServiceProviderCompiledTemplateFactory : ITemplateFactory
 {
     public ServiceProvider Provider { get; set; } = default!;
 

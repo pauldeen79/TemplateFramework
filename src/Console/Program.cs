@@ -13,7 +13,8 @@ public static class Program
         };
         app.HelpOption();
 
-        var dynamicCompiledTemplateFactory = new DynamicCompiledTemplateFactory();
+        var dynamicTemplateFactory = new ServiceProviderCompiledTemplateFactory();
+        var dynamicTemplateProviderPluginFactory = new ServiceProviderTemplateProviderPluginFactory();
         var serviceCollection = new ServiceCollection()
             .AddParsers()
             .AddTemplateFramework()
@@ -24,10 +25,13 @@ public static class Program
             .AddTemplateFrameworkRuntime()
             .AddTemplateCommands()
             .AddSingleton<IAssemblyInfoContextService, MyAssemblyInfoContextService>()
-            .AddSingleton<ITemplateFactory>(dynamicCompiledTemplateFactory);
+            .AddSingleton<ITemplateFactory>(dynamicTemplateFactory)
+            .AddSingleton<ITemplateProviderPluginFactory>(dynamicTemplateProviderPluginFactory);
         serviceCollection.InjectClipboard();
         using var provider = serviceCollection.BuildServiceProvider();
-        dynamicCompiledTemplateFactory.Provider = provider;
+        dynamicTemplateFactory.Provider = provider;
+        dynamicTemplateProviderPluginFactory.AssemblyService = provider.GetRequiredService<IAssemblyService>();
+        dynamicTemplateProviderPluginFactory.Provider = provider;
         var processor = provider.GetRequiredService<ICommandLineProcessor>();
         processor.Initialize(app);
 
