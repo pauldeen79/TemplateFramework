@@ -381,9 +381,9 @@ public sealed class CsharpClassGeneratorCodeGenerationProvider : ICodeGeneration
 
         var registrations = new List<ITemplateCreator>
         {
-            new TemplateCreator<TestData.CodeGenerationHeaderTemplate>(() => new(), null, "CodeGenerationHeader"),
-            new TemplateCreator<TestData.DefaultUsingsTemplate>(() => new(), null, "DefaultUsings"),
-            new TemplateCreator<TestData.ClassTemplate>(() => new(), typeof(TestData.TypeBase), null)
+            new TemplateCreator<TestData.CodeGenerationHeaderTemplate>("CodeGenerationHeader"),
+            new TemplateCreator<TestData.DefaultUsingsTemplate>("DefaultUsings"),
+            new TemplateCreator<TestData.ClassTemplate>(typeof(TestData.TypeBase))
         };
 
         provider.RegisterComponent(new ProviderComponent(registrations));

@@ -11,6 +11,30 @@ public class TemplateCreatorTests
             this.Invoking(_ => new TemplateCreator<TemplateCreatorTests>(factory: null!, null, null))
                 .Should().Throw<ArgumentNullException>().WithParameterName("factory");
         }
+
+        [Fact]
+        public void Throws_When_Name_And_ModelType_Are_Both_Null()
+        {
+            // Act & Assert
+            this.Invoking(_ => new TemplateCreator<TemplateCreatorTests>(() => new(), null, null))
+                .Should().Throw<InvalidOperationException>().WithMessage("Either modelType or name is required");
+        }
+
+        [Fact]
+        public void Throws_On_Null_Name()
+        {
+            // Act & Assert
+            this.Invoking(_ => new TemplateCreator<TemplateCreatorTests>(name: null!))
+                .Should().Throw<ArgumentNullException>().WithParameterName("name");
+        }
+
+        [Fact]
+        public void Throws_On_Null_ModelType()
+        {
+            // Act & Assert
+            this.Invoking(_ => new TemplateCreator<TemplateCreatorTests>(modelType: null!))
+                .Should().Throw<ArgumentNullException>().WithParameterName("modelType");
+        }
     }
 
     public class CreateByModel
@@ -99,7 +123,7 @@ public class TemplateCreatorTests
         public void Returns_False_When_ModelType_Is_Not_Set()
         {
             // Arrange
-            var sut = new TemplateCreator<TemplateCreatorTests>(() => new TemplateCreatorTests(), modelType: null, null);
+            var sut = new TemplateCreator<TemplateCreatorTests>(() => new TemplateCreatorTests(), modelType: null, "something to pass unit test, value gets ignored by SupportsModel");
 
             // Act
             var result = sut.SupportsModel("some model");
