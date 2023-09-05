@@ -35,14 +35,20 @@ public sealed class TemplateEngine : ITemplateEngine
     {
         Guard.IsNotNull(request);
 
-        var engineContext = new TemplateEngineContext(request, this, _provider, _provider.Create(request.Identifier));
+        var template = request.Context?.Template;
+        if (template is null || template is IIgnoreThis)
+        {
+            template = _provider.Create(request.Identifier);
+        }
+
+        var engineContext = new TemplateEngineContext(request, this, _provider, template);
         
         _initializer.Initialize(engineContext);
 
         var renderer = _renderers.FirstOrDefault(x => x.Supports(request.GenerationEnvironment));
         if (renderer is null)
         {
-            throw new NotSupportedException($"Type of GenerationEnvironment ({request.GenerationEnvironment?.GetType().FullName}) is not supported");
+            throw new NotSupportedException($"Type of GenerationEnvironment ({request.GenerationEnvironment.GetType().FullName}) is not supported");
         }
 
         renderer.Render(engineContext);

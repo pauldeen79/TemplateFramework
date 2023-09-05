@@ -12,10 +12,10 @@ public partial class TemplateContextTests
         }
 
         [Fact]
-        public void Throws_On_Null_Provider()
+        public void Throws_On_Null_TemplateComponentRegistry()
         {
-            this.Invoking(_ => new TemplateContext(EngineMock.Object, provider: null!, DefaultFilename, new TemplateInstanceIdentifier(this), this))
-                .Should().Throw<ArgumentNullException>().WithParameterName("provider");
+            this.Invoking(_ => new TemplateContext(EngineMock.Object, templateComponentRegistry: null!, DefaultFilename, new TemplateInstanceIdentifier(this), this))
+                .Should().Throw<ArgumentNullException>().WithParameterName("templateComponentRegistry");
         }
 
         [Fact]

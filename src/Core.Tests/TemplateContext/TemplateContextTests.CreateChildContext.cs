@@ -28,7 +28,7 @@ public partial class TemplateContextTests
             // Assert
             childContext.Should().NotBeNull();
             childContext.IsRootContext.Should().BeFalse();
-            childContext.Template.Should().BeOfType<TemplateInstanceIdentifier>().And.Match<TemplateInstanceIdentifier>(x => x.Instance == template);
+            childContext.Template.Should().BeOfType<IgnoreThis>();
             childContext.ParentContext.Should().BeSameAs(sut);
         }
     }

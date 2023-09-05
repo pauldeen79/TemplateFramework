@@ -16,8 +16,8 @@ public class IntegrationTests
 
         var template = new TestData.MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine((builder, context) =>
         {
-            var childTemplate = context.Provider.Create(new TemplateByNameIdentifier("MyTemplate"));
-            context.Engine.Render(new RenderTemplateRequest(new TemplateInstanceIdentifier(childTemplate), builder, context.CreateChildContext(new ChildTemplateContext(new TemplateInstanceIdentifier(childTemplate)))));
+            var identifier = new TemplateByNameIdentifier("MyTemplate");
+            context.Engine.RenderChildTemplate(new MultipleContentBuilderEnvironment(builder), identifier, context);
         });
         var generationEnvironment = new MultipleContentBuilder();
 

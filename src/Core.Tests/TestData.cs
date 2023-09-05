@@ -19,7 +19,7 @@ public sealed class PlainTemplateWithAdditionalParameters : IParameterizedTempla
 
 public sealed class TestTemplateProviderPlugin : ITemplateProviderPlugin
 {
-    public void Initialize(ITemplateProvider provider)
+    public void Initialize(ITemplateComponentRegistry registry)
     {
     }
 }

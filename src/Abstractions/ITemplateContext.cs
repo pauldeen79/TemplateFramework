@@ -6,7 +6,7 @@ public interface ITemplateContext : IChildTemplateContext
     ITemplateContext? ParentContext { get; }
     ITemplateContext RootContext { get; }
     ITemplateEngine Engine { get; }
-    ITemplateProvider Provider { get; }
+    ITemplateComponentRegistry TemplateComponentRegistry { get; }
     string DefaultFilename { get; }
     bool IsRootContext { get; }
     bool HasIterations { get; }

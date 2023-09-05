@@ -3,48 +3,48 @@
 public sealed class TemplateContext : ITemplateContext
 {
     public TemplateContext(ITemplateEngine engine,
-                           ITemplateProvider provider,
+                           ITemplateComponentRegistry templateComponentRegistry,
                            string defaultFilename,
                            ITemplateIdentifier identifier,
                            object template)
-        : this(engine, provider, defaultFilename, identifier, template, null, null, null, null)
+        : this(engine, templateComponentRegistry, defaultFilename, identifier, template, null, null, null, null)
     {
     }
 
     public TemplateContext(ITemplateEngine engine,
-                           ITemplateProvider provider,
+                           ITemplateComponentRegistry templateComponentRegistry,
                            string defaultFilename,
                            ITemplateIdentifier identifier,
                            object template,
                            ITemplateContext parentContext)
-        : this(engine, provider, defaultFilename, identifier, template, null, parentContext, null, null)
+        : this(engine, templateComponentRegistry, defaultFilename, identifier, template, null, parentContext, null, null)
     {
     }
 
     public TemplateContext(ITemplateEngine engine,
-                           ITemplateProvider provider,
+                           ITemplateComponentRegistry templateComponentRegistry,
                            string defaultFilename,
                            ITemplateIdentifier identifier,
                            object template,
                            object? model)
-        : this(engine, provider, defaultFilename, identifier, template, model, null, null, null)
+        : this(engine, templateComponentRegistry, defaultFilename, identifier, template, model, null, null, null)
     {
     }
 
     public TemplateContext(ITemplateEngine engine,
-                           ITemplateProvider provider,
+                           ITemplateComponentRegistry templateComponentRegistry,
                            string defaultFilename,
                            ITemplateIdentifier identifier,
                            object template,
                            object? model,
                            ITemplateContext parentContext)
-        : this(engine, provider, defaultFilename, identifier, template, model, parentContext, null, null)
+        : this(engine, templateComponentRegistry, defaultFilename, identifier, template, model, parentContext, null, null)
     {
     }
 
 #pragma warning disable S107
     public TemplateContext(ITemplateEngine engine,
-                           ITemplateProvider provider,
+                           ITemplateComponentRegistry templateComponentRegistry,
                            string defaultFilename,
                            ITemplateIdentifier identifier,
                            object template,
@@ -55,13 +55,13 @@ public sealed class TemplateContext : ITemplateContext
 #pragma warning restore S107
     {
         Guard.IsNotNull(engine);
-        Guard.IsNotNull(provider);
+        Guard.IsNotNull(templateComponentRegistry);
         Guard.IsNotNull(defaultFilename);
         Guard.IsNotNull(identifier);
         Guard.IsNotNull(template);
 
         Engine = engine;
-        Provider = provider;
+        TemplateComponentRegistry = templateComponentRegistry;
         DefaultFilename = defaultFilename;
         Identifier = identifier;
         Template = template;
@@ -76,7 +76,7 @@ public sealed class TemplateContext : ITemplateContext
     public object? Model { get; }
     public ITemplateContext? ParentContext { get; }
     public ITemplateEngine Engine { get; }
-    public ITemplateProvider Provider { get; }
+    public ITemplateComponentRegistry TemplateComponentRegistry { get; }
     public string DefaultFilename { get; }
 
     public ITemplateContext RootContext
@@ -134,10 +134,10 @@ public sealed class TemplateContext : ITemplateContext
         return new TemplateContext
         (
             engine: Engine,
-            provider: Provider,
+            templateComponentRegistry: TemplateComponentRegistry,
             defaultFilename: DefaultFilename,
             identifier: childContext.Identifier,
-            template: childContext.Identifier,
+            template: new IgnoreThis(),
             model: childContext.Model,
             parentContext: this,
             iterationNumber: childContext.IterationNumber,

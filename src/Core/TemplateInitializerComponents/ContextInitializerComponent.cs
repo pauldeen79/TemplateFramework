@@ -12,7 +12,7 @@ public class ContextInitializerComponent : ITemplateInitializerComponent
         }
 
         var templateContext = context.Context
-            ?? new TemplateContext(context.Engine, context.Provider, context.DefaultFilename, context.Identifier, context.Template!, context.Model);
+            ?? new TemplateContext(context.Engine, context.ComponentRegistry, context.DefaultFilename, context.Identifier, context.Template!, context.Model);
 
         templateContextContainer.Context = templateContext;
     }

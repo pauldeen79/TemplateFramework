@@ -2,5 +2,5 @@
 
 public interface ITemplateProviderPlugin
 {
-    void Initialize(ITemplateProvider provider);
+    void Initialize(ITemplateComponentRegistry registry);
 }
