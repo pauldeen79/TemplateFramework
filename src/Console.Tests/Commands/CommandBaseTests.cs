@@ -6,9 +6,10 @@ public class CommandBaseTests
 {
     protected Mock<IClipboard> ClipboardMock { get; } = new();
     protected Mock<IFileSystem> FileSystemMock { get; } = new();
+    protected Mock<IUserInput> UserInputMock { get; } = new();
     protected Mock<IMultipleContentBuilder> MultipleContentBuilderMock { get; } = new();
 
-    protected CommandBaseTest CreateSut() => new(ClipboardMock.Object, FileSystemMock.Object);
+    protected CommandBaseTest CreateSut() => new(ClipboardMock.Object, FileSystemMock.Object, UserInputMock.Object);
 
     protected const string AssemblyName = "MyAssemblyName";
     protected const string Filename = "MyFile.txt";
@@ -440,7 +441,6 @@ TemplateOutput
             // Assert
             result.Should().BeEmpty();
         }
-
     }
 
     public class GetDryRun : CommandBaseTests
@@ -503,7 +503,7 @@ TemplateOutput
 
     public sealed class CommandBaseTest : CommandBase
     {
-        public CommandBaseTest(IClipboard clipboard, IFileSystem fileSystem) : base(clipboard, fileSystem)
+        public CommandBaseTest(IClipboard clipboard, IFileSystem fileSystem, IUserInput userInput) : base(clipboard, fileSystem, userInput)
         {
             SleepTimeInMs = 1;
         }

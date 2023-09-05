@@ -4,7 +4,7 @@ public class CodeGenerationAssemblyCommand : CommandBase
 {
     private readonly ICodeGenerationAssembly _codeGenerationAssembly;
 
-    public CodeGenerationAssemblyCommand(ICodeGenerationAssembly codeGenerationAssembly, IClipboard clipboard, IFileSystem fileSystem) : base(clipboard, fileSystem)
+    public CodeGenerationAssemblyCommand(IClipboard clipboard, IFileSystem fileSystem, IUserInput userInput, ICodeGenerationAssembly codeGenerationAssembly) : base(clipboard, fileSystem, userInput)
     {
         Guard.IsNotNull(codeGenerationAssembly);
 
@@ -37,16 +37,14 @@ public class CodeGenerationAssemblyCommand : CommandBase
                     return;
                 }
 
-                var currentDirectory = GetCurrentDirectory(currentDirectoryOption.Value(), assemblyName!);
                 var basePath = GetBasePath(basePathOption.Value());
-                var defaultFilename = GetDefaultFilename(defaultFilenameOption.Value());
                 var dryRun = GetDryRun(dryRunOption.HasValue(), clipboardOption.HasValue());
 
                 Watch(app, watchOption.HasValue(), assemblyName, () =>
                 {
                     var generationEnvironment = new MultipleContentBuilderEnvironment();
                     var classNameFilter = filterClassNameOption.Values.Where(x => x is not null).Select(x => x!);
-                    var settings = new CodeGenerationAssemblySettings(basePath, defaultFilename, assemblyName, dryRun, currentDirectory, classNameFilter);
+                    var settings = new CodeGenerationAssemblySettings(basePath, GetDefaultFilename(defaultFilenameOption.Value()), assemblyName, dryRun, GetCurrentDirectory(currentDirectoryOption.Value(), assemblyName!), classNameFilter);
                     _codeGenerationAssembly.Generate(settings, generationEnvironment);
                     WriteOutput(app, generationEnvironment, basePath, bareOption.HasValue(), clipboardOption.HasValue(), dryRun);
                 });

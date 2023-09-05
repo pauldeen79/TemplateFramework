@@ -5,8 +5,9 @@ public class CodeGenerationAssemblyCommandTests
     protected Mock<ICodeGenerationAssembly> CodeGenerationAssemblyMock { get; } = new();
     protected Mock<IClipboard> ClipboardMock { get; } = new();
     protected Mock<IFileSystem> FileSystemMock { get; } = new();
+    protected Mock<IUserInput> UserInputMock { get; } = new();
 
-    private CodeGenerationAssemblyCommand CreateSut() => new(CodeGenerationAssemblyMock.Object, ClipboardMock.Object, FileSystemMock.Object);
+    private CodeGenerationAssemblyCommand CreateSut() => new(ClipboardMock.Object, FileSystemMock.Object, UserInputMock.Object, CodeGenerationAssemblyMock.Object);
 
     public class Constructor
     {
@@ -51,10 +52,10 @@ public class CodeGenerationAssemblyCommandTests
         public void Empty_AssemblyName_Results_In_Error()
         {
             // Act
-            var result = CommandLineCommandHelper.ExecuteCommand(CreateSut);
+            var output = CommandLineCommandHelper.ExecuteCommand(CreateSut);
 
             // Assert
-            result.Should().Be("Error: Assembly name is required." + Environment.NewLine);
+            output.Should().Be("Error: Assembly name is required." + Environment.NewLine);
         }
 
         [Fact]

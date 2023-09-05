@@ -44,6 +44,7 @@
     <Using Include="System.Text" />
     <Using Include="TemplateFramework.Abstractions" />
     <Using Include="TemplateFramework.Abstractions.CodeGeneration" />
+    <Using Include="TemplateFramework.Abstractions.Extensions" />
     <Using Include="TemplateFramework.Abstractions.Infrastructure" />
     <Using Include="TemplateFramework.Abstractions.Templates" />
     <Using Include="TemplateFramework.Console.Abstractions" />
