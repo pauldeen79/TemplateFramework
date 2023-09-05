@@ -21,7 +21,7 @@ public sealed class StringBuilderTemplateRenderer : ISingleContentTemplateRender
         var environment = context.GenerationEnvironment as StringBuilderEnvironment;
         if (environment is null)
         {
-            throw new NotSupportedException($"Type of GenerationEnvironment ({context.GenerationEnvironment?.GetType().FullName}) is not supported");
+            throw new NotSupportedException($"Type of GenerationEnvironment ({context.GenerationEnvironment.GetType().FullName}) is not supported");
         }
 
         if (!_renderers.Any(x => x.TryRender(context.Template, environment.Builder)))

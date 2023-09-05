@@ -137,7 +137,7 @@ public sealed class TemplateContext : ITemplateContext
             templateComponentRegistry: TemplateComponentRegistry,
             defaultFilename: DefaultFilename,
             identifier: childContext.Identifier,
-            template: childContext.Identifier,
+            template: new IgnoreThis(),
             model: childContext.Model,
             parentContext: this,
             iterationNumber: childContext.IterationNumber,
