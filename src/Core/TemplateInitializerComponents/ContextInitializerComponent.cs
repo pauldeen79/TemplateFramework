@@ -2,13 +2,6 @@
 
 public class ContextInitializerComponent : ITemplateInitializerComponent
 {
-    private readonly ITemplateProvider _provider;
-
-    public ContextInitializerComponent(ITemplateProvider provider)
-    {
-        _provider = provider;
-    }
-
     public void Initialize(ITemplateEngineContext context)
     {
         Guard.IsNotNull(context);
@@ -19,7 +12,7 @@ public class ContextInitializerComponent : ITemplateInitializerComponent
         }
 
         var templateContext = context.Context
-            ?? new TemplateContext(context.Engine, _provider, context.DefaultFilename, context.Identifier, context.Template!, context.Model);
+            ?? new TemplateContext(context.Engine, context.Provider, context.DefaultFilename, context.Identifier, context.Template!, context.Model);
 
         templateContextContainer.Context = templateContext;
     }

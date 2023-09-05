@@ -6,6 +6,7 @@ public class ModelInitializerTests
     
     protected Mock<IValueConverter> ValueConverterMock { get; } = new();
     protected Mock<ITemplateEngine> TemplateEngineMock { get; } = new();
+    protected Mock<ITemplateProvider> TemplateProviderMock { get; } = new();
     
     protected const string DefaultFilename = "DefaultFilename.txt";
 
@@ -41,7 +42,7 @@ public class ModelInitializerTests
             var model = "Hello world!";
             var template = new TestData.TemplateWithModel<string>(_ => { });
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), model, new StringBuilder(), DefaultFilename);
-            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, template);
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, TemplateProviderMock.Object, template);
             ValueConverterMock.Setup(x => x.Convert(It.IsAny<object?>(), It.IsAny<Type>())).Returns<object?, Type>((value, type) => value);
 
             // Act

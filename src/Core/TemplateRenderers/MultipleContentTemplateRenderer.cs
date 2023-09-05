@@ -3,20 +3,16 @@
 public sealed class MultipleContentTemplateRenderer : ITemplateRenderer
 {
     private readonly ISingleContentTemplateRenderer _singleContentTemplateRenderer;
-    private readonly ITemplateProvider _provider;
     private readonly IEnumerable<IMultipleContentBuilderTemplateCreator> _creators;
 
     public MultipleContentTemplateRenderer(
         ISingleContentTemplateRenderer singleContentTemplateRenderer,
-        ITemplateProvider provider,
         IEnumerable<IMultipleContentBuilderTemplateCreator> creators)
     {
         Guard.IsNotNull(singleContentTemplateRenderer);
-        Guard.IsNotNull(provider);
         Guard.IsNotNull(creators);
 
         _singleContentTemplateRenderer = singleContentTemplateRenderer;
-        _provider = provider;
         _creators = creators;
     }
 
@@ -47,8 +43,8 @@ public sealed class MultipleContentTemplateRenderer : ITemplateRenderer
         // Render using a stringbuilder, then add it to multiple contents
         var stringBuilder = new StringBuilder();
         var singleRequest = new RenderTemplateRequest(context.Identifier, context.Model, stringBuilder, context.DefaultFilename, context.AdditionalParameters, context.Context);
-        var template = _provider.Create(context.Identifier);
-        _singleContentTemplateRenderer.Render(new TemplateEngineContext(singleRequest, context.Engine, template));
+        var template = context.Provider.Create(context.Identifier);
+        _singleContentTemplateRenderer.Render(new TemplateEngineContext(singleRequest, context.Engine, context.Provider, template));
         multipleContentBuilder.AddContent(context.DefaultFilename, false, new StringBuilder(stringBuilder.ToString()));
     }
 

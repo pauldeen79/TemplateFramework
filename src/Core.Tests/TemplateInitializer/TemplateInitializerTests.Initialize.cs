@@ -22,7 +22,7 @@ public partial class TemplateInitializerTests
             var sut = CreateSut();
 
             // Act
-            sut.Initialize(new TemplateEngineContext(RenderTemplateRequestMock.Object, TemplateEngineMock.Object, new object()));
+            sut.Initialize(new TemplateEngineContext(RenderTemplateRequestMock.Object, TemplateEngineMock.Object, TemplateProviderMock.Object, new object()));
 
             // Assert
             TemplateInitializerComponentMock.Verify(x => x.Initialize(It.Is<ITemplateEngineContext>(x =>

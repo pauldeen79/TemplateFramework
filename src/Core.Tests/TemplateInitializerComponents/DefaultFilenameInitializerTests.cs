@@ -5,6 +5,7 @@ public class DefaultFilenameInitializerTests
     protected DefaultFilenameInitializerComponent CreateSut() => new();
     
     protected Mock<ITemplateEngine> TemplateEngineMock { get; } = new();
+    protected Mock<ITemplateProvider> TemplateProviderMock { get; } = new();
     
     protected const string DefaultFilename = "DefaultFilename.txt";
 
@@ -28,7 +29,7 @@ public class DefaultFilenameInitializerTests
             var sut = CreateSut();
             var template = new TestData.TemplateWithDefaultFilename(_ => { });
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), null, new StringBuilder(), DefaultFilename);
-            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, template);
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, TemplateProviderMock.Object, template);
 
             // Act
             sut.Initialize(engineContext);

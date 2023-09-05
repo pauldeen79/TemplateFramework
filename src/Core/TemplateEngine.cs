@@ -35,7 +35,7 @@ public sealed class TemplateEngine : ITemplateEngine
     {
         Guard.IsNotNull(request);
 
-        var engineContext = new TemplateEngineContext(request, this, _provider.Create(request.Identifier));
+        var engineContext = new TemplateEngineContext(request, this, _provider, _provider.Create(request.Identifier));
         
         _initializer.Initialize(engineContext);
 
