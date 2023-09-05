@@ -4,7 +4,7 @@
 public class ServiceProviderTemplateProviderPluginFactory : ITemplateProviderPluginFactory
 {
     public IAssemblyService AssemblyService { get; set; } = default!;
-    public ServiceProvider Provider { get; set; } = default!;
+    public IServiceProvider Provider { get; set; } = default!;
 
     public ITemplateProviderPlugin Create(string assemblyName, string className, string currentDirectory)
     {
