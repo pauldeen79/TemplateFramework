@@ -121,11 +121,11 @@ public partial class CodeGenerationEngineTests
             public Type GetGeneratorType() => typeof(object);
             public object? CreateModel() => null;
 
-            private readonly Action<ITemplateProvider> _action;
+            private readonly Action<ITemplateComponentRegistry> _action;
 
-            public MyPluginCodeGenerationProvider(Action<ITemplateProvider> action) => _action = action;
+            public MyPluginCodeGenerationProvider(Action<ITemplateComponentRegistry> action) => _action = action;
 
-            public void Initialize(ITemplateProvider provider) => _action(provider);
+            public void Initialize(ITemplateComponentRegistry registry) => _action(registry);
         }
     }
 }

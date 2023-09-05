@@ -4,13 +4,6 @@ public partial class MultipleContentTemplateRendererTests
 {
     public class Render : MultipleContentTemplateRendererTests
     {
-        public Render()
-        {
-            SingleContentTemplateRendererMock
-                .Setup(x => x.Render(It.IsAny<ITemplateEngineContext>()))
-                .Callback<ITemplateEngineContext>(req => ((StringBuilderEnvironment)req.GenerationEnvironment).Builder.Append(req.Template?.ToString()));
-        }
-
         [Fact]
         public void Throws_When_Context_Is_Null()
         {
@@ -55,7 +48,7 @@ public partial class MultipleContentTemplateRendererTests
         }
 
         [Fact]
-        public void Renders_To_MultipleContentBuilder_Correctly()
+        public void Renders_Non_MultipleContentBuilderTemplate_Correctly()
         {
             // Arrange
             var sut = CreateSut();
@@ -72,6 +65,7 @@ public partial class MultipleContentTemplateRendererTests
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), DefaultFilename, generationEnvironment.Object);
             var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, TemplateProviderMock.Object, template);
             TemplateProviderMock.Setup(x => x.Create(It.IsAny<TemplateInstanceIdentifier>())).Returns(template);
+            TemplateEngineMock.Setup(x => x.Render(It.IsAny<IRenderTemplateRequest>())).Callback<IRenderTemplateRequest>(req => ((StringBuilderEnvironment)req.GenerationEnvironment).Builder.Append(template.ToString()));
 
             // Act
             sut.Render(engineContext);

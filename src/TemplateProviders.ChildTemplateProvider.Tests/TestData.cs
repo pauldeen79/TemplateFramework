@@ -375,9 +375,9 @@ public sealed class CsharpClassGeneratorCodeGenerationProvider : ICodeGeneration
         return viewModel;
     }
 
-    public void Initialize(ITemplateProvider provider)
+    public void Initialize(ITemplateComponentRegistry registry)
     {
-        Guard.IsNotNull(provider);
+        Guard.IsNotNull(registry);
 
         var registrations = new List<ITemplateCreator>
         {
@@ -386,6 +386,6 @@ public sealed class CsharpClassGeneratorCodeGenerationProvider : ICodeGeneration
             new TemplateCreator<TestData.ClassTemplate>(typeof(TestData.TypeBase))
         };
 
-        provider.RegisterComponent(new ProviderComponent(registrations));
+        registry.RegisterComponent(new ProviderComponent(registrations));
     }
 }

@@ -154,7 +154,7 @@ public partial class TemplateEngineExtensionsTests
             // Arrange
             ContextMock.Setup(x => x.CreateChildContext(It.IsAny<IChildTemplateContext>())).Returns(ContextMock.Object);
             ContextMock.SetupGet(x => x.DefaultFilename).Returns(DefaultFilename);
-            ContextMock.SetupGet(x => x.Provider).Returns(TemplateProviderMock.Object);
+            ContextMock.SetupGet(x => x.TemplateComponentRegistry).Returns(TemplateProviderMock.Object);
             TemplateProviderMock.Setup(x => x.Create(It.IsAny<ITemplateIdentifier>())).Returns(Template);
 
             // Act

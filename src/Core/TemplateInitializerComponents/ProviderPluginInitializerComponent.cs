@@ -22,7 +22,7 @@ public class ProviderPluginInitializerComponent : ITemplateInitializerComponent
         
         if (context.Template is ITemplateProviderPlugin providerPlugin)
         {
-            providerPlugin.Initialize(context.Context.Provider);
+            providerPlugin.Initialize(context.Context.TemplateComponentRegistry);
         }
 
         if (context.Identifier is ITemplateProviderPluginIdentifier pluginIdentifier
@@ -31,7 +31,7 @@ public class ProviderPluginInitializerComponent : ITemplateInitializerComponent
         {
             var identifierPlugin = _factory.Create(pluginIdentifier.TemplateProviderAssemblyName, pluginIdentifier.TemplateProviderClassName, pluginIdentifier.CurrentDirectory);
             
-            identifierPlugin.Initialize(context.Context.Provider);
+            identifierPlugin.Initialize(context.Context.TemplateComponentRegistry);
         }
     }
 }
