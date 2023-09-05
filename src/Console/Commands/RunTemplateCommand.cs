@@ -54,24 +54,30 @@ public class RunTemplateCommand : CommandBase
                     return;
                 }
 
-                var currentDirectory = GetCurrentDirectory(currentDirectoryOption.Value(), assemblyName!);
-                var templateProviderPluginClassName = templateProviderPluginClassNameOption.Value();
-                var basePath = GetBasePath(basePathOption.Value());
-                var defaultFilename = GetDefaultFilename(defaultFilenameOption.Value());
-                var dryRun = GetDryRun(dryRunOption.HasValue(), clipboardOption.HasValue());
-                var parameters = GetParameters(parametersArgument);
-
-                Execute((app, watchOption, interactiveOption, listParametersOption, bareOption, clipboardOption, assemblyName, className, currentDirectory, templateProviderPluginClassName, basePath, defaultFilename, dryRun, parameters));
+                Execute((app,
+                         watchOption.HasValue(),
+                         interactiveOption.HasValue(),
+                         listParametersOption.HasValue(),
+                         bareOption.HasValue(),
+                         clipboardOption.HasValue(),
+                         assemblyName,
+                         className,
+                         currentDirectory: GetCurrentDirectory(currentDirectoryOption.Value(), assemblyName!),
+                         templateProviderPluginClassName: templateProviderPluginClassNameOption.Value(),
+                         basePath: GetBasePath(basePathOption.Value()),
+                         defaultFilename: GetDefaultFilename(defaultFilenameOption.Value()),
+                         dryRun: GetDryRun(dryRunOption.HasValue(), clipboardOption.HasValue()),
+                         parameters: GetParameters(parametersArgument)));
             });
         });
     }
 
     private void Execute((CommandLineApplication app,
-                         CommandOption<bool> watchOption,
-                         CommandOption<bool> interactiveOption,
-                         CommandOption<bool> listParametersOption,
-                         CommandOption<bool> bareOption,
-                         CommandOption<bool> clipboardOption,
+                         bool watch,
+                         bool interactive,
+                         bool listParameters,
+                         bool bare,
+                         bool clipboard,
                          string assemblyName,
                          string className,
                          string? currentDirectory,
@@ -81,14 +87,14 @@ public class RunTemplateCommand : CommandBase
                          bool dryRun,
                          KeyValuePair<string, object?>[] parameters) args)
     {
-        Watch(args.app, args.watchOption.HasValue(), args.assemblyName, () =>
+        Watch(args.app, args.watch, args.assemblyName, () =>
         {
             var generationEnvironment = new MultipleContentBuilderEnvironment();
             var createTemplateRequest = new CreateCompiledTemplateRequest(args.assemblyName, args.className, args.currentDirectory);
 
             var template = _templateProvider.Create(createTemplateRequest);
 
-            if (args.listParametersOption.HasValue())
+            if (args.listParameters)
             {
                 if (string.IsNullOrEmpty(args.defaultFilename))
                 {
@@ -100,7 +106,7 @@ public class RunTemplateCommand : CommandBase
             }
             else
             {
-                if (args.interactiveOption.HasValue())
+                if (args.interactive)
                 {
                     args.parameters = MergeParameters(args.parameters, GetInteractiveParameterValues(_templateEngine.GetParameters(template)));
                 }
@@ -109,7 +115,7 @@ public class RunTemplateCommand : CommandBase
                 _templateEngine.Render(new RenderTemplateRequest(new TemplateInstanceIdentifierWithTemplateProvider(template, args.currentDirectory, args.assemblyName, args.templateProviderPluginClassName), null, generationEnvironment, args.defaultFilename, args.parameters, context));
             }
 
-            WriteOutput(args.app, generationEnvironment, args.basePath, args.bareOption.HasValue(), args.clipboardOption.HasValue(), args.dryRun);
+            WriteOutput(args.app, generationEnvironment, args.basePath, args.bare, args.clipboard, args.dryRun);
         });
     }
 
