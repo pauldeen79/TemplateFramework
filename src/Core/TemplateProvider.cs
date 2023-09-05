@@ -2,13 +2,15 @@
 
 public class TemplateProvider : ITemplateProvider
 {
+    private readonly List<ITemplateProviderComponent> _originalComponents;
     private readonly List<ITemplateProviderComponent> _components;
 
     public TemplateProvider(IEnumerable<ITemplateProviderComponent> components)
     {
         Guard.IsNotNull(components);
 
-        _components = components.ToList();
+        _originalComponents = components.ToList();
+        _components = new List<ITemplateProviderComponent>(_originalComponents);
     }
 
     public object Create(ITemplateIdentifier identifier)
@@ -29,5 +31,11 @@ public class TemplateProvider : ITemplateProvider
         Guard.IsNotNull(component);
 
         _components.Add(component);
+    }
+
+    public void StartSession()
+    {
+        _components.Clear();
+        _components.AddRange(_originalComponents);
     }
 }

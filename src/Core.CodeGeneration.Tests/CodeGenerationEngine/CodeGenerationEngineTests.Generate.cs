@@ -92,6 +92,24 @@ public partial class CodeGenerationEngineTests
             counter.Should().Be(1);
         }
 
+        [Fact]
+        public void Starts_New_Session_On_TemplateProvider()
+        {
+            // Arrange
+            var sut = CreateSut();
+            CodeGenerationProviderMock.SetupGet(x => x.Encoding).Returns(Encoding.Latin1);
+            CodeGenerationProviderMock.SetupGet(x => x.Path).Returns(TestData.BasePath);
+            CodeGenerationProviderMock.Setup(x => x.GetGeneratorType()).Returns(GetType());
+            CodeGenerationSettingsMock.SetupGet(x => x.DryRun).Returns(true);
+            CodeGenerationSettingsMock.SetupGet(x => x.DefaultFilename).Returns("Filename.txt");
+
+            // Act
+            sut.Generate(CodeGenerationProviderMock.Object, GenerationEnvironmentMock.Object, CodeGenerationSettingsMock.Object);
+
+            // Assert
+            TemplateProviderMock.Verify(x => x.StartSession(), Times.Once);
+        }
+
         private sealed class MyPluginCodeGenerationProvider : ICodeGenerationProvider, ITemplateProviderPlugin
         {
             public string Path => string.Empty;
