@@ -4,18 +4,21 @@ public abstract class CommandBase : ICommandLineCommand
 {
     internal IClipboard _clipboard { get; }
     protected IFileSystem FileSystem { get; }
+    protected IUserInput UserInput { get; }
 
     // Added for unit testing purpose only (is not changed by real implementations)
     protected bool Abort { get; set; }
     protected int SleepTimeInMs { get; set; } = 1000;
 
-    protected CommandBase(IClipboard clipboard, IFileSystem fileSystem)
+    protected CommandBase(IClipboard clipboard, IFileSystem fileSystem, IUserInput userInput)
     {
         Guard.IsNotNull(clipboard);
         Guard.IsNotNull(fileSystem);
+        Guard.IsNotNull(userInput);
 
         _clipboard = clipboard;
         FileSystem = fileSystem;
+        UserInput = userInput;
     }
 
     protected void Watch(CommandLineApplication app, bool watch, string filename, Action action)
@@ -137,12 +140,57 @@ public abstract class CommandBase : ICommandLineCommand
             app.Out.WriteLine("Copied code generation output to clipboard");
         }
     }
+    
+    protected KeyValuePair<string, object?>[] GetInteractiveParameterValues(ITemplateParameter[] templateParameters)
+    {
+        Guard.IsNotNull(templateParameters);
+
+        var list = new List<KeyValuePair<string, object?>>();
+
+        foreach (var templateParameter in templateParameters)
+        {
+            var value = UserInput.GetValue(templateParameter);
+            list.Add(new KeyValuePair<string, object?>(templateParameter.Name, value));
+        }
+
+        return list.ToArray();
+    }
+
+    protected static void AppendParameters(MultipleContentBuilderEnvironment generationEnvironment, string defaultFilename, ITemplateParameter[] templateParameters)
+    {
+        Guard.IsNotNull(generationEnvironment);
+        Guard.IsNotNull(templateParameters);
+
+        var content = generationEnvironment.Builder.AddContent(defaultFilename);
+        foreach (var parameter in templateParameters)
+        {
+            content.Builder.AppendLine(CultureInfo.CurrentCulture, $"{parameter.Name} ({parameter.Type.FullName})");
+        }
+    }
 
     protected static bool GetDryRun(bool dryRun, bool clipboard) => dryRun || clipboard;
 
     protected static string GetDefaultFilename(string? defaultFilename) => defaultFilename ?? string.Empty;
 
     protected static string GetBasePath(string? basePath) => basePath ?? string.Empty;
+
+    protected static KeyValuePair<string, object?>[] GetParameters(CommandArgument parametersArgument)
+    {
+        Guard.IsNotNull(parametersArgument);
+
+        return parametersArgument.Values
+            .Where(p => p?.Contains(':', StringComparison.CurrentCulture) == true)
+            .Select(p => p!.Split(':'))
+            .Select(p => new KeyValuePair<string, object?>(p[0], string.Join(":", p.Skip(1))))
+            .ToArray();
+    }
+
+    protected static KeyValuePair<string, object?>[] MergeParameters(KeyValuePair<string, object?>[] parameters, KeyValuePair<string, object?>[] extractedTemplateParameters)
+        => parameters
+            .Concat(extractedTemplateParameters)
+            .GroupBy(t => t.Key)
+            .Select(x => new KeyValuePair<string, object?>(x.Key, x.First().Value))
+            .ToArray();
 
     public abstract void Initialize(CommandLineApplication app);
 }

@@ -4,7 +4,7 @@ public class CodeGenerationAssemblyCommand : CommandBase
 {
     private readonly ICodeGenerationAssembly _codeGenerationAssembly;
 
-    public CodeGenerationAssemblyCommand(ICodeGenerationAssembly codeGenerationAssembly, IClipboard clipboard, IFileSystem fileSystem) : base(clipboard, fileSystem)
+    public CodeGenerationAssemblyCommand(IClipboard clipboard, IFileSystem fileSystem, IUserInput userInput, ICodeGenerationAssembly codeGenerationAssembly) : base(clipboard, fileSystem, userInput)
     {
         Guard.IsNotNull(codeGenerationAssembly);
 

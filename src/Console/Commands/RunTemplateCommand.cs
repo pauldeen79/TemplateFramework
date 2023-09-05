@@ -4,9 +4,8 @@ public class RunTemplateCommand : CommandBase
 {
     private readonly ITemplateProvider _templateProvider;
     private readonly ITemplateEngine _templateEngine;
-    private readonly IUserInput _userInput;
     
-    public RunTemplateCommand(IClipboard clipboard, ITemplateProvider templateProvider, ITemplateEngine templateEngine, IFileSystem fileSystem, IUserInput userInput) : base(clipboard, fileSystem)
+    public RunTemplateCommand(IClipboard clipboard, IFileSystem fileSystem, IUserInput userInput, ITemplateProvider templateProvider, ITemplateEngine templateEngine) : base(clipboard, fileSystem, userInput)
     {
         Guard.IsNotNull(templateProvider);
         Guard.IsNotNull(templateEngine);
@@ -14,7 +13,6 @@ public class RunTemplateCommand : CommandBase
 
         _templateProvider = templateProvider;
         _templateEngine = templateEngine;
-        _userInput = userInput;
     }
 
     public override void Initialize(CommandLineApplication app)
@@ -86,8 +84,7 @@ public class RunTemplateCommand : CommandBase
                          string defaultFilename,
                          bool dryRun,
                          KeyValuePair<string, object?>[] parameters) args)
-    {
-        Watch(args.app, args.watch, args.assemblyName, () =>
+        => Watch(args.app, args.watch, args.assemblyName, () =>
         {
             var generationEnvironment = new MultipleContentBuilderEnvironment();
             var createTemplateRequest = new CreateCompiledTemplateRequest(args.assemblyName, args.className, args.currentDirectory);
@@ -117,40 +114,4 @@ public class RunTemplateCommand : CommandBase
 
             WriteOutput(args.app, generationEnvironment, args.basePath, args.bare, args.clipboard, args.dryRun);
         });
-    }
-
-    private void AppendParameters(MultipleContentBuilderEnvironment generationEnvironment, string defaultFilename, ITemplateParameter[] templateParameters)
-    {
-        var content = generationEnvironment.Builder.AddContent(defaultFilename);
-        foreach (var parameter in templateParameters)
-        {
-            content.Builder.AppendLine(CultureInfo.CurrentCulture, $"{parameter.Name} ({parameter.Type.FullName})");
-        }
-    }
-
-    private static KeyValuePair<string, object?>[] GetParameters(CommandArgument parametersArgument)
-        => parametersArgument.Values
-            .Where(p => p?.Contains(':', StringComparison.CurrentCulture) == true)
-            .Select(p => p!.Split(':'))
-            .Select(p => new KeyValuePair<string, object?>(p[0], string.Join(":", p.Skip(1))))
-            .ToArray();
-
-    private KeyValuePair<string, object?>[] GetInteractiveParameterValues(ITemplateParameter[] templateParameters)
-    {
-        var list = new List<KeyValuePair<string, object?>>();
-        foreach (var templateParameter in templateParameters)
-        {
-            var value = _userInput.GetValue(templateParameter);
-            list.Add(new KeyValuePair<string, object?>(templateParameter.Name, value));
-        }
-
-        return list.ToArray();
-    }
-
-    private KeyValuePair<string, object?>[] MergeParameters(KeyValuePair<string, object?>[] parameters, KeyValuePair<string, object?>[] extractedTemplateParameters)
-        => parameters
-            .Concat(extractedTemplateParameters)
-            .GroupBy(t => t.Key)
-            .Select(x => new KeyValuePair<string, object?>(x.Key, x.First().Value))
-            .ToArray();
 }

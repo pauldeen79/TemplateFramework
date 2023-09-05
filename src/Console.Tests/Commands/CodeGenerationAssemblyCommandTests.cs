@@ -5,8 +5,9 @@ public class CodeGenerationAssemblyCommandTests
     protected Mock<ICodeGenerationAssembly> CodeGenerationAssemblyMock { get; } = new();
     protected Mock<IClipboard> ClipboardMock { get; } = new();
     protected Mock<IFileSystem> FileSystemMock { get; } = new();
+    protected Mock<IUserInput> UserInputMock { get; } = new();
 
-    private CodeGenerationAssemblyCommand CreateSut() => new(CodeGenerationAssemblyMock.Object, ClipboardMock.Object, FileSystemMock.Object);
+    private CodeGenerationAssemblyCommand CreateSut() => new(ClipboardMock.Object, FileSystemMock.Object, UserInputMock.Object, CodeGenerationAssemblyMock.Object);
 
     public class Constructor
     {

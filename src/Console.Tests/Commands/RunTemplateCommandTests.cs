@@ -8,7 +8,7 @@ public class RunTemplateCommandTests
     protected Mock<ITemplateEngine> TemplateEngineMock { get; } = new();
     protected Mock<IUserInput> UserInputMock { get; } = new();
 
-    private RunTemplateCommand CreateSut() => new(ClipboardMock.Object, TemplateProviderMock.Object, TemplateEngineMock.Object, FileSystemMock.Object, UserInputMock.Object);
+    private RunTemplateCommand CreateSut() => new(ClipboardMock.Object, FileSystemMock.Object, UserInputMock.Object, TemplateProviderMock.Object, TemplateEngineMock.Object);
 
     public class Constructor
     {
