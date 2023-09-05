@@ -10,13 +10,13 @@ public class TemplateEngineContext : ITemplateEngineContext
     public ITemplateContext? Context { get; }
     public object? Template { get; }
     public ITemplateEngine Engine { get; }
-    public ITemplateProvider Provider { get; }
+    public ITemplateComponentRegistry ComponentRegistry { get; }
 
-    public TemplateEngineContext(IRenderTemplateRequest request, ITemplateEngine engine, ITemplateProvider provider, object template)
+    public TemplateEngineContext(IRenderTemplateRequest request, ITemplateEngine engine, ITemplateComponentRegistry componentRegistry, object template)
     {
         Guard.IsNotNull(request);
         Guard.IsNotNull(engine);
-        Guard.IsNotNull(provider);
+        Guard.IsNotNull(componentRegistry);
         Guard.IsNotNull(template);
 
         Identifier = request.Identifier;
@@ -26,7 +26,7 @@ public class TemplateEngineContext : ITemplateEngineContext
         AdditionalParameters = request.AdditionalParameters;
         Context = request.Context;
         Engine = engine;
-        Provider = provider;
+        ComponentRegistry = componentRegistry;
         Template = template;
     }
 }
