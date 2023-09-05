@@ -53,20 +53,20 @@ public class RunTemplateCommandTests
         public void Empty_AssemblyName_Results_In_Error()
         {
             // Act
-            var result = CommandLineCommandHelper.ExecuteCommand(CreateSut, "--assembly ");
+            var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, "--assembly ");
 
             // Assert
-            result.Should().Be("Error: Assembly name is required." + Environment.NewLine);
+            output.Should().Be("Error: Assembly name is required." + Environment.NewLine);
         }
 
         [Fact]
         public void Empty_ClassName_Results_In_Error()
         {
             // Act
-            var result = CommandLineCommandHelper.ExecuteCommand(CreateSut, "--assembly MyAssembly", "--classname ");
+            var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, "--assembly MyAssembly", "--classname ");
 
             // Assert
-            result.Should().Be("Error: Class name is required." + Environment.NewLine);
+            output.Should().Be("Error: Class name is required." + Environment.NewLine);
         }
 
         [Fact]
@@ -88,7 +88,7 @@ public class RunTemplateCommandTests
         }
 
         [Fact]
-        public void Gets_Parameter_Values_Interactively_When_Asked()
+        public void Gets_Parameter_Values_Interactively_When_Interactive_Argument_Is_Provided()
         {
             // Arrange
             var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
@@ -100,6 +100,41 @@ public class RunTemplateCommandTests
 
             // Assert
             UserInputMock.Verify(x => x.GetValue(It.IsAny<ITemplateParameter>()), Times.Once);
+        }
+
+        [Fact]
+        public void Lists_Parameters_When_ListParameters_Argument_Is_Provided()
+        {
+            // Arrange
+            var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
+            TemplateProviderMock.Setup(x => x.Create(It.IsAny<ITemplateIdentifier>())).Returns(templateInstance);
+            TemplateEngineMock.Setup(x => x.GetParameters(It.IsAny<object>())).Returns(new[] { new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string)) });
+
+            // Act
+            var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, "--assembly MyAssembly", "--classname MyClass", "--list-parameters", "--default parameters.txt", "--dryrun","--bare");
+
+            // Assert
+            output.Should().Be(@"parameters.txt:
+AdditionalParameter (System.String)
+
+
+");
+        }
+
+        [Fact]
+        public void Writes_ErrorMessage_On_ListParameters_When_DefaultFilename_Is_Empty()
+        {
+            // Arrange
+            var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
+            TemplateProviderMock.Setup(x => x.Create(It.IsAny<ITemplateIdentifier>())).Returns(templateInstance);
+            TemplateEngineMock.Setup(x => x.GetParameters(It.IsAny<object>())).Returns(new[] { new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string)) });
+
+            // Act
+            var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, "--assembly MyAssembly", "--classname MyClass", "--list-parameters");
+
+            // Assert
+            output.Should().Be(@"Error: Default filename is required if you want to list parameters
+");
         }
     }
 }

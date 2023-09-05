@@ -51,10 +51,10 @@ public class CodeGenerationAssemblyCommandTests
         public void Empty_AssemblyName_Results_In_Error()
         {
             // Act
-            var result = CommandLineCommandHelper.ExecuteCommand(CreateSut);
+            var output = CommandLineCommandHelper.ExecuteCommand(CreateSut);
 
             // Assert
-            result.Should().Be("Error: Assembly name is required." + Environment.NewLine);
+            output.Should().Be("Error: Assembly name is required." + Environment.NewLine);
         }
 
         [Fact]

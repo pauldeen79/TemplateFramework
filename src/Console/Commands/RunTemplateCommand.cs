@@ -27,13 +27,14 @@ public class RunTemplateCommand : CommandBase
             var assemblyOption = command.Option<string>("-a|--assembly <ASSEMBLY>", "The assembly name", CommandOptionType.SingleValue);
             var classNameOption = command.Option<string>("-n|--classname <CLASSNAME>", "The template class name", CommandOptionType.SingleValue);
             var templateProviderPluginClassNameOption = command.Option<string>("-t|--templateproviderplugin <CLASSNAME>", "Optional class name for a template provider plug-in", CommandOptionType.SingleValue);
-            var watchOption = command.Option<string>("-w|--watch", "Watches for file changes", CommandOptionType.NoValue);
+            var watchOption = command.Option<bool>("-w|--watch", "Watches for file changes", CommandOptionType.NoValue);
             var dryRunOption = command.Option<bool>("-r|--dryrun", "Indicator whether a dry run should be performed", CommandOptionType.NoValue);
             var basePathOption = command.Option<string>("-p|--path", "Base path for code generation", CommandOptionType.SingleValue);
             var defaultFilenameOption = command.Option<string>("-d|--default", "Default filename", CommandOptionType.SingleValue);
             var currentDirectoryOption = command.Option<string>("-i|--directory", "Current directory", CommandOptionType.SingleValue);
             var parametersArgument = command.Argument("Parameters", "Optional parameters to use (name:value)", true);
-            var interactiveOption = command.Option<string>("-i|--interactive", "Fill parameters interactively", CommandOptionType.NoValue);
+            var interactiveOption = command.Option<bool>("-i|--interactive", "Fill parameters interactively", CommandOptionType.NoValue);
+            var listParametersOption = command.Option<bool>("-l|--list-parameters", "List parameters", CommandOptionType.NoValue);
             var bareOption = command.Option<bool>("-b|--bare", "Bare output (only template output)", CommandOptionType.NoValue);
             var clipboardOption = command.Option<bool>("-c|--clipboard", "Copy output to clipboard", CommandOptionType.NoValue);
             command.HelpOption();
@@ -60,24 +61,65 @@ public class RunTemplateCommand : CommandBase
                 var dryRun = GetDryRun(dryRunOption.HasValue(), clipboardOption.HasValue());
                 var parameters = GetParameters(parametersArgument);
 
-                Watch(app, watchOption.HasValue(), assemblyName, () =>
-                {
-                    var generationEnvironment = new MultipleContentBuilderEnvironment();
-                    var createTemplateRequest = new CreateCompiledTemplateRequest(assemblyName, className, currentDirectory);
-
-                    var template = _templateProvider.Create(createTemplateRequest);
-                    if (interactiveOption.HasValue())
-                    {
-                        parameters = MergeParameters(parameters, GetInteractiveParameterValues(_templateEngine.GetParameters(template)));
-                    }
-
-                    var context = new TemplateContext(_templateEngine, _templateProvider, defaultFilename, createTemplateRequest, template);
-                    _templateEngine.Render(new RenderTemplateRequest(new TemplateInstanceIdentifierWithTemplateProvider(template, currentDirectory, assemblyName, templateProviderPluginClassName), null, generationEnvironment, defaultFilename, parameters, context));
-
-                    WriteOutput(app, generationEnvironment, basePath, bareOption.HasValue(), clipboardOption.HasValue(), dryRun);
-                });
+                Execute((app, watchOption, interactiveOption, listParametersOption, bareOption, clipboardOption, assemblyName, className, currentDirectory, templateProviderPluginClassName, basePath, defaultFilename, dryRun, parameters));
             });
         });
+    }
+
+    private void Execute((CommandLineApplication app,
+                         CommandOption<bool> watchOption,
+                         CommandOption<bool> interactiveOption,
+                         CommandOption<bool> listParametersOption,
+                         CommandOption<bool> bareOption,
+                         CommandOption<bool> clipboardOption,
+                         string assemblyName,
+                         string className,
+                         string? currentDirectory,
+                         string? templateProviderPluginClassName,
+                         string basePath,
+                         string defaultFilename,
+                         bool dryRun,
+                         KeyValuePair<string, object?>[] parameters) args)
+    {
+        Watch(args.app, args.watchOption.HasValue(), args.assemblyName, () =>
+        {
+            var generationEnvironment = new MultipleContentBuilderEnvironment();
+            var createTemplateRequest = new CreateCompiledTemplateRequest(args.assemblyName, args.className, args.currentDirectory);
+
+            var template = _templateProvider.Create(createTemplateRequest);
+
+            if (args.listParametersOption.HasValue())
+            {
+                if (string.IsNullOrEmpty(args.defaultFilename))
+                {
+                    args.app.Out.WriteLine("Error: Default filename is required if you want to list parameters");
+                    return;
+                }
+
+                AppendParameters(generationEnvironment, args.defaultFilename, _templateEngine.GetParameters(template));
+            }
+            else
+            {
+                if (args.interactiveOption.HasValue())
+                {
+                    args.parameters = MergeParameters(args.parameters, GetInteractiveParameterValues(_templateEngine.GetParameters(template)));
+                }
+
+                var context = new TemplateContext(_templateEngine, _templateProvider, args.defaultFilename, createTemplateRequest, template);
+                _templateEngine.Render(new RenderTemplateRequest(new TemplateInstanceIdentifierWithTemplateProvider(template, args.currentDirectory, args.assemblyName, args.templateProviderPluginClassName), null, generationEnvironment, args.defaultFilename, args.parameters, context));
+            }
+
+            WriteOutput(args.app, generationEnvironment, args.basePath, args.bareOption.HasValue(), args.clipboardOption.HasValue(), args.dryRun);
+        });
+    }
+
+    private void AppendParameters(MultipleContentBuilderEnvironment generationEnvironment, string defaultFilename, ITemplateParameter[] templateParameters)
+    {
+        var content = generationEnvironment.Builder.AddContent(defaultFilename);
+        foreach (var parameter in templateParameters)
+        {
+            content.Builder.AppendLine(CultureInfo.CurrentCulture, $"{parameter.Name} ({parameter.Type.FullName})");
+        }
     }
 
     private static KeyValuePair<string, object?>[] GetParameters(CommandArgument parametersArgument)
