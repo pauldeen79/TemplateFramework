@@ -36,7 +36,7 @@ public sealed class TemplateEngine : ITemplateEngine
         Guard.IsNotNull(request);
 
         var template = request.Context?.Template;
-        if (template is null || template is IgnoreThis)
+        if (template is null || template is IIgnoreThis)
         {
             template = _provider.Create(request.Identifier);
         }

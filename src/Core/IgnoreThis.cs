@@ -1,5 +1,5 @@
 ﻿namespace TemplateFramework.Core;
 
-internal class IgnoreThis
+internal sealed class IgnoreThis : IIgnoreThis
 {
 }
