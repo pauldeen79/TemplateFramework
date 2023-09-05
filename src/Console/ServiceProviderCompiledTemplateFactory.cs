@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class ServiceProviderCompiledTemplateFactory : ITemplateFactory
 {
-    public ServiceProvider Provider { get; set; } = default!;
+    public IServiceProvider Provider { get; set; } = default!;
 
     public object Create(Type type)
     {

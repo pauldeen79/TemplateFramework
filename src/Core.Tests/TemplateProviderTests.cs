@@ -91,4 +91,26 @@ public class TemplateProviderTests
             customTemplateProviderComponentMock.Verify(x => x.Create(identifier), Times.Once);
         }
     }
+
+    public class StartSession : TemplateProviderTests
+    {
+        [Fact]
+        public void Clears_Registration_Performed_On_Current_Instance()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var newTemplateProviderComponentMock = new Mock<ITemplateProviderComponent>();
+            newTemplateProviderComponentMock.Setup(x => x.Supports(It.IsAny<ITemplateIdentifier>())).Returns(true);
+            newTemplateProviderComponentMock.Setup(x => x.Create(It.IsAny<ITemplateIdentifier>())).Returns(this);
+            var templateIdentifierMock = new Mock<ITemplateIdentifier>();
+            sut.RegisterComponent(newTemplateProviderComponentMock.Object);
+
+            // Act
+            sut.StartSession();
+
+            // Assert
+            sut.Invoking(x => x.Create(templateIdentifierMock.Object))
+               .Should().Throw<NotSupportedException>();
+        }
+    }
 }

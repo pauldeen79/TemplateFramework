@@ -29,7 +29,7 @@ public partial class MultipleContentTemplateRendererTests
             var sut = CreateSut();
             var template = new TestData.Template(_ => { });
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), DefaultFilename, new StringBuilder());
-            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, template);
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, TemplateProviderMock.Object, template);
 
             // Act & Assert
             sut.Invoking(x => x.Render(engineContext))
@@ -44,7 +44,7 @@ public partial class MultipleContentTemplateRendererTests
             var templateMock = new Mock<IMultipleContentBuilderTemplate>();
             var generationEnvironment = new Mock<IMultipleContentBuilder>();
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(templateMock.Object), DefaultFilename, generationEnvironment.Object);
-            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, templateMock.Object);
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, TemplateProviderMock.Object, templateMock.Object);
             MultipleContentBuilderTemplateCreatorMock.Setup(x => x.TryCreate(It.IsAny<object>())).Returns(templateMock.Object);
 
             // Act
@@ -70,7 +70,7 @@ public partial class MultipleContentTemplateRendererTests
                                      return contentBuilderMock.Object;
                                  });
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), DefaultFilename, generationEnvironment.Object);
-            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, template);
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, TemplateProviderMock.Object, template);
             TemplateProviderMock.Setup(x => x.Create(It.IsAny<TemplateInstanceIdentifier>())).Returns(template);
 
             // Act

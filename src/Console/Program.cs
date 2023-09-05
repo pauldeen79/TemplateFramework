@@ -28,11 +28,12 @@ public static class Program
             .AddSingleton<ITemplateFactory>(dynamicTemplateFactory)
             .AddSingleton<ITemplateProviderPluginFactory>(dynamicTemplateProviderPluginFactory);
         serviceCollection.InjectClipboard();
-        using var provider = serviceCollection.BuildServiceProvider();
-        dynamicTemplateFactory.Provider = provider;
-        dynamicTemplateProviderPluginFactory.AssemblyService = provider.GetRequiredService<IAssemblyService>();
-        dynamicTemplateProviderPluginFactory.Provider = provider;
-        var processor = provider.GetRequiredService<ICommandLineProcessor>();
+        using var provider = serviceCollection.BuildServiceProvider(true);
+        using var scope = provider.CreateScope();
+        dynamicTemplateFactory.Provider = scope.ServiceProvider;
+        dynamicTemplateProviderPluginFactory.AssemblyService = scope.ServiceProvider.GetRequiredService<IAssemblyService>();
+        dynamicTemplateProviderPluginFactory.Provider = scope.ServiceProvider;
+        var processor = scope.ServiceProvider.GetRequiredService<ICommandLineProcessor>();
         processor.Initialize(app);
 
         return app.Execute(args);

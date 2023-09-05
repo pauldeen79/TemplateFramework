@@ -3,5 +3,6 @@
 public interface ITemplateEngineContext : IRenderTemplateRequest
 {
     ITemplateEngine Engine { get; }
+    ITemplateProvider Provider { get; }
     object? Template { get; }
 }
