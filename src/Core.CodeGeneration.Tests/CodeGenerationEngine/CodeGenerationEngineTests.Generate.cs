@@ -110,7 +110,7 @@ public partial class CodeGenerationEngineTests
             TemplateProviderMock.Verify(x => x.StartSession(), Times.Once);
         }
 
-        private sealed class MyPluginCodeGenerationProvider : ICodeGenerationProvider, ITemplateProviderPlugin
+        private sealed class MyPluginCodeGenerationProvider : ICodeGenerationProvider, ITemplateComponentRegistryPlugin
         {
             public string Path => string.Empty;
             public bool RecurseOnDeleteGeneratedFiles => false;

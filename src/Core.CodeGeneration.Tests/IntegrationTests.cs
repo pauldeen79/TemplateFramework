@@ -4,7 +4,7 @@ public class IntegrationTests
 {
     private readonly Mock<IFileSystem> _fileSystemMock = new();
     private readonly Mock<ITemplateFactory> _templateFactoryMock = new();
-    private readonly Mock<ITemplateProviderPluginFactory> _templateProviderPluginFactoryMock = new();
+    private readonly Mock<ITemplateComponentRegistryPluginFactory> _templateProviderPluginFactoryMock = new();
 
     [Fact]
     public void Can_Generate_Code_Using_CodeGenerationAssembly()

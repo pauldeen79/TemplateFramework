@@ -10,7 +10,7 @@ public class IntegrationTests
             .AddParsers()
             .AddTemplateFramework()
             .AddTemplateFrameworkFormattableStringTemplateProvider()
-            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object);
+            .AddSingleton(new Mock<ITemplateComponentRegistryPluginFactory>().Object);
 
         using var provider = services.BuildServiceProvider();
         var templateProvider = provider.GetRequiredService<ITemplateProvider>();

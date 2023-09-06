@@ -337,7 +337,7 @@ internal static class TestData
     }
 }
 
-public sealed class CsharpClassGeneratorCodeGenerationProvider : ICodeGenerationProvider, ITemplateProviderPlugin
+public sealed class CsharpClassGeneratorCodeGenerationProvider : ICodeGenerationProvider, ITemplateComponentRegistryPlugin
 {
     public string Path => string.Empty;
     public bool RecurseOnDeleteGeneratedFiles => false;

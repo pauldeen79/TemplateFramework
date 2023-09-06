@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Abstractions;
 
-public interface ITemplateProviderPlugin
+public interface ITemplateComponentRegistryPlugin
 {
     void Initialize(ITemplateComponentRegistry registry);
 }

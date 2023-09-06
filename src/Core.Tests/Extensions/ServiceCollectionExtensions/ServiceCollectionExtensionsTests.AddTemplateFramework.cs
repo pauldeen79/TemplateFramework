@@ -10,7 +10,7 @@ public partial class ServiceCollectionExtensionsTests
             // Act
             using var provider = new ServiceCollection()
                 .AddTemplateFramework()
-                .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
+                .AddSingleton(new Mock<ITemplateComponentRegistryPluginFactory>().Object)
                 .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
 
             // Assert

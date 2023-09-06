@@ -13,8 +13,8 @@ public class TemplateInstanceIdentifierWithTemplateProviderTests
             // Assert
             instance.CurrentDirectory.Should().Be(Directory.GetCurrentDirectory());
             instance.Instance.Should().BeSameAs(this);
-            instance.TemplateProviderAssemblyName.Should().Be("assembly");
-            instance.TemplateProviderClassName.Should().Be("class");
+            instance.PluginAssemblyName.Should().Be("assembly");
+            instance.PluginClassName.Should().Be("class");
         }
 
         [Fact]
@@ -26,8 +26,8 @@ public class TemplateInstanceIdentifierWithTemplateProviderTests
             // Assert
             instance.CurrentDirectory.Should().Be("Custom");
             instance.Instance.Should().BeSameAs(this);
-            instance.TemplateProviderAssemblyName.Should().Be("assembly");
-            instance.TemplateProviderClassName.Should().Be("class");
+            instance.PluginAssemblyName.Should().Be("assembly");
+            instance.PluginClassName.Should().Be("class");
         }
     }
 }
