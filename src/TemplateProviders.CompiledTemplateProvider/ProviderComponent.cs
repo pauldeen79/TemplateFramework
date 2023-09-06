@@ -14,14 +14,14 @@ public sealed class ProviderComponent : ITemplateProviderComponent
         _templateFactory = templateFactory;
     }
 
-    public bool Supports(ITemplateIdentifier identifier) => identifier is CreateCompiledTemplateRequest;
+    public bool Supports(ITemplateIdentifier identifier) => identifier is CompiledTemplateIdentifier;
 
     public object Create(ITemplateIdentifier identifier)
     {
         Guard.IsNotNull(identifier);
-        Guard.IsAssignableToType<CreateCompiledTemplateRequest>(identifier);
+        Guard.IsAssignableToType<CompiledTemplateIdentifier>(identifier);
 
-        var createCompiledTemplateRequest = (CreateCompiledTemplateRequest)identifier;
+        var createCompiledTemplateRequest = (CompiledTemplateIdentifier)identifier;
         var assembly = _assemblyService.GetAssembly(createCompiledTemplateRequest.AssemblyName, createCompiledTemplateRequest.CurrentDirectory);
         var type = assembly.GetType(createCompiledTemplateRequest.ClassName);
         if (type is null)

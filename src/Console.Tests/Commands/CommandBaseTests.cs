@@ -1,6 +1,4 @@
-﻿using TextCopy;
-
-namespace TemplateFramework.Console.Tests.Commands;
+﻿namespace TemplateFramework.Console.Tests.Commands;
 
 public class CommandBaseTests
 {
@@ -178,14 +176,16 @@ Error: Could not find file [MyFile.txt]. Could not watch file for changes.
     public class GetCurrentDirectory : CommandBaseTests
     {
         [Fact]
-        public void Throws_On_Null_AssemblyName()
+        public void Returns_Empty_String_On_Null_AssemblyName()
         {
             // Arrange
             var sut = CreateSut();
 
-            // Act & Assert
-            sut.Invoking(x => x.GetCurrentDirectoryPublic(string.Empty, assemblyName: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("assemblyName");
+            // Act
+            var result = sut.GetCurrentDirectoryPublic(string.Empty, assemblyName: null!);
+
+            // Assert
+            result.Should().BeEmpty();
         }
 
         [Fact]

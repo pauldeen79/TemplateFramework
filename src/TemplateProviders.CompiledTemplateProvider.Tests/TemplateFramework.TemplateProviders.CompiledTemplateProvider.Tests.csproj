@@ -60,7 +60,7 @@
     <Using Include="TemplateFramework.Runtime.Abstractions" />
     <Using Include="TemplateFramework.Runtime.Extensions" />
     <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.Extensions" />
-    <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.Requests" />
+    <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.TemplateIdentifiers" />
     <Using Include="Xunit" />
   </ItemGroup>
 

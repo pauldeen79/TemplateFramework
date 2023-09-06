@@ -41,7 +41,7 @@
     <Using Include="TemplateFramework.Core.MultipleContentBuilderTemplateCreators" />
     <Using Include="TemplateFramework.Runtime" />
     <Using Include="TemplateFramework.Runtime.Abstractions" />
-    <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.Requests" />
+    <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.TemplateIdentifiers" />
   </ItemGroup>
 
 </Project>

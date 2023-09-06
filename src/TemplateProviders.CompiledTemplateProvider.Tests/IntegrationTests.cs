@@ -17,7 +17,7 @@ public class IntegrationTests
             .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
             .BuildServiceProvider();
         var templateProvider = provider.GetRequiredService<ITemplateProvider>();
-        var template = templateProvider.Create(new CreateCompiledTemplateRequest(GetType().Assembly.FullName!, typeof(MyTemplate).FullName!));
+        var template = templateProvider.Create(new CompiledTemplateIdentifier(GetType().Assembly.FullName!, typeof(MyTemplate).FullName!));
         var templateEngine = provider.GetRequiredService<ITemplateEngine>();
         var builder = new StringBuilder();
         var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), builder);
