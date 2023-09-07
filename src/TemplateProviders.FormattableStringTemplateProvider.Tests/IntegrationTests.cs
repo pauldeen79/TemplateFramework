@@ -77,7 +77,7 @@ public class IntegrationTests
         var templateEngine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
         var identifier = new FormattableStringTemplateIdentifier
         (
-            "aaa {test} zzz",
+            "aaa {__test} zzz",
             CultureInfo.CurrentCulture,
             typeof(TestTemplateComponentRegistryPlugin).Assembly.FullName,
             typeof(TestTemplateComponentRegistryPlugin).FullName,

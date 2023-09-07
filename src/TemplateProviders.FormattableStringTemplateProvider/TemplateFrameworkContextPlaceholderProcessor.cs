@@ -6,6 +6,9 @@ public sealed class TemplateFrameworkContextPlaceholderProcessor : IPlaceholderP
 
     public Result<string> Process(string value, IFormatProvider formatProvider, object? context)
     {
+        Guard.IsNotNull(value);
+        Guard.IsNotNull(formatProvider);
+
         if (context is not TemplateFrameworkFormattableStringContext templateFrameworkFormattableStringContext)
         {
             return Result<string>.Continue();
@@ -25,8 +28,12 @@ public sealed class TemplateFrameworkContextPlaceholderProcessor : IPlaceholderP
             return Result<string>.Success(parameterValue?.ToString() ?? string.Empty);
         }
 
-        // Also return the parameter name, so GetParameters works
-        templateFrameworkFormattableStringContext.ParameterNamesList.Add(value);
+        // Also return the parameter name, so GetParameters works.
+        // For dynamically registered placeholders, make sure the name starts with two underscores, so it gets excluded here.
+        if (!value.StartsWith("__", StringComparison.CurrentCulture))
+        {
+            templateFrameworkFormattableStringContext.ParameterNamesList.Add(value);
+        }
 
         // Unknown parameter, let's just keep it empty for now
         return Result<string>.Success(string.Empty);
