@@ -2,9 +2,9 @@
 
 public class ProviderPluginInitializerComponent : ITemplateInitializerComponent
 {
-    private readonly ITemplateProviderPluginFactory _factory;
+    private readonly ITemplateComponentRegistryPluginFactory _factory;
 
-    public ProviderPluginInitializerComponent(ITemplateProviderPluginFactory factory)
+    public ProviderPluginInitializerComponent(ITemplateComponentRegistryPluginFactory factory)
     {
         Guard.IsNotNull(factory);
 
@@ -20,16 +20,16 @@ public class ProviderPluginInitializerComponent : ITemplateInitializerComponent
             return;
         }
         
-        if (context.Template is ITemplateProviderPlugin providerPlugin)
+        if (context.Template is ITemplateComponentRegistryPlugin registryPlugin)
         {
-            providerPlugin.Initialize(context.Context.TemplateComponentRegistry);
+            registryPlugin.Initialize(context.Context.TemplateComponentRegistry);
         }
 
-        if (context.Identifier is ITemplateProviderPluginIdentifier pluginIdentifier
-            && pluginIdentifier.TemplateProviderAssemblyName is not null
-            && pluginIdentifier.TemplateProviderClassName is not null)
+        if (context.Identifier is ITemplateComponentRegistryIdentifier pluginIdentifier
+            && pluginIdentifier.PluginAssemblyName is not null
+            && pluginIdentifier.PluginClassName is not null)
         {
-            var identifierPlugin = _factory.Create(pluginIdentifier.TemplateProviderAssemblyName, pluginIdentifier.TemplateProviderClassName, pluginIdentifier.CurrentDirectory);
+            var identifierPlugin = _factory.Create(pluginIdentifier.PluginAssemblyName, pluginIdentifier.PluginClassName, pluginIdentifier.CurrentDirectory);
             
             identifierPlugin.Initialize(context.Context.TemplateComponentRegistry);
         }

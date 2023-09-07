@@ -35,7 +35,7 @@ public class ParameterInitializerComponent : ITemplateInitializerComponent
             var parameter = Array.Find(parameters, p => p.Name == item.Key);
             if (parameter is null)
             {
-                throw new NotSupportedException($"Unsupported template parameter: {item.Key}");
+                continue;
             }
 
             parameterizedTemplate.SetParameter(item.Key, _converter.Convert(item.Value, parameter.Type));

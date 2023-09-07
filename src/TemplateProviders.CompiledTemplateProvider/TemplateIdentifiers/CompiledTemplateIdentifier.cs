@@ -1,15 +1,16 @@
-﻿namespace TemplateFramework.TemplateProviders.CompiledTemplateProvider.Requests;
+﻿namespace TemplateFramework.TemplateProviders.CompiledTemplateProvider.TemplateIdentifiers;
 
-public sealed class CreateCompiledTemplateRequest : ITemplateIdentifier
+public sealed class CompiledTemplateIdentifier : ITemplateIdentifier
 {
-    public CreateCompiledTemplateRequest(string assemblyName, string className) : this(assemblyName, className, null)
+    public CompiledTemplateIdentifier(string assemblyName, string className) : this(assemblyName, className, null)
     {
     }
 
-    public CreateCompiledTemplateRequest(string assemblyName, string className, string? currentDirectory)
+    public CompiledTemplateIdentifier(string assemblyName, string className, string? currentDirectory)
     {
         Guard.IsNotNullOrEmpty(assemblyName);
         Guard.IsNotNullOrEmpty(className);
+
         if (string.IsNullOrEmpty(currentDirectory))
         {
             currentDirectory = Directory.GetCurrentDirectory();

@@ -11,13 +11,14 @@ public partial class ServiceCollectionExtensionsTests
             var services = new ServiceCollection();
 
             // Act
-            var provider = services
+            using var provider = services
                 .AddChildTemplate<AddChildTemplate>(typeof(string))
                 .AddTransient<AddChildTemplate>()
-                .BuildServiceProvider();
+                .BuildServiceProvider(true);
+            using var scope = provider.CreateScope();
 
             // Assert
-            provider.GetRequiredService<ITemplateCreator>().CreateByModel("some string model").Should().NotBeNull();
+            scope.ServiceProvider.GetRequiredService<ITemplateCreator>().CreateByModel("some string model").Should().NotBeNull();
         }
 
         [Fact]
@@ -27,12 +28,13 @@ public partial class ServiceCollectionExtensionsTests
             var services = new ServiceCollection();
 
             // Act
-            var provider = services
+            using var provider = services
                 .AddChildTemplate(typeof(string), _ => new AddChildTemplate())
-                .BuildServiceProvider();
+                .BuildServiceProvider(true);
+            using var scope = provider.CreateScope();
 
             // Assert
-            provider.GetRequiredService<ITemplateCreator>().CreateByModel("some string model").Should().NotBeNull();
+            scope.ServiceProvider.GetRequiredService<ITemplateCreator>().CreateByModel("some string model").Should().NotBeNull();
         }
 
         [Fact]
@@ -42,13 +44,14 @@ public partial class ServiceCollectionExtensionsTests
             var services = new ServiceCollection();
 
             // Act
-            var provider = services
+            using var provider = services
                 .AddChildTemplate<AddChildTemplate>("Name")
                 .AddTransient<AddChildTemplate>()
-                .BuildServiceProvider();
+                .BuildServiceProvider(true);
+            using var scope = provider.CreateScope();
 
             // Assert
-            provider.GetRequiredService<ITemplateCreator>().CreateByName("Name").Should().NotBeNull();
+            scope.ServiceProvider.GetRequiredService<ITemplateCreator>().CreateByName("Name").Should().NotBeNull();
         }
 
         [Fact]
@@ -58,12 +61,13 @@ public partial class ServiceCollectionExtensionsTests
             var services = new ServiceCollection();
 
             // Act
-            var provider = services
+            using var provider = services
                 .AddChildTemplate("Name", _ => new AddChildTemplate())
-                .BuildServiceProvider();
+                .BuildServiceProvider(true);
+            using var scope = provider.CreateScope();
 
             // Assert
-            provider.GetRequiredService<ITemplateCreator>().CreateByName("Name").Should().NotBeNull();
+            scope.ServiceProvider.GetRequiredService<ITemplateCreator>().CreateByName("Name").Should().NotBeNull();
         }
 
         [Fact]
@@ -73,14 +77,15 @@ public partial class ServiceCollectionExtensionsTests
             var services = new ServiceCollection();
 
             // Act
-            var provider = services
+            using var provider = services
                 .AddChildTemplate<AddChildTemplate>(typeof(string), "Name")
                 .AddTransient<AddChildTemplate>()
-                .BuildServiceProvider();
+                .BuildServiceProvider(true);
+            using var scope = provider.CreateScope();
 
             // Assert
-            provider.GetRequiredService<ITemplateCreator>().CreateByName("Name").Should().NotBeNull();
-            provider.GetRequiredService<ITemplateCreator>().CreateByModel("some string model").Should().NotBeNull();
+            scope.ServiceProvider.GetRequiredService<ITemplateCreator>().CreateByName("Name").Should().NotBeNull();
+            scope.ServiceProvider.GetRequiredService<ITemplateCreator>().CreateByModel("some string model").Should().NotBeNull();
         }
 
         [Fact]
@@ -90,13 +95,14 @@ public partial class ServiceCollectionExtensionsTests
             var services = new ServiceCollection();
 
             // Act
-            var provider = services
+            using var provider = services
                 .AddChildTemplate(typeof(string), "Name", _ => new AddChildTemplate())
-                .BuildServiceProvider();
+                .BuildServiceProvider(true);
+            using var scope = provider.CreateScope();
 
             // Assert
-            provider.GetRequiredService<ITemplateCreator>().CreateByName("Name").Should().NotBeNull();
-            provider.GetRequiredService<ITemplateCreator>().CreateByModel("some string model").Should().NotBeNull();
+            scope.ServiceProvider.GetRequiredService<ITemplateCreator>().CreateByName("Name").Should().NotBeNull();
+            scope.ServiceProvider.GetRequiredService<ITemplateCreator>().CreateByModel("some string model").Should().NotBeNull();
         }
     }
 }

@@ -5,9 +5,9 @@ public class ProviderPluginInitializerComponentTests
     protected ProviderPluginInitializerComponent CreateSut() => new(TemplateProviderPluginFactoryMock.Object);
 
     protected Mock<ITemplateEngineContext> TemplateEngineContextMock { get; } = new();
-    protected Mock<ITemplateProviderPlugin> TemplateProviderPluginMock { get; } = new();
+    protected Mock<ITemplateComponentRegistryPlugin> TemplateComponentRegistryPluginMock { get; } = new();
     protected Mock<ITemplateContext> TemplateContextMock { get; } = new();
-    protected Mock<ITemplateProviderPluginFactory> TemplateProviderPluginFactoryMock { get; } = new();
+    protected Mock<ITemplateComponentRegistryPluginFactory> TemplateProviderPluginFactoryMock { get; } = new();
 
     public class Constructor
     {
@@ -38,7 +38,7 @@ public class ProviderPluginInitializerComponentTests
         {
             // Arrange
             var sut = CreateSut();
-            TemplateEngineContextMock.SetupGet(x => x.Template).Returns(TemplateProviderPluginMock.Object);
+            TemplateEngineContextMock.SetupGet(x => x.Template).Returns(TemplateComponentRegistryPluginMock.Object);
 
             // Act & Assert
             sut.Invoking(x => x.Initialize(TemplateEngineContextMock.Object))
@@ -64,13 +64,13 @@ public class ProviderPluginInitializerComponentTests
             // Arrange
             var sut = CreateSut();
             TemplateEngineContextMock.SetupGet(x => x.Context).Returns(TemplateContextMock.Object);
-            TemplateEngineContextMock.SetupGet(x => x.Template).Returns(TemplateProviderPluginMock.Object);
+            TemplateEngineContextMock.SetupGet(x => x.Template).Returns(TemplateComponentRegistryPluginMock.Object);
 
             // Act
             sut.Initialize(TemplateEngineContextMock.Object);
 
             // Assert
-            TemplateProviderPluginMock.Verify(x => x.Initialize(It.IsAny<ITemplateProvider>()), Times.Once);
+            TemplateComponentRegistryPluginMock.Verify(x => x.Initialize(It.IsAny<ITemplateProvider>()), Times.Once);
         }
 
         [Fact]
@@ -82,26 +82,26 @@ public class ProviderPluginInitializerComponentTests
             TemplateEngineContextMock.SetupGet(x => x.Context).Returns(TemplateContextMock.Object);
             TemplateEngineContextMock.SetupGet(x => x.Template).Returns(new object());
             TemplateEngineContextMock.SetupGet(x => x.Identifier).Returns(identifier);
-            TemplateProviderPluginFactoryMock.Setup(x => x.Create(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(TemplateProviderPluginMock.Object);
+            TemplateProviderPluginFactoryMock.Setup(x => x.Create(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(TemplateComponentRegistryPluginMock.Object);
 
             // Act
             sut.Initialize(TemplateEngineContextMock.Object);
 
             // Assert
-            TemplateProviderPluginMock.Verify(x => x.Initialize(It.IsAny<ITemplateProvider>()), Times.Once);
+            TemplateComponentRegistryPluginMock.Verify(x => x.Initialize(It.IsAny<ITemplateProvider>()), Times.Once);
         }
 
-        private sealed class IdentifierWithTemplateProviderPluginIdentifier : ITemplateProviderPluginIdentifier
+        private sealed class IdentifierWithTemplateProviderPluginIdentifier : ITemplateComponentRegistryIdentifier
         {
             public IdentifierWithTemplateProviderPluginIdentifier(string? templateProviderAssemblyName, string? templateProviderClassName, string currentDirectory)
             {
-                TemplateProviderAssemblyName = templateProviderAssemblyName;
-                TemplateProviderClassName = templateProviderClassName;
+                PluginAssemblyName = templateProviderAssemblyName;
+                PluginClassName = templateProviderClassName;
                 CurrentDirectory = currentDirectory;
             }
 
-            public string? TemplateProviderAssemblyName { get; }
-            public string? TemplateProviderClassName { get; }
+            public string? PluginAssemblyName { get; }
+            public string? PluginClassName { get; }
             public string CurrentDirectory { get; }
         }
     }

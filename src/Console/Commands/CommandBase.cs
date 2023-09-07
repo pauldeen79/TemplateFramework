@@ -61,9 +61,12 @@ public abstract class CommandBase : ICommandLineCommand
         }
     }
 
-    protected static string? GetCurrentDirectory(string? currentDirectory, string assemblyName)
+    protected static string? GetCurrentDirectory(string? currentDirectory, string? assemblyName)
     {
-        Guard.IsNotNull(assemblyName);
+        if (string.IsNullOrEmpty(assemblyName))
+        {
+            return string.Empty;
+        }
 
         if (!string.IsNullOrEmpty(currentDirectory))
         {

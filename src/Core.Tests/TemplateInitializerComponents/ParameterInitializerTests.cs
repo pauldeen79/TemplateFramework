@@ -73,7 +73,7 @@ public class ParameterInitializerTests
         }
 
         [Fact]
-        public void Throws_On_Non_Existing_AdditionalParameters()
+        public void Does_Not_Throw_On_Non_Existing_AdditionalParameters()
         {
             // Arrange
             var sut = CreateSut();
@@ -84,7 +84,7 @@ public class ParameterInitializerTests
 
             // Act & Assert
             sut.Invoking(x => x.Initialize(engineContext))
-               .Should().Throw<NotSupportedException>().WithMessage("Unsupported template parameter: NonExistingParameter");
+               .Should().NotThrow();
         }
 
         [Fact]

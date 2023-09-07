@@ -3,17 +3,26 @@
 public class ProviderComponentTests
 {
     protected Mock<IFormattableStringParser> FormattableStringParserMock { get; } = new();
+    protected ComponentRegistrationContext ComponentRegistrationContext { get; } = new();
 
-    protected ProviderComponent CreateSut() => new(FormattableStringParserMock.Object);
+    protected ProviderComponent CreateSut() => new(FormattableStringParserMock.Object, ComponentRegistrationContext);
 
-    public class Constructor
+    public class Constructor : ProviderComponentTests
     {
         [Fact]
         public void Throws_On_Null_FormattableStringParser()
         {
             // Act & Assert
-            this.Invoking(_ => new ProviderComponent(formattableStringParser: null!))
+            this.Invoking(_ => new ProviderComponent(formattableStringParser: null!, ComponentRegistrationContext))
                 .Should().Throw<ArgumentNullException>().WithParameterName("formattableStringParser");
+        }
+
+        [Fact]
+        public void Throws_On_Null_ComponentRegistrationContext()
+        {
+            // Act & Assert
+            this.Invoking(_ => new ProviderComponent(FormattableStringParserMock.Object, componentRegistrationContext: null!))
+                .Should().Throw<ArgumentNullException>().WithParameterName("componentRegistrationContext");
         }
     }
 
@@ -80,7 +89,7 @@ public class ProviderComponentTests
 
             // Act & Assert
             sut.Invoking(x => x.Create(identifier: new Mock<ITemplateIdentifier>().Object))
-               .Should().Throw<ArgumentException>().WithParameterName("identifier");
+               .Should().Throw<NotSupportedException>();
         }
         
         [Fact]
@@ -95,6 +104,23 @@ public class ProviderComponentTests
 
             // Assert
             result.Should().BeOfType<FormattableStringTemplate>();
+        }
+    }
+
+    public class StartSession : ProviderComponentTests
+    {
+        [Fact]
+        public void Clears_Processors()
+        {
+            // Arrange
+            ComponentRegistrationContext.Processors.Add(new Mock<IPlaceholderProcessor>().Object);
+            var sut = CreateSut();
+
+            // Act
+            sut.StartSession();
+
+            // Assert
+            ComponentRegistrationContext.Processors.Should().BeEmpty();
         }
     }
 }

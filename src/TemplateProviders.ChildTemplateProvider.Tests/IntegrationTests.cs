@@ -10,9 +10,10 @@ public class IntegrationTests
             .AddTemplateFramework()
             .AddTemplateFrameworkChildTemplateProvider()
             .AddChildTemplate("MyTemplate", _ => new TestData.PlainTemplateWithTemplateContext(context => "Context IsRootContext: " + context.IsRootContext))
-            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
-            .BuildServiceProvider();
-        var engine = provider.GetRequiredService<ITemplateEngine>();
+            .AddSingleton(new Mock<ITemplateComponentRegistryPluginFactory>().Object)
+            .BuildServiceProvider(true);
+        using var scope = provider.CreateScope();
+        var engine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
 
         var template = new TestData.MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine((builder, context) =>
         {
@@ -40,10 +41,11 @@ public class IntegrationTests
             .AddTemplateFrameworkChildTemplateProvider()
             .AddTemplateFrameworkCodeGeneration()
             .AddSingleton(templateFactoryMock.Object) // note that normally, this class needs to be implemented by the host. (like TemplateFramework.Console)
-            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object) // note that normally, this class needs to be implemented by the host. (like TemplateFramework.Console)
-            .BuildServiceProvider();
+            .AddSingleton(new Mock<ITemplateComponentRegistryPluginFactory>().Object) // note that normally, this class needs to be implemented by the host. (like TemplateFramework.Console)
+            .BuildServiceProvider(true);
+        using var scope = provider.CreateScope();
 
-        var engine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var engine = scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
         var settings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 

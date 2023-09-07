@@ -6,20 +6,41 @@ public sealed class TemplateFrameworkContextPlaceholderProcessor : IPlaceholderP
 
     public Result<string> Process(string value, IFormatProvider formatProvider, object? context)
     {
-        if (context is not TemplateFrameworkFormattableStringContext ctx)
+        Guard.IsNotNull(value);
+        Guard.IsNotNull(formatProvider);
+
+        if (context is not TemplateFrameworkFormattableStringContext templateFrameworkFormattableStringContext)
         {
             return Result<string>.Continue();
         }
 
-        if (ctx.ParametersDictionary.TryGetValue(value, out var parameterValue))
+        foreach (var placholderProcessor in templateFrameworkFormattableStringContext.Processors.OrderBy(x => Order))
+        {
+            var result = placholderProcessor.Process(value, formatProvider, context);
+            if (result.IsSuccessful() && result.Status != ResultStatus.Continue)
+            {
+                return result;
+            }
+        }
+
+        if (templateFrameworkFormattableStringContext.ParametersDictionary.TryGetValue(value, out var parameterValue))
         {
             return Result<string>.Success(parameterValue?.ToString() ?? string.Empty);
         }
 
-        // Also return the parameter name, so GetParameters works
-        ctx.ParameterNamesList.Add(value);
+        // Also return the parameter name, so GetParameters works.
+        // For dynamically registered placeholders, make sure the name starts with two underscores, so it gets excluded here.
+        if (!value.StartsWith("__", StringComparison.CurrentCulture))
+        {
+            templateFrameworkFormattableStringContext.ParameterNamesList.Add(value);
+        }
 
-        // Unknown parameter, let's just keep it empty for now
-        return Result<string>.Success(string.Empty);
+        if (templateFrameworkFormattableStringContext.GetParametersOnly)
+        {
+            // When getting parameters, always return success, so the process always continues to get next parameters.
+            return Result<string>.Success(string.Empty);
+        }
+
+        return Result<string>.Continue();
     }
 }

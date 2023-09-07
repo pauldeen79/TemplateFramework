@@ -25,7 +25,7 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
 
         _templateProvider.StartSession();
 
-        var plugin = codeGenerationProvider as ITemplateProviderPlugin;
+        var plugin = codeGenerationProvider as ITemplateComponentRegistryPlugin;
         plugin?.Initialize(_templateProvider);
 
         _templateEngine.Render(

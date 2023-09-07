@@ -17,7 +17,7 @@ public sealed class PlainTemplateWithAdditionalParameters : IParameterizedTempla
     public override string ToString() => AdditionalParameter;
 }
 
-public sealed class TestTemplateProviderPlugin : ITemplateProviderPlugin
+public sealed class TestTemplateComponentRegistryPlugin : ITemplateComponentRegistryPlugin
 {
     public void Initialize(ITemplateComponentRegistry registry)
     {

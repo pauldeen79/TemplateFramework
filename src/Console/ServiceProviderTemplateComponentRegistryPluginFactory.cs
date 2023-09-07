@@ -1,12 +1,12 @@
 ﻿namespace TemplateFramework.Console;
 
 [ExcludeFromCodeCoverage]
-public class ServiceProviderTemplateProviderPluginFactory : ITemplateProviderPluginFactory
+public class ServiceProviderTemplateComponentRegistryPluginFactory : ITemplateComponentRegistryPluginFactory
 {
     public IAssemblyService AssemblyService { get; set; } = default!;
     public IServiceProvider Provider { get; set; } = default!;
 
-    public ITemplateProviderPlugin Create(string assemblyName, string className, string currentDirectory)
+    public ITemplateComponentRegistryPlugin Create(string assemblyName, string className, string currentDirectory)
     {
         Guard.IsNotNull(assemblyName);
         Guard.IsNotNull(className);
@@ -21,10 +21,10 @@ public class ServiceProviderTemplateProviderPluginFactory : ITemplateProviderPlu
             throw new NotSupportedException($"Could not instanciate class name [{className}] from assembly [{assemblyName}]");
         }
 
-        var plugin = new ServiceProviderCompiledTemplateFactory() { Provider = Provider }.Create(type) as ITemplateProviderPlugin;
+        var plugin = new ServiceProviderCompiledTemplateFactory() { Provider = Provider }.Create(type) as ITemplateComponentRegistryPlugin;
         if (plugin is null)
         {
-            throw new NotSupportedException($"Could not convert class name [{className}] from assembly [{assemblyName}] to an instance of type ${nameof(ITemplateProviderPlugin)}");
+            throw new NotSupportedException($"Could not convert class name [{className}] from assembly [{assemblyName}] to an instance of type ${nameof(ITemplateComponentRegistryPlugin)}");
         }
 
         return plugin;

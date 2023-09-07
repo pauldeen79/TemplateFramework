@@ -36,6 +36,7 @@
 
   <ItemGroup>
     <Using Include="CommunityToolkit.Diagnostics" />
+    <Using Include="CrossCutting.Common.Results" />
     <Using Include="CrossCutting.Utilities.Parsers.Extensions" />
     <Using Include="McMaster.Extensions.CommandLineUtils" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
@@ -61,8 +62,9 @@
     <Using Include="TemplateFramework.Runtime.Extensions" />
     <Using Include="TemplateFramework.TemplateProviders.ChildTemplateProvider.Extensions" />
     <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.Extensions" />
-    <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.Requests" />
+    <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.TemplateIdentifiers" />
     <Using Include="TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.Extensions" />
+    <Using Include="TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.TemplateIdentifiers" />
     <Using Include="TextCopy" />
   </ItemGroup>
 

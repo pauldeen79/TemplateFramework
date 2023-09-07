@@ -112,5 +112,36 @@ public class TemplateProviderTests
             sut.Invoking(x => x.Create(templateIdentifierMock.Object))
                .Should().Throw<NotSupportedException>();
         }
+
+        [Fact]
+        public void Calls_StartSession_On_All_Session_Aware_Components()
+        {
+            // Arrange
+            var sessionAwareTemplateProviderComponent = new SessionAwareTemplateProviderComponent();
+            var sut = new TemplateProvider(new[] { sessionAwareTemplateProviderComponent });
+
+            // Act
+            sut.StartSession();
+
+            // Assert
+            sessionAwareTemplateProviderComponent.Counter.Should().Be(1);
+        }
+
+        private sealed class SessionAwareTemplateProviderComponent : ISessionAwareComponent, ITemplateProviderComponent
+        {
+            public int Counter { get; private set; }
+
+            public object Create(ITemplateIdentifier identifier)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void StartSession() => Counter++;
+
+            public bool Supports(ITemplateIdentifier identifier)
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
 }
