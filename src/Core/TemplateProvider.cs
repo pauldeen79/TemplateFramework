@@ -37,5 +37,10 @@ public class TemplateProvider : ITemplateProvider
     {
         _components.Clear();
         _components.AddRange(_originalComponents);
+
+        foreach (var sessionAwareComponent in _components.OfType<ISessionAwareComponent>())
+        {
+            sessionAwareComponent.StartSession();
+        }
     }
 }

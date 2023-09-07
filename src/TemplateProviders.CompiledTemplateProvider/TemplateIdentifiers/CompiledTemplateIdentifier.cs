@@ -10,6 +10,7 @@ public sealed class CompiledTemplateIdentifier : ITemplateIdentifier
     {
         Guard.IsNotNullOrEmpty(assemblyName);
         Guard.IsNotNullOrEmpty(className);
+
         if (string.IsNullOrEmpty(currentDirectory))
         {
             currentDirectory = Directory.GetCurrentDirectory();

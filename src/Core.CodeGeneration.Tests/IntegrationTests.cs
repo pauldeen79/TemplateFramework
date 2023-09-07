@@ -16,11 +16,12 @@ public class IntegrationTests
             .AddScoped(_ => _fileSystemMock.Object)
             .AddScoped(_ => _templateFactoryMock.Object)
             .AddScoped(_ => _templateProviderPluginFactoryMock.Object)
-            .BuildServiceProvider();
-        var sut = serviceProvider.GetRequiredService<ICodeGenerationEngine>();
+            .BuildServiceProvider(true);
+        using var scope = serviceProvider.CreateScope();
+        var sut = scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = new IntegrationProvider();
         var builder = new MultipleContentBuilder();
-        var generationEnvironment = new MultipleContentBuilderEnvironment(serviceProvider.GetRequiredService<IFileSystem>(), serviceProvider.GetRequiredService<IRetryMechanism>(), builder);
+        var generationEnvironment = new MultipleContentBuilderEnvironment(scope.ServiceProvider.GetRequiredService<IFileSystem>(), scope.ServiceProvider.GetRequiredService<IRetryMechanism>(), builder);
         _templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
 
         // Act

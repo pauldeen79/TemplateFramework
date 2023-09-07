@@ -15,10 +15,11 @@ public class IntegrationTests
             .AddSingleton(new Mock<IAssemblyInfoContextService>().Object)
             .AddSingleton(templateFactoryMock.Object)
             .AddSingleton(new Mock<ITemplateComponentRegistryPluginFactory>().Object)
-            .BuildServiceProvider();
-        var templateProvider = provider.GetRequiredService<ITemplateProvider>();
+            .BuildServiceProvider(true);
+        using var scope = provider.CreateScope();
+        var templateProvider = scope.ServiceProvider.GetRequiredService<ITemplateProvider>();
         var template = templateProvider.Create(new CompiledTemplateIdentifier(GetType().Assembly.FullName!, typeof(MyTemplate).FullName!));
-        var templateEngine = provider.GetRequiredService<ITemplateEngine>();
+        var templateEngine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
         var builder = new StringBuilder();
         var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), builder);
 

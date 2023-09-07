@@ -9,8 +9,9 @@ public class IntegrationTests
         using var provider = new ServiceCollection()
             .AddTemplateFramework()
             .AddSingleton(new Mock<ITemplateComponentRegistryPluginFactory>().Object)
-            .BuildServiceProvider();
-        var sut = provider.GetRequiredService<ITemplateEngine>();
+            .BuildServiceProvider(true);
+        using var scope = provider.CreateScope();
+        var sut = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
 
         var template = new TestData.Template(builder => builder.Append("Hello world!"));
         var builder = new MultipleContentBuilder();

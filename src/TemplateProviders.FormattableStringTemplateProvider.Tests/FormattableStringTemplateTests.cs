@@ -5,8 +5,9 @@ public class FormattableStringTemplateTests
     protected const string Template = "Hello {Name}!";
     protected Mock<IFormattableStringParser> FormattableStringParserMock { get; } = new();
     protected FormattableStringTemplateIdentifier Request { get; } = new FormattableStringTemplateIdentifier(Template, CultureInfo.CurrentCulture);
+    protected ComponentRegistrationContext ComponentRegistrationContext { get; } = new();
 
-    protected FormattableStringTemplate CreateSut() => new(Request, FormattableStringParserMock.Object);
+    protected FormattableStringTemplate CreateSut() => new(Request, FormattableStringParserMock.Object, ComponentRegistrationContext);
 
     public class Constructor : FormattableStringTemplateTests
     {
@@ -14,7 +15,7 @@ public class FormattableStringTemplateTests
         public void Throws_On_Null_CreateFormattableStringTemplateRequest()
         {
             // Act & Assert
-            this.Invoking(_ => new FormattableStringTemplate(createFormattableStringTemplateRequest: null!, FormattableStringParserMock.Object))
+            this.Invoking(_ => new FormattableStringTemplate(createFormattableStringTemplateRequest: null!, FormattableStringParserMock.Object, ComponentRegistrationContext))
                 .Should().Throw<ArgumentNullException>().WithParameterName("createFormattableStringTemplateRequest");
         }
 
@@ -22,8 +23,16 @@ public class FormattableStringTemplateTests
         public void Throws_On_Null_FormattableStringParser()
         {
             // Act & Assert
-            this.Invoking(_ => new FormattableStringTemplate(Request, formattableStringParser: null!))
+            this.Invoking(_ => new FormattableStringTemplate(Request, formattableStringParser: null!, ComponentRegistrationContext))
                 .Should().Throw<ArgumentNullException>().WithParameterName("formattableStringParser");
+        }
+
+        [Fact]
+        public void Throws_On_Null_ComponentRegistrationContext()
+        {
+            // Act & Assert
+            this.Invoking(_ => new FormattableStringTemplate(Request, FormattableStringParserMock.Object, componentRegistrationContext: null!))
+                .Should().Throw<ArgumentNullException>().WithParameterName("componentRegistrationContext");
         }
     }
 

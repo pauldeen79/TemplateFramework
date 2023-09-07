@@ -4,12 +4,15 @@ public class TestFormattableStringTemplate : IParameterizedTemplate, IStringBuil
 {
     private readonly Dictionary<string, object?> _parameterValues = new();
     private readonly IFormattableStringParser _formattableStringParser;
+    private readonly ComponentRegistrationContext _componentRegistrationContext;
 
-    public TestFormattableStringTemplate(IFormattableStringParser formattableStringParser)
+    public TestFormattableStringTemplate(IFormattableStringParser formattableStringParser, ComponentRegistrationContext componentRegistrationContext)
     {
         Guard.IsNotNull(formattableStringParser);
+        Guard.IsNotNull(componentRegistrationContext);
 
         _formattableStringParser = formattableStringParser;
+        _componentRegistrationContext = componentRegistrationContext;
     }
 
     const string Template = @"        [Fact]
@@ -26,13 +29,13 @@ public class TestFormattableStringTemplate : IParameterizedTemplate, IStringBuil
         }}";
 
     public ITemplateParameter[] GetParameters()
-        => new FormattableStringTemplate(new FormattableStringTemplateIdentifier(Template, CultureInfo.CurrentCulture), _formattableStringParser).GetParameters();
+        => new FormattableStringTemplate(new FormattableStringTemplateIdentifier(Template, CultureInfo.CurrentCulture), _formattableStringParser, _componentRegistrationContext).GetParameters();
 
     public void Render(StringBuilder builder)
     {
         Guard.IsNotNull(builder);
 
-        var context = new TemplateFrameworkFormattableStringContext(_parameterValues);
+        var context = new TemplateFrameworkFormattableStringContext(_parameterValues, _componentRegistrationContext.Processors);
 
         builder.Append(_formattableStringParser.Parse(Template, CultureInfo.CurrentCulture, context).GetValueOrThrow());
     }

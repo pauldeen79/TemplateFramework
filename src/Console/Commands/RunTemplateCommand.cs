@@ -111,7 +111,9 @@ public class RunTemplateCommand : CommandBase
             var generationEnvironment = new MultipleContentBuilderEnvironment();
             ITemplateIdentifier templateIdentifier = string.IsNullOrEmpty(args.filename)
                 ? new CompiledTemplateIdentifier(args.assemblyName!, args.className!, args.currentDirectory)
-                : new FormattableStringTemplateIdentifier(FileSystem.ReadAllText(args.filename, Encoding.Default), CultureInfo.CurrentCulture);
+                : new FormattableStringTemplateIdentifier(FileSystem.ReadAllText(args.filename, Encoding.Default), CultureInfo.CurrentCulture, args.assemblyName, args.className, args.currentDirectory);
+
+            _templateProvider.StartSession();
 
             var template = _templateProvider.Create(templateIdentifier);
 
