@@ -35,7 +35,12 @@ public sealed class TemplateFrameworkContextPlaceholderProcessor : IPlaceholderP
             templateFrameworkFormattableStringContext.ParameterNamesList.Add(value);
         }
 
-        // Unknown parameter, let's just keep it empty for now
-        return Result<string>.Success(string.Empty);
+        if (templateFrameworkFormattableStringContext.GetParametersOnly)
+        {
+            // When getting parameters, always return success, so the process always continues to get next parameters.
+            return Result<string>.Success(string.Empty);
+        }
+
+        return Result<string>.Continue();
     }
 }

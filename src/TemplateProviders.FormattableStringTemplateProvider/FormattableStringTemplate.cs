@@ -25,7 +25,7 @@ public class FormattableStringTemplate : IParameterizedTemplate, IStringBuilderT
 
     public ITemplateParameter[] GetParameters()
     {
-        var context = new TemplateFrameworkFormattableStringContext(_parametersDictionary, _componentRegistrationContext.Processors);
+        var context = new TemplateFrameworkFormattableStringContext(_parametersDictionary, _componentRegistrationContext.Processors, true);
         
         _ = _formattableStringParser.Parse(_createFormattableStringTemplateRequest.Template, _createFormattableStringTemplateRequest.FormatProvider, context);
         
@@ -38,7 +38,7 @@ public class FormattableStringTemplate : IParameterizedTemplate, IStringBuilderT
     {
         Guard.IsNotNull(builder);
 
-        var context = new TemplateFrameworkFormattableStringContext(_parametersDictionary, _componentRegistrationContext.Processors);
+        var context = new TemplateFrameworkFormattableStringContext(_parametersDictionary, _componentRegistrationContext.Processors, false);
         var result = _formattableStringParser.Parse(_createFormattableStringTemplateRequest.Template, _createFormattableStringTemplateRequest.FormatProvider, context).GetValueOrThrow();
 
         builder.Append(result);

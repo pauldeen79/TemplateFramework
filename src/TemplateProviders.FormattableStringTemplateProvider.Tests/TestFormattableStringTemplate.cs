@@ -35,7 +35,7 @@ public class TestFormattableStringTemplate : IParameterizedTemplate, IStringBuil
     {
         Guard.IsNotNull(builder);
 
-        var context = new TemplateFrameworkFormattableStringContext(_parameterValues, _componentRegistrationContext.Processors);
+        var context = new TemplateFrameworkFormattableStringContext(_parameterValues, _componentRegistrationContext.Processors, false);
 
         builder.Append(_formattableStringParser.Parse(Template, CultureInfo.CurrentCulture, context).GetValueOrThrow());
     }
