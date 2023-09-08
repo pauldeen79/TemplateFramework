@@ -28,7 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\TemplateFramework.Core.csproj" />
-    <ProjectReference Include="..\TemplateProviders.FormattableStringTemplateProvider\TemplateFramework.TemplateProviders.StringTemplateProvider.csproj" />
+    <ProjectReference Include="..\TemplateProviders.StringTemplateProvider\TemplateFramework.TemplateProviders.StringTemplateProvider.csproj" />
   </ItemGroup>
 
   <ItemGroup>

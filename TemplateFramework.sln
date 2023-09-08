@@ -36,9 +36,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemplateFramework.Runtime",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemplateFramework.Runtime.Tests", "src\Runtime.Tests\TemplateFramework.Runtime.Tests.csproj", "{665593B9-6C81-48E1-86A1-046FCFA0F460}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemplateFramework.TemplateProviders.StringTemplateProvider", "src\TemplateProviders.FormattableStringTemplateProvider\TemplateFramework.TemplateProviders.StringTemplateProvider.csproj", "{AF085169-8940-4FDB-A4C5-458449D3A836}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemplateFramework.TemplateProviders.StringTemplateProvider", "src\TemplateProviders.StringTemplateProvider\TemplateFramework.TemplateProviders.StringTemplateProvider.csproj", "{AF085169-8940-4FDB-A4C5-458449D3A836}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemplateFramework.TemplateProviders.StringTemplateProvider.Tests", "src\TemplateProviders.FormattableStringTemplateProvider.Tests\TemplateFramework.TemplateProviders.StringTemplateProvider.Tests.csproj", "{B7F45992-6525-446E-B568-5079141CA572}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemplateFramework.TemplateProviders.StringTemplateProvider.Tests", "src\TemplateProviders.StringTemplateProvider.Tests\TemplateFramework.TemplateProviders.StringTemplateProvider.Tests.csproj", "{B7F45992-6525-446E-B568-5079141CA572}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
