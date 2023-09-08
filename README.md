@@ -153,7 +153,7 @@ public interface ITemplateComponentRegistryPlugin
 }
 ```
 
-Create a constructor to get the xxx instance. Then, in the Initialize method, register instances.
+Create a constructor to get the ComponentRegistrationContext instance. Then, in the Initialize method, register instances.
 
 ```C#
 public sealed class MyTemplateComponentRegistryPlugin : ITemplateComponentRegistryPlugin
