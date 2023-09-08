@@ -133,17 +133,31 @@ public class ProviderComponentTests
     public class StartSession : ProviderComponentTests
     {
         [Fact]
-        public void Clears_Processors()
+        public void Clears_PlaceholderProcessors()
         {
             // Arrange
-            ComponentRegistrationContext.Processors.Add(new Mock<IPlaceholderProcessor>().Object);
+            ComponentRegistrationContext.PlaceholderProcessors.Add(new Mock<IPlaceholderProcessor>().Object);
             var sut = CreateSut();
 
             // Act
             sut.StartSession();
 
             // Assert
-            ComponentRegistrationContext.Processors.Should().BeEmpty();
+            ComponentRegistrationContext.PlaceholderProcessors.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Clears_FunctionResultParsers()
+        {
+            // Arrange
+            ComponentRegistrationContext.FunctionResultParsers.Add(new Mock<IFunctionResultParser>().Object);
+            var sut = CreateSut();
+
+            // Act
+            sut.StartSession();
+
+            // Assert
+            ComponentRegistrationContext.FunctionResultParsers.Should().BeEmpty();
         }
     }
 }

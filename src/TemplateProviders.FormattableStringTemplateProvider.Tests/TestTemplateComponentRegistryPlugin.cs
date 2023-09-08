@@ -18,6 +18,20 @@ public sealed class TestTemplateComponentRegistryPlugin : ITemplateComponentRegi
             .Setup(x => x.Process(It.IsAny<string>(), It.IsAny<IFormatProvider>(), It.IsAny<object?>()))
             .Returns<string, IFormatProvider, object?>((value, _, _) => value == "__test" ? Result<string>.Success("Hello world!") : Result<string>.Continue());
 
-        ComponentRegistrationContext.Processors.Add(processorProcessorMock.Object);
+        var functionResultParserMock = new Mock<IFunctionResultParser>();
+        functionResultParserMock
+            .Setup(x => x.Parse(It.IsAny<FunctionParseResult>(), It.IsAny<object?>(), It.IsAny<IFunctionParseResultEvaluator>(), It.IsAny<IExpressionParser>()))
+            .Returns<FunctionParseResult, object?, IFunctionParseResultEvaluator, IExpressionParser>((result, _, _, _) =>
+            {
+                if (result.FunctionName == "MyFunction")
+                {
+                    return Result<object?>.Success("Hello world!");
+                }
+
+                return Result<object?>.Continue();
+            });
+
+        ComponentRegistrationContext.PlaceholderProcessors.Add(processorProcessorMock.Object);
+        ComponentRegistrationContext.FunctionResultParsers.Add(functionResultParserMock.Object);
     }
 }

@@ -37,5 +37,9 @@ public class ProviderComponent : ITemplateProviderComponent, ISessionAwareCompon
         }
     }
 
-    public void StartSession() => _componentRegistrationContext.Processors.Clear();
+    public void StartSession()
+    {
+        _componentRegistrationContext.PlaceholderProcessors.Clear();
+        _componentRegistrationContext.FunctionResultParsers.Clear();
+    }
 }

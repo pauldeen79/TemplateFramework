@@ -50,7 +50,7 @@ public class IntegrationTests
     }
 
     [Fact]
-    public void Can_Use_Custom_Registered_PlaceholderProcessors()
+    public void Can_Use_Custom_Registered_PlaceholderProcessor()
     {
         // Arrange
         var templateComponentRegistryPluginFactoryMock = new Mock<ITemplateComponentRegistryPluginFactory>();
@@ -78,6 +78,51 @@ public class IntegrationTests
         var identifier = new FormattableStringTemplateIdentifier
         (
             "aaa {__test} zzz",
+            CultureInfo.CurrentCulture,
+            typeof(TestTemplateComponentRegistryPlugin).Assembly.FullName,
+            typeof(TestTemplateComponentRegistryPlugin).FullName,
+            Directory.GetCurrentDirectory()
+        );
+        var template = scope.ServiceProvider.GetRequiredService<ITemplateProvider>().Create(identifier);
+        var context = new TemplateContext(templateEngine, scope.ServiceProvider.GetRequiredService<ITemplateProvider>(), "myfile.txt", identifier, template);
+        var request = new RenderTemplateRequest(identifier, builder, context);
+
+        // Act
+        templateEngine.Render(request);
+
+        // Assert
+        builder.ToString().Should().Be("aaa Hello world! zzz");
+    }
+
+    [Fact]
+    public void Can_Use_Custom_Registered_FunctionResultParser()
+    {
+        // Arrange
+        var templateComponentRegistryPluginFactoryMock = new Mock<ITemplateComponentRegistryPluginFactory>();
+
+        var services = new ServiceCollection()
+            .AddParsers()
+            .AddTemplateFramework()
+            .AddTemplateFrameworkStringTemplateProvider()
+            .AddSingleton(templateComponentRegistryPluginFactoryMock.Object)
+            .AddScoped<ITemplateComponentRegistryPlugin, TestTemplateComponentRegistryPlugin>();
+
+        using var provider = services.BuildServiceProvider(true);
+        using var scope = provider.CreateScope();
+
+        templateComponentRegistryPluginFactoryMock
+            .Setup(x => x.Create(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            .Returns<string, string, string>((_, className, _)
+                => scope.ServiceProvider.GetServices<ITemplateComponentRegistryPlugin>()
+                    .OfType<TestTemplateComponentRegistryPlugin>()
+                    .FirstOrDefault(x => x.GetType().FullName == className)
+                        ?? throw new NotSupportedException($"Unsupported template component registry plug-in type: {className}"));
+
+        var builder = new StringBuilder();
+        var templateEngine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
+        var identifier = new ExpressionStringTemplateIdentifier
+        (
+            "=\"aaa \" & MyFunction() & \" zzz\"",
             CultureInfo.CurrentCulture,
             typeof(TestTemplateComponentRegistryPlugin).Assembly.FullName,
             typeof(TestTemplateComponentRegistryPlugin).FullName,

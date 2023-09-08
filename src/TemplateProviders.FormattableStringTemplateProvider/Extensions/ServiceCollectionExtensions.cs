@@ -6,5 +6,6 @@ public static class ServiceCollectionExtensions
         => services
             .AddScoped<ITemplateProviderComponent, ProviderComponent>()
             .AddScoped<IPlaceholderProcessor, TemplateFrameworkContextPlaceholderProcessor>()
+            .AddScoped<IFunctionResultParser, TemplateFrameworkContextFunctionResultParser>()
             .AddScoped<ComponentRegistrationContext>();
 }

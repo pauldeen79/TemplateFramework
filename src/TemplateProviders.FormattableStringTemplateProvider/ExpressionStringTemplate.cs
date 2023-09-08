@@ -27,7 +27,7 @@ public class ExpressionStringTemplate : IStringBuilderTemplate
     {
         Guard.IsNotNull(builder);
 
-        var context = new TemplateFrameworkStringContext(_parametersDictionary, _componentRegistrationContext.Processors, false);
+        var context = new TemplateFrameworkStringContext(_parametersDictionary, _componentRegistrationContext, false);
         var result = _expressionStringParser.Parse(_expressionStringTemplateIdentifier.Template, _expressionStringTemplateIdentifier.FormatProvider, context).GetValueOrThrow();
 
         builder.Append(result);
