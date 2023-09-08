@@ -183,6 +183,9 @@ If you need additional dependencies, you need to add those to the constructor or
 
 Finally, on the command line, use the assembly name and class name (and probably also the directory name where the assembly is stored) to this class.
 Probably something like this:
+
+```Powershell
 tf template --formattablestring template.txt --dryrun --default myfile.txt --interactive --templateproviderplugin MyAssembly.MyTemplateComponentRegistryPlugin --assembly MyAssembly --directory D:\\somewhere\\MyAssembly\\bin\\debug\\net7.0
+```
 
 There is also an example in launchSettings.json of the TemplateFramework.Console project, that uses a template provider plug-in of a unit test project.
