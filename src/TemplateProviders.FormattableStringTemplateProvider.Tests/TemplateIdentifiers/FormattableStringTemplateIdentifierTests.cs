@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.Tests.TemplateIdentifiers;
+﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider.Tests.TemplateIdentifiers;
 
 public class FormattableStringTemplateIdentifierTests
 {

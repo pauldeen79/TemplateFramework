@@ -21,7 +21,7 @@ public static class Program
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkCompiledTemplateProvider()
             .AddTemplateFrameworkChildTemplateProvider()
-            .AddTemplateFrameworkFormattableStringTemplateProvider()
+            .AddTemplateFrameworkStringTemplateProvider()
             .AddTemplateFrameworkRuntime()
             .AddTemplateCommands()
             .AddSingleton<IAssemblyInfoContextService, MyAssemblyInfoContextService>()
@@ -53,7 +53,7 @@ public static class Program
             "TemplateFramework.Runtime",
             "TemplateFramework.TemplateProviders.ChildTemplateProvider",
             "TemplateFramework.TemplateProviders.CompiledTemplateProvider",
-            "TemplateFramework.TemplateProviders.FormattableStringTemplateProvider",
+            "TemplateFramework.TemplateProviders.StringTemplateProvider",
             "CrossCutting.Common",
             "CrossCutting.Utilities.Parsers",
             "Microsoft.Extensions.DependencyInjection",

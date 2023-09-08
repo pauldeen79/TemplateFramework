@@ -1,8 +1,8 @@
-﻿namespace TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.Extensions;
+﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddTemplateFrameworkFormattableStringTemplateProvider(this IServiceCollection services)
+    public static IServiceCollection AddTemplateFrameworkStringTemplateProvider(this IServiceCollection services)
         => services
             .AddScoped<ITemplateProviderComponent, ProviderComponent>()
             .AddScoped<IPlaceholderProcessor, TemplateFrameworkContextPlaceholderProcessor>()

@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AnalysisLevel>latest-All</AnalysisLevel>
-    <PackageId>pauldeen79.TemplateFramework.TemplateProviders.FormattableStringTemplateProvider</PackageId>
+    <PackageId>pauldeen79.TemplateFramework.TemplateProviders.StringTemplateProvider</PackageId>
     <Description>Framework for template processing and code generation</Description>
     <PackageTags>templateengine;codegeneration</PackageTags>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
@@ -39,6 +39,6 @@
     <Using Include="TemplateFramework.Abstractions.Templates" />
     <Using Include="TemplateFramework.Core" />
     <Using Include="TemplateFramework.Core.Extensions" />
-    <Using Include="TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.TemplateIdentifiers" />
+    <Using Include="TemplateFramework.TemplateProviders.StringTemplateProvider.TemplateIdentifiers" />
   </ItemGroup>
 </Project>

@@ -28,7 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\TemplateFramework.Core.csproj" />
-    <ProjectReference Include="..\TemplateProviders.FormattableStringTemplateProvider\TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.csproj" />
+    <ProjectReference Include="..\TemplateProviders.FormattableStringTemplateProvider\TemplateFramework.TemplateProviders.StringTemplateProvider.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -50,8 +50,8 @@
     <Using Include="TemplateFramework.Core.TemplateIdentifiers" />
     <Using Include="TemplateFramework.Runtime.Abstractions" />
     <Using Include="TemplateFramework.Runtime.Extensions" />
-    <Using Include="TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.Extensions" />
-    <Using Include="TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.TemplateIdentifiers" />
+    <Using Include="TemplateFramework.TemplateProviders.StringTemplateProvider.Extensions" />
+    <Using Include="TemplateFramework.TemplateProviders.StringTemplateProvider.TemplateIdentifiers" />
     <Using Include="Xunit" />
   </ItemGroup>
     

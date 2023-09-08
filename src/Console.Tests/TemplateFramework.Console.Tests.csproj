@@ -70,7 +70,7 @@
     <Using Include="TemplateFramework.Runtime.Abstractions" />
     <Using Include="TemplateFramework.Runtime.Extensions" />
     <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.TemplateIdentifiers" />
-    <Using Include="TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.TemplateIdentifiers" />
+    <Using Include="TemplateFramework.TemplateProviders.StringTemplateProvider.TemplateIdentifiers" />
     <Using Include="TextCopy" />
     <Using Include="Xunit" />
   </ItemGroup>

@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.Tests;
+﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider.Tests;
 
 public class IntegrationTests
 {
@@ -9,7 +9,7 @@ public class IntegrationTests
         var services = new ServiceCollection()
             .AddParsers()
             .AddTemplateFramework()
-            .AddTemplateFrameworkFormattableStringTemplateProvider()
+            .AddTemplateFrameworkStringTemplateProvider()
             .AddSingleton(new Mock<ITemplateComponentRegistryPluginFactory>().Object);
 
         using var provider = services.BuildServiceProvider(true);
@@ -34,7 +34,7 @@ public class IntegrationTests
         var services = new ServiceCollection()
             .AddParsers()
             .AddTemplateFramework()
-            .AddTemplateFrameworkFormattableStringTemplateProvider();
+            .AddTemplateFrameworkStringTemplateProvider();
 
         using var provider = services.BuildServiceProvider(true);
         using var scope = provider.CreateScope();
@@ -58,7 +58,7 @@ public class IntegrationTests
         var services = new ServiceCollection()
             .AddParsers()
             .AddTemplateFramework()
-            .AddTemplateFrameworkFormattableStringTemplateProvider()
+            .AddTemplateFrameworkStringTemplateProvider()
             .AddSingleton(templateComponentRegistryPluginFactoryMock.Object)
             .AddScoped<ITemplateComponentRegistryPlugin, TestTemplateComponentRegistryPlugin>();
 

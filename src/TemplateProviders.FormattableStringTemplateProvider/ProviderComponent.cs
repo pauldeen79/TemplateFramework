@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.TemplateProviders.FormattableStringTemplateProvider;
+﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider;
 
 public class ProviderComponent : ITemplateProviderComponent, ISessionAwareComponent
 {

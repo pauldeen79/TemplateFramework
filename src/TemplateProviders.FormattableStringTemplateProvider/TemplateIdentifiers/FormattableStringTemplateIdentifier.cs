@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.TemplateIdentifiers;
+﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider.TemplateIdentifiers;
 
 public sealed class FormattableStringTemplateIdentifier : ITemplateComponentRegistryIdentifier
 {

@@ -27,7 +27,7 @@ If you want to use the template abstraction level, then you have to make sure th
 - TemplateFramework.Runtime: Run-time infrastructure, to load assemblies
 - TemplateFramework.TemplateProviders.ChildTemplateProvider: Adds support for child templates
 - TemplateFramework.TemplateProviders.CompiledTemplateProvider: Adds support for compiled templates
-- TemplateFramework.TemplateProviders.FormattableStringTemplateProvider: Adds support for text-based templates with formattable strings
+- TemplateFramework.TemplateProviders.StringTemplateProvider: Adds support for text-based templates with formattable strings or expression strings
 
 # How to create a template
 You have to write a class in a .NET 7.0 project (class library project is good enough), and compile this project.
@@ -95,7 +95,7 @@ Note that the following assemblies will be loaded from the host (Console) comman
 - TemplateFramework.Runtime
 - TemplateFramework.TemplateProviders.ChildTemplateProvider
 - TemplateFramework.TemplateProviders.CompiledTemplateProvider
-- TemplateFramework.TemplateProviders.FormattableStringTemplateProvider
+- TemplateFramework.TemplateProviders.StringTemplateProvider
 - CrossCutting.Common (2.7.58)
 - CrossCutting.Utilities.Parsers (2.7.58)
 - Microsoft.Extensions.DependencyInjection (7.0.0)

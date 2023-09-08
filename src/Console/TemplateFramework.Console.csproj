@@ -27,7 +27,7 @@
     <ProjectReference Include="..\Core\TemplateFramework.Core.csproj" />
     <ProjectReference Include="..\TemplateProviders.ChildTemplateProvider\TemplateFramework.TemplateProviders.ChildTemplateProvider.csproj" />
     <ProjectReference Include="..\TemplateProviders.CompiledTemplateProvider\TemplateFramework.TemplateProviders.CompiledTemplateProvider.csproj" />
-    <ProjectReference Include="..\TemplateProviders.FormattableStringTemplateProvider\TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.csproj" />
+    <ProjectReference Include="..\TemplateProviders.FormattableStringTemplateProvider\TemplateFramework.TemplateProviders.StringTemplateProvider.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -63,8 +63,8 @@
     <Using Include="TemplateFramework.TemplateProviders.ChildTemplateProvider.Extensions" />
     <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.Extensions" />
     <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.TemplateIdentifiers" />
-    <Using Include="TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.Extensions" />
-    <Using Include="TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.TemplateIdentifiers" />
+    <Using Include="TemplateFramework.TemplateProviders.StringTemplateProvider.Extensions" />
+    <Using Include="TemplateFramework.TemplateProviders.StringTemplateProvider.TemplateIdentifiers" />
     <Using Include="TextCopy" />
   </ItemGroup>
 
