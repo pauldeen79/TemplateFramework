@@ -24,7 +24,8 @@ public class RunTemplateCommand : CommandBase
 
             var assemblyOption = command.Option<string>("-a|--assembly <ASSEMBLY>", "The assembly name", CommandOptionType.SingleValue);
             var classNameOption = command.Option<string>("-n|--classname <CLASSNAME>", "The template class name", CommandOptionType.SingleValue);
-            var filenameOption = command.Option<string>("-f|--filename <FILENAME>", "The template file name", CommandOptionType.SingleValue);
+            var formattableStringTemplateFilenameOption = command.Option<string>("-f|--formattablestring <FILENAME>", "The file name of a formattable string template", CommandOptionType.SingleValue);
+            var expressionStringTemplateFilenameOption = command.Option<string>("-e|--expressionstring <FILENAME>", "The file name of an expression string template", CommandOptionType.SingleValue);
             var templateProviderPluginClassNameOption = command.Option<string>("-t|--templateproviderplugin <CLASSNAME>", "Optional class name for a template provider plug-in", CommandOptionType.SingleValue);
             var watchOption = command.Option<bool>("-w|--watch", "Watches for file changes", CommandOptionType.NoValue);
             var dryRunOption = command.Option<bool>("-r|--dryrun", "Indicator whether a dry run should be performed", CommandOptionType.NoValue);
@@ -41,9 +42,10 @@ public class RunTemplateCommand : CommandBase
             {
                 var assemblyName = assemblyOption.Value();
                 var className = classNameOption.Value();
-                var filename = filenameOption.Value();
+                var formattableStringTemplateFilename = formattableStringTemplateFilenameOption.Value();
+                var expressionStringTemplateFilename = expressionStringTemplateFilenameOption.Value();
 
-                var result = Validate(assemblyName, className, filename);
+                var result = Validate(assemblyName, className, formattableStringTemplateFilename, expressionStringTemplateFilename);
                 if (!result.IsSuccessful())
                 {
                     app.Error.WriteLine(result.ErrorMessage);
@@ -58,7 +60,8 @@ public class RunTemplateCommand : CommandBase
                          clipboardOption.HasValue(),
                          assemblyName,
                          className,
-                         filename,
+                         formattableStringTemplateFilename,
+                         expressionStringTemplateFilename,
                          currentDirectory: GetCurrentDirectory(currentDirectoryOption.Value(), assemblyName!),
                          templateProviderPluginClassName: templateProviderPluginClassNameOption.Value(),
                          basePath: GetBasePath(basePathOption.Value()),
@@ -69,10 +72,11 @@ public class RunTemplateCommand : CommandBase
         });
     }
 
-    private Result Validate(string? assemblyName, string? className, string? filename)
+    private Result Validate(string? assemblyName, string? className, string? formattableStringTemplateFilename, string? expressionStringTemplateFilename)
     {
-        if (string.IsNullOrEmpty(filename))
+        if (string.IsNullOrEmpty(formattableStringTemplateFilename) && string.IsNullOrEmpty(expressionStringTemplateFilename))
         {
+            // Compiled template
             if (string.IsNullOrEmpty(assemblyName))
             {
                 return Result.Error("Error: Assembly name is required.");
@@ -82,10 +86,28 @@ public class RunTemplateCommand : CommandBase
             {
                 return Result.Error("Error: Class name is required.");
             }
+            
+            return Result.Success();
         }
-        else if (!FileSystem.FileExists(filename))
+
+        if (!string.IsNullOrEmpty(formattableStringTemplateFilename))
         {
-            return Result.Error($"Error: File '{filename}' does not exist");
+            if (!FileSystem.FileExists(formattableStringTemplateFilename))
+            {
+                return Result.Error($"Error: File '{formattableStringTemplateFilename}' does not exist");
+            }
+
+            return Result.Success();
+        }
+
+        if (expressionStringTemplateFilename?.Length == 0)
+        {
+            return Result.Error("Error: Either AssemblyName and ClassName are required, or FormattableString template filename or ExpressionString template filename is required");
+        }
+
+        if (!FileSystem.FileExists(expressionStringTemplateFilename!))
+        {
+            return Result.Error($"Error: File '{expressionStringTemplateFilename}' does not exist");
         }
 
         return Result.Success();
@@ -99,19 +121,30 @@ public class RunTemplateCommand : CommandBase
                           bool clipboard,
                           string? assemblyName,
                           string? className,
-                          string? filename,
+                          string? formattableStringFilename,
+                          string? expressionStringFilename,
                           string? currentDirectory,
                           string? templateProviderPluginClassName,
                           string basePath,
                           string defaultFilename,
                           bool dryRun,
                           KeyValuePair<string, object?>[] parameters) args)
-        => Watch(args.app, args.watch, args.assemblyName ?? args.filename!, () =>
+        => Watch(args.app, args.watch, args.assemblyName ?? args.formattableStringFilename ?? args.expressionStringFilename!, () =>
         {
             var generationEnvironment = new MultipleContentBuilderEnvironment();
-            ITemplateIdentifier templateIdentifier = string.IsNullOrEmpty(args.filename)
-                ? new CompiledTemplateIdentifier(args.assemblyName!, args.className!, args.currentDirectory)
-                : new FormattableStringTemplateIdentifier(FileSystem.ReadAllText(args.filename, Encoding.Default), CultureInfo.CurrentCulture, args.assemblyName, args.className, args.currentDirectory);
+            ITemplateIdentifier templateIdentifier = null!;
+            if (!string.IsNullOrEmpty(args.className))
+            {
+                templateIdentifier = new CompiledTemplateIdentifier(args.assemblyName!, args.className!, args.currentDirectory);
+            }
+            else if (!string.IsNullOrEmpty(args.formattableStringFilename))
+            {
+                templateIdentifier = new FormattableStringTemplateIdentifier(FileSystem.ReadAllText(args.formattableStringFilename, Encoding.Default), CultureInfo.CurrentCulture, args.assemblyName, args.className, args.currentDirectory);
+            }
+            else if (!string.IsNullOrEmpty(args.expressionStringFilename))
+            {
+                templateIdentifier = new ExpressionStringTemplateIdentifier(FileSystem.ReadAllText(args.expressionStringFilename, Encoding.Default), CultureInfo.CurrentCulture, args.assemblyName, args.className, args.currentDirectory);
+            }
 
             _templateProvider.StartSession();
 

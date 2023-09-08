@@ -9,7 +9,7 @@ public sealed class TemplateFrameworkContextPlaceholderProcessor : IPlaceholderP
         Guard.IsNotNull(value);
         Guard.IsNotNull(formatProvider);
 
-        if (context is not TemplateFrameworkFormattableStringContext templateFrameworkFormattableStringContext)
+        if (context is not TemplateFrameworkStringContext templateFrameworkFormattableStringContext)
         {
             return Result<string>.Continue();
         }

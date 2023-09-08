@@ -1,8 +1,8 @@
 ﻿namespace TemplateFramework.TemplateProviders.FormattableStringTemplateProvider;
 
-public sealed class TemplateFrameworkFormattableStringContext
+public sealed class TemplateFrameworkStringContext
 {
-    public TemplateFrameworkFormattableStringContext(IDictionary<string, object?> parametersDictionary, IList<IPlaceholderProcessor> processors, bool getParametersOnly)
+    public TemplateFrameworkStringContext(IDictionary<string, object?> parametersDictionary, IList<IPlaceholderProcessor> processors, bool getParametersOnly)
     {
         Guard.IsNotNull(parametersDictionary);
         Guard.IsNotNull(processors);
