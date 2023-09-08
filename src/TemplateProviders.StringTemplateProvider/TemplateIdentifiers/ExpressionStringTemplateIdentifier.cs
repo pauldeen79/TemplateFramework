@@ -1,15 +1,15 @@
-﻿namespace TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.TemplateIdentifiers;
+﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider.TemplateIdentifiers;
 
-public sealed class FormattableStringTemplateIdentifier : ITemplateComponentRegistryIdentifier
+public sealed class ExpressionStringTemplateIdentifier : ITemplateComponentRegistryIdentifier
 {
-    public FormattableStringTemplateIdentifier(
+    public ExpressionStringTemplateIdentifier(
         string template,
         IFormatProvider formatProvider) : this(template, formatProvider, null, null, string.Empty)
     {
     }
 
 
-    public FormattableStringTemplateIdentifier(
+    public ExpressionStringTemplateIdentifier(
         string template,
         IFormatProvider formatProvider,
         string? pluginAssemblyName,

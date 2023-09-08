@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.Tests.Extensions;
+﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider.Tests.Extensions;
 
 public class ServiceCollectionExtensionsTests
 {
@@ -9,7 +9,7 @@ public class ServiceCollectionExtensionsTests
         using var provider = new ServiceCollection()
             .AddParsers()
             .AddTemplateFramework()
-            .AddTemplateFrameworkFormattableStringTemplateProvider()
+            .AddTemplateFrameworkStringTemplateProvider()
             .AddSingleton(new Mock<ITemplateComponentRegistryPluginFactory>().Object)
             .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
 

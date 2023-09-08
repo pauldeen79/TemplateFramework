@@ -27,7 +27,7 @@ If you want to use the template abstraction level, then you have to make sure th
 - TemplateFramework.Runtime: Run-time infrastructure, to load assemblies
 - TemplateFramework.TemplateProviders.ChildTemplateProvider: Adds support for child templates
 - TemplateFramework.TemplateProviders.CompiledTemplateProvider: Adds support for compiled templates
-- TemplateFramework.TemplateProviders.FormattableStringTemplateProvider: Adds support for text-based templates with formattable strings
+- TemplateFramework.TemplateProviders.StringTemplateProvider: Adds support for text-based templates with formattable strings or expression strings
 
 # How to create a template
 You have to write a class in a .NET 7.0 project (class library project is good enough), and compile this project.
@@ -95,9 +95,9 @@ Note that the following assemblies will be loaded from the host (Console) comman
 - TemplateFramework.Runtime
 - TemplateFramework.TemplateProviders.ChildTemplateProvider
 - TemplateFramework.TemplateProviders.CompiledTemplateProvider
-- TemplateFramework.TemplateProviders.FormattableStringTemplateProvider
-- CrossCutting.Common (2.7.58)
-- CrossCutting.Utilities.Parsers (2.7.58)
+- TemplateFramework.TemplateProviders.StringTemplateProvider
+- CrossCutting.Common (2.7.59)
+- CrossCutting.Utilities.Parsers (2.7.59)
 - Microsoft.Extensions.DependencyInjection (7.0.0)
 - Microsoft.Extensions.DependencyInjection.Abstractions (7.0.0)
 
@@ -137,3 +137,55 @@ Note that the current version expects this class to be in the same assembly as t
 If you use one or more code generation providers, then each code generation provider (ICodeGenerationProvider implementation) also can implement this ITemplateProviderPlugin interface, to register additional child templates.
 Note that if you don't supply a filter on the command line, then all code generation providers will be checked for this interace.
 If you have conflicting child template names or model types within the same assembly, you have to use a filter to run just one code generation provider instead of all types from the assembly.
+
+# How to register custom placeholder processors or function result parsers
+If you are using text-based templates, you can register custom components to process placeholders or function results.
+
+FormattableStringTemplates: CrossCutting.Utilities.Parsers.Contracts.IPlaceholderProcessor (from CrossCutting.Utilities.Parsers package)
+ExpressionStringTemplate: CrossCutting.Utilities.Parsers.Contracts.IPlaceholderProcessor (from CrossCutting.Utilities.Parsers package)
+
+To register this dynamically, you need to create a class that implements this interface, from TemplateFramework.Abstractions:
+
+```C#
+public interface ITemplateComponentRegistryPlugin
+{
+    void Initialize(ITemplateComponentRegistry registry);
+}
+```
+
+Create a constructor to get the ComponentRegistrationContext instance. Then, in the Initialize method, register instances.
+
+```C#
+public sealed class MyTemplateComponentRegistryPlugin : ITemplateComponentRegistryPlugin
+{
+    public ComponentRegistrationContext ComponentRegistrationContext { get; }
+
+    public TestTemplateComponentRegistryPlugin(ComponentRegistrationContext componentRegistrationContext)
+    {
+        Guard.IsNotNull(componentRegistrationContext);
+
+        ComponentRegistrationContext = componentRegistrationContext;
+    }
+
+    public void Initialize(ITemplateComponentRegistry registry)
+    {
+        var processorProcessor = new MyPlaceholderProcessor();
+        var functionResultParser = new MyFunctionResultParser();
+
+        ComponentRegistrationContext.PlaceholderProcessors.Add(processorProcessor);
+        ComponentRegistrationContext.FunctionResultParsers.Add(functionResultParser);
+    }
+}
+```
+
+In this example, the MyPlaceholderProcessor and MyFunctionResultParser classes are the implementations that you need to provide.
+If you need additional dependencies, you need to add those to the constructor or your TemplateComponentRegistryPlugin class, and then use them on construction of your placeholder processors or function result parsers.
+
+Finally, on the command line, use the assembly name and class name (and probably also the directory name where the assembly is stored) to this class.
+Probably something like this:
+
+```Powershell
+tf template --formattablestring template.txt --dryrun --default myfile.txt --interactive --templateproviderplugin MyAssembly.MyTemplateComponentRegistryPlugin --assembly MyAssembly --directory D:\\somewhere\\MyAssembly\\bin\\debug\\net7.0
+```
+
+There is also an example in launchSettings.json of the TemplateFramework.Console project, that uses a template provider plug-in of a unit test project.

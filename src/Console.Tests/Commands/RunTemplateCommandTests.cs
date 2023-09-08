@@ -84,7 +84,7 @@ public class RunTemplateCommandTests
         }
 
         [Fact]
-        public void Renders_Template_With_Filename()
+        public void Renders_Template_With_FormattableString()
         {
             // Arrange
             var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
@@ -93,10 +93,26 @@ public class RunTemplateCommandTests
             FileSystemMock.Setup(x => x.ReadAllText("myfile.txt", It.IsAny<Encoding>())).Returns("template contents");
 
             // Act
-            _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, "--filename myfile.txt");
+            _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, "--formattablestring myfile.txt");
 
             // Assert
             TemplateEngineMock.Verify(x => x.Render(It.Is<IRenderTemplateRequest>(req => req.Context != null && req.Context.Identifier is FormattableStringTemplateIdentifier)), Times.Once);
+        }
+
+        [Fact]
+        public void Renders_Template_With_ExpressionString()
+        {
+            // Arrange
+            var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
+            TemplateProviderMock.Setup(x => x.Create(It.IsAny<ITemplateIdentifier>())).Returns(templateInstance);
+            FileSystemMock.Setup(x => x.FileExists("myfile.txt")).Returns(true);
+            FileSystemMock.Setup(x => x.ReadAllText("myfile.txt", It.IsAny<Encoding>())).Returns("template contents");
+
+            // Act
+            _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, "--expressionstring myfile.txt");
+
+            // Assert
+            TemplateEngineMock.Verify(x => x.Render(It.Is<IRenderTemplateRequest>(req => req.Context != null && req.Context.Identifier is ExpressionStringTemplateIdentifier)), Times.Once);
         }
 
         [Fact]
@@ -168,7 +184,7 @@ AdditionalParameter (System.String)
         }
 
         [Fact]
-        public void Writes_ErrorMessage_When_File_Does_Not_Exist()
+        public void Writes_ErrorMessage_When_FormattableString_File_Does_Not_Exist()
         {
             // Arrange
             var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
@@ -176,11 +192,28 @@ AdditionalParameter (System.String)
             TemplateEngineMock.Setup(x => x.GetParameters(It.IsAny<object>())).Returns(new[] { new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string)) });
 
             // Act
-            var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, "--filename myfile.txt", "--default parameters.txt", "--dryrun");
+            var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, "--formattablestring myfile.txt", "--default parameters.txt", "--dryrun");
 
             // Assert
             output.Should().Be(@"Error: File 'myfile.txt' does not exist
 ");
         }
+
+        [Fact]
+        public void Writes_ErrorMessage_When_ExpressionString_File_Does_Not_Exist()
+        {
+            // Arrange
+            var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
+            TemplateProviderMock.Setup(x => x.Create(It.IsAny<ITemplateIdentifier>())).Returns(templateInstance);
+            TemplateEngineMock.Setup(x => x.GetParameters(It.IsAny<object>())).Returns(new[] { new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string)) });
+
+            // Act
+            var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, "--expressionstring myfile.txt", "--default parameters.txt", "--dryrun");
+
+            // Assert
+            output.Should().Be(@"Error: File 'myfile.txt' does not exist
+");
+        }
+
     }
 }

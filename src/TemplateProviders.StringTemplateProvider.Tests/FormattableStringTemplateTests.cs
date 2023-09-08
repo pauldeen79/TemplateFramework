@@ -1,29 +1,29 @@
-﻿namespace TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.Tests;
+﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider.Tests;
 
 public class FormattableStringTemplateTests
 {
     protected const string Template = "Hello {Name}!";
     protected Mock<IFormattableStringParser> FormattableStringParserMock { get; } = new();
-    protected FormattableStringTemplateIdentifier Request { get; } = new FormattableStringTemplateIdentifier(Template, CultureInfo.CurrentCulture);
+    protected FormattableStringTemplateIdentifier Identifier { get; } = new FormattableStringTemplateIdentifier(Template, CultureInfo.CurrentCulture);
     protected ComponentRegistrationContext ComponentRegistrationContext { get; } = new();
 
-    protected FormattableStringTemplate CreateSut() => new(Request, FormattableStringParserMock.Object, ComponentRegistrationContext);
+    protected FormattableStringTemplate CreateSut() => new(Identifier, FormattableStringParserMock.Object, ComponentRegistrationContext);
 
     public class Constructor : FormattableStringTemplateTests
     {
         [Fact]
-        public void Throws_On_Null_CreateFormattableStringTemplateRequest()
+        public void Throws_On_Null_FormattableStringTemplateIdentifier()
         {
             // Act & Assert
-            this.Invoking(_ => new FormattableStringTemplate(createFormattableStringTemplateRequest: null!, FormattableStringParserMock.Object, ComponentRegistrationContext))
-                .Should().Throw<ArgumentNullException>().WithParameterName("createFormattableStringTemplateRequest");
+            this.Invoking(_ => new FormattableStringTemplate(formattableStringTemplateIdentifier: null!, FormattableStringParserMock.Object, ComponentRegistrationContext))
+                .Should().Throw<ArgumentNullException>().WithParameterName("formattableStringTemplateIdentifier");
         }
 
         [Fact]
         public void Throws_On_Null_FormattableStringParser()
         {
             // Act & Assert
-            this.Invoking(_ => new FormattableStringTemplate(Request, formattableStringParser: null!, ComponentRegistrationContext))
+            this.Invoking(_ => new FormattableStringTemplate(Identifier, formattableStringParser: null!, ComponentRegistrationContext))
                 .Should().Throw<ArgumentNullException>().WithParameterName("formattableStringParser");
         }
 
@@ -31,7 +31,7 @@ public class FormattableStringTemplateTests
         public void Throws_On_Null_ComponentRegistrationContext()
         {
             // Act & Assert
-            this.Invoking(_ => new FormattableStringTemplate(Request, FormattableStringParserMock.Object, componentRegistrationContext: null!))
+            this.Invoking(_ => new FormattableStringTemplate(Identifier, FormattableStringParserMock.Object, componentRegistrationContext: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("componentRegistrationContext");
         }
     }
@@ -44,14 +44,14 @@ public class FormattableStringTemplateTests
             // Arrange
             var sut = CreateSut();
             FormattableStringParserMock
-                .Setup(x => x.Parse(It.IsAny<string>(), It.IsAny<IFormatProvider>(), It.IsAny<TemplateFrameworkFormattableStringContext>()))
+                .Setup(x => x.Parse(It.IsAny<string>(), It.IsAny<IFormatProvider>(), It.IsAny<TemplateFrameworkStringContext>()))
                 .Returns<string, IFormatProvider, object?>((input, formatProvider, context) =>
                 {
                     // Note that in this unit test, we have to mock the behavior of FormattableStringParser :)
                     // There is also an Integration test to prove it works in real life ;-)
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-                    ((TemplateFrameworkFormattableStringContext)context).ParameterNamesList.Add("Name");
+                    ((TemplateFrameworkStringContext)context).ParameterNamesList.Add("Name");
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
                     return Result<string>.Success(string.Empty);
@@ -83,7 +83,7 @@ public class FormattableStringTemplateTests
         {
             // Arrange
             FormattableStringParserMock
-                .Setup(x => x.Parse(It.IsAny<string>(), It.IsAny<IFormatProvider>(), It.IsAny<TemplateFrameworkFormattableStringContext>()))
+                .Setup(x => x.Parse(It.IsAny<string>(), It.IsAny<IFormatProvider>(), It.IsAny<TemplateFrameworkStringContext>()))
                 .Returns(Result<string>.Error("Kaboom!"));
             var sut = CreateSut();
             var builder = new StringBuilder();
@@ -98,7 +98,7 @@ public class FormattableStringTemplateTests
         {
             // Arrange
             FormattableStringParserMock
-                .Setup(x => x.Parse(It.IsAny<string>(), It.IsAny<IFormatProvider>(), It.IsAny<TemplateFrameworkFormattableStringContext>()))
+                .Setup(x => x.Parse(It.IsAny<string>(), It.IsAny<IFormatProvider>(), It.IsAny<TemplateFrameworkStringContext>()))
                 .Returns(Result<string>.Success("Parse result"));
             var sut = CreateSut();
             var builder = new StringBuilder();
@@ -120,12 +120,12 @@ public class FormattableStringTemplateTests
             var sut = CreateSut();
             IDictionary<string, object?>? dictionary = null;
             FormattableStringParserMock
-                .Setup(x => x.Parse(It.IsAny<string>(), It.IsAny<IFormatProvider>(), It.IsAny<TemplateFrameworkFormattableStringContext>()))
+                .Setup(x => x.Parse(It.IsAny<string>(), It.IsAny<IFormatProvider>(), It.IsAny<TemplateFrameworkStringContext>()))
                 .Returns<string, IFormatProvider, object?>((input, formatProvider, context) =>
                 {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-                    dictionary = ((TemplateFrameworkFormattableStringContext)context).ParametersDictionary;
+                    dictionary = ((TemplateFrameworkStringContext)context).ParametersDictionary;
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 

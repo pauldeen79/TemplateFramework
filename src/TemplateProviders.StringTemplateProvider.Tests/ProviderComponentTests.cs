@@ -1,19 +1,28 @@
-﻿namespace TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.Tests;
+﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider.Tests;
 
 public class ProviderComponentTests
 {
+    protected Mock<IExpressionStringParser> ExpressionStringParserMock { get; } = new();
     protected Mock<IFormattableStringParser> FormattableStringParserMock { get; } = new();
     protected ComponentRegistrationContext ComponentRegistrationContext { get; } = new();
 
-    protected ProviderComponent CreateSut() => new(FormattableStringParserMock.Object, ComponentRegistrationContext);
+    protected ProviderComponent CreateSut() => new(ExpressionStringParserMock.Object, FormattableStringParserMock.Object, ComponentRegistrationContext);
 
     public class Constructor : ProviderComponentTests
     {
         [Fact]
+        public void Throws_On_Null_ExpressionStringParser()
+        {
+            // Act & Assert
+            this.Invoking(_ => new ProviderComponent(expressionStringParser: null!, FormattableStringParserMock.Object, ComponentRegistrationContext))
+                .Should().Throw<ArgumentNullException>().WithParameterName("expressionStringParser");
+        }
+
+        [Fact]
         public void Throws_On_Null_FormattableStringParser()
         {
             // Act & Assert
-            this.Invoking(_ => new ProviderComponent(formattableStringParser: null!, ComponentRegistrationContext))
+            this.Invoking(_ => new ProviderComponent(ExpressionStringParserMock.Object, formattableStringParser: null!, ComponentRegistrationContext))
                 .Should().Throw<ArgumentNullException>().WithParameterName("formattableStringParser");
         }
 
@@ -21,7 +30,7 @@ public class ProviderComponentTests
         public void Throws_On_Null_ComponentRegistrationContext()
         {
             // Act & Assert
-            this.Invoking(_ => new ProviderComponent(FormattableStringParserMock.Object, componentRegistrationContext: null!))
+            this.Invoking(_ => new ProviderComponent(ExpressionStringParserMock.Object, FormattableStringParserMock.Object, componentRegistrationContext: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("componentRegistrationContext");
         }
     }
@@ -42,7 +51,7 @@ public class ProviderComponentTests
         }
 
         [Fact]
-        public void Returns_False_When_Request_Is_Not_CreateFormattableStringTemplateRequest()
+        public void Returns_False_When_Request_Is_Not_ExpressionStringTemplateIdentifier_Or_FormattableStringTemplateIdentifier()
         {
             // Arrange
             var sut = CreateSut();
@@ -55,7 +64,21 @@ public class ProviderComponentTests
         }
 
         [Fact]
-        public void Returns_True_When_Request_Is_CreateFormattableStringTemplateRequest()
+        public void Returns_True_When_Request_Is_ExpressionStringTemplateIdentifier()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Supports(new ExpressionStringTemplateIdentifier("template", CultureInfo.CurrentCulture));
+
+            // Assert
+            result.Should().BeTrue();
+        }
+
+
+        [Fact]
+        public void Returns_True_When_Request_Is_FormattableStringTemplateIdentifier()
         {
             // Arrange
             var sut = CreateSut();
@@ -97,30 +120,44 @@ public class ProviderComponentTests
         {
             // Arrange
             var sut = CreateSut();
-            var identifier = new FormattableStringTemplateIdentifier("template", CultureInfo.CurrentCulture);
+            var identifier = new ExpressionStringTemplateIdentifier("template", CultureInfo.CurrentCulture);
 
             // Act
             var result = sut.Create(identifier);
 
             // Assert
-            result.Should().BeOfType<FormattableStringTemplate>();
+            result.Should().BeOfType<ExpressionStringTemplate>();
         }
     }
 
     public class StartSession : ProviderComponentTests
     {
         [Fact]
-        public void Clears_Processors()
+        public void Clears_PlaceholderProcessors()
         {
             // Arrange
-            ComponentRegistrationContext.Processors.Add(new Mock<IPlaceholderProcessor>().Object);
+            ComponentRegistrationContext.PlaceholderProcessors.Add(new Mock<IPlaceholderProcessor>().Object);
             var sut = CreateSut();
 
             // Act
             sut.StartSession();
 
             // Assert
-            ComponentRegistrationContext.Processors.Should().BeEmpty();
+            ComponentRegistrationContext.PlaceholderProcessors.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Clears_FunctionResultParsers()
+        {
+            // Arrange
+            ComponentRegistrationContext.FunctionResultParsers.Add(new Mock<IFunctionResultParser>().Object);
+            var sut = CreateSut();
+
+            // Act
+            sut.StartSession();
+
+            // Assert
+            ComponentRegistrationContext.FunctionResultParsers.Should().BeEmpty();
         }
     }
 }

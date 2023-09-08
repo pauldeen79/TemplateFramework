@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.TemplateProviders.FormattableStringTemplateProvider.Tests;
+﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider.Tests;
 
 public class TestFormattableStringTemplate : IParameterizedTemplate, IStringBuilderTemplate
 {
@@ -35,7 +35,7 @@ public class TestFormattableStringTemplate : IParameterizedTemplate, IStringBuil
     {
         Guard.IsNotNull(builder);
 
-        var context = new TemplateFrameworkFormattableStringContext(_parameterValues, _componentRegistrationContext.Processors, false);
+        var context = new TemplateFrameworkStringContext(_parameterValues, _componentRegistrationContext, false);
 
         builder.Append(_formattableStringParser.Parse(Template, CultureInfo.CurrentCulture, context).GetValueOrThrow());
     }

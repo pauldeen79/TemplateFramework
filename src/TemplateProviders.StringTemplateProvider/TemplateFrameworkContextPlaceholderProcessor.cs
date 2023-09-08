@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.TemplateProviders.FormattableStringTemplateProvider;
+﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider;
 
 public sealed class TemplateFrameworkContextPlaceholderProcessor : IPlaceholderProcessor
 {
@@ -9,12 +9,12 @@ public sealed class TemplateFrameworkContextPlaceholderProcessor : IPlaceholderP
         Guard.IsNotNull(value);
         Guard.IsNotNull(formatProvider);
 
-        if (context is not TemplateFrameworkFormattableStringContext templateFrameworkFormattableStringContext)
+        if (context is not TemplateFrameworkStringContext templateFrameworkFormattableStringContext)
         {
             return Result<string>.Continue();
         }
 
-        foreach (var placholderProcessor in templateFrameworkFormattableStringContext.Processors.OrderBy(x => Order))
+        foreach (var placholderProcessor in templateFrameworkFormattableStringContext.Context.PlaceholderProcessors.OrderBy(x => Order))
         {
             var result = placholderProcessor.Process(value, formatProvider, context);
             if (result.IsSuccessful() && result.Status != ResultStatus.Continue)
