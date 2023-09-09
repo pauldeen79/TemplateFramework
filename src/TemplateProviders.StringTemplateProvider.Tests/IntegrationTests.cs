@@ -271,7 +271,7 @@ public class IntegrationTests
         var templateEngine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
         var identifier = new ExpressionStringTemplateIdentifier
         (
-            "=ToUpperCase(\"aaa\") & \" \" & Today() & \" \" & ToUpperCase(\"zzz\")",
+            "=ToUpperCase(\"aaa \") & Today() & ToUpperCase(\" zzz\")",
             CultureInfo.InvariantCulture // important to make this test pass on all cultures!
         );
         var template = scope.ServiceProvider.GetRequiredService<ITemplateProvider>().Create(identifier);
