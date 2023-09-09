@@ -216,4 +216,72 @@ public class IntegrationTests
         // Assert
         builder.ToString().Should().Be("aaa Hello world! zzz");
     }
+
+    [Fact]
+    public void Can_Use_ExpressionFramework_In_FormattableStringTemplate()
+    {
+        // Arrange
+        var templateComponentRegistryPluginFactoryMock = new Mock<ITemplateComponentRegistryPluginFactory>();
+
+        var services = new ServiceCollection()
+            .AddParsers()
+            .AddTemplateFramework()
+            .AddTemplateFrameworkStringTemplateProvider()
+            .AddSingleton(templateComponentRegistryPluginFactoryMock.Object)
+            .AddExpressionParser();
+
+        using var provider = services.BuildServiceProvider(true);
+        using var scope = provider.CreateScope();
+
+        var builder = new StringBuilder();
+        var templateEngine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
+        var identifier = new FormattableStringTemplateIdentifier
+        (
+            "{ToUpperCase(\"aaa\")} {Today()} {ToUpperCase(\"zzz\")}",
+            CultureInfo.InvariantCulture // important to make this test pass on all cultures!
+        );
+        var template = scope.ServiceProvider.GetRequiredService<ITemplateProvider>().Create(identifier);
+        var context = new TemplateContext(templateEngine, scope.ServiceProvider.GetRequiredService<ITemplateProvider>(), "myfile.txt", identifier, template);
+        var request = new RenderTemplateRequest(identifier, builder, context);
+
+        // Act
+        templateEngine.Render(request);
+
+        // Assert
+        builder.ToString().Should().Be($"AAA {DateTime.Today.ToString(CultureInfo.InvariantCulture)} ZZZ"); // CultureInfo.InvariantCulture is important to make this test pass on all cultures!
+    }
+
+    [Fact]
+    public void Can_Use_ExpressionFramework_In_ExpressionStringTemplate()
+    {
+        // Arrange
+        var templateComponentRegistryPluginFactoryMock = new Mock<ITemplateComponentRegistryPluginFactory>();
+
+        var services = new ServiceCollection()
+            .AddParsers()
+            .AddTemplateFramework()
+            .AddTemplateFrameworkStringTemplateProvider()
+            .AddSingleton(templateComponentRegistryPluginFactoryMock.Object)
+            .AddExpressionParser();
+
+        using var provider = services.BuildServiceProvider(true);
+        using var scope = provider.CreateScope();
+
+        var builder = new StringBuilder();
+        var templateEngine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
+        var identifier = new ExpressionStringTemplateIdentifier
+        (
+            "=ToUpperCase(\"aaa\") & \" \" & Today() & \" \" & ToUpperCase(\"zzz\")",
+            CultureInfo.InvariantCulture // important to make this test pass on all cultures!
+        );
+        var template = scope.ServiceProvider.GetRequiredService<ITemplateProvider>().Create(identifier);
+        var context = new TemplateContext(templateEngine, scope.ServiceProvider.GetRequiredService<ITemplateProvider>(), "myfile.txt", identifier, template);
+        var request = new RenderTemplateRequest(identifier, builder, context);
+
+        // Act
+        templateEngine.Render(request);
+
+        // Assert
+        builder.ToString().Should().Be($"AAA {DateTime.Today.ToString(CultureInfo.InvariantCulture)} ZZZ"); // CultureInfo.InvariantCulture is important to make this test pass on all cultures!
+    }
 }
