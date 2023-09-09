@@ -25,7 +25,7 @@ public class ProviderComponent : ITemplateProviderComponent, ISessionAwareCompon
 
         if (identifier is ExpressionStringTemplateIdentifier expressionStringTemplateIdentifier)
         {
-            return new ExpressionStringTemplate(expressionStringTemplateIdentifier, _expressionStringParser, _componentRegistrationContext);
+            return new ExpressionStringTemplate(expressionStringTemplateIdentifier, _expressionStringParser, _formattableStringParser, _componentRegistrationContext);
         }
         else if (identifier is FormattableStringTemplateIdentifier formattableStringTemplateIdentifier)
         {
