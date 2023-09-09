@@ -4,10 +4,11 @@ public sealed class TemplateFrameworkContextPlaceholderProcessor : IPlaceholderP
 {
     public int Order => 100;
 
-    public Result<string> Process(string value, IFormatProvider formatProvider, object? context)
+    public Result<string> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
     {
         Guard.IsNotNull(value);
         Guard.IsNotNull(formatProvider);
+        Guard.IsNotNull(formattableStringParser);
 
         if (context is not TemplateFrameworkStringContext templateFrameworkFormattableStringContext)
         {
@@ -16,7 +17,7 @@ public sealed class TemplateFrameworkContextPlaceholderProcessor : IPlaceholderP
 
         foreach (var placholderProcessor in templateFrameworkFormattableStringContext.Context.PlaceholderProcessors.OrderBy(x => Order))
         {
-            var result = placholderProcessor.Process(value, formatProvider, context);
+            var result = placholderProcessor.Process(value, formatProvider, context, formattableStringParser);
             if (result.IsSuccessful() && result.Status != ResultStatus.Continue)
             {
                 return result;

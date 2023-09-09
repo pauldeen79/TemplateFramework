@@ -76,7 +76,6 @@ public class ProviderComponentTests
             result.Should().BeTrue();
         }
 
-
         [Fact]
         public void Returns_True_When_Request_Is_FormattableStringTemplateIdentifier()
         {
@@ -116,7 +115,7 @@ public class ProviderComponentTests
         }
         
         [Fact]
-        public void Returns_FormattableStringTemplate_On_Identifier_Of_Correct_Type()
+        public void Returns_ExpressionStringTemplate_On_Identifier_Of_Correct_Type()
         {
             // Arrange
             var sut = CreateSut();
@@ -127,6 +126,20 @@ public class ProviderComponentTests
 
             // Assert
             result.Should().BeOfType<ExpressionStringTemplate>();
+        }
+
+        [Fact]
+        public void Returns_FormattableStringTemplate_On_Identifier_Of_Correct_Type()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var identifier = new FormattableStringTemplateIdentifier("template", CultureInfo.CurrentCulture);
+
+            // Act
+            var result = sut.Create(identifier);
+
+            // Assert
+            result.Should().BeOfType<FormattableStringTemplate>();
         }
     }
 

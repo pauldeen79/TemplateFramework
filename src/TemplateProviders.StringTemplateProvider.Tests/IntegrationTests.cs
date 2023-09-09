@@ -95,6 +95,39 @@ public class IntegrationTests
     }
 
     [Fact]
+    public void Can_Use_Expression_In_Placeholder()
+    {
+        // Arrange
+        var templateComponentRegistryPluginFactoryMock = new Mock<ITemplateComponentRegistryPluginFactory>();
+
+        var services = new ServiceCollection()
+            .AddParsers()
+            .AddTemplateFramework()
+            .AddTemplateFrameworkStringTemplateProvider()
+            .AddSingleton(templateComponentRegistryPluginFactoryMock.Object);
+
+        using var provider = services.BuildServiceProvider(true);
+        using var scope = provider.CreateScope();
+
+        var builder = new StringBuilder();
+        var templateEngine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
+        var identifier = new FormattableStringTemplateIdentifier
+        (
+            "aaa {1 + 1} zzz",
+            CultureInfo.CurrentCulture
+        );
+        var template = scope.ServiceProvider.GetRequiredService<ITemplateProvider>().Create(identifier);
+        var context = new TemplateContext(templateEngine, scope.ServiceProvider.GetRequiredService<ITemplateProvider>(), "myfile.txt", identifier, template);
+        var request = new RenderTemplateRequest(identifier, builder, context);
+
+        // Act
+        templateEngine.Render(request);
+
+        // Assert
+        builder.ToString().Should().Be("aaa 2 zzz");
+    }
+
+    [Fact]
     public void Can_Use_Custom_Registered_FunctionResultParser()
     {
         // Arrange

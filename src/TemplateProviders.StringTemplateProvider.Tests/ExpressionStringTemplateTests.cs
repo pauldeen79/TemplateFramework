@@ -4,10 +4,11 @@ public class ExpressionStringTemplateTests
 {
     protected const string Template = "Hello {Name}!";
     protected Mock<IExpressionStringParser> ExpressionStringParserMock { get; } = new();
+    protected Mock<IFormattableStringParser> FormattableStringParserMock { get; } = new();
     protected ExpressionStringTemplateIdentifier Identifier { get; } = new ExpressionStringTemplateIdentifier(Template, CultureInfo.CurrentCulture);
     protected ComponentRegistrationContext ComponentRegistrationContext { get; } = new();
 
-    protected ExpressionStringTemplate CreateSut() => new(Identifier, ExpressionStringParserMock.Object, ComponentRegistrationContext);
+    protected ExpressionStringTemplate CreateSut() => new(Identifier, ExpressionStringParserMock.Object, FormattableStringParserMock.Object, ComponentRegistrationContext);
 
     public class Constructor : ExpressionStringTemplateTests
     {
@@ -15,7 +16,7 @@ public class ExpressionStringTemplateTests
         public void Throws_On_Null_ExpressionStringTemplateIdentifier()
         {
             // Act & Assert
-            this.Invoking(_ => new ExpressionStringTemplate(expressionStringTemplateIdentifier: null!, ExpressionStringParserMock.Object, ComponentRegistrationContext))
+            this.Invoking(_ => new ExpressionStringTemplate(expressionStringTemplateIdentifier: null!, ExpressionStringParserMock.Object, FormattableStringParserMock.Object, ComponentRegistrationContext))
                 .Should().Throw<ArgumentNullException>().WithParameterName("expressionStringTemplateIdentifier");
         }
 
@@ -23,15 +24,23 @@ public class ExpressionStringTemplateTests
         public void Throws_On_Null_ExpressionStringParser()
         {
             // Act & Assert
-            this.Invoking(_ => new ExpressionStringTemplate(Identifier, expressionStringParser: null!, ComponentRegistrationContext))
+            this.Invoking(_ => new ExpressionStringTemplate(Identifier, expressionStringParser: null!, FormattableStringParserMock.Object, ComponentRegistrationContext))
                 .Should().Throw<ArgumentNullException>().WithParameterName("expressionStringParser");
+        }
+
+        [Fact]
+        public void Throws_On_Null_FormattableStringParser()
+        {
+            // Act & Assert
+            this.Invoking(_ => new ExpressionStringTemplate(Identifier, ExpressionStringParserMock.Object, formattableStringParser: null!, ComponentRegistrationContext))
+                .Should().Throw<ArgumentNullException>().WithParameterName("formattableStringParser");
         }
 
         [Fact]
         public void Throws_On_Null_ComponentRegistrationContext()
         {
             // Act & Assert
-            this.Invoking(_ => new ExpressionStringTemplate(Identifier, ExpressionStringParserMock.Object, componentRegistrationContext: null!))
+            this.Invoking(_ => new ExpressionStringTemplate(Identifier, ExpressionStringParserMock.Object, FormattableStringParserMock.Object, componentRegistrationContext: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("componentRegistrationContext");
         }
     }
@@ -54,7 +63,7 @@ public class ExpressionStringTemplateTests
         {
             // Arrange
             ExpressionStringParserMock
-                .Setup(x => x.Parse(It.IsAny<string>(), It.IsAny<IFormatProvider>(), It.IsAny<TemplateFrameworkStringContext>()))
+                .Setup(x => x.Parse(It.IsAny<string>(), It.IsAny<IFormatProvider>(), It.IsAny<TemplateFrameworkStringContext>(), It.IsAny<IFormattableStringParser>()))
                 .Returns(Result<object?>.Error("Kaboom!"));
             var sut = CreateSut();
             var builder = new StringBuilder();
@@ -65,11 +74,11 @@ public class ExpressionStringTemplateTests
         }
 
         [Fact]
-        public void Appends_Result_From_FormattableStringParser_To_Builder_On_Succesful_Result()
+        public void Appends_Result_From_ExpressionStringParser_To_Builder_On_Succesful_Result()
         {
             // Arrange
             ExpressionStringParserMock
-                .Setup(x => x.Parse(It.IsAny<string>(), It.IsAny<IFormatProvider>(), It.IsAny<TemplateFrameworkStringContext>()))
+                .Setup(x => x.Parse(It.IsAny<string>(), It.IsAny<IFormatProvider>(), It.IsAny<TemplateFrameworkStringContext>(), It.IsAny<IFormattableStringParser>()))
                 .Returns(Result<object?>.Success("Parse result"));
             var sut = CreateSut();
             var builder = new StringBuilder();
