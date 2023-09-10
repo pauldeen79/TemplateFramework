@@ -16,6 +16,7 @@
     <!-- Used by code coverage -->
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
