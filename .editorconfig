@@ -141,6 +141,10 @@ dotnet_code_quality.CA1062.exclude_extension_method_this_parameter = true
 # SYSLIB1045 Use 'GeneratedRegexAttribute' to generate the regular expression implementation at compile-time.
 #dotnet_diagnostic.SYSLIB1045.severity = none
 
+[*Test*.cs]
+# Getting false positives on arguments possibly being null. They're injected using AutoFixture!
+dotnet_diagnostic.CA1062.severity = none
+
 ###############################
 # VB Coding Conventions       #
 ###############################

@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests.GenerationEnvironments;
+namespace TemplateFramework.Core.Tests.GenerationEnvironments;
 
 public partial class StringBuilderEnvironmentTests
 {
@@ -8,7 +8,7 @@ public partial class StringBuilderEnvironmentTests
         public void Throws_On_Null_Builder()
         {
             // Act & Assert
-            this.Invoking(_ => new StringBuilderEnvironment(FileSystemMock.Object, builder: null!))
+            this.Invoking(_ => new StringBuilderEnvironment(FileSystemMock, builder: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("builder");
         }
 

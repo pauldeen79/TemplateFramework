@@ -2,9 +2,9 @@
 
 public class TemplateParameterExtractorTests
 {
-    protected TemplateParameterExtractor CreateSut() => new(new[] { TemplateParameterExtractorComponentMock.Object });
+    protected TemplateParameterExtractor CreateSut() => new(new[] { TemplateParameterExtractorComponentMock });
 
-    protected Mock<ITemplateParameterExtractorComponent> TemplateParameterExtractorComponentMock { get; } = new();
+    protected ITemplateParameterExtractorComponent TemplateParameterExtractorComponentMock { get; } = Substitute.For<ITemplateParameterExtractorComponent>();
 
     public class Constructor
     {
@@ -49,8 +49,8 @@ public class TemplateParameterExtractorTests
             var sut = CreateSut();
             var template = new object();
             var parameters = new[] { new TemplateParameter("name", typeof(string)) };
-            TemplateParameterExtractorComponentMock.Setup(x => x.Supports(template)).Returns(true);
-            TemplateParameterExtractorComponentMock.Setup(x => x.Extract(template)).Returns(parameters);
+            TemplateParameterExtractorComponentMock.Supports(template).Returns(true);
+            TemplateParameterExtractorComponentMock.Extract(template).Returns(parameters);
 
             // Act
             var result = sut.Extract(template);

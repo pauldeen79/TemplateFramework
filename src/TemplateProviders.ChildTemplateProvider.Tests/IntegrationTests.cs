@@ -10,7 +10,7 @@ public class IntegrationTests
             .AddTemplateFramework()
             .AddTemplateFrameworkChildTemplateProvider()
             .AddChildTemplate("MyTemplate", _ => new TestData.PlainTemplateWithTemplateContext(context => "Context IsRootContext: " + context.IsRootContext))
-            .AddSingleton(new Mock<ITemplateComponentRegistryPluginFactory>().Object)
+            .AddSingleton(Substitute.For<ITemplateComponentRegistryPluginFactory>())
             .BuildServiceProvider(true);
         using var scope = provider.CreateScope();
         var engine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
@@ -34,14 +34,14 @@ public class IntegrationTests
     public void Can_Render_Multiple_Files_Into_One_File_Like_Current_CsharpClassGenerator()
     {
         // Arrange
-        var templateFactoryMock = new Mock<ITemplateFactory>();
-        templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
+        var templateFactoryMock = Substitute.For<ITemplateFactory>();
+        templateFactoryMock.Create(Arg.Any<Type>()).Returns(x => Activator.CreateInstance(x.ArgAt<Type>(0))!);
         using var provider = new ServiceCollection()
             .AddTemplateFramework()
             .AddTemplateFrameworkChildTemplateProvider()
             .AddTemplateFrameworkCodeGeneration()
-            .AddSingleton(templateFactoryMock.Object) // note that normally, this class needs to be implemented by the host. (like TemplateFramework.Console)
-            .AddSingleton(new Mock<ITemplateComponentRegistryPluginFactory>().Object) // note that normally, this class needs to be implemented by the host. (like TemplateFramework.Console)
+            .AddSingleton(templateFactoryMock) // note that normally, this class needs to be implemented by the host. (like TemplateFramework.Console)
+            .AddSingleton(Substitute.For<ITemplateComponentRegistryPluginFactory>()) // note that normally, this class needs to be implemented by the host. (like TemplateFramework.Console)
             .BuildServiceProvider(true);
         using var scope = provider.CreateScope();
 

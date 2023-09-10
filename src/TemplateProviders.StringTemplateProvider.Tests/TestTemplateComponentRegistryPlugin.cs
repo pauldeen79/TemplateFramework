@@ -13,17 +13,17 @@ public sealed class TestTemplateComponentRegistryPlugin : ITemplateComponentRegi
 
     public void Initialize(ITemplateComponentRegistry registry)
     {
-        var processorProcessorMock = new Mock<IPlaceholderProcessor>();
-        processorProcessorMock
-            .Setup(x => x.Process(It.IsAny<string>(), It.IsAny<IFormatProvider>(), It.IsAny<object?>(), It.IsAny<IFormattableStringParser>()))
-            .Returns<string, IFormatProvider, object?, IFormattableStringParser>((value, _, _, _) => value == "__test" ? Result<string>.Success("Hello world!") : Result<string>.Continue());
+        var processorProcessorMock = Substitute.For<IPlaceholderProcessor>();
+        processorProcessorMock.Process(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>())
+            .Returns(args => args.ArgAt<string>(0) == "__test"
+                ? Result<string>.Success("Hello world!")
+                : Result<string>.Continue());
 
-        var functionResultParserMock = new Mock<IFunctionResultParser>();
-        functionResultParserMock
-            .Setup(x => x.Parse(It.IsAny<FunctionParseResult>(), It.IsAny<object?>(), It.IsAny<IFunctionParseResultEvaluator>(), It.IsAny<IExpressionParser>()))
-            .Returns<FunctionParseResult, object?, IFunctionParseResultEvaluator, IExpressionParser>((result, _, _, _) =>
+        var functionResultParserMock = Substitute.For<IFunctionResultParser>();
+        functionResultParserMock.Parse(Arg.Any<FunctionParseResult>(), Arg.Any<object?>(), Arg.Any<IFunctionParseResultEvaluator>(), Arg.Any<IExpressionParser>())
+            .Returns(args =>
             {
-                if (result.FunctionName == "MyFunction")
+                if (args.ArgAt<FunctionParseResult>(0).FunctionName == "MyFunction")
                 {
                     return Result<object?>.Success("Hello world!");
                 }
@@ -31,7 +31,7 @@ public sealed class TestTemplateComponentRegistryPlugin : ITemplateComponentRegi
                 return Result<object?>.Continue();
             });
 
-        ComponentRegistrationContext.PlaceholderProcessors.Add(processorProcessorMock.Object);
-        ComponentRegistrationContext.FunctionResultParsers.Add(functionResultParserMock.Object);
+        ComponentRegistrationContext.PlaceholderProcessors.Add(processorProcessorMock);
+        ComponentRegistrationContext.FunctionResultParsers.Add(functionResultParserMock);
     }
 }

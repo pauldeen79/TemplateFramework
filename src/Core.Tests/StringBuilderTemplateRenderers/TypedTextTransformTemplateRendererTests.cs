@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests.StringBuilderTemplateRenderers;
+namespace TemplateFramework.Core.Tests.StringBuilderTemplateRenderers;
 
 public class TypedTextTransformTemplateRendererTests
 {
@@ -33,10 +33,10 @@ public class TypedTextTransformTemplateRendererTests
     {
         // Arrange
         var sut = new TypedTextTransformTemplateRenderer();
-        var templateMock = new Mock<ITextTransformTemplate>();
+        var templateMock = Substitute.For<ITextTransformTemplate>();
 
         // Act
-        var result = sut.TryRender(instance: templateMock.Object, new StringBuilder());
+        var result = sut.TryRender(instance: templateMock, new StringBuilder());
 
         // Assert
         result.Should().BeTrue();
@@ -47,13 +47,13 @@ public class TypedTextTransformTemplateRendererTests
     {
         // Arrange
         var sut = new TypedTextTransformTemplateRenderer();
-        var templateMock = new Mock<ITextTransformTemplate>();
+        var templateMock = Substitute.For<ITextTransformTemplate>();
 
         // Act
-        _ = sut.TryRender(instance: templateMock.Object, new StringBuilder());
+        _ = sut.TryRender(instance: templateMock, new StringBuilder());
 
         // Assert
-        templateMock.Verify(x => x.TransformText(), Times.Once);
+        templateMock.Received().TransformText();
     }
 
     [Fact]
@@ -61,12 +61,12 @@ public class TypedTextTransformTemplateRendererTests
     {
         // Arrange
         var sut = new TypedTextTransformTemplateRenderer();
-        var templateMock = new Mock<ITextTransformTemplate>();
-        templateMock.Setup(x => x.TransformText()).Returns("Hello world!");
+        var templateMock = Substitute.For<ITextTransformTemplate>();
+        templateMock.TransformText().Returns("Hello world!");
         var builder = new StringBuilder();
 
         // Act
-        _ = sut.TryRender(instance: templateMock.Object, builder);
+        _ = sut.TryRender(instance: templateMock, builder);
 
         // Assert
         builder.ToString().Should().Be("Hello world!");
@@ -77,11 +77,11 @@ public class TypedTextTransformTemplateRendererTests
     {
         // Arrange
         var sut = new TypedTextTransformTemplateRenderer();
-        var templateMock = new Mock<ITextTransformTemplate>();
-        templateMock.Setup(x => x.TransformText()).Returns("Hello world!");
+        var templateMock = Substitute.For<ITextTransformTemplate>();
+        templateMock.TransformText().Returns("Hello world!");
 
         // Act & Assert
-        sut.Invoking(x => x.TryRender(templateMock.Object, builder: null!))
+        sut.Invoking(x => x.TryRender(templateMock, builder: null!))
            .Should().Throw<ArgumentNullException>().WithParameterName("builder");
     }
 }

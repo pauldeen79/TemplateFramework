@@ -11,10 +11,10 @@ public partial class TemplateContextExtensionsTests
             var sut = CreateSut();
 
             // Act
-            sut.Object.GetModelFromContextByType<string>();
+            sut.GetModelFromContextByType<string>();
 
             // Assert
-            sut.Verify(x => x.GetModelFromContextByType<string>(null), Times.Once);
+            sut.Received().GetModelFromContextByType<string>(null);
         }
     }
 }

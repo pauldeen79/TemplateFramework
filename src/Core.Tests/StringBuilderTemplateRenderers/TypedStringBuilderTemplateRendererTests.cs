@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests.StringBuilderTemplateRenderers;
+namespace TemplateFramework.Core.Tests.StringBuilderTemplateRenderers;
 
 public class TypedStringBuilderTemplateRendererTests
 {
@@ -33,10 +33,10 @@ public class TypedStringBuilderTemplateRendererTests
     {
         // Arrange
         var sut = new TypedStringBuilderTemplateRenderer();
-        var templateMock = new Mock<IStringBuilderTemplate>();
+        var templateMock = Substitute.For<IStringBuilderTemplate>();
 
         // Act
-        var result = sut.TryRender(instance: templateMock.Object, new StringBuilder());
+        var result = sut.TryRender(instance: templateMock, new StringBuilder());
 
         // Assert
         result.Should().BeTrue();
@@ -47,13 +47,13 @@ public class TypedStringBuilderTemplateRendererTests
     {
         // Arrange
         var sut = new TypedStringBuilderTemplateRenderer();
-        var templateMock = new Mock<IStringBuilderTemplate>();
+        var templateMock = Substitute.For<IStringBuilderTemplate>();
         var builder = new StringBuilder();
 
         // Act
-        _ = sut.TryRender(instance: templateMock.Object, builder);
+        _ = sut.TryRender(instance: templateMock, builder);
 
         // Assert
-        templateMock.Verify(x => x.Render(builder), Times.Once);
+        templateMock.Received().Render(builder);
     }
 }

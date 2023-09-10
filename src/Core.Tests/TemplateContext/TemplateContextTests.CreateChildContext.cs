@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests;
+namespace TemplateFramework.Core.Tests;
 
 public partial class TemplateContextTests
 {
@@ -23,7 +23,7 @@ public partial class TemplateContextTests
             var template = new object();
 
             // Act
-            var childContext = sut.CreateChildContext(new TemplateContext(EngineMock.Object, ProviderMock.Object, DefaultFilename, new TemplateInstanceIdentifier(template), template: template));
+            var childContext = sut.CreateChildContext(new TemplateContext(EngineMock, ProviderMock, DefaultFilename, new TemplateInstanceIdentifier(template), template: template));
 
             // Assert
             childContext.Should().NotBeNull();

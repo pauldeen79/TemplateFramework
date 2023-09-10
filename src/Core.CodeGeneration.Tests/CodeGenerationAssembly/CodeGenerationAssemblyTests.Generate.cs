@@ -6,13 +6,11 @@ public partial class CodeGenerationAssemblyTests
     {
         public Generate()
         {
-            CodeGenerationProviderCreatorMock
-                .Setup(x => x.TryCreateInstance(It.IsAny<Type>()))
-                .Returns<Type>(t => t.FullName == typeof(MyGeneratorProvider).FullName
-                    ? Activator.CreateInstance(t) as ICodeGenerationProvider
+            CodeGenerationProviderCreatorMock.TryCreateInstance(Arg.Any<Type>())
+                .Returns(x => x.ArgAt<Type>(0).FullName == typeof(MyGeneratorProvider).FullName
+                    ? Activator.CreateInstance(x.ArgAt<Type>(0)) as ICodeGenerationProvider
                     : null);
-            AssemblyServiceMock
-                .Setup(x => x.GetAssembly(It.IsAny<string>(), It.IsAny<string>()))
+            AssemblyServiceMock.GetAssembly(Arg.Any<string>(), Arg.Any<string>())
                 .Returns(GetType().Assembly);
         }
 
@@ -23,7 +21,7 @@ public partial class CodeGenerationAssemblyTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Generate(settings: null!, GenerationEnvironmentMock.Object))
+            sut.Invoking(x => x.Generate(settings: null!, GenerationEnvironmentMock))
                .Should().Throw<ArgumentNullException>().WithParameterName("settings");
         }
 
@@ -46,10 +44,10 @@ public partial class CodeGenerationAssemblyTests
             var sut = CreateSut();
 
             // Act
-            sut.Generate(new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), currentDirectory: TestData.BasePath), GenerationEnvironmentMock.Object);
+            sut.Generate(new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), currentDirectory: TestData.BasePath), GenerationEnvironmentMock);
 
             // Assert
-            CodeGenerationEngineMock.Verify(x => x.Generate(It.IsAny<ICodeGenerationProvider>(), It.IsAny<IGenerationEnvironment>(), It.IsAny<ICodeGenerationSettings>()), Times.Once);
+            CodeGenerationEngineMock.Received().Generate(Arg.Any<ICodeGenerationProvider>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<ICodeGenerationSettings>());
         }
 
         [Fact]
@@ -59,10 +57,10 @@ public partial class CodeGenerationAssemblyTests
             var sut = CreateSut();
 
             // Act
-            sut.Generate(new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), currentDirectory: TestData.BasePath, classNameFilter: new[] { typeof(MyGeneratorProvider).FullName! }), GenerationEnvironmentMock.Object);
+            sut.Generate(new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), currentDirectory: TestData.BasePath, classNameFilter: new[] { typeof(MyGeneratorProvider).FullName! }), GenerationEnvironmentMock);
 
             // Assert
-            CodeGenerationEngineMock.Verify(x => x.Generate(It.IsAny<ICodeGenerationProvider>(), It.IsAny<IGenerationEnvironment>(), It.IsAny<ICodeGenerationSettings>()), Times.Once);
+            CodeGenerationEngineMock.Received().Generate(Arg.Any<ICodeGenerationProvider>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<ICodeGenerationSettings>());
         }
 
         [Fact]
@@ -72,10 +70,10 @@ public partial class CodeGenerationAssemblyTests
             var sut = CreateSut();
 
             // Act
-            sut.Generate(new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), currentDirectory: TestData.BasePath, classNameFilter: new[] { "WrongName" }), GenerationEnvironmentMock.Object);
+            sut.Generate(new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), currentDirectory: TestData.BasePath, classNameFilter: new[] { "WrongName" }), GenerationEnvironmentMock);
 
             // Assert
-            CodeGenerationEngineMock.Verify(x => x.Generate(It.IsAny<ICodeGenerationProvider>(), It.IsAny<IGenerationEnvironment>(), It.IsAny<ICodeGenerationSettings>()), Times.Never);
+            CodeGenerationEngineMock.DidNotReceive().Generate(Arg.Any<ICodeGenerationProvider>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<ICodeGenerationSettings>());
         }
     }
 }

@@ -2,9 +2,9 @@
 
 public class IntegrationTests
 {
-    private readonly Mock<IFileSystem> _fileSystemMock = new();
-    private readonly Mock<ITemplateFactory> _templateFactoryMock = new();
-    private readonly Mock<ITemplateComponentRegistryPluginFactory> _templateProviderPluginFactoryMock = new();
+    private readonly IFileSystem _fileSystemMock = Substitute.For<IFileSystem>();
+    private readonly ITemplateFactory _templateFactoryMock = Substitute.For<ITemplateFactory>();
+    private readonly ITemplateComponentRegistryPluginFactory _templateProviderPluginFactoryMock = Substitute.For<ITemplateComponentRegistryPluginFactory>();
 
     [Fact]
     public void Can_Generate_Code_Using_CodeGenerationAssembly()
@@ -13,16 +13,16 @@ public class IntegrationTests
         using var serviceProvider = new ServiceCollection()
             .AddTemplateFramework()
             .AddTemplateFrameworkCodeGeneration()
-            .AddScoped(_ => _fileSystemMock.Object)
-            .AddScoped(_ => _templateFactoryMock.Object)
-            .AddScoped(_ => _templateProviderPluginFactoryMock.Object)
+            .AddScoped(_ => _fileSystemMock)
+            .AddScoped(_ => _templateFactoryMock)
+            .AddScoped(_ => _templateProviderPluginFactoryMock)
             .BuildServiceProvider(true);
         using var scope = serviceProvider.CreateScope();
         var sut = scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = new IntegrationProvider();
         var builder = new MultipleContentBuilder();
         var generationEnvironment = new MultipleContentBuilderEnvironment(scope.ServiceProvider.GetRequiredService<IFileSystem>(), scope.ServiceProvider.GetRequiredService<IRetryMechanism>(), builder);
-        _templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
+        _templateFactoryMock.Create(Arg.Any<Type>()).Returns(x => Activator.CreateInstance(x.ArgAt<Type>(0))!);
 
         // Act
         sut.Generate(codeGenerationProvider, generationEnvironment, new CodeGenerationSettings(TestData.BasePath, "DefaultFilename.txt", false));

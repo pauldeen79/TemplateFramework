@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests;
+namespace TemplateFramework.Core.Tests;
 
 public partial class TemplateEngineTests
 {
@@ -22,7 +22,7 @@ public partial class TemplateEngineTests
             var sut = CreateSut();
             var template = new object();
             var parameters = new[] { new TemplateParameter("name", typeof(string)) };
-            TemplateParameterExtractorMock.Setup(x => x.Extract(template)).Returns(parameters);
+            TemplateParameterExtractorMock.Extract(template).Returns(parameters);
 
             // Act
             var result = sut.GetParameters(template);

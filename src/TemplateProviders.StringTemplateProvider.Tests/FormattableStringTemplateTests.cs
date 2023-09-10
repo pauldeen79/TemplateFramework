@@ -3,11 +3,11 @@
 public class FormattableStringTemplateTests
 {
     protected const string Template = "Hello {Name}!";
-    protected Mock<IFormattableStringParser> FormattableStringParserMock { get; } = new();
+    protected IFormattableStringParser FormattableStringParserMock { get; } = Substitute.For<IFormattableStringParser>();
     protected FormattableStringTemplateIdentifier Identifier { get; } = new FormattableStringTemplateIdentifier(Template, CultureInfo.CurrentCulture);
     protected ComponentRegistrationContext ComponentRegistrationContext { get; } = new();
 
-    protected FormattableStringTemplate CreateSut() => new(Identifier, FormattableStringParserMock.Object, ComponentRegistrationContext);
+    protected FormattableStringTemplate CreateSut() => new(Identifier, FormattableStringParserMock, ComponentRegistrationContext);
 
     public class Constructor : FormattableStringTemplateTests
     {
@@ -15,7 +15,7 @@ public class FormattableStringTemplateTests
         public void Throws_On_Null_FormattableStringTemplateIdentifier()
         {
             // Act & Assert
-            this.Invoking(_ => new FormattableStringTemplate(formattableStringTemplateIdentifier: null!, FormattableStringParserMock.Object, ComponentRegistrationContext))
+            this.Invoking(_ => new FormattableStringTemplate(formattableStringTemplateIdentifier: null!, FormattableStringParserMock, ComponentRegistrationContext))
                 .Should().Throw<ArgumentNullException>().WithParameterName("formattableStringTemplateIdentifier");
         }
 
@@ -31,7 +31,7 @@ public class FormattableStringTemplateTests
         public void Throws_On_Null_ComponentRegistrationContext()
         {
             // Act & Assert
-            this.Invoking(_ => new FormattableStringTemplate(Identifier, FormattableStringParserMock.Object, componentRegistrationContext: null!))
+            this.Invoking(_ => new FormattableStringTemplate(Identifier, FormattableStringParserMock, componentRegistrationContext: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("componentRegistrationContext");
         }
     }
@@ -43,17 +43,12 @@ public class FormattableStringTemplateTests
         {
             // Arrange
             var sut = CreateSut();
-            FormattableStringParserMock
-                .Setup(x => x.Parse(It.IsAny<string>(), It.IsAny<IFormatProvider>(), It.IsAny<TemplateFrameworkStringContext>()))
-                .Returns<string, IFormatProvider, object?>((input, formatProvider, context) =>
+            FormattableStringParserMock.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<TemplateFrameworkStringContext>())
+                .Returns(x =>
                 {
                     // Note that in this unit test, we have to mock the behavior of FormattableStringParser :)
                     // There is also an Integration test to prove it works in real life ;-)
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-                    ((TemplateFrameworkStringContext)context).ParameterNamesList.Add("Name");
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+                    x.ArgAt<TemplateFrameworkStringContext>(2).ParameterNamesList.Add("Name");
                     return Result<string>.Success(string.Empty);
                 });
 
@@ -82,8 +77,7 @@ public class FormattableStringTemplateTests
         public void Throws_On_NonSuccesful_Result_From_FormattableStringParser()
         {
             // Arrange
-            FormattableStringParserMock
-                .Setup(x => x.Parse(It.IsAny<string>(), It.IsAny<IFormatProvider>(), It.IsAny<TemplateFrameworkStringContext>()))
+            FormattableStringParserMock.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<TemplateFrameworkStringContext>())
                 .Returns(Result<string>.Error("Kaboom!"));
             var sut = CreateSut();
             var builder = new StringBuilder();
@@ -97,8 +91,7 @@ public class FormattableStringTemplateTests
         public void Appends_Result_From_FormattableStringParser_To_Builder_On_Succesful_Result()
         {
             // Arrange
-            FormattableStringParserMock
-                .Setup(x => x.Parse(It.IsAny<string>(), It.IsAny<IFormatProvider>(), It.IsAny<TemplateFrameworkStringContext>()))
+            FormattableStringParserMock.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<TemplateFrameworkStringContext>())
                 .Returns(Result<string>.Success("Parse result"));
             var sut = CreateSut();
             var builder = new StringBuilder();
@@ -119,15 +112,10 @@ public class FormattableStringTemplateTests
             // Arrange
             var sut = CreateSut();
             IDictionary<string, object?>? dictionary = null;
-            FormattableStringParserMock
-                .Setup(x => x.Parse(It.IsAny<string>(), It.IsAny<IFormatProvider>(), It.IsAny<TemplateFrameworkStringContext>()))
-                .Returns<string, IFormatProvider, object?>((input, formatProvider, context) =>
+            FormattableStringParserMock.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<TemplateFrameworkStringContext>())
+                .Returns(x =>
                 {
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-                    dictionary = ((TemplateFrameworkStringContext)context).ParametersDictionary;
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+                    dictionary = x.ArgAt<TemplateFrameworkStringContext>(2).ParametersDictionary;
 
                     return Result<string>.Success(string.Empty);
                 });

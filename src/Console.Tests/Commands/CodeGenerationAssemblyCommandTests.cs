@@ -2,30 +2,22 @@
 
 public class CodeGenerationAssemblyCommandTests
 {
-    protected Mock<ICodeGenerationAssembly> CodeGenerationAssemblyMock { get; } = new();
-    protected Mock<IClipboard> ClipboardMock { get; } = new();
-    protected Mock<IFileSystem> FileSystemMock { get; } = new();
-    protected Mock<IUserInput> UserInputMock { get; } = new();
-
-    private CodeGenerationAssemblyCommand CreateSut() => new(ClipboardMock.Object, FileSystemMock.Object, UserInputMock.Object, CodeGenerationAssemblyMock.Object);
-
     public class Constructor
     {
         [Fact]
         public void Throws_On_Null_Argument()
         {
-            TestHelpers.ConstructorMustThrowArgumentNullException(typeof(CodeGenerationAssemblyCommand));
+            typeof(CodeGenerationAssemblyCommand).ShouldArgumentNullExceptionsInConstructorOnNullArguments();
         }
     }
 
     public class Initialize : CodeGenerationAssemblyCommandTests
     {
-        [Fact]
-        public void Initialize_Adds_Command_To_Application()
+        [Theory, AutoMockData]
+        public void Initialize_Adds_Command_To_Application(CodeGenerationAssemblyCommand sut)
         {
             // Arrange
             using var app = new CommandLineApplication();
-            var sut = CreateSut();
 
             // Act
             sut.Initialize(app);
@@ -34,12 +26,9 @@ public class CodeGenerationAssemblyCommandTests
             app.Commands.Should().ContainSingle();
         }
 
-        [Fact]
-        public void Initialize_Throws_On_Null_Argument()
+        [Theory, AutoMockData]
+        public void Initialize_Throws_On_Null_Argument(CodeGenerationAssemblyCommand sut)
         {
-            // Arrange
-            var sut = CreateSut();
-
             // Act & Assert
             sut.Invoking(x => x.Initialize(app: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("app");
@@ -48,198 +37,223 @@ public class CodeGenerationAssemblyCommandTests
 
     public class ExecuteComand : CodeGenerationAssemblyCommandTests
     {
-        [Fact]
-        public void Empty_AssemblyName_Results_In_Error()
+        [Theory, AutoMockData]
+        public void Empty_AssemblyName_Results_In_Error(CodeGenerationAssemblyCommand sut)
         {
             // Act
-            var output = CommandLineCommandHelper.ExecuteCommand(CreateSut);
+            var output = CommandLineCommandHelper.ExecuteCommand(sut);
 
             // Assert
             output.Should().Be("Error: Assembly name is required." + Environment.NewLine);
         }
 
-        [Fact]
-        public void Uses_Current_Directory_As_CurrentDirectory_When_AssemblyName_Is_Not_A_Filename()
+        [Theory, AutoMockData]
+        public void Uses_Current_Directory_As_CurrentDirectory_When_AssemblyName_Is_Not_A_Filename(
+            [Frozen] ICodeGenerationAssembly codeGenerationAssemblyMock,
+            CodeGenerationAssemblyCommand sut)
         {
             // Act
-            _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}");
+            _ = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}");
 
             // Assert
-            CodeGenerationAssemblyMock.Verify(x => x.Generate(It.Is<ICodeGenerationAssemblySettings>(x => x.CurrentDirectory == Directory.GetCurrentDirectory()), It.IsAny<IGenerationEnvironment>()), Times.Once);
+            codeGenerationAssemblyMock.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.CurrentDirectory == Directory.GetCurrentDirectory()), Arg.Any<IGenerationEnvironment>());
         }
 
-        [Fact]
-        public void Uses_Directory_Of_Assembly_As_CurrentDirectory_When_AssemblyName_Is_Not_A_Filename()
+        [Theory, AutoMockData]
+        public void Uses_Directory_Of_Assembly_As_CurrentDirectory_When_AssemblyName_Is_Not_A_Filename(
+            [Frozen] ICodeGenerationAssembly codeGenerationAssemblyMock,
+            CodeGenerationAssemblyCommand sut)
         {
             // Act
-            _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {Path.Combine(TestData.BasePath, "myassembly.dll")}");
+            _ = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {Path.Combine(TestData.BasePath, "myassembly.dll")}");
 
             // Assert
-            CodeGenerationAssemblyMock.Verify(x => x.Generate(It.Is<ICodeGenerationAssemblySettings>(x => x.CurrentDirectory == TestData.BasePath), It.IsAny<IGenerationEnvironment>()), Times.Once);
+            codeGenerationAssemblyMock.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.CurrentDirectory == TestData.BasePath), Arg.Any<IGenerationEnvironment>());
         }
 
-        [Fact]
-        public void Uses_Specified_CurrentDirectory_When_Available()
+        [Theory, AutoMockData]
+        public void Uses_Specified_CurrentDirectory_When_Available(
+            [Frozen] ICodeGenerationAssembly codeGenerationAssemblyMock, 
+            CodeGenerationAssemblyCommand sut)
         {
             // Act
-            _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {Path.Combine(TestData.BasePath, "myassembly.dll")}", "--directory something");
+            _ = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {Path.Combine(TestData.BasePath, "myassembly.dll")}", "--directory something");
 
             // Assert
-            CodeGenerationAssemblyMock.Verify(x => x.Generate(It.Is<ICodeGenerationAssemblySettings>(x => x.CurrentDirectory == "something"), It.IsAny<IGenerationEnvironment>()), Times.Once);
+            codeGenerationAssemblyMock.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.CurrentDirectory == "something"), Arg.Any<IGenerationEnvironment>());
         }
 
-        [Fact]
-        public void Uses_Specified_BasePath_From_Arguments_When_Present()
+        [Theory, AutoMockData]
+        public void Uses_Specified_BasePath_From_Arguments_When_Present(
+            [Frozen] ICodeGenerationAssembly codeGenerationAssemblyMock, 
+            CodeGenerationAssemblyCommand sut)
         {
             // Act
-            _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}", $"--path {TestData.BasePath}");
+            _ = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", $"--path {TestData.BasePath}");
 
             // Assert
-            CodeGenerationAssemblyMock.Verify(x => x.Generate(It.Is<ICodeGenerationAssemblySettings>(x => x.BasePath == TestData.BasePath), It.IsAny<IGenerationEnvironment>()), Times.Once);
+            codeGenerationAssemblyMock.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.BasePath == TestData.BasePath), Arg.Any<IGenerationEnvironment>());
         }
 
-        [Fact]
-        public void Uses_Empty_BasePath_When_Not_Present_In_Arguments()
+        [Theory, AutoMockData]
+        public void Uses_Empty_BasePath_When_Not_Present_In_Arguments(
+            [Frozen] ICodeGenerationAssembly codeGenerationAssemblyMock, 
+            CodeGenerationAssemblyCommand sut)
         {
             // Act
-            _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}");
+            _ = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}");
 
             // Assert
-            CodeGenerationAssemblyMock.Verify(x => x.Generate(It.Is<ICodeGenerationAssemblySettings>(x => x.BasePath == string.Empty), It.IsAny<IGenerationEnvironment>()), Times.Once);
+            codeGenerationAssemblyMock.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.BasePath == string.Empty), Arg.Any<IGenerationEnvironment>());
         }
 
-        [Fact]
-        public void Uses_Specified_DefaultFIlename_From_Arguments_When_Present()
+        [Theory, AutoMockData]
+        public void Uses_Specified_DefaultFIlename_From_Arguments_When_Present(
+            [Frozen] ICodeGenerationAssembly codeGenerationAssemblyMock, 
+            CodeGenerationAssemblyCommand sut)
         {
             // Act
-            _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}", "--default MyFile.txt");
+            _ = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--default MyFile.txt");
 
             // Assert
-            CodeGenerationAssemblyMock.Verify(x => x.Generate(It.Is<ICodeGenerationAssemblySettings>(x => x.DefaultFilename == "MyFile.txt"), It.IsAny<IGenerationEnvironment>()), Times.Once);
+            codeGenerationAssemblyMock.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.DefaultFilename == "MyFile.txt"), Arg.Any<IGenerationEnvironment>());
         }
 
-        [Fact]
-        public void Uses_Empty_DefaultFilename_When_Not_Present_In_Arguments()
+        [Theory, AutoMockData]
+        public void Uses_Empty_DefaultFilename_When_Not_Present_In_Arguments(
+            [Frozen] ICodeGenerationAssembly codeGenerationAssemblyMock,
+            CodeGenerationAssemblyCommand sut)
         {
             // Act
-            _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}");
+            _ = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}");
 
             // Assert
-            CodeGenerationAssemblyMock.Verify(x => x.Generate(It.Is<ICodeGenerationAssemblySettings>(x => x.DefaultFilename == string.Empty), It.IsAny<IGenerationEnvironment>()), Times.Once);
+            codeGenerationAssemblyMock.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.DefaultFilename == string.Empty), Arg.Any<IGenerationEnvironment>());
         }
 
-        [Fact]
-        public void Uses_DryRun_When_DryRun_Option_Is_Present_In_Arguments()
+        [Theory, AutoMockData]
+        public void Uses_DryRun_When_DryRun_Option_Is_Present_In_Arguments(
+            [Frozen] ICodeGenerationAssembly codeGenerationAssemblyMock, 
+            CodeGenerationAssemblyCommand sut)
         {
             // Act
-            _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}", "--dryrun");
+            _ = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--dryrun");
 
             // Assert
-            CodeGenerationAssemblyMock.Verify(x => x.Generate(It.Is<ICodeGenerationAssemblySettings>(x => x.DryRun), It.IsAny<IGenerationEnvironment>()), Times.Once);
+            codeGenerationAssemblyMock.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.DryRun), Arg.Any<IGenerationEnvironment>());
         }
 
-        [Fact]
-        public void Uses_DryRun_When_Cipboard_Option_Is_Present_In_Arguments()
+        [Theory, AutoMockData]
+        public void Uses_DryRun_When_Cipboard_Option_Is_Present_In_Arguments(
+            [Frozen] ICodeGenerationAssembly codeGenerationAssemblyMock, 
+            CodeGenerationAssemblyCommand sut)
         {
             // Act
-            _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}", "--clipboard");
+            _ = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--clipboard");
 
             // Assert
-            CodeGenerationAssemblyMock.Verify(x => x.Generate(It.Is<ICodeGenerationAssemblySettings>(x => x.DryRun), It.IsAny<IGenerationEnvironment>()), Times.Once);
+            codeGenerationAssemblyMock.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.DryRun), Arg.Any<IGenerationEnvironment>());
         }
 
-        [Fact]
-        public void Uses_DryRun_When_Cipboard_And_DryRun_Options_Are_Present_In_Arguments()
+        [Theory, AutoMockData]
+        public void Uses_DryRun_When_Cipboard_And_DryRun_Options_Are_Present_In_Arguments(
+            [Frozen] ICodeGenerationAssembly codeGenerationAssemblyMock, 
+            CodeGenerationAssemblyCommand sut)
         {
             // Act
-            _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}", "--clipboard", "--dryrun");
+            _ = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--clipboard", "--dryrun");
 
             // Assert
-            CodeGenerationAssemblyMock.Verify(x => x.Generate(It.Is<ICodeGenerationAssemblySettings>(x => x.DryRun), It.IsAny<IGenerationEnvironment>()), Times.Once);
+            codeGenerationAssemblyMock.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.DryRun), Arg.Any<IGenerationEnvironment>());
         }
 
-        [Fact]
-        public void Reports_Output_Directory_When_DryRun_Is_False_And_BasePath_Is_Specified()
+        [Theory, AutoMockData]
+        public void Reports_Output_Directory_When_DryRun_Is_False_And_BasePath_Is_Specified(CodeGenerationAssemblyCommand sut)
         {
             // Act
-            var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}", $"--path {TestData.BasePath}");
+            var output = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", $"--path {TestData.BasePath}");
 
             // Assert
             output.Should().Be("Written code generation output to path: " + TestData.BasePath + Environment.NewLine);
         }
 
-        [Fact]
-        public void Reports_Output_Directory_When_DryRun_Is_Not_Specified_And_BasePath_Is_Not_Specified()
+        [Theory, AutoMockData]
+        public void Reports_Output_Directory_When_DryRun_Is_Not_Specified_And_BasePath_Is_Not_Specified(CodeGenerationAssemblyCommand sut)
         {
             // Act
-            var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}");
+            var output = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}");
 
             // Assert
             output.Should().Be("Written code generation output to path: " + Directory.GetCurrentDirectory() + Environment.NewLine);
         }
 
-        [Fact]
-        public void Does_Not_Report_Output_Directory_When_DryRun_Is_Not_Specified_And_BareOption_Is_Specified()
+        [Theory, AutoMockData]
+        public void Does_Not_Report_Output_Directory_When_DryRun_Is_Not_Specified_And_BareOption_Is_Specified(CodeGenerationAssemblyCommand sut)
         {
             // Act
-            var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}", "--bare");
+            var output = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--bare");
 
             // Assert
             output.Should().BeEmpty();
         }
 
-        [Fact]
-        public void Copies_Output_To_Clipboard_When_ClipboardOption_Is_Specified()
+        [Theory, AutoMockData]
+        public void Copies_Output_To_Clipboard_When_ClipboardOption_Is_Specified(
+            [Frozen] ICodeGenerationAssembly codeGenerationAssemblyMock,
+            [Frozen] IClipboard clipboardMock,
+            CodeGenerationAssemblyCommand sut)
         {
             // Arrange
-            CodeGenerationAssemblyMock.Setup(x => x.Generate(It.IsAny<ICodeGenerationAssemblySettings>(), It.IsAny<IGenerationEnvironment>()))
-                                      .Callback<ICodeGenerationAssemblySettings, IGenerationEnvironment>((settings, env) =>
+            codeGenerationAssemblyMock.When(x => x.Generate(Arg.Any<ICodeGenerationAssemblySettings>(), Arg.Any<IGenerationEnvironment>()))
+                                      .Do(args =>
                                       {
-                                          var x = (MultipleContentBuilderEnvironment)env;
+                                          var x = args.ArgAt<MultipleContentBuilderEnvironment>(1);
                                           x.Builder.AddContent("MyFile.txt").Builder.Append("Hello!");
                                       });
             // Act
-            _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}", "--clipboard");
+            _ = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--clipboard");
 
             // Assert
-            ClipboardMock.Verify(x => x.SetText(@"MyFile.txt:
+            clipboardMock.Received().SetText(@"MyFile.txt:
 Hello!
-"), Times.Once);
+");
         }
 
-        [Fact]
-        public void Reports_Output_Being_Copied_To_Clipboard_When_BareOption_Is_Not_Specified()
+        [Theory, AutoMockData]
+        public void Reports_Output_Being_Copied_To_Clipboard_When_BareOption_Is_Not_Specified(CodeGenerationAssemblyCommand sut)
         {
             // Act
-            var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}", "--clipboard");
+            var output = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--clipboard");
 
             // Assert
             output.Should().Be("Copied code generation output to clipboard" + Environment.NewLine);
         }
 
-        [Fact]
-        public void Does_Not_Report_Output_Being_Copied_To_Clipboard_When_BareOption_Is_Specified()
+        [Theory, AutoMockData]
+        public void Does_Not_Report_Output_Being_Copied_To_Clipboard_When_BareOption_Is_Specified(CodeGenerationAssemblyCommand sut)
         {
             // Act
-            var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}", "--clipboard", "--bare");
+            var output = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--clipboard", "--bare");
 
             // Assert
             output.Should().BeEmpty();
         }
 
-        [Fact]
-        public void Reports_Output_To_Host_When_DryRun_Option_Is_Present_In_Arguments_And_Clipboard_And_Bare_Options_Are_Not_Present_Without_BasePath()
+        [Theory, AutoMockData]
+        public void Reports_Output_To_Host_When_DryRun_Option_Is_Present_In_Arguments_And_Clipboard_And_Bare_Options_Are_Not_Present_Without_BasePath(
+            [Frozen] ICodeGenerationAssembly codeGenerationAssemblyMock,
+            CodeGenerationAssemblyCommand sut)
         {
             // Arrange
-            CodeGenerationAssemblyMock.Setup(x => x.Generate(It.IsAny<ICodeGenerationAssemblySettings>(), It.IsAny<IGenerationEnvironment>()))
-                                      .Callback<ICodeGenerationAssemblySettings, IGenerationEnvironment>((settings, env) =>
+            codeGenerationAssemblyMock.When(x => x.Generate(Arg.Any<ICodeGenerationAssemblySettings>(), Arg.Any<IGenerationEnvironment>()))
+                                      .Do(args =>
                                       {
-                                          var x = (MultipleContentBuilderEnvironment)env;
+                                          var x = args.ArgAt<MultipleContentBuilderEnvironment>(1);
                                           x.Builder.AddContent("MyFile.txt").Builder.Append("Hello!");
                                       });
 
             // Act
-            var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}", "--dryrun");
+            var output = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--dryrun");
 
             // Assert
             output.Should().Be("Code generation output:" + Environment.NewLine + @"MyFile.txt:
@@ -247,19 +261,21 @@ Hello!
 " + Environment.NewLine);
         }
 
-        [Fact]
-        public void Reports_Output_To_Host_When_DryRun_Option_Is_Present_In_Arguments_And_Clipboard_And_Bare_Options_Are_Not_Present_With_BasePath()
+        [Theory, AutoMockData]
+        public void Reports_Output_To_Host_When_DryRun_Option_Is_Present_In_Arguments_And_Clipboard_And_Bare_Options_Are_Not_Present_With_BasePath(
+            [Frozen] ICodeGenerationAssembly codeGenerationAssemblyMock, 
+            CodeGenerationAssemblyCommand sut)
         {
             // Arrange
-            CodeGenerationAssemblyMock.Setup(x => x.Generate(It.IsAny<ICodeGenerationAssemblySettings>(), It.IsAny<IGenerationEnvironment>()))
-                                      .Callback<ICodeGenerationAssemblySettings, IGenerationEnvironment>((settings, env) =>
+            codeGenerationAssemblyMock.When(x => x.Generate(Arg.Any<ICodeGenerationAssemblySettings>(), Arg.Any<IGenerationEnvironment>()))
+                                      .Do(args =>
                                       {
-                                          var x = (MultipleContentBuilderEnvironment)env;
+                                          var x = args.ArgAt<MultipleContentBuilderEnvironment>(1);
                                           x.Builder.AddContent("MyFile.txt").Builder.Append("Hello!");
                                       });
 
             // Act
-            var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, $"--name {GetType().Assembly.FullName}", "--dryrun", $"--path {TestData.BasePath}");
+            var output = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--dryrun", $"--path {TestData.BasePath}");
 
             // Assert
             output.Should().Be("Code generation output:" + Environment.NewLine + @$"{Path.Combine(TestData.BasePath, "MyFile.txt")}:

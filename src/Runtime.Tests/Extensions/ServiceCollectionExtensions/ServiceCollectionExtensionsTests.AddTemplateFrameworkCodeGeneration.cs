@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Runtime.Tests.Extensions;
+namespace TemplateFramework.Runtime.Tests.Extensions;
 
 public class ServiceCollectionExtensionsTests
 {
@@ -10,7 +10,7 @@ public class ServiceCollectionExtensionsTests
             // Act
             using var provider = new ServiceCollection()
                 .AddTemplateFrameworkRuntime()
-                .AddSingleton(new Mock<IAssemblyInfoContextService>().Object)
+                .AddSingleton(Substitute.For<IAssemblyInfoContextService>())
                 .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
 
             // Assert

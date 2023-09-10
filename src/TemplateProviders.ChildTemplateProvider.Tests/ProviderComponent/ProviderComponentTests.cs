@@ -2,6 +2,6 @@
 
 public partial class ProviderComponentTests
 {
-    protected ProviderComponent CreateSut() => new(new[] { TemplateCreatorMock.Object });
-    protected Mock<ITemplateCreator> TemplateCreatorMock { get; } = new();
+    protected ProviderComponent CreateSut() => new(new[] { TemplateCreatorMock });
+    protected ITemplateCreator TemplateCreatorMock { get; } = Substitute.For<ITemplateCreator>();
 }

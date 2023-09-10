@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.CodeGeneration.Tests;
+namespace TemplateFramework.Core.CodeGeneration.Tests;
 
 public partial class CodeGenerationEngineTests
 {
@@ -11,7 +11,7 @@ public partial class CodeGenerationEngineTests
             var sut = CreateSut();
 
             // Act
-            sut.Invoking(x => x.Generate(codeGenerationProvider: null!, GenerationEnvironmentMock.Object, CodeGenerationSettingsMock.Object))
+            sut.Invoking(x => x.Generate(codeGenerationProvider: null!, GenerationEnvironmentMock, CodeGenerationSettingsMock))
                .Should().Throw<ArgumentNullException>().WithParameterName("codeGenerationProvider");
         }
 
@@ -22,7 +22,7 @@ public partial class CodeGenerationEngineTests
             var sut = CreateSut();
 
             // Act
-            sut.Invoking(x => x.Generate(CodeGenerationProviderMock.Object, generationEnvironment: null!, CodeGenerationSettingsMock.Object))
+            sut.Invoking(x => x.Generate(CodeGenerationProviderMock, generationEnvironment: null!, CodeGenerationSettingsMock))
                .Should().Throw<ArgumentNullException>().WithParameterName("generationEnvironment");
         }
 
@@ -33,7 +33,7 @@ public partial class CodeGenerationEngineTests
             var sut = CreateSut();
 
             // Act
-            sut.Invoking(x => x.Generate(CodeGenerationProviderMock.Object, GenerationEnvironmentMock.Object, settings: null!))
+            sut.Invoking(x => x.Generate(CodeGenerationProviderMock, GenerationEnvironmentMock, settings: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("settings");
         }
 
@@ -42,18 +42,18 @@ public partial class CodeGenerationEngineTests
         {
             // Arrange
             var sut = CreateSut();
-            CodeGenerationProviderMock.SetupGet(x => x.Encoding).Returns(Encoding.Latin1);
-            CodeGenerationProviderMock.SetupGet(x => x.Path).Returns(TestData.BasePath);
-            CodeGenerationProviderMock.Setup(x => x.GetGeneratorType()).Returns(GetType());
-            CodeGenerationSettingsMock.SetupGet(x => x.DryRun).Returns(false);
-            CodeGenerationSettingsMock.SetupGet(x => x.BasePath).Returns(TestData.BasePath);
-            CodeGenerationSettingsMock.SetupGet(x => x.DefaultFilename).Returns("Filename.txt");
+            CodeGenerationProviderMock.Encoding.Returns(Encoding.Latin1);
+            CodeGenerationProviderMock.Path.Returns(TestData.BasePath);
+            CodeGenerationProviderMock.GetGeneratorType().Returns(GetType());
+            CodeGenerationSettingsMock.DryRun.Returns(false);
+            CodeGenerationSettingsMock.BasePath.Returns(TestData.BasePath);
+            CodeGenerationSettingsMock.DefaultFilename.Returns("Filename.txt");
 
             // Act
-            sut.Generate(CodeGenerationProviderMock.Object, GenerationEnvironmentMock.Object, CodeGenerationSettingsMock.Object);
+            sut.Generate(CodeGenerationProviderMock, GenerationEnvironmentMock, CodeGenerationSettingsMock);
 
             // Assert
-            GenerationEnvironmentMock.Verify(x => x.SaveContents(CodeGenerationProviderMock.Object, TestData.BasePath, "Filename.txt"), Times.Once);
+            GenerationEnvironmentMock.Received().SaveContents(CodeGenerationProviderMock, TestData.BasePath, "Filename.txt");
         }
 
         [Fact]
@@ -61,17 +61,17 @@ public partial class CodeGenerationEngineTests
         {
             // Arrange
             var sut = CreateSut();
-            CodeGenerationProviderMock.SetupGet(x => x.Encoding).Returns(Encoding.Latin1);
-            CodeGenerationProviderMock.SetupGet(x => x.Path).Returns(TestData.BasePath);
-            CodeGenerationProviderMock.Setup(x => x.GetGeneratorType()).Returns(GetType());
-            CodeGenerationSettingsMock.SetupGet(x => x.DryRun).Returns(true);
-            CodeGenerationSettingsMock.SetupGet(x => x.DefaultFilename).Returns("Filename.txt");
+            CodeGenerationProviderMock.Encoding.Returns(Encoding.Latin1);
+            CodeGenerationProviderMock.Path.Returns(TestData.BasePath);
+            CodeGenerationProviderMock.GetGeneratorType().Returns(GetType());
+            CodeGenerationSettingsMock.DryRun.Returns(true);
+            CodeGenerationSettingsMock.DefaultFilename.Returns("Filename.txt");
 
             // Act
-            sut.Generate(CodeGenerationProviderMock.Object, GenerationEnvironmentMock.Object, CodeGenerationSettingsMock.Object);
+            sut.Generate(CodeGenerationProviderMock, GenerationEnvironmentMock, CodeGenerationSettingsMock);
 
             // Assert
-            GenerationEnvironmentMock.Verify(x => x.SaveContents(CodeGenerationProviderMock.Object, TestData.BasePath, "Filename.txt"), Times.Never);
+            GenerationEnvironmentMock.DidNotReceive().SaveContents(CodeGenerationProviderMock, TestData.BasePath, "Filename.txt");
         }
 
         [Fact]
@@ -81,12 +81,12 @@ public partial class CodeGenerationEngineTests
             var sut = CreateSut();
             var counter = 0;
             var provider = new MyPluginCodeGenerationProvider(_ => counter++);
-            CodeGenerationSettingsMock.SetupGet(x => x.DryRun).Returns(false);
-            CodeGenerationSettingsMock.SetupGet(x => x.BasePath).Returns(TestData.BasePath);
-            CodeGenerationSettingsMock.SetupGet(x => x.DefaultFilename).Returns("Filename.txt");
+            CodeGenerationSettingsMock.DryRun.Returns(false);
+            CodeGenerationSettingsMock.BasePath.Returns(TestData.BasePath);
+            CodeGenerationSettingsMock.DefaultFilename.Returns("Filename.txt");
 
             // Act
-            sut.Generate(provider, GenerationEnvironmentMock.Object, CodeGenerationSettingsMock.Object);
+            sut.Generate(provider, GenerationEnvironmentMock, CodeGenerationSettingsMock);
 
             // Assert
             counter.Should().Be(1);
@@ -97,17 +97,17 @@ public partial class CodeGenerationEngineTests
         {
             // Arrange
             var sut = CreateSut();
-            CodeGenerationProviderMock.SetupGet(x => x.Encoding).Returns(Encoding.Latin1);
-            CodeGenerationProviderMock.SetupGet(x => x.Path).Returns(TestData.BasePath);
-            CodeGenerationProviderMock.Setup(x => x.GetGeneratorType()).Returns(GetType());
-            CodeGenerationSettingsMock.SetupGet(x => x.DryRun).Returns(true);
-            CodeGenerationSettingsMock.SetupGet(x => x.DefaultFilename).Returns("Filename.txt");
+            CodeGenerationProviderMock.Encoding.Returns(Encoding.Latin1);
+            CodeGenerationProviderMock.Path.Returns(TestData.BasePath);
+            CodeGenerationProviderMock.GetGeneratorType().Returns(GetType());
+            CodeGenerationSettingsMock.DryRun.Returns(true);
+            CodeGenerationSettingsMock.DefaultFilename.Returns("Filename.txt");
 
             // Act
-            sut.Generate(CodeGenerationProviderMock.Object, GenerationEnvironmentMock.Object, CodeGenerationSettingsMock.Object);
+            sut.Generate(CodeGenerationProviderMock, GenerationEnvironmentMock, CodeGenerationSettingsMock);
 
             // Assert
-            TemplateProviderMock.Verify(x => x.StartSession(), Times.Once);
+            TemplateProviderMock.Received().StartSession();
         }
 
         private sealed class MyPluginCodeGenerationProvider : ICodeGenerationProvider, ITemplateComponentRegistryPlugin

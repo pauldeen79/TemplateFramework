@@ -2,12 +2,12 @@
 
 public class ParameterInitializerTests
 {
-    protected ParameterInitializerComponent CreateSut() => new(ValueConverterMock.Object);
+    protected ParameterInitializerComponent CreateSut() => new(ValueConverterMock);
     
-    protected Mock<IValueConverter> ValueConverterMock { get; } = new();
-    protected Mock<ITemplateEngine> TemplateEngineMock { get; } = new();
-    protected Mock<ITemplateProvider> TemplateProviderMock { get; } = new();
-    
+    protected IValueConverter ValueConverterMock { get; } = Substitute.For<IValueConverter>();
+    protected ITemplateEngine TemplateEngineMock { get; } = Substitute.For<ITemplateEngine>();
+    protected ITemplateProvider TemplateProviderMock { get; } = Substitute.For<ITemplateProvider>();
+
     protected const string DefaultFilename = "DefaultFilename.txt";
 
     public class Constructor
@@ -42,8 +42,8 @@ public class ParameterInitializerTests
             var additionalParameters = new { AdditionalParameter = "Hello world!" };
             var template = new PlainTemplateWithAdditionalParameters();
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
-            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, TemplateProviderMock.Object, template);
-            ValueConverterMock.Setup(x => x.Convert(It.IsAny<object?>(), It.IsAny<Type>())).Returns<object?, Type>((value, type) => value);
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
+            ValueConverterMock.Convert(Arg.Any<object?>(), Arg.Any<Type>()).Returns(x => x.Args()[0]);
 
             // Act
             sut.Initialize(engineContext);
@@ -60,10 +60,10 @@ public class ParameterInitializerTests
             var additionalParameters = new { AdditionalParameter = "?" };
             var template = new PlainTemplateWithAdditionalParameters();
             object? convertedValue = "Hello world!";
-            ValueConverterMock.Setup(x => x.Convert(It.IsAny<object?>(), It.IsAny<Type>()))
+            ValueConverterMock.Convert(Arg.Any<object?>(), Arg.Any<Type>())
                               .Returns(convertedValue);
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
-            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, TemplateProviderMock.Object, template);
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
 
             // Act
             sut.Initialize(engineContext);
@@ -80,7 +80,7 @@ public class ParameterInitializerTests
             var additionalParameters = new { AdditionalParameter = "Hello world!", NonExistingParameter = "Kaboom" };
             var template = new PlainTemplateWithAdditionalParameters();
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
-            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, TemplateProviderMock.Object, template);
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
 
             // Act & Assert
             sut.Invoking(x => x.Initialize(engineContext))
@@ -96,8 +96,8 @@ public class ParameterInitializerTests
             var additionalParameters = new { AdditionalParameter = "Hello world!", Model = "Ignored" };
             var template = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), model, new StringBuilder(), DefaultFilename, additionalParameters);
-            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, TemplateProviderMock.Object, template);
-            ValueConverterMock.Setup(x => x.Convert(It.IsAny<object?>(), It.IsAny<Type>())).Returns<object?, Type>((value, type) => value);
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
+            ValueConverterMock.Convert(Arg.Any<object?>(), Arg.Any<Type>()).Returns(x => x.Args()[0]);
 
             // Act
             sut.Initialize(engineContext);
@@ -115,8 +115,8 @@ public class ParameterInitializerTests
             var template = new TestData.TemplateWithViewModel<TestData.NonConstructableViewModel>(_ => { });
             var viewModel = new TestData.NonConstructableViewModel("Some value");
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters: new { ViewModel = viewModel });
-            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, TemplateProviderMock.Object, template);
-            ValueConverterMock.Setup(x => x.Convert(It.IsAny<object?>(), It.IsAny<Type>())).Returns<object?, Type>((value, type) => value);
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
+            ValueConverterMock.Convert(Arg.Any<object?>(), Arg.Any<Type>()).Returns(x => x.Args()[0]);
 
             // Act
             sut.Initialize(engineContext);
@@ -133,9 +133,9 @@ public class ParameterInitializerTests
             var additionalParameters = new { Parameter = "Hello world!" };
             var template = new TestData.PocoParameterizedTemplate();
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
-            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, TemplateProviderMock.Object, template);
-            ValueConverterMock.Setup(x => x.Convert(It.IsAny<object?>(), It.IsAny<Type>())).Returns<object?, Type>((value, type) => value);
-            TemplateEngineMock.Setup(x => x.GetParameters(It.IsAny<object>())).Returns(new[] { new TemplateParameter(nameof(TestData.PocoParameterizedTemplate.Parameter), typeof(string)) });
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
+            ValueConverterMock.Convert(Arg.Any<object?>(), Arg.Any<Type>()).Returns(x => x.Args()[0]);
+            TemplateEngineMock.GetParameters(Arg.Any<object>()).Returns(new[] { new TemplateParameter(nameof(TestData.PocoParameterizedTemplate.Parameter), typeof(string)) });
 
             // Act
             sut.Initialize(engineContext);
@@ -152,9 +152,9 @@ public class ParameterInitializerTests
             var additionalParameters = new { WrongParameter = "Hello world!" };
             var template = new TestData.PocoParameterizedTemplate();
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
-            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, TemplateProviderMock.Object, template);
-            ValueConverterMock.Setup(x => x.Convert(It.IsAny<object?>(), It.IsAny<Type>())).Returns<object?, Type>((value, type) => value);
-            TemplateEngineMock.Setup(x => x.GetParameters(It.IsAny<object>())).Returns(new[] { new TemplateParameter(nameof(TestData.PocoParameterizedTemplate.Parameter), typeof(string)) });
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
+            ValueConverterMock.Convert(Arg.Any<object?>(), Arg.Any<Type>()).Returns(x => x.Args()[0]);
+            TemplateEngineMock.GetParameters(Arg.Any<object>()).Returns(new[] { new TemplateParameter(nameof(TestData.PocoParameterizedTemplate.Parameter), typeof(string)) });
 
             // Act & Assert
             sut.Invoking(x => x.Initialize(engineContext)).Should().NotThrow();

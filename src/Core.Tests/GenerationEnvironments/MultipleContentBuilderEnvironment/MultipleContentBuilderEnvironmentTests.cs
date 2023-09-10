@@ -2,14 +2,14 @@
 
 public partial class MultipleContentBuilderEnvironmentTests
 {
-    protected Mock<IFileSystem> FileSystemMock { get; } = new();
-    protected Mock<ICodeGenerationProvider> CodeGenerationProviderMock { get; } = new();
-    protected Mock<IMultipleContentBuilder> MultipleContentBuilderMock { get; } = new();
-    protected Mock<IMultipleContent> MultipleContentMock { get; } = new();
-    protected Mock<IContent> ContentMock { get; } = new();
+    protected IFileSystem FileSystemMock { get; } = Substitute.For<IFileSystem>();
+    protected ICodeGenerationProvider CodeGenerationProviderMock { get; } = Substitute.For<ICodeGenerationProvider>();
+    protected IMultipleContentBuilder MultipleContentBuilderMock { get; } = Substitute.For<IMultipleContentBuilder>();
+    protected IMultipleContent MultipleContentMock { get; } = Substitute.For<IMultipleContent>();
+    protected IContent ContentMock { get; } = Substitute.For<IContent>();
     protected IRetryMechanism RetryMechanism { get; } = new FastRetryMechanism();
 
-    protected MultipleContentBuilderEnvironment CreateSut() => new(FileSystemMock.Object, RetryMechanism, MultipleContentBuilderMock.Object);
+    protected MultipleContentBuilderEnvironment CreateSut() => new(FileSystemMock, RetryMechanism, MultipleContentBuilderMock);
 
     protected IEnumerable<IContent> CreateContents(bool skipWhenFileExists = false)
     {

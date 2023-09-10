@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.TemplateProviders.CompiledTemplateProvider.Tests;
+namespace TemplateFramework.TemplateProviders.CompiledTemplateProvider.Tests;
 
 public partial class ProviderComponentTests
 {
@@ -24,7 +24,7 @@ public partial class ProviderComponentTests
             var sut = CreateSut();
 
             // Act
-            var result = sut.Supports(new Mock<ITemplateIdentifier>().Object);
+            var result = sut.Supports(Substitute.For<ITemplateIdentifier>());
 
             // Assert
             result.Should().BeFalse();

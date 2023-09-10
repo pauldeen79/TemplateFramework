@@ -6,7 +6,7 @@ public partial class TemplateEngineTests
     {
         public Render_MultipleContentBuilder()
         {
-            TemplateRendererMock.Setup(x => x.Supports(It.IsAny<IGenerationEnvironment>())).Returns(true);
+            TemplateRendererMock.Supports(Arg.Any<IGenerationEnvironment>()).Returns(true);
         }
 
         [Fact]
@@ -26,16 +26,16 @@ public partial class TemplateEngineTests
             // Arrange
             var sut = CreateSut();
             var template = new PlainTemplateWithAdditionalParameters();
-            IMultipleContentBuilder? generationEnvironment = MultipleContentBuilderMock.Object;
+            IMultipleContentBuilder? generationEnvironment = MultipleContentBuilderMock;
             var additionalParameters = new { AdditionalParameter = "Some value" };
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), generationEnvironment, additionalParameters);
-            TemplateProviderMock.Setup(x => x.Create(It.IsAny<TemplateInstanceIdentifier>())).Returns(template);
+            TemplateProviderMock.Create(Arg.Any<TemplateInstanceIdentifier>()).Returns(template);
 
             // Act
             sut.Render(request);
 
             // Assert
-            TemplateInitializerMock.Verify(x => x.Initialize(It.IsAny<ITemplateEngineContext>()), Times.Once);
+            TemplateInitializerMock.Received().Initialize(Arg.Any<ITemplateEngineContext>());
         }
 
         [Fact]
@@ -44,20 +44,20 @@ public partial class TemplateEngineTests
             // Arrange
             var sut = CreateSut();
             var template = new PlainTemplateWithAdditionalParameters();
-            IMultipleContentBuilder? generationEnvironment = MultipleContentBuilderMock.Object;
+            IMultipleContentBuilder? generationEnvironment = MultipleContentBuilderMock;
             var additionalParameters = new { AdditionalParameter = "Some value" };
-            TemplateRendererMock.Setup(x => x.Supports(It.IsAny<IGenerationEnvironment>())).Returns(true);
+            TemplateRendererMock.Supports(Arg.Any<IGenerationEnvironment>()).Returns(true);
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), additionalParameters, generationEnvironment);
-            TemplateProviderMock.Setup(x => x.Create(It.IsAny<TemplateInstanceIdentifier>())).Returns(template);
+            TemplateProviderMock.Create(Arg.Any<TemplateInstanceIdentifier>()).Returns(template);
 
             // Act
             sut.Render(request);
 
             // Assert
-            TemplateRendererMock.Verify(x => x.Render(It.Is<ITemplateEngineContext>(req =>
+            TemplateRendererMock.Received().Render(Arg.Is<ITemplateEngineContext>(req =>
                 req.Identifier is TemplateInstanceIdentifier
                 && req.GenerationEnvironment.Type == GenerationEnvironmentType.MultipleContentBuilder
-                && req.DefaultFilename == string.Empty)), Times.Once);
+                && req.DefaultFilename == string.Empty));
         }
     }
 }

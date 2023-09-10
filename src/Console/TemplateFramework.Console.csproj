@@ -13,6 +13,9 @@
     <RepositoryUrl>https://github.com/pauldeen79/TemplateFramework</RepositoryUrl>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>tf</ToolCommandName>
+    <!-- Used by code coverage -->
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>

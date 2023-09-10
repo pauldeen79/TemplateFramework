@@ -2,6 +2,9 @@
 
 internal static class CommandLineCommandHelper
 {
+    internal static string ExecuteCommand<T>(T sut, params string[] arguments)
+        where T : ICommandLineCommand => ExecuteCommand(() => sut, arguments);
+
     internal static string ExecuteCommand<T>(Func<T> sutCreateDelegate, params string[] arguments)
         where T : ICommandLineCommand
     {

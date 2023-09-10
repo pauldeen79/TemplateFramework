@@ -4,7 +4,7 @@ public class TypedExtractorTests
 {
     protected TypedExtractor CreateSut() => new();
 
-    protected Mock<IParameterizedTemplate> ParameterizedTemplateMock { get; } = new();
+    protected IParameterizedTemplate ParameterizedTemplateMock { get; } = Substitute.For<IParameterizedTemplate>();
 
     public class Extract : TypedExtractorTests
     {
@@ -36,10 +36,10 @@ public class TypedExtractorTests
             // Arrange
             var sut = CreateSut();
             var parameters = new[] { new TemplateParameter("SomeName", typeof(string)) };
-            ParameterizedTemplateMock.Setup(x => x.GetParameters()).Returns(parameters);
+            ParameterizedTemplateMock.GetParameters().Returns(parameters);
 
             // Act
-            var result = sut.Extract(ParameterizedTemplateMock.Object);
+            var result = sut.Extract(ParameterizedTemplateMock);
 
             // Assert
             result.Should().BeEquivalentTo(parameters);
@@ -55,7 +55,7 @@ public class TypedExtractorTests
             var sut = CreateSut();
 
             // Act
-            var result = sut.Supports(ParameterizedTemplateMock.Object);
+            var result = sut.Supports(ParameterizedTemplateMock);
 
             // Assert
             result.Should().BeTrue();

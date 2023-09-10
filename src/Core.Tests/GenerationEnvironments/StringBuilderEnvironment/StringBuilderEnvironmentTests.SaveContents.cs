@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests.GenerationEnvironments;
+namespace TemplateFramework.Core.Tests.GenerationEnvironments;
 
 public partial class StringBuilderEnvironmentTests
 {
@@ -22,7 +22,7 @@ public partial class StringBuilderEnvironmentTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.SaveContents(CodeGenerationProviderMock.Object, TestData.BasePath, defaultFilename: null!))
+            sut.Invoking(x => x.SaveContents(CodeGenerationProviderMock, TestData.BasePath, defaultFilename: null!))
                .Should().Throw<ArgumentException>().WithParameterName("defaultFilename");
         }
 
@@ -33,7 +33,7 @@ public partial class StringBuilderEnvironmentTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.SaveContents(CodeGenerationProviderMock.Object, TestData.BasePath, defaultFilename: string.Empty))
+            sut.Invoking(x => x.SaveContents(CodeGenerationProviderMock, TestData.BasePath, defaultFilename: string.Empty))
                .Should().Throw<ArgumentException>().WithParameterName("defaultFilename");
         }
 
@@ -42,14 +42,14 @@ public partial class StringBuilderEnvironmentTests
         {
             // Arrange
             var sut = CreateSut();
-            CodeGenerationProviderMock.SetupGet(x => x.Encoding).Returns(Encoding.UTF32);
+            CodeGenerationProviderMock.Encoding.Returns(Encoding.UTF32);
             Builder.Append("Contents");
 
             // Act
-            sut.SaveContents(CodeGenerationProviderMock.Object, string.Empty, "Filename.txt");
+            sut.SaveContents(CodeGenerationProviderMock, string.Empty, "Filename.txt");
 
             // Arrange
-            FileSystemMock.Verify(x => x.WriteAllText("Filename.txt", "Contents", Encoding.UTF32), Times.Once);
+            FileSystemMock.Received().WriteAllText("Filename.txt", "Contents", Encoding.UTF32);
         }
 
         [Fact]
@@ -57,14 +57,14 @@ public partial class StringBuilderEnvironmentTests
         {
             // Arrange
             var sut = CreateSut();
-            CodeGenerationProviderMock.SetupGet(x => x.Encoding).Returns(Encoding.UTF32);
+            CodeGenerationProviderMock.Encoding.Returns(Encoding.UTF32);
             Builder.Append("Contents");
 
             // Act
-            sut.SaveContents(CodeGenerationProviderMock.Object, TestData.BasePath, "Filename.txt");
+            sut.SaveContents(CodeGenerationProviderMock, TestData.BasePath, "Filename.txt");
 
             // Arrange
-            FileSystemMock.Verify(x => x.WriteAllText(Path.Combine(TestData.BasePath, "Filename.txt"), "Contents", Encoding.UTF32), Times.Once);
+            FileSystemMock.Received().WriteAllText(Path.Combine(TestData.BasePath, "Filename.txt"), "Contents", Encoding.UTF32);
         }
     }
 }

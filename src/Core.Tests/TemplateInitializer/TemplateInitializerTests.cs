@@ -2,10 +2,10 @@
 
 public partial class TemplateInitializerTests
 {
-    protected TemplateInitializer CreateSut() => new(new[] { TemplateInitializerComponentMock.Object });
-    protected Mock<ITemplateEngine> TemplateEngineMock { get; } = new();
-    protected Mock<ITemplateProvider> TemplateProviderMock { get; } = new();
-    protected Mock<ITemplateInitializerComponent> TemplateInitializerComponentMock { get; } = new();
-    protected Mock<IRenderTemplateRequest> RenderTemplateRequestMock { get; } = new();
+    protected TemplateInitializer CreateSut() => new(new[] { TemplateInitializerComponentMock });
+    protected ITemplateEngine TemplateEngineMock { get; } = Substitute.For<ITemplateEngine>();
+    protected ITemplateProvider TemplateProviderMock { get; } = Substitute.For<ITemplateProvider>();
+    protected ITemplateInitializerComponent TemplateInitializerComponentMock { get; } = Substitute.For<ITemplateInitializerComponent>();
+    protected IRenderTemplateRequest RenderTemplateRequestMock { get; } = Substitute.For<IRenderTemplateRequest>();
     protected const string DefaultFilename = "DefaultFilename.txt";
 }

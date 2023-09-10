@@ -1,10 +1,10 @@
-﻿namespace TemplateFramework.Core.Tests;
+namespace TemplateFramework.Core.Tests;
 
 public class ChildTemplateContextTests
 {
     protected const int IterationNumber = 13;
     protected const int IterationCount = 26;
-    protected ITemplateIdentifier Identifier { get; } = new Mock<ITemplateIdentifier>().Object;
+    protected ITemplateIdentifier Identifier { get; } = Substitute.For<ITemplateIdentifier>();
     protected object Model { get; } = new();
 
     public class Constructor : ChildTemplateContextTests

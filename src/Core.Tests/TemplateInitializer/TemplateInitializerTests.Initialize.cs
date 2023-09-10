@@ -22,12 +22,12 @@ public partial class TemplateInitializerTests
             var sut = CreateSut();
 
             // Act
-            sut.Initialize(new TemplateEngineContext(RenderTemplateRequestMock.Object, TemplateEngineMock.Object, TemplateProviderMock.Object, new object()));
+            sut.Initialize(new TemplateEngineContext(RenderTemplateRequestMock, TemplateEngineMock, TemplateProviderMock, new object()));
 
             // Assert
-            TemplateInitializerComponentMock.Verify(x => x.Initialize(It.Is<ITemplateEngineContext>(x =>
-                x.Engine == TemplateEngineMock.Object
-                && x.Identifier == RenderTemplateRequestMock.Object.Identifier)), Times.Once);
+            TemplateInitializerComponentMock.Received().Initialize(Arg.Is<ITemplateEngineContext>(x =>
+                x.Engine == TemplateEngineMock
+                && x.Identifier == RenderTemplateRequestMock.Identifier));
         }
     }
 }

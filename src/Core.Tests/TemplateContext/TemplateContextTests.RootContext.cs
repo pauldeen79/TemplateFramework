@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests;
+namespace TemplateFramework.Core.Tests;
 
 public partial class TemplateContextTests
 {
@@ -8,7 +8,7 @@ public partial class TemplateContextTests
         public void Returns_Same_Instance_When_There_Is_No_ParentContext()
         {
             // Arrange
-            var sut = new TemplateContext(EngineMock.Object, ProviderMock.Object, DefaultFilename, new TemplateInstanceIdentifier(this), template: this);
+            var sut = new TemplateContext(EngineMock, ProviderMock, DefaultFilename, new TemplateInstanceIdentifier(this), template: this);
 
             // Act
             var result = sut.RootContext;
@@ -21,8 +21,8 @@ public partial class TemplateContextTests
         public void Returns_RootContext_One_Level_Deep()
         {
             // Arrange
-            var parentTemplateContext = new TemplateContext(EngineMock.Object, ProviderMock.Object, DefaultFilename, new TemplateInstanceIdentifier(this), template: this);
-            var sut = new TemplateContext(EngineMock.Object, ProviderMock.Object, DefaultFilename, new TemplateInstanceIdentifier(this), template: this, parentContext: parentTemplateContext);
+            var parentTemplateContext = new TemplateContext(EngineMock, ProviderMock, DefaultFilename, new TemplateInstanceIdentifier(this), template: this);
+            var sut = new TemplateContext(EngineMock, ProviderMock, DefaultFilename, new TemplateInstanceIdentifier(this), template: this, parentContext: parentTemplateContext);
 
             // Act
             var result = sut.RootContext;
@@ -35,9 +35,9 @@ public partial class TemplateContextTests
         public void Returns_RootContext_Two_Levels_Deep()
         {
             // Arrange
-            var rootTemplateContext = new TemplateContext(EngineMock.Object, ProviderMock.Object, DefaultFilename, new TemplateInstanceIdentifier(this), template: this);
-            var parentTemplateContext = new TemplateContext(EngineMock.Object, ProviderMock.Object, DefaultFilename, new TemplateInstanceIdentifier(this), template: this, parentContext: rootTemplateContext);
-            var sut = new TemplateContext(EngineMock.Object, ProviderMock.Object, DefaultFilename, new TemplateInstanceIdentifier(this), template: this, parentContext: parentTemplateContext);
+            var rootTemplateContext = new TemplateContext(EngineMock, ProviderMock, DefaultFilename, new TemplateInstanceIdentifier(this), template: this);
+            var parentTemplateContext = new TemplateContext(EngineMock, ProviderMock, DefaultFilename, new TemplateInstanceIdentifier(this), template: this, parentContext: rootTemplateContext);
+            var sut = new TemplateContext(EngineMock, ProviderMock, DefaultFilename, new TemplateInstanceIdentifier(this), template: this, parentContext: parentTemplateContext);
 
             // Act
             var result = sut.RootContext;

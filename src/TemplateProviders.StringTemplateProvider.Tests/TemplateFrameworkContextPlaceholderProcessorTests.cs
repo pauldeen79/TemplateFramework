@@ -3,7 +3,7 @@
 public class TemplateFrameworkContextPlaceholderProcessorTests
 {
     protected ComponentRegistrationContext ComponentRegistrationContext { get; } = new();
-    protected Mock<IFormattableStringParser> FormattableStringParserMock { get; } = new();
+    protected IFormattableStringParser FormattableStringParserMock { get; } = Substitute.For<IFormattableStringParser>();
 
     protected TemplateFrameworkContextPlaceholderProcessor CreateSut() => new();
 
@@ -16,7 +16,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process(value: null!, CultureInfo.CurrentCulture, null, FormattableStringParserMock.Object))
+            sut.Invoking(x => x.Process(value: null!, CultureInfo.CurrentCulture, null, FormattableStringParserMock))
                .Should().Throw<ArgumentNullException>().WithParameterName("value");
         }
 
@@ -27,7 +27,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process("some template", formatProvider: null!, null, FormattableStringParserMock.Object))
+            sut.Invoking(x => x.Process("some template", formatProvider: null!, null, FormattableStringParserMock))
                .Should().Throw<ArgumentNullException>().WithParameterName("formatProvider");
         }
 
@@ -50,7 +50,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests
             var context = "some context that's not of type TemplateFrameworkFormattableStringContext";
 
             // Act
-            var result = sut.Process("some template", CultureInfo.CurrentCulture, context, FormattableStringParserMock.Object);
+            var result = sut.Process("some template", CultureInfo.CurrentCulture, context, FormattableStringParserMock);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Continue);
@@ -68,7 +68,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests
             var context = new TemplateFrameworkStringContext(parametersDictionary, ComponentRegistrationContext, false);
 
             // Act
-            var result = sut.Process("Name", CultureInfo.CurrentCulture, context, FormattableStringParserMock.Object);
+            var result = sut.Process("Name", CultureInfo.CurrentCulture, context, FormattableStringParserMock);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -87,7 +87,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests
             var context = new TemplateFrameworkStringContext(parametersDictionary, ComponentRegistrationContext, false);
 
             // Act
-            var result = sut.Process("Name", CultureInfo.CurrentCulture, context, FormattableStringParserMock.Object);
+            var result = sut.Process("Name", CultureInfo.CurrentCulture, context, FormattableStringParserMock);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -103,7 +103,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests
             var context = new TemplateFrameworkStringContext(parametersDictionary, ComponentRegistrationContext, false);
 
             // Act
-            var result = sut.Process("Name", CultureInfo.CurrentCulture, context, FormattableStringParserMock.Object);
+            var result = sut.Process("Name", CultureInfo.CurrentCulture, context, FormattableStringParserMock);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Continue);
@@ -118,7 +118,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests
             var context = new TemplateFrameworkStringContext(parametersDictionary, ComponentRegistrationContext, false);
 
             // Act
-            _ = sut.Process("Name", CultureInfo.CurrentCulture, context, FormattableStringParserMock.Object);
+            _ = sut.Process("Name", CultureInfo.CurrentCulture, context, FormattableStringParserMock);
 
             // Assert
             context.ParameterNamesList.Should().BeEquivalentTo("Name");
@@ -133,7 +133,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests
             var context = new TemplateFrameworkStringContext(parametersDictionary, ComponentRegistrationContext, false);
 
             // Act
-            _ = sut.Process("__Name", CultureInfo.CurrentCulture, context, FormattableStringParserMock.Object);
+            _ = sut.Process("__Name", CultureInfo.CurrentCulture, context, FormattableStringParserMock);
 
             // Assert
             context.ParameterNamesList.Should().BeEmpty();

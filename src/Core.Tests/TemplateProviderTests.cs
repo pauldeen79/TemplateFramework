@@ -2,9 +2,9 @@
 
 public class TemplateProviderTests
 {
-    protected TemplateProvider CreateSut() => new(new[] { TemplateProviderComponentMock.Object });
+    protected TemplateProvider CreateSut() => new(new[] { TemplateProviderComponentMock });
 
-    protected Mock<ITemplateProviderComponent> TemplateProviderComponentMock { get; } = new();
+    protected ITemplateProviderComponent TemplateProviderComponentMock { get; } = Substitute.For<ITemplateProviderComponent>();
 
     public class Constructor
     {
@@ -37,7 +37,7 @@ public class TemplateProviderTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Create(identifier: new Mock<ITemplateIdentifier>().Object))
+            sut.Invoking(x => x.Create(identifier: Substitute.For<ITemplateIdentifier>()))
                .Should().Throw<NotSupportedException>();
         }
 
@@ -46,10 +46,10 @@ public class TemplateProviderTests
         {
             // Arrange
             var sut = CreateSut();
-            var identifier = new Mock<ITemplateIdentifier>().Object;
+            var identifier = Substitute.For<ITemplateIdentifier>();
             var expectedTemplate = new object();
-            TemplateProviderComponentMock.Setup(x => x.Supports(identifier)).Returns(true);
-            TemplateProviderComponentMock.Setup(x => x.Create(identifier)).Returns(expectedTemplate);
+            TemplateProviderComponentMock.Supports(identifier).Returns(true);
+            TemplateProviderComponentMock.Create(identifier).Returns(expectedTemplate);
 
             // Act
             var template = sut.Create(identifier);
@@ -77,18 +77,18 @@ public class TemplateProviderTests
         {
             // Arrange
             var sut = CreateSut();
-            var customTemplateProviderComponentMock = new Mock<ITemplateProviderComponent>();
-            var identifier = new Mock<ITemplateIdentifier>().Object;
+            var customTemplateProviderComponentMock = Substitute.For<ITemplateProviderComponent>();
+            var identifier = Substitute.For<ITemplateIdentifier>();
             var expectedTemplate = new object();
-            customTemplateProviderComponentMock.Setup(x => x.Supports(identifier)).Returns(true);
-            customTemplateProviderComponentMock.Setup(x => x.Create(identifier)).Returns(expectedTemplate);
+            customTemplateProviderComponentMock.Supports(identifier).Returns(true);
+            customTemplateProviderComponentMock.Create(identifier).Returns(expectedTemplate);
 
             // Act
-            sut.RegisterComponent(customTemplateProviderComponentMock.Object);
+            sut.RegisterComponent(customTemplateProviderComponentMock);
 
             // Assert
             sut.Create(identifier);
-            customTemplateProviderComponentMock.Verify(x => x.Create(identifier), Times.Once);
+            customTemplateProviderComponentMock.Received().Create(identifier);
         }
     }
 
@@ -99,17 +99,17 @@ public class TemplateProviderTests
         {
             // Arrange
             var sut = CreateSut();
-            var newTemplateProviderComponentMock = new Mock<ITemplateProviderComponent>();
-            newTemplateProviderComponentMock.Setup(x => x.Supports(It.IsAny<ITemplateIdentifier>())).Returns(true);
-            newTemplateProviderComponentMock.Setup(x => x.Create(It.IsAny<ITemplateIdentifier>())).Returns(this);
-            var templateIdentifierMock = new Mock<ITemplateIdentifier>();
-            sut.RegisterComponent(newTemplateProviderComponentMock.Object);
+            var newTemplateProviderComponentMock = Substitute.For<ITemplateProviderComponent>();
+            newTemplateProviderComponentMock.Supports(Arg.Any<ITemplateIdentifier>()).Returns(true);
+            newTemplateProviderComponentMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(this);
+            var templateIdentifierMock = Substitute.For<ITemplateIdentifier>();
+            sut.RegisterComponent(newTemplateProviderComponentMock);
 
             // Act
             sut.StartSession();
 
             // Assert
-            sut.Invoking(x => x.Create(templateIdentifierMock.Object))
+            sut.Invoking(x => x.Create(templateIdentifierMock))
                .Should().Throw<NotSupportedException>();
         }
 

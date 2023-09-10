@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests;
+namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests;
 
 public partial class ProviderComponentTests
 {
@@ -23,7 +23,7 @@ public partial class ProviderComponentTests
         {
             // Arrange
             var sut = CreateSut();
-            var identifier = new Mock<ITemplateIdentifier>().Object;
+            var identifier = Substitute.For<ITemplateIdentifier>();
 
             // Act
             var result = sut.Supports(identifier);
@@ -38,7 +38,7 @@ public partial class ProviderComponentTests
             // Arrange
             var sut = CreateSut();
             var identifier = new TemplateByModelIdentifier(this);
-            TemplateCreatorMock.Setup(x => x.SupportsModel(It.IsAny<object?>())).Returns(true);
+            TemplateCreatorMock.SupportsModel(Arg.Any<object?>()).Returns(true);
 
             // Act
             var result = sut.Supports(identifier);
@@ -53,7 +53,7 @@ public partial class ProviderComponentTests
             // Arrange
             var sut = CreateSut();
             var identifier = new TemplateByNameIdentifier(nameof(Returns_True_On_CreateTemplateByNameRequest));
-            TemplateCreatorMock.Setup(x => x.SupportsName(It.IsAny<string>())).Returns(true);
+            TemplateCreatorMock.SupportsName(Arg.Any<string>()).Returns(true);
 
             // Act
             var result = sut.Supports(identifier);
