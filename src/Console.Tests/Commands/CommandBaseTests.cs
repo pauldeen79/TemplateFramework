@@ -26,7 +26,7 @@ public class CommandBaseTests
         [Fact]
         public void Throws_On_Null_Argument()
         {
-            TestHelpers.ConstructorMustThrowArgumentNullException(typeof(CommandBaseTest), t => Substitute.For(new[] { t }, Array.Empty<object>()));
+            typeof(CommandBaseTest).ShouldArgumentNullExceptionsInConstructorOnNullArguments();
         }
     }
 

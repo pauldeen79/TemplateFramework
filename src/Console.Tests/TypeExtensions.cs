@@ -9,13 +9,24 @@ public static class TestHelpers
     /// <param name="type">The type to assert null argument checks for.</param>
     /// <param name="parameterPredicate">Optional predicate to apply to each parameter info. When the predicate returns false, then the parameter will be skipped.</param>
     /// <param name="parameterReplaceDelegate">Optional function to apply to a parameter info. When the predicate is not defined, then we will create a mock or value type.</param>
-    public static void ConstructorMustThrowArgumentNullException(Type type,
+    public static void ShouldArgumentNullExceptionsInConstructorOnNullArguments(this Type type,
+                                                                 Func<ParameterInfo, bool>? parameterPredicate = null,
+                                                                 Func<ParameterInfo, object>? parameterReplaceDelegate = null)
+        => ConstructorMustThrowArgumentNullException(type, t => Substitute.For(new[] { t }, Array.Empty<object>()), parameterPredicate, parameterReplaceDelegate);
+
+    /// <summary>
+    /// Asserts that the specified type performs argument null checks on all arguments in all (public) constructors.
+    /// </summary>
+    /// <remarks>Note that this method throws an exeption when there is no public constructor.</remarks>
+    /// <param name="type">The type to assert null argument checks for.</param>
+    /// <param name="parameterPredicate">Optional predicate to apply to each parameter info. When the predicate returns false, then the parameter will be skipped.</param>
+    /// <param name="parameterReplaceDelegate">Optional function to apply to a parameter info. When the predicate is not defined, then we will create a mock or value type.</param>
+    public static void ConstructorMustThrowArgumentNullException(this Type type,
                                                                  Func<Type, object?> classFactory,
                                                                  Func<ParameterInfo, bool>? parameterPredicate = null,
                                                                  Func<ParameterInfo, object>? parameterReplaceDelegate = null)
     {
-        type = ArgumentGuard.IsNotNull(type, nameof(type));
-        var ctors = ArgumentGuard.IsNotNull(type, nameof(type)).GetConstructors();
+        var ctors = type.GetConstructors();
         ctors.Should().Match<ConstructorInfo[]?>(x => x != null && x.Length > 0, $"Type {type.FullName} should have public constructors");
 
         foreach (var constructor in ctors)
@@ -80,9 +91,8 @@ public static class TestHelpers
                 {
                     return null; //skip value types and arrays
                 }
-                var mock = classFactory.Invoke(p.ParameterType);
-                mock = ArgumentGuard.IsNotNull(mock, nameof(mock));
-                return mock;
+
+                return classFactory.Invoke(p.ParameterType);
             }
         ).ToArray();
 

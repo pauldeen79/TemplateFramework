@@ -7,7 +7,7 @@ public class RunTemplateCommandTests
         [Fact]
         public void Throws_On_Null_Argument()
         {
-            TestHelpers.ConstructorMustThrowArgumentNullException(typeof(RunTemplateCommand), t => Substitute.For(new[] { t }, Array.Empty<object>()));
+            typeof(RunTemplateCommand).ShouldArgumentNullExceptionsInConstructorOnNullArguments();
         }
     }
 

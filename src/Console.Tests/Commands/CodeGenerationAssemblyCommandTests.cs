@@ -7,7 +7,7 @@ public class CodeGenerationAssemblyCommandTests
         [Fact]
         public void Throws_On_Null_Argument()
         {
-            TestHelpers.ConstructorMustThrowArgumentNullException(typeof(CodeGenerationAssemblyCommand), t => Substitute.For(new[] { t }, Array.Empty<object>()));
+            typeof(CodeGenerationAssemblyCommand).ShouldArgumentNullExceptionsInConstructorOnNullArguments();
         }
     }
 
