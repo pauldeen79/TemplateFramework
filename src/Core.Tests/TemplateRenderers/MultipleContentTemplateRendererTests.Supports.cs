@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests.TemplateRenderers;
+namespace TemplateFramework.Core.Tests.TemplateRenderers;
 
 public partial class MultipleContentTemplateRendererTests
 {
@@ -9,11 +9,11 @@ public partial class MultipleContentTemplateRendererTests
         {
             // Arrange
             var sut = CreateSut();
-            var environmentMock = new Mock<IGenerationEnvironment>();
-            environmentMock.SetupGet(x => x.Type).Returns(GenerationEnvironmentType.StringBuilder);
+            var environmentMock = Substitute.For<IGenerationEnvironment>();
+            environmentMock.Type.Returns(GenerationEnvironmentType.StringBuilder);
 
             // Act
-            var result = sut.Supports(environmentMock.Object);
+            var result = sut.Supports(environmentMock);
 
             // Assert
             result.Should().BeFalse();
@@ -37,7 +37,7 @@ public partial class MultipleContentTemplateRendererTests
         {
             // Arrange
             var sut = CreateSut();
-            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(this), DefaultFilename, new Mock<IMultipleContentBuilder>().Object);
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(this), DefaultFilename, Substitute.For<IMultipleContentBuilder>());
 
             // Act
             var result = sut.Supports(request.GenerationEnvironment);

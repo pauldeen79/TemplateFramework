@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests.TemplateRenderers;
+namespace TemplateFramework.Core.Tests.TemplateRenderers;
 
 public partial class StringBuilderTemplateRendererTests
 {
@@ -23,7 +23,7 @@ public partial class StringBuilderTemplateRendererTests
         {
             // Arrange
             var sut = CreateSut();
-            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(this), new Mock<IMultipleContentBuilder>().Object);
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(this), Substitute.For<IMultipleContentBuilder>());
 
             // Act
             var result = sut.Supports(request.GenerationEnvironment);

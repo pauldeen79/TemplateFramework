@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests.Requests;
+namespace TemplateFramework.Core.Tests.Requests;
 
 public partial class RenderTemplateRequestTests
 {
@@ -240,7 +240,7 @@ public partial class RenderTemplateRequestTests
         public void Constructs_Using_MultipleContentBuilder_1()
         {
             // Act & Assert
-            this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: MultipleContentBuilderMock.Object, defaultFilename: DefaultFilename, additionalParameters: null, context: null))
+            this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: MultipleContentBuilderMock, defaultFilename: DefaultFilename, additionalParameters: null, context: null))
                 .Should().NotThrow();
         }
 
@@ -256,7 +256,7 @@ public partial class RenderTemplateRequestTests
         public void Constructs_Using_MultipleContentBuilder_2()
         {
             // Act & Assert
-            this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: MultipleContentBuilderMock.Object))
+            this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: MultipleContentBuilderMock))
                 .Should().NotThrow();
         }
 
@@ -272,7 +272,7 @@ public partial class RenderTemplateRequestTests
         public void Constructs_Using_MultipleContentBuilder_3()
         {
             // Act & Assert
-            this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: MultipleContentBuilderMock.Object, defaultFilename: DefaultFilename))
+            this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: MultipleContentBuilderMock, defaultFilename: DefaultFilename))
                 .Should().NotThrow();
         }
 
@@ -288,7 +288,7 @@ public partial class RenderTemplateRequestTests
         public void Constructs_Using_MultipleContentBuilder_4()
         {
             // Act & Assert
-            this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: MultipleContentBuilderMock.Object, defaultFilename: DefaultFilename, additionalParameters: null))
+            this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: MultipleContentBuilderMock, defaultFilename: DefaultFilename, additionalParameters: null))
                 .Should().NotThrow();
         }
 
@@ -304,7 +304,7 @@ public partial class RenderTemplateRequestTests
         public void Constructs_Using_MultipleContentBuilder_5()
         {
             // Act & Assert
-            this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: MultipleContentBuilderMock.Object, additionalParameters: null))
+            this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: MultipleContentBuilderMock, additionalParameters: null))
                 .Should().NotThrow();
         }
 
@@ -320,7 +320,7 @@ public partial class RenderTemplateRequestTests
         public void Constructs_Using_MultipleContentBuilder_6()
         {
             // Act & Assert
-            this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: MultipleContentBuilderMock.Object, defaultFilename: DefaultFilename, context: null))
+            this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: MultipleContentBuilderMock, defaultFilename: DefaultFilename, context: null))
                 .Should().NotThrow();
         }
 
@@ -336,7 +336,7 @@ public partial class RenderTemplateRequestTests
         public void Constructs_Using_MultipleContentBuilder_7()
         {
             // Act & Assert
-            this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: MultipleContentBuilderMock.Object, context: null))
+            this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: MultipleContentBuilderMock, context: null))
                 .Should().NotThrow();
         }
 
@@ -352,7 +352,7 @@ public partial class RenderTemplateRequestTests
         public void Constructs_Using_MultipleContentBuilder_8()
         {
             // Act & Assert
-            this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: MultipleContentBuilderMock.Object, defaultFilename: DefaultFilename, additionalParameters: null, context: null))
+            this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: MultipleContentBuilderMock, defaultFilename: DefaultFilename, additionalParameters: null, context: null))
                 .Should().NotThrow();
         }
 
@@ -368,7 +368,7 @@ public partial class RenderTemplateRequestTests
         public void Constructs_Using_MultipleContentBuilder_9()
         {
             // Act & Assert
-            this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: MultipleContentBuilderMock.Object))
+            this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: MultipleContentBuilderMock))
                 .Should().NotThrow();
         }
 
@@ -384,7 +384,7 @@ public partial class RenderTemplateRequestTests
         public void Constructs_Using_MultipleContentBuilder_10()
         {
             // Act & Assert
-            this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: MultipleContentBuilderMock.Object, defaultFilename: DefaultFilename))
+            this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: MultipleContentBuilderMock, defaultFilename: DefaultFilename))
                 .Should().NotThrow();
         }
 
@@ -400,7 +400,7 @@ public partial class RenderTemplateRequestTests
         public void Constructs_Using_MultipleContentBuilder_11()
         {
             // Act & Assert
-            this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: MultipleContentBuilderMock.Object, defaultFilename: DefaultFilename, additionalParameters: null))
+            this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: MultipleContentBuilderMock, defaultFilename: DefaultFilename, additionalParameters: null))
                 .Should().NotThrow();
         }
 
@@ -416,7 +416,7 @@ public partial class RenderTemplateRequestTests
         public void Constructs_Using_MultipleContentBuilder_12()
         {
             // Act & Assert
-            this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: MultipleContentBuilderMock.Object, additionalParameters: null))
+            this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: MultipleContentBuilderMock, additionalParameters: null))
                 .Should().NotThrow();
         }
 
@@ -432,7 +432,7 @@ public partial class RenderTemplateRequestTests
         public void Constructs_Using_MultipleContentBuilder_13()
         {
             // Act & Assert
-            this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: MultipleContentBuilderMock.Object, defaultFilename: DefaultFilename, context: null))
+            this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: MultipleContentBuilderMock, defaultFilename: DefaultFilename, context: null))
                 .Should().NotThrow();
         }
 
@@ -448,7 +448,7 @@ public partial class RenderTemplateRequestTests
         public void Constructs_Using_MultipleContentBuilder_14()
         {
             // Act & Assert
-            this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: MultipleContentBuilderMock.Object, context: null))
+            this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: MultipleContentBuilderMock, context: null))
                 .Should().NotThrow();
         }
 
@@ -480,16 +480,16 @@ public partial class RenderTemplateRequestTests
         public void Fills_All_Properties_Correclty_When_Instanciating_Using_GenerationEnvironment()
         {
             // Act
-            var instance = new RenderTemplateRequest(new TemplateInstanceIdentifier(this), "Hello world", GenerationEnvironmentMock.Object, DefaultFilename, AdditionalParameters, TemplateContextMock.Object);
+            var instance = new RenderTemplateRequest(new TemplateInstanceIdentifier(this), "Hello world", GenerationEnvironmentMock, DefaultFilename, AdditionalParameters, TemplateContextMock);
 
             // Assert
             instance.Should().NotBeNull();
             instance.Identifier.Should().BeOfType<TemplateInstanceIdentifier>().And.Match<TemplateInstanceIdentifier>(x => x.Instance == this);
             instance.Model.Should().Be("Hello world");
-            instance.GenerationEnvironment.Should().BeSameAs(GenerationEnvironmentMock.Object);
+            instance.GenerationEnvironment.Should().BeSameAs(GenerationEnvironmentMock);
             instance.DefaultFilename.Should().Be(DefaultFilename);
             instance.AdditionalParameters.Should().BeSameAs(AdditionalParameters);
-            instance.Context.Should().BeSameAs(TemplateContextMock.Object);
+            instance.Context.Should().BeSameAs(TemplateContextMock);
         }
     }
 }

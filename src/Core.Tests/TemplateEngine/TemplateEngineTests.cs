@@ -3,12 +3,12 @@
 public partial class TemplateEngineTests
 {
     protected StringBuilder StringBuilder { get; } = new();
-    protected Mock<IMultipleContentBuilder> MultipleContentBuilderMock { get; } = new();
+    protected IMultipleContentBuilder MultipleContentBuilderMock { get; } = Substitute.For<IMultipleContentBuilder>();
 
-    protected Mock<ITemplateProvider> TemplateProviderMock { get; } = new();
-    protected Mock<ITemplateInitializer> TemplateInitializerMock { get; } = new();
-    protected Mock<ITemplateParameterExtractor> TemplateParameterExtractorMock { get; } = new();
-    protected Mock<ITemplateRenderer> TemplateRendererMock { get; } = new();
+    protected ITemplateProvider TemplateProviderMock { get; } = Substitute.For<ITemplateProvider>();
+    protected ITemplateInitializer TemplateInitializerMock { get; } = Substitute.For<ITemplateInitializer>();
+    protected ITemplateParameterExtractor TemplateParameterExtractorMock { get; } = Substitute.For<ITemplateParameterExtractor>();
+    protected ITemplateRenderer TemplateRendererMock { get; } = Substitute.For<ITemplateRenderer>();
 
-    protected TemplateEngine CreateSut() => new(TemplateProviderMock.Object, TemplateInitializerMock.Object, TemplateParameterExtractorMock.Object, new[] { TemplateRendererMock.Object });
+    protected TemplateEngine CreateSut() => new(TemplateProviderMock, TemplateInitializerMock, TemplateParameterExtractorMock, new[] { TemplateRendererMock });
 }

@@ -2,9 +2,9 @@
 
 public class ValueConverterTests
 {
-    protected ValueConverter CreateSut() => new(new[] { TemplateParameterConverterMock.Object });
+    protected ValueConverter CreateSut() => new(new[] { TemplateParameterConverterMock });
 
-    protected Mock<ITemplateParameterConverter> TemplateParameterConverterMock { get; } = new();
+    protected ITemplateParameterConverter TemplateParameterConverterMock { get; } = Substitute.For<ITemplateParameterConverter>();
 
     public class Constructor
     {
@@ -39,15 +39,18 @@ public class ValueConverterTests
             // Arrange
             var sut = CreateSut();
             var value = "Hello world!";
-            object? convertedValue = value.ToUpperInvariant();
-            TemplateParameterConverterMock.Setup(x => x.TryConvert(It.IsAny<object?>(), It.IsAny<Type>(), out convertedValue)).Returns(true);
+            TemplateParameterConverterMock.TryConvert(Arg.Any<object?>(), Arg.Any<Type>(), out Arg.Any<object?>()).Returns(x =>
+            {
+                x[2] = value.ToUpperInvariant();
+                return true;
+            });
 
             // Act
             var result = sut.Convert(value, value.GetType());
 
             // Assert
             result.Should().BeEquivalentTo(value.ToUpperInvariant());
-            TemplateParameterConverterMock.Verify(x => x.TryConvert(It.IsAny<object?>(), It.IsAny<Type>(), out convertedValue), Times.Once);
+            TemplateParameterConverterMock.Received().TryConvert(Arg.Any<object?>(), Arg.Any<Type>(), out Arg.Any<object?>());
         }
     }
 }

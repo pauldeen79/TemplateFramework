@@ -2,12 +2,12 @@
 
 public class ProviderPluginInitializerComponentTests
 {
-    protected ProviderPluginInitializerComponent CreateSut() => new(TemplateProviderPluginFactoryMock.Object);
+    protected ProviderPluginInitializerComponent CreateSut() => new(TemplateProviderPluginFactoryMock);
 
-    protected Mock<ITemplateEngineContext> TemplateEngineContextMock { get; } = new();
-    protected Mock<ITemplateComponentRegistryPlugin> TemplateComponentRegistryPluginMock { get; } = new();
-    protected Mock<ITemplateContext> TemplateContextMock { get; } = new();
-    protected Mock<ITemplateComponentRegistryPluginFactory> TemplateProviderPluginFactoryMock { get; } = new();
+    protected ITemplateEngineContext TemplateEngineContextMock { get; } = Substitute.For<ITemplateEngineContext>();
+    protected ITemplateComponentRegistryPlugin TemplateComponentRegistryPluginMock { get; } = Substitute.For<ITemplateComponentRegistryPlugin>();
+    protected ITemplateContext TemplateContextMock { get; } = Substitute.For<ITemplateContext>();
+    protected ITemplateComponentRegistryPluginFactory TemplateProviderPluginFactoryMock { get; } = Substitute.For<ITemplateComponentRegistryPluginFactory>();
 
     public class Constructor
     {
@@ -38,10 +38,10 @@ public class ProviderPluginInitializerComponentTests
         {
             // Arrange
             var sut = CreateSut();
-            TemplateEngineContextMock.SetupGet(x => x.Template).Returns(TemplateComponentRegistryPluginMock.Object);
+            TemplateEngineContextMock.Template.Returns(TemplateComponentRegistryPluginMock);
 
             // Act & Assert
-            sut.Invoking(x => x.Initialize(TemplateEngineContextMock.Object))
+            sut.Invoking(x => x.Initialize(TemplateEngineContextMock))
                .Should().NotThrow();
         }
 
@@ -50,11 +50,11 @@ public class ProviderPluginInitializerComponentTests
         {
             // Arrange
             var sut = CreateSut();
-            TemplateEngineContextMock.SetupGet(x => x.Context).Returns(TemplateContextMock.Object);
-            TemplateEngineContextMock.SetupGet(x => x.Template).Returns(new object());
+            TemplateEngineContextMock.Context.Returns(TemplateContextMock);
+            TemplateEngineContextMock.Template.Returns(new object());
 
             // Act & Assert
-            sut.Invoking(x => x.Initialize(TemplateEngineContextMock.Object))
+            sut.Invoking(x => x.Initialize(TemplateEngineContextMock))
                .Should().NotThrow();
         }
 
@@ -63,14 +63,14 @@ public class ProviderPluginInitializerComponentTests
         {
             // Arrange
             var sut = CreateSut();
-            TemplateEngineContextMock.SetupGet(x => x.Context).Returns(TemplateContextMock.Object);
-            TemplateEngineContextMock.SetupGet(x => x.Template).Returns(TemplateComponentRegistryPluginMock.Object);
+            TemplateEngineContextMock.Context.Returns(TemplateContextMock);
+            TemplateEngineContextMock.Template.Returns(TemplateComponentRegistryPluginMock);
 
             // Act
-            sut.Initialize(TemplateEngineContextMock.Object);
+            sut.Initialize(TemplateEngineContextMock);
 
             // Assert
-            TemplateComponentRegistryPluginMock.Verify(x => x.Initialize(It.IsAny<ITemplateProvider>()), Times.Once);
+            TemplateComponentRegistryPluginMock.Received().Initialize(Arg.Any<ITemplateComponentRegistry>());
         }
 
         [Fact]
@@ -79,16 +79,16 @@ public class ProviderPluginInitializerComponentTests
             // Arrange
             var identifier = new IdentifierWithTemplateProviderPluginIdentifier(GetType().Assembly.FullName, GetType().FullName!, Directory.GetCurrentDirectory());
             var sut = CreateSut();
-            TemplateEngineContextMock.SetupGet(x => x.Context).Returns(TemplateContextMock.Object);
-            TemplateEngineContextMock.SetupGet(x => x.Template).Returns(new object());
-            TemplateEngineContextMock.SetupGet(x => x.Identifier).Returns(identifier);
-            TemplateProviderPluginFactoryMock.Setup(x => x.Create(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(TemplateComponentRegistryPluginMock.Object);
+            TemplateEngineContextMock.Context.Returns(TemplateContextMock);
+            TemplateEngineContextMock.Template.Returns(new object());
+            TemplateEngineContextMock.Identifier.Returns(identifier);
+            TemplateProviderPluginFactoryMock.Create(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>()).Returns(TemplateComponentRegistryPluginMock);
 
             // Act
-            sut.Initialize(TemplateEngineContextMock.Object);
+            sut.Initialize(TemplateEngineContextMock);
 
             // Assert
-            TemplateComponentRegistryPluginMock.Verify(x => x.Initialize(It.IsAny<ITemplateProvider>()), Times.Once);
+            TemplateComponentRegistryPluginMock.Received().Initialize(Arg.Any<ITemplateComponentRegistry>());
         }
 
         private sealed class IdentifierWithTemplateProviderPluginIdentifier : ITemplateComponentRegistryIdentifier

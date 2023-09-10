@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests.TemplateRenderers;
+namespace TemplateFramework.Core.Tests.TemplateRenderers;
 
 public partial class StringBuilderTemplateRendererTests
 {
@@ -6,8 +6,7 @@ public partial class StringBuilderTemplateRendererTests
     {
         public Render()
         {
-            StringBuilderTemplateRendererMock
-                .Setup(x => x.TryRender(It.IsAny<object>(), It.IsAny<StringBuilder>()))
+            StringBuilderTemplateRendererMock.TryRender(Arg.Any<object>(), Arg.Any<StringBuilder>())
                 .Returns(true);
         }
 
@@ -28,8 +27,8 @@ public partial class StringBuilderTemplateRendererTests
             // Arrange
             var sut = CreateSut();
             var template = new TestData.Template(_ => { });
-            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new Mock<IMultipleContentBuilder>().Object);
-            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, TemplateProviderMock.Object, template);
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), Substitute.For<IMultipleContentBuilder>());
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
 
             // Act & Assert
             sut.Invoking(x => x.Render(engineContext))
@@ -44,13 +43,13 @@ public partial class StringBuilderTemplateRendererTests
             var template = new TestData.Template(b => b.Append("Hello world!"));
             var generationEnvironment = new StringBuilder();
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), generationEnvironment);
-            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, TemplateProviderMock.Object, template);
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
 
             // Act
             sut.Render(engineContext);
 
             // Assert
-            StringBuilderTemplateRendererMock.Verify(x => x.TryRender(It.IsAny<object>(), It.IsAny<StringBuilder>()), Times.Once);
+            StringBuilderTemplateRendererMock.Received().TryRender(Arg.Any<object>(), Arg.Any<StringBuilder>());
         }
 
         [Fact]
@@ -61,9 +60,8 @@ public partial class StringBuilderTemplateRendererTests
             var template = new TestData.Template(b => b.Append("Hello world!"));
             var generationEnvironment = new StringBuilder();
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), generationEnvironment);
-            var engineContext = new TemplateEngineContext(request, TemplateEngineMock.Object, TemplateProviderMock.Object, template);
-            StringBuilderTemplateRendererMock
-                .Setup(x => x.TryRender(It.IsAny<object>(), It.IsAny<StringBuilder>()))
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
+            StringBuilderTemplateRendererMock.TryRender(Arg.Any<object>(), Arg.Any<StringBuilder>())
                 .Returns(false);
 
             // Act

@@ -11,10 +11,10 @@ public partial class MultipleContentBuilderExtensionsTests
             var sut = CreateSut();
 
             // Act
-            sut.Object.AddContent();
+            sut.AddContent();
 
             // Assert
-            sut.Verify(x => x.AddContent(string.Empty, false, null), Times.Once);
+            sut.Received().AddContent(string.Empty, false, null);
         }
 
         [Fact]
@@ -24,10 +24,10 @@ public partial class MultipleContentBuilderExtensionsTests
             var sut = CreateSut();
 
             // Act
-            sut.Object.AddContent("MyFilename.txt");
+            sut.AddContent("MyFilename.txt");
 
             // Assert
-            sut.Verify(x => x.AddContent("MyFilename.txt", false, null), Times.Once);
+            sut.Received().AddContent("MyFilename.txt", false, null);
         }
 
         [Fact]
@@ -37,10 +37,10 @@ public partial class MultipleContentBuilderExtensionsTests
             var sut = CreateSut();
 
             // Act
-            sut.Object.AddContent("MyFilename.txt", true);
+            sut.AddContent("MyFilename.txt", true);
 
             // Assert
-            sut.Verify(x => x.AddContent("MyFilename.txt", true, null), Times.Once);
+            sut.Received().AddContent("MyFilename.txt", true, null);
         }
     }
 }

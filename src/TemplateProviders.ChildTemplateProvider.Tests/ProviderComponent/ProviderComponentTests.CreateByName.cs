@@ -20,7 +20,7 @@ public partial class ProviderComponentTests
         {
             // Arrange
             var sut = CreateSut();
-            TemplateCreatorMock.Setup(x => x.SupportsName(It.IsAny<string>())).Returns(false);
+            TemplateCreatorMock.SupportsName(Arg.Any<string>()).Returns(false);
 
             // Act & Assert
             sut.Invoking(x => x.Create(new TemplateByNameIdentifier("test")))
@@ -32,8 +32,8 @@ public partial class ProviderComponentTests
         {
             // Arrange
             var sut = CreateSut();
-            TemplateCreatorMock.Setup(x => x.SupportsName(It.IsAny<string>())).Returns(true);
-            TemplateCreatorMock.Setup(x => x.CreateByName(It.IsAny<string>())).Returns(null!);
+            TemplateCreatorMock.SupportsName(Arg.Any<string>()).Returns(true);
+            TemplateCreatorMock.CreateByName(Arg.Any<string>()).Returns(null!);
 
             // Act & Assert
             sut.Invoking(x => x.Create(new TemplateByNameIdentifier("test")))
@@ -46,8 +46,8 @@ public partial class ProviderComponentTests
             // Arrange
             var sut = CreateSut();
             var template = new object();
-            TemplateCreatorMock.Setup(x => x.SupportsName(It.IsAny<string>())).Returns<string>(x => x == "test");
-            TemplateCreatorMock.Setup(x => x.CreateByName(It.IsAny<string>())).Returns(template);
+            TemplateCreatorMock.SupportsName(Arg.Any<string>()).Returns(x => x.ArgAt<string>(0) == "test");
+            TemplateCreatorMock.CreateByName(Arg.Any<string>()).Returns(template);
 
             // Act
             var result = sut.Create(new TemplateByNameIdentifier("test"));

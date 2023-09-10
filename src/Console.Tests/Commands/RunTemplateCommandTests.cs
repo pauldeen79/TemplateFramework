@@ -2,20 +2,20 @@
 
 public class RunTemplateCommandTests
 {
-    protected Mock<IClipboard> ClipboardMock { get; } = new();
-    protected Mock<IFileSystem> FileSystemMock { get; } = new();
-    protected Mock<ITemplateProvider> TemplateProviderMock { get; } = new();
-    protected Mock<ITemplateEngine> TemplateEngineMock { get; } = new();
-    protected Mock<IUserInput> UserInputMock { get; } = new();
+    protected IClipboard ClipboardMock { get; } = Substitute.For<IClipboard>();
+    protected IFileSystem FileSystemMock { get; } = Substitute.For<IFileSystem>();
+    protected ITemplateProvider TemplateProviderMock { get; } = Substitute.For<ITemplateProvider>();
+    protected ITemplateEngine TemplateEngineMock { get; } = Substitute.For<ITemplateEngine>();
+    protected IUserInput UserInputMock { get; } = Substitute.For<IUserInput>();
 
-    private RunTemplateCommand CreateSut() => new(ClipboardMock.Object, FileSystemMock.Object, UserInputMock.Object, TemplateProviderMock.Object, TemplateEngineMock.Object);
+    private RunTemplateCommand CreateSut() => new(ClipboardMock, FileSystemMock, UserInputMock, TemplateProviderMock, TemplateEngineMock);
 
     public class Constructor
     {
         [Fact]
         public void Throws_On_Null_Argument()
         {
-            TestHelpers.ConstructorMustThrowArgumentNullException(typeof(RunTemplateCommand), t => ((Mock?)Activator.CreateInstance(typeof(Mock<>).MakeGenericType(t)))?.Object);
+            TestHelpers.ConstructorMustThrowArgumentNullException(typeof(RunTemplateCommand), t => Substitute.For(new[] { t }, Array.Empty<object>()));
         }
     }
 
@@ -74,13 +74,13 @@ public class RunTemplateCommandTests
         {
             // Arrange
             var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
-            TemplateProviderMock.Setup(x => x.Create(It.IsAny<ITemplateIdentifier>())).Returns(templateInstance);
+            TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(templateInstance);
 
             // Act
             _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, "--assembly MyAssembly", "--classname MyClass", "MyArgumentName:MyArgumentValue");
 
             // Assert
-            TemplateEngineMock.Verify(x => x.Render(It.Is<IRenderTemplateRequest>(req => req.Context != null && req.Context.Identifier is CompiledTemplateIdentifier)), Times.Once);
+            TemplateEngineMock.Received().Render(Arg.Is<IRenderTemplateRequest>(req => req.Context != null && req.Context.Identifier is CompiledTemplateIdentifier));
         }
 
         [Fact]
@@ -88,15 +88,15 @@ public class RunTemplateCommandTests
         {
             // Arrange
             var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
-            TemplateProviderMock.Setup(x => x.Create(It.IsAny<ITemplateIdentifier>())).Returns(templateInstance);
-            FileSystemMock.Setup(x => x.FileExists("myfile.txt")).Returns(true);
-            FileSystemMock.Setup(x => x.ReadAllText("myfile.txt", It.IsAny<Encoding>())).Returns("template contents");
+            TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(templateInstance);
+            FileSystemMock.FileExists("myfile.txt").Returns(true);
+            FileSystemMock.ReadAllText("myfile.txt", Arg.Any<Encoding>()).Returns("template contents");
 
             // Act
             _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, "--formattablestring myfile.txt");
 
             // Assert
-            TemplateEngineMock.Verify(x => x.Render(It.Is<IRenderTemplateRequest>(req => req.Context != null && req.Context.Identifier is FormattableStringTemplateIdentifier)), Times.Once);
+            TemplateEngineMock.Received().Render(Arg.Is<IRenderTemplateRequest>(req => req.Context != null && req.Context.Identifier is FormattableStringTemplateIdentifier));
         }
 
         [Fact]
@@ -104,15 +104,15 @@ public class RunTemplateCommandTests
         {
             // Arrange
             var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
-            TemplateProviderMock.Setup(x => x.Create(It.IsAny<ITemplateIdentifier>())).Returns(templateInstance);
-            FileSystemMock.Setup(x => x.FileExists("myfile.txt")).Returns(true);
-            FileSystemMock.Setup(x => x.ReadAllText("myfile.txt", It.IsAny<Encoding>())).Returns("template contents");
+            TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(templateInstance);
+            FileSystemMock.FileExists("myfile.txt").Returns(true);
+            FileSystemMock.ReadAllText("myfile.txt", Arg.Any<Encoding>()).Returns("template contents");
 
             // Act
             _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, "--expressionstring myfile.txt");
 
             // Assert
-            TemplateEngineMock.Verify(x => x.Render(It.Is<IRenderTemplateRequest>(req => req.Context != null && req.Context.Identifier is ExpressionStringTemplateIdentifier)), Times.Once);
+            TemplateEngineMock.Received().Render(Arg.Is<IRenderTemplateRequest>(req => req.Context != null && req.Context.Identifier is ExpressionStringTemplateIdentifier));
         }
 
         [Fact]
@@ -120,17 +120,17 @@ public class RunTemplateCommandTests
         {
             // Arrange
             var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
-            TemplateProviderMock.Setup(x => x.Create(It.IsAny<ITemplateIdentifier>())).Returns(templateInstance);
+            TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(templateInstance);
 
             // Act
             _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, "--assembly MyAssembly", "--classname MyClass", "MyArgumentName:MyArgumentValue");
 
             // Assert
-            TemplateEngineMock.Verify(x => x.Render(It.Is<IRenderTemplateRequest>(req =>
+            TemplateEngineMock.Received().Render(Arg.Is<IRenderTemplateRequest>(req =>
                 req.AdditionalParameters.ToKeyValuePairs().Count() == 1
                 && req.AdditionalParameters.ToKeyValuePairs().First().Key == "MyArgumentName"
                 && req.AdditionalParameters.ToKeyValuePairs().First().Value != null
-                && req.AdditionalParameters.ToKeyValuePairs().First().Value!.ToString() == "MyArgumentValue")), Times.Once);
+                && req.AdditionalParameters.ToKeyValuePairs().First().Value!.ToString() == "MyArgumentValue"));
         }
 
         [Fact]
@@ -138,14 +138,14 @@ public class RunTemplateCommandTests
         {
             // Arrange
             var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
-            TemplateProviderMock.Setup(x => x.Create(It.IsAny<ITemplateIdentifier>())).Returns(templateInstance);
-            TemplateEngineMock.Setup(x => x.GetParameters(It.IsAny<object>())).Returns(new[] { new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string)) });
+            TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(templateInstance);
+            TemplateEngineMock.GetParameters(Arg.Any<object>()).Returns(new[] { new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string)) });
 
             // Act
             _ = CommandLineCommandHelper.ExecuteCommand(CreateSut, "--assembly MyAssembly", "--classname MyClass", "--interactive");
 
             // Assert
-            UserInputMock.Verify(x => x.GetValue(It.IsAny<ITemplateParameter>()), Times.Once);
+            UserInputMock.Received().GetValue(Arg.Any<ITemplateParameter>());
         }
 
         [Fact]
@@ -153,8 +153,8 @@ public class RunTemplateCommandTests
         {
             // Arrange
             var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
-            TemplateProviderMock.Setup(x => x.Create(It.IsAny<ITemplateIdentifier>())).Returns(templateInstance);
-            TemplateEngineMock.Setup(x => x.GetParameters(It.IsAny<object>())).Returns(new[] { new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string)) });
+            TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(templateInstance);
+            TemplateEngineMock.GetParameters(Arg.Any<object>()).Returns(new[] { new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string)) });
 
             // Act
             var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, "--assembly MyAssembly", "--classname MyClass", "--list-parameters", "--default parameters.txt", "--dryrun", "--bare");
@@ -172,8 +172,8 @@ AdditionalParameter (System.String)
         {
             // Arrange
             var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
-            TemplateProviderMock.Setup(x => x.Create(It.IsAny<ITemplateIdentifier>())).Returns(templateInstance);
-            TemplateEngineMock.Setup(x => x.GetParameters(It.IsAny<object>())).Returns(new[] { new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string)) });
+            TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(templateInstance);
+            TemplateEngineMock.GetParameters(Arg.Any<object>()).Returns(new[] { new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string)) });
 
             // Act
             var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, "--assembly MyAssembly", "--classname MyClass", "--list-parameters");
@@ -188,8 +188,8 @@ AdditionalParameter (System.String)
         {
             // Arrange
             var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
-            TemplateProviderMock.Setup(x => x.Create(It.IsAny<ITemplateIdentifier>())).Returns(templateInstance);
-            TemplateEngineMock.Setup(x => x.GetParameters(It.IsAny<object>())).Returns(new[] { new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string)) });
+            TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(templateInstance);
+            TemplateEngineMock.GetParameters(Arg.Any<object>()).Returns(new[] { new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string)) });
 
             // Act
             var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, "--formattablestring myfile.txt", "--default parameters.txt", "--dryrun");
@@ -204,8 +204,8 @@ AdditionalParameter (System.String)
         {
             // Arrange
             var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
-            TemplateProviderMock.Setup(x => x.Create(It.IsAny<ITemplateIdentifier>())).Returns(templateInstance);
-            TemplateEngineMock.Setup(x => x.GetParameters(It.IsAny<object>())).Returns(new[] { new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string)) });
+            TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(templateInstance);
+            TemplateEngineMock.GetParameters(Arg.Any<object>()).Returns(new[] { new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string)) });
 
             // Act
             var output = CommandLineCommandHelper.ExecuteCommand(CreateSut, "--expressionstring myfile.txt", "--default parameters.txt", "--dryrun");

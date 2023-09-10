@@ -10,7 +10,7 @@ public class IntegrationTests
             .AddParsers()
             .AddTemplateFramework()
             .AddTemplateFrameworkStringTemplateProvider()
-            .AddSingleton(new Mock<ITemplateComponentRegistryPluginFactory>().Object);
+            .AddSingleton(Substitute.For<ITemplateComponentRegistryPluginFactory>());
 
         using var provider = services.BuildServiceProvider(true);
         using var scope = provider.CreateScope();
@@ -53,25 +53,24 @@ public class IntegrationTests
     public void Can_Use_Custom_Registered_PlaceholderProcessor_In_FormattableStringTemplate()
     {
         // Arrange
-        var templateComponentRegistryPluginFactoryMock = new Mock<ITemplateComponentRegistryPluginFactory>();
+        var templateComponentRegistryPluginFactoryMock = Substitute.For<ITemplateComponentRegistryPluginFactory>();
 
         var services = new ServiceCollection()
             .AddParsers()
             .AddTemplateFramework()
             .AddTemplateFrameworkStringTemplateProvider()
-            .AddSingleton(templateComponentRegistryPluginFactoryMock.Object)
+            .AddSingleton(templateComponentRegistryPluginFactoryMock)
             .AddScoped<ITemplateComponentRegistryPlugin, TestTemplateComponentRegistryPlugin>();
 
         using var provider = services.BuildServiceProvider(true);
         using var scope = provider.CreateScope();
 
-        templateComponentRegistryPluginFactoryMock
-            .Setup(x => x.Create(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-            .Returns<string, string, string>((_, className, _)
+        templateComponentRegistryPluginFactoryMock.Create(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>())
+            .Returns(args
                 => scope.ServiceProvider.GetServices<ITemplateComponentRegistryPlugin>()
                     .OfType<TestTemplateComponentRegistryPlugin>()
-                    .FirstOrDefault(x => x.GetType().FullName == className)
-                        ?? throw new NotSupportedException($"Unsupported template component registry plug-in type: {className}"));
+                    .FirstOrDefault(x => x.GetType().FullName == args.ArgAt<string>(1))
+                        ?? throw new NotSupportedException($"Unsupported template component registry plug-in type: {args.ArgAt<string>(1)}"));
 
         var builder = new StringBuilder();
         var templateEngine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
@@ -98,13 +97,13 @@ public class IntegrationTests
     public void Can_Use_Expression_In_Placeholder_In_FormattableStringTemplate()
     {
         // Arrange
-        var templateComponentRegistryPluginFactoryMock = new Mock<ITemplateComponentRegistryPluginFactory>();
+        var templateComponentRegistryPluginFactoryMock = Substitute.For<ITemplateComponentRegistryPluginFactory>();
 
         var services = new ServiceCollection()
             .AddParsers()
             .AddTemplateFramework()
             .AddTemplateFrameworkStringTemplateProvider()
-            .AddSingleton(templateComponentRegistryPluginFactoryMock.Object);
+            .AddSingleton(templateComponentRegistryPluginFactoryMock);
 
         using var provider = services.BuildServiceProvider(true);
         using var scope = provider.CreateScope();
@@ -131,25 +130,24 @@ public class IntegrationTests
     public void Can_Use_Custom_Registered_FunctionResultParser_In_FormattableStringTemplate()
     {
         // Arrange
-        var templateComponentRegistryPluginFactoryMock = new Mock<ITemplateComponentRegistryPluginFactory>();
+        var templateComponentRegistryPluginFactoryMock = Substitute.For<ITemplateComponentRegistryPluginFactory>();
 
         var services = new ServiceCollection()
             .AddParsers()
             .AddTemplateFramework()
             .AddTemplateFrameworkStringTemplateProvider()
-            .AddSingleton(templateComponentRegistryPluginFactoryMock.Object)
+            .AddSingleton(templateComponentRegistryPluginFactoryMock)
             .AddScoped<ITemplateComponentRegistryPlugin, TestTemplateComponentRegistryPlugin>();
 
         using var provider = services.BuildServiceProvider(true);
         using var scope = provider.CreateScope();
 
-        templateComponentRegistryPluginFactoryMock
-            .Setup(x => x.Create(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-            .Returns<string, string, string>((_, className, _)
+        templateComponentRegistryPluginFactoryMock.Create(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>())
+            .Returns(args
                 => scope.ServiceProvider.GetServices<ITemplateComponentRegistryPlugin>()
                     .OfType<TestTemplateComponentRegistryPlugin>()
-                    .FirstOrDefault(x => x.GetType().FullName == className)
-                        ?? throw new NotSupportedException($"Unsupported template component registry plug-in type: {className}"));
+                    .FirstOrDefault(x => x.GetType().FullName == args.ArgAt<string>(1))
+                        ?? throw new NotSupportedException($"Unsupported template component registry plug-in type: {args.ArgAt<string>(1)}"));
 
         var builder = new StringBuilder();
         var templateEngine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
@@ -176,25 +174,24 @@ public class IntegrationTests
     public void Can_Use_Custom_Registered_FunctionResultParser_In_ExpressionStringTemplate()
     {
         // Arrange
-        var templateComponentRegistryPluginFactoryMock = new Mock<ITemplateComponentRegistryPluginFactory>();
+        var templateComponentRegistryPluginFactoryMock = Substitute.For<ITemplateComponentRegistryPluginFactory>();
 
         var services = new ServiceCollection()
             .AddParsers()
             .AddTemplateFramework()
             .AddTemplateFrameworkStringTemplateProvider()
-            .AddSingleton(templateComponentRegistryPluginFactoryMock.Object)
+            .AddSingleton(templateComponentRegistryPluginFactoryMock)
             .AddScoped<ITemplateComponentRegistryPlugin, TestTemplateComponentRegistryPlugin>();
 
         using var provider = services.BuildServiceProvider(true);
         using var scope = provider.CreateScope();
 
-        templateComponentRegistryPluginFactoryMock
-            .Setup(x => x.Create(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-            .Returns<string, string, string>((_, className, _)
+        templateComponentRegistryPluginFactoryMock.Create(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>())
+            .Returns(args
                 => scope.ServiceProvider.GetServices<ITemplateComponentRegistryPlugin>()
                     .OfType<TestTemplateComponentRegistryPlugin>()
-                    .FirstOrDefault(x => x.GetType().FullName == className)
-                        ?? throw new NotSupportedException($"Unsupported template component registry plug-in type: {className}"));
+                    .FirstOrDefault(x => x.GetType().FullName == args.ArgAt<string>(1))
+                        ?? throw new NotSupportedException($"Unsupported template component registry plug-in type: {args.ArgAt<string>(1)}"));
 
         var builder = new StringBuilder();
         var templateEngine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
@@ -221,13 +218,13 @@ public class IntegrationTests
     public void Can_Use_ExpressionFramework_In_FormattableStringTemplate()
     {
         // Arrange
-        var templateComponentRegistryPluginFactoryMock = new Mock<ITemplateComponentRegistryPluginFactory>();
+        var templateComponentRegistryPluginFactoryMock = Substitute.For<ITemplateComponentRegistryPluginFactory>();
 
         var services = new ServiceCollection()
             .AddParsers()
             .AddTemplateFramework()
             .AddTemplateFrameworkStringTemplateProvider()
-            .AddSingleton(templateComponentRegistryPluginFactoryMock.Object)
+            .AddSingleton(templateComponentRegistryPluginFactoryMock)
             .AddExpressionParser();
 
         using var provider = services.BuildServiceProvider(true);
@@ -255,13 +252,13 @@ public class IntegrationTests
     public void Can_Use_ExpressionFramework_In_ExpressionStringTemplate()
     {
         // Arrange
-        var templateComponentRegistryPluginFactoryMock = new Mock<ITemplateComponentRegistryPluginFactory>();
+        var templateComponentRegistryPluginFactoryMock = Substitute.For<ITemplateComponentRegistryPluginFactory>();
 
         var services = new ServiceCollection()
             .AddParsers()
             .AddTemplateFramework()
             .AddTemplateFrameworkStringTemplateProvider()
-            .AddSingleton(templateComponentRegistryPluginFactoryMock.Object)
+            .AddSingleton(templateComponentRegistryPluginFactoryMock)
             .AddExpressionParser();
 
         using var provider = services.BuildServiceProvider(true);

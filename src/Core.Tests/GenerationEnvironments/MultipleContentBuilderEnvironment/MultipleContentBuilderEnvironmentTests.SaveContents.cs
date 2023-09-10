@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests.GenerationEnvironments;
+namespace TemplateFramework.Core.Tests.GenerationEnvironments;
 
 public partial class MultipleContentBuilderEnvironmentTests
 {
@@ -6,13 +6,13 @@ public partial class MultipleContentBuilderEnvironmentTests
     {
         public SaveContents()
         {
-            CodeGenerationProviderMock.SetupGet(x => x.LastGeneratedFilesFilename).Returns("LastGeneratedFiles.txt");
-            CodeGenerationProviderMock.SetupGet(x => x.Encoding).Returns(Encoding.Latin1);
-            CodeGenerationProviderMock.SetupGet(x => x.Path).Returns("Subdirectory");
-            ContentMock.SetupGet(x => x.Filename).Returns(Path.Combine("Subdirectory", "Filename.txt"));
-            ContentMock.SetupGet(x => x.Contents).Returns("Content");
-            MultipleContentMock.SetupGet(x => x.Contents).Returns(new[] { ContentMock.Object }.ToList().AsReadOnly());
-            MultipleContentBuilderMock.Setup(x => x.Build()).Returns(MultipleContentMock.Object);
+            CodeGenerationProviderMock.LastGeneratedFilesFilename.Returns("LastGeneratedFiles.txt");
+            CodeGenerationProviderMock.Encoding.Returns(Encoding.Latin1);
+            CodeGenerationProviderMock.Path.Returns("Subdirectory");
+            ContentMock.Filename.Returns(Path.Combine("Subdirectory", "Filename.txt"));
+            ContentMock.Contents.Returns("Content");
+            MultipleContentMock.Contents.Returns(new[] { ContentMock }.ToList().AsReadOnly());
+            MultipleContentBuilderMock.Build().Returns(MultipleContentMock);
         }
 
         [Fact]
@@ -20,13 +20,13 @@ public partial class MultipleContentBuilderEnvironmentTests
         {
             // Arrange
             var sut = CreateSut();
-            FileSystemMock.Setup(x => x.FileExists(Path.Combine(TestData.BasePath, "Subdirectory", "LastGeneratedFiles.txt"))).Returns(true);
+            FileSystemMock.FileExists(Path.Combine(TestData.BasePath, "Subdirectory", "LastGeneratedFiles.txt")).Returns(true);
 
             // Act
-            sut.SaveContents(CodeGenerationProviderMock.Object, TestData.BasePath, string.Empty);
+            sut.SaveContents(CodeGenerationProviderMock, TestData.BasePath, string.Empty);
 
             // Assert
-            FileSystemMock.Verify(x => x.ReadAllLines(Path.Combine(TestData.BasePath, "Subdirectory", "LastGeneratedFiles.txt"), Encoding.Latin1), Times.Once);
+            FileSystemMock.Received().ReadAllLines(Path.Combine(TestData.BasePath, "Subdirectory", "LastGeneratedFiles.txt"), Encoding.Latin1);
         }
 
         [Fact]
@@ -34,13 +34,13 @@ public partial class MultipleContentBuilderEnvironmentTests
         {
             // Arrange
             var sut = CreateSut();
-            CodeGenerationProviderMock.SetupGet(x => x.LastGeneratedFilesFilename).Returns(default(string)!);
+            CodeGenerationProviderMock.LastGeneratedFilesFilename.Returns(default(string)!);
 
             // Act
-            sut.SaveContents(CodeGenerationProviderMock.Object, TestData.BasePath, string.Empty);
+            sut.SaveContents(CodeGenerationProviderMock, TestData.BasePath, string.Empty);
 
             // Assert
-            FileSystemMock.Verify(x => x.ReadAllLines(It.IsAny<string>(), It.IsAny<Encoding>()), Times.Never);
+            FileSystemMock.DidNotReceive().ReadAllLines(Arg.Any<string>(), Arg.Any<Encoding>());
         }
 
         [Fact]
@@ -48,13 +48,13 @@ public partial class MultipleContentBuilderEnvironmentTests
         {
             // Arrange
             var sut = CreateSut();
-            CodeGenerationProviderMock.SetupGet(x => x.LastGeneratedFilesFilename).Returns(string.Empty);
+            CodeGenerationProviderMock.LastGeneratedFilesFilename.Returns(string.Empty);
 
             // Act
-            sut.SaveContents(CodeGenerationProviderMock.Object, TestData.BasePath, string.Empty);
+            sut.SaveContents(CodeGenerationProviderMock, TestData.BasePath, string.Empty);
 
             // Assert
-            FileSystemMock.Verify(x => x.ReadAllLines(It.IsAny<string>(), It.IsAny<Encoding>()), Times.Never);
+            FileSystemMock.DidNotReceive().ReadAllLines(Arg.Any<string>(), Arg.Any<Encoding>());
         }
 
         [Fact]
@@ -64,10 +64,10 @@ public partial class MultipleContentBuilderEnvironmentTests
             var sut = CreateSut();
 
             // Act
-            sut.SaveContents(CodeGenerationProviderMock.Object, TestData.BasePath, string.Empty);
+            sut.SaveContents(CodeGenerationProviderMock, TestData.BasePath, string.Empty);
 
             // Assert
-            FileSystemMock.Verify(x => x.WriteAllText(Path.Combine(TestData.BasePath, "Subdirectory", "Filename.txt"), "Content", Encoding.Latin1), Times.Once);
+            FileSystemMock.Received().WriteAllText(Path.Combine(TestData.BasePath, "Subdirectory", "Filename.txt"), "Content", Encoding.Latin1);
         }
     }
 }

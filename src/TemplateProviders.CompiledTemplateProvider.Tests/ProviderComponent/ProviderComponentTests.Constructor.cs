@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.TemplateProviders.CompiledTemplateProvider.Tests;
+namespace TemplateFramework.TemplateProviders.CompiledTemplateProvider.Tests;
 
 public partial class ProviderComponentTests
 {
@@ -8,7 +8,7 @@ public partial class ProviderComponentTests
         public void Throws_On_Null_AssemblyService()
         {
             // Act & Assert
-            this.Invoking(_ => new ProviderComponent(assemblyService: null!, CompiledTemplateFactoryMock.Object))
+            this.Invoking(_ => new ProviderComponent(assemblyService: null!, CompiledTemplateFactoryMock))
                 .Should().Throw<ArgumentNullException>().WithParameterName("assemblyService");
         }
 
@@ -16,7 +16,7 @@ public partial class ProviderComponentTests
         public void Throws_On_Null_Factory()
         {
             // Act & Assert
-            this.Invoking(_ => new ProviderComponent(AssemblyServiceMock.Object, templateFactory: null!))
+            this.Invoking(_ => new ProviderComponent(AssemblyServiceMock, templateFactory: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("templateFactory");
         }
     }

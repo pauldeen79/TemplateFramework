@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests.GenerationEnvironments;
+namespace TemplateFramework.Core.Tests.GenerationEnvironments;
 
 public partial class MultipleContentBuilderEnvironmentTests
 {
@@ -11,7 +11,7 @@ public partial class MultipleContentBuilderEnvironmentTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.SaveLastGeneratedFiles(FileSystemMock.Object, TestData.BasePath, Encoding.Latin1, lastGeneratedFilesPath: null!, CreateContents() ))
+            sut.Invoking(x => x.SaveLastGeneratedFiles(FileSystemMock, TestData.BasePath, Encoding.Latin1, lastGeneratedFilesPath: null!, CreateContents() ))
                .Should().Throw<ArgumentNullException>().WithParameterName("lastGeneratedFilesPath");
         }
 
@@ -22,7 +22,7 @@ public partial class MultipleContentBuilderEnvironmentTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.SaveLastGeneratedFiles(FileSystemMock.Object, TestData.BasePath, Encoding.Latin1, lastGeneratedFilesPath: string.Empty, CreateContents()))
+            sut.Invoking(x => x.SaveLastGeneratedFiles(FileSystemMock, TestData.BasePath, Encoding.Latin1, lastGeneratedFilesPath: string.Empty, CreateContents()))
                .Should().Throw<ArgumentException>().WithParameterName("lastGeneratedFilesPath");
         }
 
@@ -33,7 +33,7 @@ public partial class MultipleContentBuilderEnvironmentTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.SaveLastGeneratedFiles(FileSystemMock.Object, TestData.BasePath, Encoding.Latin1, lastGeneratedFilesPath: " ", CreateContents()))
+            sut.Invoking(x => x.SaveLastGeneratedFiles(FileSystemMock, TestData.BasePath, Encoding.Latin1, lastGeneratedFilesPath: " ", CreateContents()))
                .Should().Throw<ArgumentException>().WithParameterName("lastGeneratedFilesPath");
         }
 
@@ -44,7 +44,7 @@ public partial class MultipleContentBuilderEnvironmentTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.SaveLastGeneratedFiles(FileSystemMock.Object, TestData.BasePath, encoding: null!, "LastGeneratedFiles.txt", CreateContents()))
+            sut.Invoking(x => x.SaveLastGeneratedFiles(FileSystemMock, TestData.BasePath, encoding: null!, "LastGeneratedFiles.txt", CreateContents()))
                .Should().Throw<ArgumentNullException>().WithParameterName("encoding");
         }
 
@@ -55,7 +55,7 @@ public partial class MultipleContentBuilderEnvironmentTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.SaveLastGeneratedFiles(FileSystemMock.Object, TestData.BasePath, Encoding.Latin1, "LastGeneratedFiles.txt", contents: null!))
+            sut.Invoking(x => x.SaveLastGeneratedFiles(FileSystemMock, TestData.BasePath, Encoding.Latin1, "LastGeneratedFiles.txt", contents: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("contents");
         }
 
@@ -64,13 +64,13 @@ public partial class MultipleContentBuilderEnvironmentTests
         {
             // Arrange
             var sut = CreateSut();
-            FileSystemMock.Setup(x => x.DirectoryExists(TestData.BasePath)).Returns(false);
+            FileSystemMock.DirectoryExists(TestData.BasePath).Returns(false);
 
             // Act
-            sut.SaveLastGeneratedFiles(FileSystemMock.Object, TestData.BasePath, Encoding.Latin1, "LastGeneratedFiles.txt", CreateContents());
+            sut.SaveLastGeneratedFiles(FileSystemMock, TestData.BasePath, Encoding.Latin1, "LastGeneratedFiles.txt", CreateContents());
 
             // Assert
-            FileSystemMock.Verify(x => x.CreateDirectory(TestData.BasePath), Times.Once);
+            FileSystemMock.Received().CreateDirectory(TestData.BasePath);
         }
 
         [Fact]
@@ -78,13 +78,13 @@ public partial class MultipleContentBuilderEnvironmentTests
         {
             // Arrange
             var sut = CreateSut();
-            FileSystemMock.Setup(x => x.DirectoryExists(TestData.BasePath)).Returns(true);
+            FileSystemMock.DirectoryExists(TestData.BasePath).Returns(true);
 
             // Act
-            sut.SaveLastGeneratedFiles(FileSystemMock.Object, TestData.BasePath, Encoding.Latin1, "LastGeneratedFiles.txt", CreateContents());
+            sut.SaveLastGeneratedFiles(FileSystemMock, TestData.BasePath, Encoding.Latin1, "LastGeneratedFiles.txt", CreateContents());
 
             // Assert
-            FileSystemMock.Verify(x => x.WriteAllLines(Path.Combine(TestData.BasePath, "LastGeneratedFiles.txt"), It.IsAny<IEnumerable<string>>(), Encoding.Latin1), Times.Once);
+            FileSystemMock.Received().WriteAllLines(Path.Combine(TestData.BasePath, "LastGeneratedFiles.txt"), Arg.Any<IEnumerable<string>>(), Encoding.Latin1);
         }
 
         [Fact]
@@ -92,13 +92,13 @@ public partial class MultipleContentBuilderEnvironmentTests
         {
             // Arrange
             var sut = CreateSut();
-            FileSystemMock.Setup(x => x.DirectoryExists("MyDirectory")).Returns(true);
+            FileSystemMock.DirectoryExists("MyDirectory").Returns(true);
 
             // Act
-            sut.SaveLastGeneratedFiles(FileSystemMock.Object, string.Empty, Encoding.Latin1, "LastGeneratedFiles.txt", CreateContents());
+            sut.SaveLastGeneratedFiles(FileSystemMock, string.Empty, Encoding.Latin1, "LastGeneratedFiles.txt", CreateContents());
 
             // Assert
-            FileSystemMock.Verify(x => x.WriteAllLines("LastGeneratedFiles.txt", It.IsAny<IEnumerable<string>>(), Encoding.Latin1), Times.Once);
+            FileSystemMock.Received().WriteAllLines("LastGeneratedFiles.txt", Arg.Any<IEnumerable<string>>(), Encoding.Latin1);
         }
 
         [Fact]
@@ -106,13 +106,13 @@ public partial class MultipleContentBuilderEnvironmentTests
         {
             // Arrange
             var sut = CreateSut();
-            FileSystemMock.Setup(x => x.DirectoryExists(TestData.BasePath)).Returns(true);
+            FileSystemMock.DirectoryExists(TestData.BasePath).Returns(true);
 
             // Act
-            sut.SaveLastGeneratedFiles(FileSystemMock.Object, TestData.BasePath, Encoding.Latin1, "*.template.generated.cs", CreateContents());
+            sut.SaveLastGeneratedFiles(FileSystemMock, TestData.BasePath, Encoding.Latin1, "*.template.generated.cs", CreateContents());
 
             // Assert
-            FileSystemMock.Verify(x => x.WriteAllLines(It.IsAny<string>(), It.IsAny<IEnumerable<string>>(), Encoding.Latin1), Times.Never);
+            FileSystemMock.DidNotReceive().WriteAllLines(Arg.Any<string>(), Arg.Any<IEnumerable<string>>(), Encoding.Latin1);
         }
     }
 }

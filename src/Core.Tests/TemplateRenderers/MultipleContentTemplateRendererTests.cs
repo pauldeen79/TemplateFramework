@@ -2,11 +2,11 @@
 
 public partial class MultipleContentTemplateRendererTests
 {
-    protected Mock<ITemplateProvider> TemplateProviderMock { get; } = new();
-    protected Mock<IMultipleContentBuilderTemplateCreator> MultipleContentBuilderTemplateCreatorMock { get; } = new();
-    protected Mock<ITemplateEngine> TemplateEngineMock { get; } = new();
+    protected ITemplateProvider TemplateProviderMock { get; } = Substitute.For<ITemplateProvider>();
+    protected IMultipleContentBuilderTemplateCreator MultipleContentBuilderTemplateCreatorMock { get; } = Substitute.For<IMultipleContentBuilderTemplateCreator>();
+    protected ITemplateEngine TemplateEngineMock { get; } = Substitute.For<ITemplateEngine>();
 
-    protected MultipleContentTemplateRenderer CreateSut() => new(new[] { MultipleContentBuilderTemplateCreatorMock.Object });
+    protected MultipleContentTemplateRenderer CreateSut() => new(new[] { MultipleContentBuilderTemplateCreatorMock });
 
     protected const string DefaultFilename = "MyFile.txt";
 }

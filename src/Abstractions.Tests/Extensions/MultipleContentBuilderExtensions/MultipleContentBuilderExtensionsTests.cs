@@ -2,5 +2,5 @@
 
 public partial class MultipleContentBuilderExtensionsTests
 {
-    protected Mock<IMultipleContentBuilder> CreateSut() => new();
+    protected IMultipleContentBuilder CreateSut() => Substitute.For<IMultipleContentBuilder>();
 }

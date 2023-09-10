@@ -2,30 +2,30 @@
 
 public class CommandBaseTests
 {
-    protected Mock<IClipboard> ClipboardMock { get; } = new();
-    protected Mock<IFileSystem> FileSystemMock { get; } = new();
-    protected Mock<IUserInput> UserInputMock { get; } = new();
-    protected Mock<IMultipleContentBuilder> MultipleContentBuilderMock { get; } = new();
+    protected IClipboard ClipboardMock { get; } = Substitute.For<IClipboard>();
+    protected IFileSystem FileSystemMock { get; } = Substitute.For<IFileSystem>();
+    protected IUserInput UserInputMock { get; } = Substitute.For<IUserInput>();
+    protected IMultipleContentBuilder MultipleContentBuilderMock { get; } = Substitute.For<IMultipleContentBuilder>();
 
-    protected CommandBaseTest CreateSut() => new(ClipboardMock.Object, FileSystemMock.Object, UserInputMock.Object);
+    protected CommandBaseTest CreateSut() => new(ClipboardMock, FileSystemMock, UserInputMock);
 
     protected const string AssemblyName = "MyAssemblyName";
     protected const string Filename = "MyFile.txt";
 
     protected void SetupMultipleContentBuilderMock(string filenamePrefix)
     {
-        var contentBuilderMock1 = new Mock<IContent>();
-        contentBuilderMock1.SetupGet(x => x.Filename).Returns($"{filenamePrefix}File1.txt");
-        contentBuilderMock1.SetupGet(x => x.Contents).Returns("Contents from file1");
+        var contentBuilderMock1 = Substitute.For<IContent>();
+        contentBuilderMock1.Filename.Returns($"{filenamePrefix}File1.txt");
+        contentBuilderMock1.Contents.Returns("Contents from file1");
 
-        var contentBuilderMock2 = new Mock<IContent>();
-        contentBuilderMock2.SetupGet(x => x.Filename).Returns($"{filenamePrefix}File2.txt");
-        contentBuilderMock2.SetupGet(x => x.Contents).Returns("Contents from file2");
+        var contentBuilderMock2 = Substitute.For<IContent>();
+        contentBuilderMock2.Filename.Returns($"{filenamePrefix}File2.txt");
+        contentBuilderMock2.Contents.Returns("Contents from file2");
 
-        var multipleContentMock = new Mock<IMultipleContent>();
-        multipleContentMock.SetupGet(x => x.Contents).Returns(new[] { contentBuilderMock1.Object, contentBuilderMock2.Object });
+        var multipleContentMock = Substitute.For<IMultipleContent>();
+        multipleContentMock.Contents.Returns(new[] { contentBuilderMock1, contentBuilderMock2 });
 
-        MultipleContentBuilderMock.Setup(x => x.Build()).Returns(multipleContentMock.Object);
+        MultipleContentBuilderMock.Build().Returns(multipleContentMock);
     }
 
     public class Constructor
@@ -33,7 +33,7 @@ public class CommandBaseTests
         [Fact]
         public void Throws_On_Null_Argument()
         {
-            TestHelpers.ConstructorMustThrowArgumentNullException(typeof(CommandBaseTest), t => ((Mock?)Activator.CreateInstance(typeof(Mock<>).MakeGenericType(t)))?.Object);
+            TestHelpers.ConstructorMustThrowArgumentNullException(typeof(CommandBaseTest), t => Substitute.For(new[] { t }, Array.Empty<object>()));
         }
     }
 
@@ -125,7 +125,7 @@ public class CommandBaseTests
             using var app = new CommandLineApplication();
             var fileSystemCallCounter = 0;
             var actionCallCounter = 0;
-            FileSystemMock.Setup(x => x.FileExists(Filename)).Returns(() =>
+            FileSystemMock.FileExists(Filename).Returns(_ =>
             {
                 if (fileSystemCallCounter > 2)
                 {
@@ -133,7 +133,7 @@ public class CommandBaseTests
                 }
                 return true;
             });
-            FileSystemMock.Setup(x => x.GetFileLastWriteTime(Filename)).Returns(() =>
+            FileSystemMock.GetFileLastWriteTime(Filename).Returns(_ =>
             {
                 fileSystemCallCounter++;
                 return DateTime.MinValue.AddDays(fileSystemCallCounter);
@@ -153,11 +153,11 @@ public class CommandBaseTests
             var sut = CreateSut();
             var fileSystemCallCounter = 0;
             var actionCallCounter = 0;
-            FileSystemMock.Setup(x => x.FileExists(Filename)).Returns(() =>
+            FileSystemMock.FileExists(Filename).Returns(_ =>
             {
                 return fileSystemCallCounter < 3;
             });
-            FileSystemMock.Setup(x => x.GetFileLastWriteTime(Filename)).Returns(() =>
+            FileSystemMock.GetFileLastWriteTime(Filename).Returns(_ =>
             {
                 fileSystemCallCounter++;
                 return DateTime.MinValue.AddDays(fileSystemCallCounter);
@@ -248,7 +248,7 @@ Error: Could not find file [MyFile.txt]. Could not watch file for changes.
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.GenerateSingleOutputPublic(MultipleContentBuilderMock.Object, basePath: null!))
+            sut.Invoking(x => x.GenerateSingleOutputPublic(MultipleContentBuilderMock, basePath: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("basePath");
         }
 
@@ -260,7 +260,7 @@ Error: Could not find file [MyFile.txt]. Could not watch file for changes.
             var sut = CreateSut();
 
             // Act
-            var result = sut.GenerateSingleOutputPublic(MultipleContentBuilderMock.Object, string.Empty);
+            var result = sut.GenerateSingleOutputPublic(MultipleContentBuilderMock, string.Empty);
 
             // Assert
             result.Should().Be(@"File1.txt:
@@ -278,7 +278,7 @@ Contents from file2
             var sut = CreateSut();
 
             // Act
-            var result = sut.GenerateSingleOutputPublic(MultipleContentBuilderMock.Object, "BasePath" + Path.DirectorySeparatorChar);
+            var result = sut.GenerateSingleOutputPublic(MultipleContentBuilderMock, "BasePath" + Path.DirectorySeparatorChar);
 
             // Assert
             result.Should().Be($@"{Directory.GetCurrentDirectory()}{Path.DirectorySeparatorChar}File1.txt:
@@ -296,7 +296,7 @@ Contents from file2
             var sut = CreateSut();
 
             // Act
-            var result = sut.GenerateSingleOutputPublic(MultipleContentBuilderMock.Object, "BasePath" + Path.DirectorySeparatorChar);
+            var result = sut.GenerateSingleOutputPublic(MultipleContentBuilderMock, "BasePath" + Path.DirectorySeparatorChar);
 
             // Assert
             result.Should().Be($@"BasePath{Path.DirectorySeparatorChar}File1.txt:
@@ -315,7 +315,7 @@ Contents from file2
             var sut = CreateSut();
 
             // Act
-            var result = sut.GenerateSingleOutputPublic(MultipleContentBuilderMock.Object, string.Empty);
+            var result = sut.GenerateSingleOutputPublic(MultipleContentBuilderMock, string.Empty);
 
             // Assert
             result.Should().Be($@"File1.txt:
@@ -413,7 +413,7 @@ TemplateOutput
             _ = CommandLineCommandHelper.ExecuteCommand(app => sut.WriteOutputToClipboardPublic(app, "TemplateOutput", true));
 
             // Assert
-            ClipboardMock.Verify(x => x.SetText("TemplateOutput"), Times.Once);
+            ClipboardMock.Received().SetText("TemplateOutput");
         }
 
         [Fact]

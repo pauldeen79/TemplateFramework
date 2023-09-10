@@ -2,11 +2,11 @@
 
 public class ProviderComponentTests
 {
-    protected Mock<IExpressionStringParser> ExpressionStringParserMock { get; } = new();
-    protected Mock<IFormattableStringParser> FormattableStringParserMock { get; } = new();
+    protected IExpressionStringParser ExpressionStringParserMock { get; } = Substitute.For<IExpressionStringParser>();
+    protected IFormattableStringParser FormattableStringParserMock { get; } = Substitute.For<IFormattableStringParser>();
     protected ComponentRegistrationContext ComponentRegistrationContext { get; } = new();
 
-    protected ProviderComponent CreateSut() => new(ExpressionStringParserMock.Object, FormattableStringParserMock.Object, ComponentRegistrationContext);
+    protected ProviderComponent CreateSut() => new(ExpressionStringParserMock, FormattableStringParserMock, ComponentRegistrationContext);
 
     public class Constructor : ProviderComponentTests
     {
@@ -14,7 +14,7 @@ public class ProviderComponentTests
         public void Throws_On_Null_ExpressionStringParser()
         {
             // Act & Assert
-            this.Invoking(_ => new ProviderComponent(expressionStringParser: null!, FormattableStringParserMock.Object, ComponentRegistrationContext))
+            this.Invoking(_ => new ProviderComponent(expressionStringParser: null!, FormattableStringParserMock, ComponentRegistrationContext))
                 .Should().Throw<ArgumentNullException>().WithParameterName("expressionStringParser");
         }
 
@@ -22,7 +22,7 @@ public class ProviderComponentTests
         public void Throws_On_Null_FormattableStringParser()
         {
             // Act & Assert
-            this.Invoking(_ => new ProviderComponent(ExpressionStringParserMock.Object, formattableStringParser: null!, ComponentRegistrationContext))
+            this.Invoking(_ => new ProviderComponent(ExpressionStringParserMock, formattableStringParser: null!, ComponentRegistrationContext))
                 .Should().Throw<ArgumentNullException>().WithParameterName("formattableStringParser");
         }
 
@@ -30,7 +30,7 @@ public class ProviderComponentTests
         public void Throws_On_Null_ComponentRegistrationContext()
         {
             // Act & Assert
-            this.Invoking(_ => new ProviderComponent(ExpressionStringParserMock.Object, FormattableStringParserMock.Object, componentRegistrationContext: null!))
+            this.Invoking(_ => new ProviderComponent(ExpressionStringParserMock, FormattableStringParserMock, componentRegistrationContext: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("componentRegistrationContext");
         }
     }
@@ -57,7 +57,7 @@ public class ProviderComponentTests
             var sut = CreateSut();
 
             // Act
-            var result = sut.Supports(new Mock<ITemplateIdentifier>().Object);
+            var result = sut.Supports(Substitute.For<ITemplateIdentifier>());
 
             // Assert
             result.Should().BeFalse();
@@ -110,7 +110,7 @@ public class ProviderComponentTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Create(identifier: new Mock<ITemplateIdentifier>().Object))
+            sut.Invoking(x => x.Create(identifier: Substitute.For<ITemplateIdentifier>()))
                .Should().Throw<NotSupportedException>();
         }
         
@@ -149,7 +149,7 @@ public class ProviderComponentTests
         public void Clears_PlaceholderProcessors()
         {
             // Arrange
-            ComponentRegistrationContext.PlaceholderProcessors.Add(new Mock<IPlaceholderProcessor>().Object);
+            ComponentRegistrationContext.PlaceholderProcessors.Add(Substitute.For<IPlaceholderProcessor>());
             var sut = CreateSut();
 
             // Act
@@ -163,7 +163,7 @@ public class ProviderComponentTests
         public void Clears_FunctionResultParsers()
         {
             // Arrange
-            ComponentRegistrationContext.FunctionResultParsers.Add(new Mock<IFunctionResultParser>().Object);
+            ComponentRegistrationContext.FunctionResultParsers.Add(Substitute.For<IFunctionResultParser>());
             var sut = CreateSut();
 
             // Act

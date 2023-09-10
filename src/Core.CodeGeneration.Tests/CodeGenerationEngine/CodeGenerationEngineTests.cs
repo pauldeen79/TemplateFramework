@@ -2,12 +2,12 @@
 
 public abstract partial class CodeGenerationEngineTests
 {
-    protected Mock<ITemplateEngine> TemplateEngineMock { get; } = new();
-    protected Mock<ITemplateFactory> TemplateFactoryMock { get; } = new();
-    protected Mock<ICodeGenerationProvider> CodeGenerationProviderMock { get; } = new();
-    protected Mock<ICodeGenerationSettings> CodeGenerationSettingsMock { get; } = new();
-    protected Mock<IGenerationEnvironment> GenerationEnvironmentMock { get; } = new();
-    protected Mock<ITemplateProvider> TemplateProviderMock { get; } = new();
+    protected ITemplateEngine TemplateEngineMock { get; } = Substitute.For<ITemplateEngine>();
+    protected ITemplateFactory TemplateFactoryMock { get; } = Substitute.For<ITemplateFactory>();
+    protected ICodeGenerationProvider CodeGenerationProviderMock { get; } = Substitute.For<ICodeGenerationProvider>();
+    protected ICodeGenerationSettings CodeGenerationSettingsMock { get; } = Substitute.For<ICodeGenerationSettings>();
+    protected IGenerationEnvironment GenerationEnvironmentMock { get; } = Substitute.For<IGenerationEnvironment>();
+    protected ITemplateProvider TemplateProviderMock { get; } = Substitute.For<ITemplateProvider>();
 
-    protected CodeGenerationEngine CreateSut() => new(TemplateEngineMock.Object, TemplateFactoryMock.Object, TemplateProviderMock.Object);
+    protected CodeGenerationEngine CreateSut() => new(TemplateEngineMock, TemplateFactoryMock, TemplateProviderMock);
 }

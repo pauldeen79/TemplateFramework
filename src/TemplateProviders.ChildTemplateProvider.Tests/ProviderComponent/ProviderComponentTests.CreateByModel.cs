@@ -9,8 +9,8 @@ public partial class ProviderComponentTests
         {
             // Arrange
             var sut = CreateSut();
-            TemplateCreatorMock.Setup(x => x.SupportsModel(It.IsAny<object?>())).Returns(true);
-            TemplateCreatorMock.Setup(x => x.CreateByModel(It.IsAny<object?>())).Returns(new object());
+            TemplateCreatorMock.SupportsModel(Arg.Any<object?>()).Returns(true);
+            TemplateCreatorMock.CreateByModel(Arg.Any<object?>()).Returns(new object());
 
             // Act & Assert
             sut.Invoking(x => x.Create(new TemplateByModelIdentifier(null)))
@@ -22,7 +22,7 @@ public partial class ProviderComponentTests
         {
             // Arrange
             var sut = CreateSut();
-            TemplateCreatorMock.Setup(x => x.SupportsModel(It.IsAny<object?>())).Returns(false);
+            TemplateCreatorMock.SupportsModel(Arg.Any<object?>()).Returns(false);
 
             // Act & Assert
             sut.Invoking(x => x.Create(new TemplateByModelIdentifier(1)))
@@ -34,7 +34,7 @@ public partial class ProviderComponentTests
         {
             // Arrange
             var sut = CreateSut();
-            TemplateCreatorMock.Setup(x => x.SupportsModel(It.IsAny<object?>())).Returns(false);
+            TemplateCreatorMock.SupportsModel(Arg.Any<object?>()).Returns(false);
 
             // Act & Assert
             sut.Invoking(x => x.Create(new TemplateByModelIdentifier(null)))
@@ -46,8 +46,8 @@ public partial class ProviderComponentTests
         {
             // Arrange
             var sut = CreateSut();
-            TemplateCreatorMock.Setup(x => x.SupportsModel(It.IsAny<object?>())).Returns(true);
-            TemplateCreatorMock.Setup(x => x.CreateByModel(It.IsAny<object?>())).Returns(null!);
+            TemplateCreatorMock.SupportsModel(Arg.Any<object?>()).Returns(true);
+            TemplateCreatorMock.CreateByModel(Arg.Any<object?>()).Returns(null!);
 
             // Act & Assert
             sut.Invoking(x => x.Create(new TemplateByModelIdentifier(null!)))
@@ -60,8 +60,8 @@ public partial class ProviderComponentTests
             // Arrange
             var sut = CreateSut();
             var template = new object();
-            TemplateCreatorMock.Setup(x => x.SupportsModel(It.IsAny<object?>())).Returns<object>(x => x is int);
-            TemplateCreatorMock.Setup(x => x.CreateByModel(It.IsAny<object?>())).Returns(template);
+            TemplateCreatorMock.SupportsModel(Arg.Any<object?>()).Returns<object>(x => x.Args()[0] is int);
+            TemplateCreatorMock.CreateByModel(Arg.Any<object?>()).Returns(template);
 
             // Act
             var result = sut.Create(new TemplateByModelIdentifier(1));

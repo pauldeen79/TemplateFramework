@@ -2,8 +2,8 @@
 
 public partial class ProviderComponentTests
 {
-    protected Mock<IAssemblyService> AssemblyServiceMock { get; } = new();
-    protected Mock<ITemplateFactory> CompiledTemplateFactoryMock { get; } = new();
+    protected IAssemblyService AssemblyServiceMock { get; } = Substitute.For<IAssemblyService>();
+    protected ITemplateFactory CompiledTemplateFactoryMock { get; } = Substitute.For<ITemplateFactory>();
 
-    protected ProviderComponent CreateSut() => new(AssemblyServiceMock.Object, CompiledTemplateFactoryMock.Object);
+    protected ProviderComponent CreateSut() => new(AssemblyServiceMock, CompiledTemplateFactoryMock);
 }

@@ -1,8 +1,8 @@
-﻿namespace TemplateFramework.Abstractions.Tests.Extensions.TemplateContextExtensions;
+namespace TemplateFramework.Abstractions.Tests.Extensions.TemplateContextExtensions;
 
 public partial class TemplateContextExtensionsTests
 {
-    protected Mock<ITemplateContext> CreateSut() => new();
+    protected ITemplateContext CreateSut() => Substitute.For<ITemplateContext>();
     protected object Template { get; } = new();
     protected object Model { get; } = new();
     protected int? IterationNumber { get; } = 0;

@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests;
+namespace TemplateFramework.Core.Tests;
 
 public class IntegrationTests
 {
@@ -8,7 +8,7 @@ public class IntegrationTests
         // Arrange
         using var provider = new ServiceCollection()
             .AddTemplateFramework()
-            .AddSingleton(new Mock<ITemplateComponentRegistryPluginFactory>().Object)
+            .AddSingleton(Substitute.For<ITemplateComponentRegistryPluginFactory>())
             .BuildServiceProvider(true);
         using var scope = provider.CreateScope();
         var sut = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();

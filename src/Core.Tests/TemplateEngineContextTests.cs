@@ -2,9 +2,9 @@
 
 public class TemplateEngineContextTests
 {
-    protected Mock<IRenderTemplateRequest> RequestMock { get; } = new();
-    protected Mock<ITemplateEngine> EngineMock { get; } = new();
-    protected Mock<ITemplateComponentRegistry> ComponentRegistryMock { get; } = new();
+    protected IRenderTemplateRequest RequestMock { get; } = Substitute.For<IRenderTemplateRequest>();
+    protected ITemplateEngine EngineMock { get; } = Substitute.For<ITemplateEngine>();
+    protected ITemplateComponentRegistry ComponentRegistryMock { get; } = Substitute.For<ITemplateComponentRegistry>();
     protected object Template { get; } = new();
 
     public class Constructor : TemplateEngineContextTests
@@ -13,7 +13,7 @@ public class TemplateEngineContextTests
         public void Should_Throw_On_Null_Request()
         {
             // Act & Assert
-            this.Invoking(_ => new TemplateEngineContext(request: null!, EngineMock.Object, ComponentRegistryMock.Object, Template))
+            this.Invoking(_ => new TemplateEngineContext(request: null!, EngineMock, ComponentRegistryMock, Template))
                 .Should().Throw<ArgumentNullException>().WithParameterName("request");
         }
 
@@ -21,7 +21,7 @@ public class TemplateEngineContextTests
         public void Should_Throw_On_Null_Engine()
         {
             // Act & Assert
-            this.Invoking(_ => new TemplateEngineContext(RequestMock.Object, engine: null!, ComponentRegistryMock.Object, Template))
+            this.Invoking(_ => new TemplateEngineContext(RequestMock, engine: null!, ComponentRegistryMock, Template))
                 .Should().Throw<ArgumentNullException>().WithParameterName("engine");
         }
 
@@ -29,7 +29,7 @@ public class TemplateEngineContextTests
         public void Should_Throw_On_Null_ComponentRegistry()
         {
             // Act & Assert
-            this.Invoking(_ => new TemplateEngineContext(RequestMock.Object, EngineMock.Object, componentRegistry: null!, Template))
+            this.Invoking(_ => new TemplateEngineContext(RequestMock, EngineMock, componentRegistry: null!, Template))
                 .Should().Throw<ArgumentNullException>().WithParameterName("componentRegistry");
         }
 
@@ -37,7 +37,7 @@ public class TemplateEngineContextTests
         public void Should_Throw_On_Null_Template()
         {
             // Act & Assert
-            this.Invoking(_ => new TemplateEngineContext(RequestMock.Object, EngineMock.Object, ComponentRegistryMock.Object, template: null!))
+            this.Invoking(_ => new TemplateEngineContext(RequestMock, EngineMock, ComponentRegistryMock, template: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("template");
         }
 
@@ -46,29 +46,29 @@ public class TemplateEngineContextTests
         {
             // Arrange
             var additionalParameters = new object();
-            var templateContextMock = new Mock<ITemplateContext>();
-            var generationEnvironmentMock = new Mock<IGenerationEnvironment>();
-            var identifierMock = new Mock<ITemplateIdentifier>();
+            var templateContextMock = Substitute.For<ITemplateContext>();
+            var generationEnvironmentMock = Substitute.For<IGenerationEnvironment>();
+            var identifierMock = Substitute.For<ITemplateIdentifier>();
             var model = new object();
-            RequestMock.SetupGet(x => x.AdditionalParameters).Returns(additionalParameters);
-            RequestMock.SetupGet(x => x.Context).Returns(templateContextMock.Object);
-            RequestMock.SetupGet(x => x.DefaultFilename).Returns("Filename.txt");
-            RequestMock.SetupGet(x => x.GenerationEnvironment).Returns(generationEnvironmentMock.Object);
-            RequestMock.SetupGet(x => x.Identifier).Returns(identifierMock.Object);
-            RequestMock.SetupGet(x => x.Model).Returns(model);
+            RequestMock.AdditionalParameters.Returns(additionalParameters);
+            RequestMock.Context.Returns(templateContextMock);
+            RequestMock.DefaultFilename.Returns("Filename.txt");
+            RequestMock.GenerationEnvironment.Returns(generationEnvironmentMock);
+            RequestMock.Identifier.Returns(identifierMock);
+            RequestMock.Model.Returns(model);
 
             // Act
-            var instance = new TemplateEngineContext(RequestMock.Object, EngineMock.Object, ComponentRegistryMock.Object, Template);
+            var instance = new TemplateEngineContext(RequestMock, EngineMock, ComponentRegistryMock, Template);
 
             // Assert
-            instance.AdditionalParameters.Should().BeEquivalentTo(RequestMock.Object.AdditionalParameters);
-            instance.ComponentRegistry.Should().BeSameAs(ComponentRegistryMock.Object);
-            instance.Context.Should().BeSameAs(RequestMock.Object.Context);
-            instance.DefaultFilename.Should().BeSameAs(RequestMock.Object.DefaultFilename);
-            instance.Engine.Should().BeSameAs(EngineMock.Object);
-            instance.GenerationEnvironment.Should().BeSameAs(RequestMock.Object.GenerationEnvironment);
-            instance.Identifier.Should().BeSameAs(RequestMock.Object.Identifier);
-            instance.Model.Should().BeSameAs(RequestMock.Object.Model);
+            instance.AdditionalParameters.Should().BeEquivalentTo(RequestMock.AdditionalParameters);
+            instance.ComponentRegistry.Should().BeSameAs(ComponentRegistryMock);
+            instance.Context.Should().BeSameAs(RequestMock.Context);
+            instance.DefaultFilename.Should().BeSameAs(RequestMock.DefaultFilename);
+            instance.Engine.Should().BeSameAs(EngineMock);
+            instance.GenerationEnvironment.Should().BeSameAs(RequestMock.GenerationEnvironment);
+            instance.Identifier.Should().BeSameAs(RequestMock.Identifier);
+            instance.Model.Should().BeSameAs(RequestMock.Model);
             instance.Template.Should().BeSameAs(Template);
         }
     }

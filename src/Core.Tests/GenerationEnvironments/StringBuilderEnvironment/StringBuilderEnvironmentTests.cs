@@ -2,9 +2,9 @@
 
 public partial class StringBuilderEnvironmentTests
 {
-    protected Mock<IFileSystem> FileSystemMock { get; } = new();
-    protected Mock<ICodeGenerationProvider> CodeGenerationProviderMock { get; } = new();
+    protected IFileSystem FileSystemMock { get; } = Substitute.For<IFileSystem>();
+    protected ICodeGenerationProvider CodeGenerationProviderMock { get; } = Substitute.For<ICodeGenerationProvider>();
     protected StringBuilder Builder { get; } = new();
     
-    protected StringBuilderEnvironment CreateSut() => new(FileSystemMock.Object, Builder);
+    protected StringBuilderEnvironment CreateSut() => new(FileSystemMock, Builder);
 }

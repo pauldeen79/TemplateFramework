@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests.GenerationEnvironments;
+namespace TemplateFramework.Core.Tests.GenerationEnvironments;
 
 public partial class MultipleContentBuilderEnvironmentTests
 {
@@ -8,7 +8,7 @@ public partial class MultipleContentBuilderEnvironmentTests
         public void Throws_On_Null_Builder()
         {
             // Act & Assert
-            this.Invoking(_ => new MultipleContentBuilderEnvironment(FileSystemMock.Object, RetryMechanism, builder: null!))
+            this.Invoking(_ => new MultipleContentBuilderEnvironment(FileSystemMock, RetryMechanism, builder: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("builder");
         }
 
@@ -19,7 +19,7 @@ public partial class MultipleContentBuilderEnvironmentTests
             var instance = CreateSut();
 
             // Assert
-            instance.Builder.Should().BeSameAs(MultipleContentBuilderMock.Object);
+            instance.Builder.Should().BeSameAs(MultipleContentBuilderMock);
         }
 
         [Fact]

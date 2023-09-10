@@ -6,9 +6,8 @@ public partial class ProviderComponentTests
     {
         public Create()
         {
-            AssemblyServiceMock
-                .Setup(x => x.GetAssembly(It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(GetType().Assembly);
+            AssemblyServiceMock.GetAssembly(Arg.Any<string>(), Arg.Any<string>())
+                               .Returns(GetType().Assembly);
         }
 
         [Fact]
@@ -29,7 +28,7 @@ public partial class ProviderComponentTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Create(identifier: new Mock<ITemplateIdentifier>().Object))
+            sut.Invoking(x => x.Create(identifier: Substitute.For<ITemplateIdentifier>()))
                .Should().Throw<ArgumentException>().WithParameterName("identifier");
         }
 
@@ -38,7 +37,7 @@ public partial class ProviderComponentTests
         {
             // Arrange
             var sut = CreateSut();
-            CompiledTemplateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
+            CompiledTemplateFactoryMock.Create(Arg.Any<Type>()).Returns(x => Activator.CreateInstance(x.ArgAt<Type>(0))!);
 
             // Act
             var instance = sut.Create(new CompiledTemplateIdentifier(GetType().Assembly.FullName!, GetType().FullName!));

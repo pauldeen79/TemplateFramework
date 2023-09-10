@@ -6,15 +6,15 @@ public class IntegrationTests
     public void Can_Render_Template_From_CompiledTemplateProvider()
     {
         // Arrange
-        var templateFactoryMock = new Mock<ITemplateFactory>();
-        templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
+        var templateFactoryMock = Substitute.For<ITemplateFactory>();
+        templateFactoryMock.Create(Arg.Any<Type>()).Returns(x => Activator.CreateInstance(x.ArgAt<Type>(0))!);
         using var provider = new ServiceCollection()
             .AddTemplateFramework()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFrameworkCompiledTemplateProvider()
-            .AddSingleton(new Mock<IAssemblyInfoContextService>().Object)
-            .AddSingleton(templateFactoryMock.Object)
-            .AddSingleton(new Mock<ITemplateComponentRegistryPluginFactory>().Object)
+            .AddSingleton(Substitute.For<IAssemblyInfoContextService>())
+            .AddSingleton(templateFactoryMock)
+            .AddSingleton(Substitute.For<ITemplateComponentRegistryPluginFactory>())
             .BuildServiceProvider(true);
         using var scope = provider.CreateScope();
         var templateProvider = scope.ServiceProvider.GetRequiredService<ITemplateProvider>();

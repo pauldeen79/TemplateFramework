@@ -2,7 +2,7 @@
 
 public class TemplateTypeIdentifierTests
 {
-    protected Mock<ITemplateFactory> TemplateFactoryMock { get; } = new();
+    protected ITemplateFactory TemplateFactoryMock { get; } = Substitute.For<ITemplateFactory>();
 
     public class Constructor : TemplateTypeIdentifierTests
     {
@@ -10,7 +10,7 @@ public class TemplateTypeIdentifierTests
         public void Throws_On_Null_Type()
         {
             // Act & Assert
-            this.Invoking(_ => new TemplateTypeIdentifier(type: null!, TemplateFactoryMock.Object))
+            this.Invoking(_ => new TemplateTypeIdentifier(type: null!, TemplateFactoryMock))
                 .Should().Throw<ArgumentNullException>().WithParameterName("type");
         }
 
@@ -26,7 +26,7 @@ public class TemplateTypeIdentifierTests
         public void Sets_Type_Correctly()
         {
             // Act
-            var identifier = new TemplateTypeIdentifier(GetType(), TemplateFactoryMock.Object);
+            var identifier = new TemplateTypeIdentifier(GetType(), TemplateFactoryMock);
 
             // Assert
             identifier.Type.Should().BeSameAs(GetType());
@@ -36,10 +36,10 @@ public class TemplateTypeIdentifierTests
         public void Sets_TemplateFactory_Correctly()
         {
             // Act
-            var identifier = new TemplateTypeIdentifier(GetType(), TemplateFactoryMock.Object);
+            var identifier = new TemplateTypeIdentifier(GetType(), TemplateFactoryMock);
 
             // Assert
-            identifier.TemplateFactory.Should().BeSameAs(TemplateFactoryMock.Object);
+            identifier.TemplateFactory.Should().BeSameAs(TemplateFactoryMock);
         }
     }
 }

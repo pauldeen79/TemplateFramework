@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.CodeGeneration.Tests.Extensions;
+namespace TemplateFramework.Core.CodeGeneration.Tests.Extensions;
 
 public class ServiceCollectionExtensionsTests
 {
@@ -12,9 +12,9 @@ public class ServiceCollectionExtensionsTests
                 .AddTemplateFramework()
                 .AddTemplateFrameworkCodeGeneration()
                 .AddTemplateFrameworkRuntime()
-                .AddSingleton(new Mock<IAssemblyInfoContextService>().Object)
-                .AddSingleton(new Mock<ITemplateFactory>().Object)
-                .AddSingleton(new Mock<ITemplateComponentRegistryPluginFactory>().Object)
+                .AddSingleton(Substitute.For<IAssemblyInfoContextService>())
+                .AddSingleton(Substitute.For<ITemplateFactory>())
+                .AddSingleton(Substitute.For<ITemplateComponentRegistryPluginFactory>())
                 .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
 
             // Assert

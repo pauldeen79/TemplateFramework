@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests.MultipleContentBuilderTemplateCreators;
+namespace TemplateFramework.Core.Tests.MultipleContentBuilderTemplateCreators;
 
 public partial class TypedMultipleCreatorTests
 {
@@ -8,14 +8,14 @@ public partial class TypedMultipleCreatorTests
         public void Returns_Instance_When_Instance_Is_Assignable_To_IMultipleContentBuilderTemplate()
         {
             // Arrange
-            var templateMock = new Mock<IMultipleContentBuilderTemplate>();
+            var templateMock = Substitute.For<IMultipleContentBuilderTemplate>();
             var sut = CreateSut();
 
             // Act
-            var result = sut.TryCreate(templateMock.Object);
+            var result = sut.TryCreate(templateMock);
 
             // Assert
-            result.Should().BeSameAs(templateMock.Object);
+            result.Should().BeSameAs(templateMock);
         }
 
         [Fact]
