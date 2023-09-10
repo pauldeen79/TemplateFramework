@@ -33,7 +33,7 @@ public class CommandBaseTests
         [Fact]
         public void Throws_On_Null_Argument()
         {
-            TestHelpers.ConstructorMustThrowArgumentNullException(typeof(CommandBaseTest));
+            TestHelpers.ConstructorMustThrowArgumentNullException(typeof(CommandBaseTest), t => ((Mock?)Activator.CreateInstance(typeof(Mock<>).MakeGenericType(t)))?.Object);
         }
     }
 

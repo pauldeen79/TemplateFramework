@@ -14,7 +14,7 @@ public class CodeGenerationAssemblyCommandTests
         [Fact]
         public void Throws_On_Null_Argument()
         {
-            TestHelpers.ConstructorMustThrowArgumentNullException(typeof(CodeGenerationAssemblyCommand));
+            TestHelpers.ConstructorMustThrowArgumentNullException(typeof(CodeGenerationAssemblyCommand), t => ((Mock?)Activator.CreateInstance(typeof(Mock<>).MakeGenericType(t)))?.Object);
         }
     }
 

@@ -5,7 +5,7 @@ public class VersionCommandTests
     [Fact]
     public void Ctor_Throws_On_Null_Argument()
     {
-        TestHelpers.ConstructorMustThrowArgumentNullException(typeof(VersionCommand));
+        TestHelpers.ConstructorMustThrowArgumentNullException(typeof(VersionCommand), t => ((Mock?)Activator.CreateInstance(typeof(Mock<>).MakeGenericType(t)))?.Object);
     }
 
     [Fact]

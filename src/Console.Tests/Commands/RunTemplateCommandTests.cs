@@ -15,7 +15,7 @@ public class RunTemplateCommandTests
         [Fact]
         public void Throws_On_Null_Argument()
         {
-            TestHelpers.ConstructorMustThrowArgumentNullException(typeof(RunTemplateCommand));
+            TestHelpers.ConstructorMustThrowArgumentNullException(typeof(RunTemplateCommand), t => ((Mock?)Activator.CreateInstance(typeof(Mock<>).MakeGenericType(t)))?.Object);
         }
     }
 
