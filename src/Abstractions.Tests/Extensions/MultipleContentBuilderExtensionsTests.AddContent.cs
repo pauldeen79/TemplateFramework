@@ -1,15 +1,12 @@
 ﻿namespace TemplateFramework.Abstractions.Tests.Extensions;
 
-public partial class MultipleContentBuilderExtensionsTests
+public class MultipleContentBuilderExtensionsTests
 {
-    public class AddContent : MultipleContentBuilderExtensionsTests
+    public class AddContent
     {
-        [Fact]
-        public void Without_Arguments_Works_Correctly()
+        [Theory, AutoMockData]
+        public void Without_Arguments_Works_Correctly([Frozen] IMultipleContentBuilder sut)
         {
-            // Arrange
-            var sut = CreateSut();
-
             // Act
             sut.AddContent();
 
@@ -17,12 +14,9 @@ public partial class MultipleContentBuilderExtensionsTests
             sut.Received().AddContent(string.Empty, false, null);
         }
 
-        [Fact]
-        public void With_Filename_Argument_Works_Correctly()
+        [Theory, AutoMockData]
+        public void With_Filename_Argument_Works_Correctly([Frozen] IMultipleContentBuilder sut)
         {
-            // Arrange
-            var sut = CreateSut();
-
             // Act
             sut.AddContent("MyFilename.txt");
 
@@ -30,12 +24,9 @@ public partial class MultipleContentBuilderExtensionsTests
             sut.Received().AddContent("MyFilename.txt", false, null);
         }
 
-        [Fact]
-        public void With_Filename_And_SkipWhenFileExists_Arguments_Works_Correctly()
+        [Theory, AutoMockData]
+        public void With_Filename_And_SkipWhenFileExists_Arguments_Works_Correctly([Frozen] IMultipleContentBuilder sut)
         {
-            // Arrange
-            var sut = CreateSut();
-
             // Act
             sut.AddContent("MyFilename.txt", true);
 
