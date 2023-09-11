@@ -6,7 +6,10 @@ public class ProviderComponent : ITemplateProviderComponent, ISessionAwareCompon
     private readonly IFormattableStringParser _formattableStringParser;
     private readonly ComponentRegistrationContext _componentRegistrationContext;
 
-    public ProviderComponent(IExpressionStringParser expressionStringParser, IFormattableStringParser formattableStringParser, ComponentRegistrationContext componentRegistrationContext)
+    public ProviderComponent(
+        IExpressionStringParser expressionStringParser,
+        IFormattableStringParser formattableStringParser,
+        ComponentRegistrationContext componentRegistrationContext)
     {
         Guard.IsNotNull(expressionStringParser);
         Guard.IsNotNull(formattableStringParser);

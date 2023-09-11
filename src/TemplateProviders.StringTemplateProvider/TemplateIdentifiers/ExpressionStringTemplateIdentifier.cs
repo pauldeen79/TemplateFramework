@@ -8,7 +8,6 @@ public sealed class ExpressionStringTemplateIdentifier : ITemplateComponentRegis
     {
     }
 
-
     public ExpressionStringTemplateIdentifier(
         string template,
         IFormatProvider formatProvider,

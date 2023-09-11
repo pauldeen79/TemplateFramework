@@ -10,36 +10,9 @@ public class TemplateFrameworkContextPlaceholderProcessorTests
     public class Process : TemplateFrameworkContextPlaceholderProcessorTests
     {
         [Fact]
-        public void Throws_On_Null_Value()
+        public void Throws_On_Null_Argument()
         {
-            // Arrange
-            var sut = CreateSut();
-
-            // Act & Assert
-            sut.Invoking(x => x.Process(value: null!, CultureInfo.CurrentCulture, null, FormattableStringParserMock))
-               .Should().Throw<ArgumentNullException>().WithParameterName("value");
-        }
-
-        [Fact]
-        public void Throws_On_Null_FormatProvider()
-        {
-            // Arrange
-            var sut = CreateSut();
-
-            // Act & Assert
-            sut.Invoking(x => x.Process("some template", formatProvider: null!, null, FormattableStringParserMock))
-               .Should().Throw<ArgumentNullException>().WithParameterName("formatProvider");
-        }
-
-        [Fact]
-        public void Throws_On_Null_FormattableStringParser()
-        {
-            // Arrange
-            var sut = CreateSut();
-
-            // Act & Assert
-            sut.Invoking(x => x.Process("some template", CultureInfo.CurrentCulture, null, formattableStringParser: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("formattableStringParser");
+            typeof(ComponentRegistrationContext).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments(p => !new[] { "model", "iterationNumber", "iterationCount" }.Contains(p.Name));
         }
 
         [Fact]

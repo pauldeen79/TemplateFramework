@@ -11,27 +11,11 @@ public class ProviderComponentTests
     public class Constructor : ProviderComponentTests
     {
         [Fact]
-        public void Throws_On_Null_ExpressionStringParser()
+        public void Throws_On_Null_Argument()
         {
-            // Act & Assert
-            this.Invoking(_ => new ProviderComponent(expressionStringParser: null!, FormattableStringParserMock, ComponentRegistrationContext))
-                .Should().Throw<ArgumentNullException>().WithParameterName("expressionStringParser");
-        }
-
-        [Fact]
-        public void Throws_On_Null_FormattableStringParser()
-        {
-            // Act & Assert
-            this.Invoking(_ => new ProviderComponent(ExpressionStringParserMock, formattableStringParser: null!, ComponentRegistrationContext))
-                .Should().Throw<ArgumentNullException>().WithParameterName("formattableStringParser");
-        }
-
-        [Fact]
-        public void Throws_On_Null_ComponentRegistrationContext()
-        {
-            // Act & Assert
-            this.Invoking(_ => new ProviderComponent(ExpressionStringParserMock, FormattableStringParserMock, componentRegistrationContext: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("componentRegistrationContext");
+            typeof(ProviderComponent).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments(
+                p => !new[] { "model", "iterationNumber", "iterationCount" }.Contains(p.Name),
+                p => p.Name == "componentRegistrationContext" ? new ComponentRegistrationContext() : null);
         }
     }
 
