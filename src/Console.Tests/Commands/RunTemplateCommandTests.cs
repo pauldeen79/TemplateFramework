@@ -7,7 +7,7 @@ public class RunTemplateCommandTests
         [Fact]
         public void Throws_On_Null_Argument()
         {
-            typeof(RunTemplateCommand).ShouldArgumentNullExceptionsInConstructorOnNullArguments();
+            typeof(RunTemplateCommand).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
         }
     }
 

@@ -2,11 +2,6 @@
 
 public class TemplateContextExtensionsTests
 {
-    protected object Template { get; } = new();
-    protected object Model { get; } = new();
-    protected int? IterationNumber { get; } = 0;
-    protected int? IterationCount { get; } = 2;
-
     public class GetContextByTemplateType : TemplateContextExtensionsTests
     {
         [Theory, AutoMockData]

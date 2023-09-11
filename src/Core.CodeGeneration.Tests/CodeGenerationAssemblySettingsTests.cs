@@ -1,31 +1,21 @@
 ﻿namespace TemplateFramework.Core.CodeGeneration.Tests;
 
-public partial class CodeGenerationAssemblySettingsTests
+public class CodeGenerationAssemblySettingsTests
 {
     public class Constructor
     {
         [Fact]
-        public void Throws_On_Null_AssemblyName()
+        public void Throws_On_Null_Argument()
         {
-            // Act & Assert
-            this.Invoking(_ => new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", assemblyName: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("assemblyName");
-        }
-
-        [Fact]
-        public void Throws_On_Null_BasePath()
-        {
-            // Act & Assert
-            this.Invoking(_ => new CodeGenerationAssemblySettings(basePath: null!, "DefaultFilename.txt", TestData.GetAssemblyName()))
-                .Should().Throw<ArgumentNullException>().WithParameterName("basePath");
-        }
-
-        [Fact]
-        public void Throws_On_Null_DefaultFIlename()
-        {
-            // Act & Assert
-            this.Invoking(_ => new CodeGenerationAssemblySettings(TestData.BasePath, defaultFilename: null!, TestData.GetAssemblyName()))
-                .Should().Throw<ArgumentNullException>().WithParameterName("defaultFilename");
+            typeof(CodeGenerationAssemblySettings).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments(
+                parameterPredicate: p => !new[] { "currentDirectory", "classNameFilter" }.Contains(p.Name), // this parameter is optional
+                parameterReplaceDelegate: p => p.Name switch
+                {
+                    "basePath" => TestData.BasePath,
+                    "defaultFilename" => "DefaultFilename.txt",
+                    "assemblyName" => TestData.GetAssemblyName(),
+                    _ => null
+                });
         }
 
         [Fact]

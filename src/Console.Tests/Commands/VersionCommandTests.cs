@@ -5,7 +5,7 @@ public class VersionCommandTests
     [Fact]
     public void Ctor_Throws_On_Null_Argument()
     {
-        typeof(VersionCommand).ShouldArgumentNullExceptionsInConstructorOnNullArguments();
+        typeof(VersionCommand).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
     }
 
     [Theory, AutoMockData]

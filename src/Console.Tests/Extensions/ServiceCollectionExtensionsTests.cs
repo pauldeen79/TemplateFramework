@@ -1,24 +1,27 @@
-namespace TemplateFramework.Console.Tests.Extensions;
+﻿namespace TemplateFramework.Console.Tests.Extensions;
 
 public class ServiceCollectionExtensionsTests
 {
-    [Fact]
-    public void All_Dependencies_Can_Be_Resolved()
+    public class AddTemplateCommands
     {
-        // Act
-        var services = new ServiceCollection();
-        services.InjectClipboard();
-        using var provider = services
-            .AddTemplateFramework()
-            .AddTemplateFrameworkCodeGeneration()
-            .AddTemplateFrameworkRuntime()
-            .AddTemplateCommands()
-            .AddSingleton(Substitute.For<IAssemblyInfoContextService>())
-            .AddSingleton(Substitute.For<ITemplateFactory>())
-            .AddSingleton(Substitute.For<ITemplateComponentRegistryPluginFactory>())
-            .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
+        [Fact]
+        public void All_Dependencies_Can_Be_Resolved()
+        {
+            // Act
+            var services = new ServiceCollection();
+            services.InjectClipboard();
+            using var provider = services
+                .AddTemplateFramework()
+                .AddTemplateFrameworkCodeGeneration()
+                .AddTemplateFrameworkRuntime()
+                .AddTemplateCommands()
+                .AddSingleton(Substitute.For<IAssemblyInfoContextService>())
+                .AddSingleton(Substitute.For<ITemplateFactory>())
+                .AddSingleton(Substitute.For<ITemplateComponentRegistryPluginFactory>())
+                .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
 
-        // Assert
-        provider.Should().NotBeNull();
+            // Assert
+            provider.Should().NotBeNull();
+        }
     }
 }

@@ -42,6 +42,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Console\TemplateFramework.Console.csproj" />
+    <ProjectReference Include="..\Testing\TemplateFramework.Testing.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -75,6 +76,7 @@
     <Using Include="TemplateFramework.Runtime.Extensions" />
     <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.TemplateIdentifiers" />
     <Using Include="TemplateFramework.TemplateProviders.StringTemplateProvider.TemplateIdentifiers" />
+    <Using Include="TemplateFramework.Testing" />
     <Using Include="TextCopy" />
     <Using Include="Xunit" />
   </ItemGroup>

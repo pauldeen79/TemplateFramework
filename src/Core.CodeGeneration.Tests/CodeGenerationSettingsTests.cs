@@ -1,9 +1,18 @@
 ﻿namespace TemplateFramework.Core.CodeGeneration.Tests;
 
-public partial class CodeGenerationSettingsTests
+public class CodeGenerationSettingsTests
 {
+    protected const bool DryRun = true;
+
     public class Constructor : CodeGenerationSettingsTests
     {
+        [Fact]
+        public void Throws_On_Null_Argument()
+        {
+            typeof(CodeGenerationSettings).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments(
+                parameterPredicate: p => new[] { "basePath", "defaultFilename" }.Contains(p.Name));
+        }
+
         [Fact]
         public void Creates_Instance_With_Basepath()
         {
@@ -34,7 +43,7 @@ public partial class CodeGenerationSettingsTests
             // Assert
             sut.BasePath.Should().Be(TestData.BasePath);
             sut.DefaultFilename.Should().Be("DefaultFilename.txt");
-            sut.DryRun.Should().BeTrue();
+            sut.DryRun.Should().Be(DryRun);
         }
     }
 }

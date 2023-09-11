@@ -1,4 +1,4 @@
-namespace TemplateFramework.Core.CodeGeneration.Tests.Extensions;
+﻿namespace TemplateFramework.Core.CodeGeneration.Tests.Extensions;
 
 public class ServiceCollectionExtensionsTests
 {
