@@ -144,6 +144,8 @@ dotnet_diagnostic.CA1034.severity = none
 dotnet_diagnostic.CA1052.severity = none
 #Remove the underscores from member name x (I'm using this in unit tests extensively)
 dotnet_diagnostic.CA1707.severity = none
+#pragma warning disable S2344 // Enumeration type names should not have "Flags" or "Enum" suffixes
+dotnet_diagnostic.S2344.severity = none
 
 ###############################
 # VB Coding Conventions       #
