@@ -77,54 +77,41 @@ public static class TypeExtensions
         }
     }
 
-    public static object? CreateInstance(
-        Type type,
-        Func<ParameterInfo, object?>? parameterReplaceDelegate,
-        Func<ConstructorInfo, bool>? constructorPredicate)
-        => CreateInstance(type, t2 => Substitute.For(new[] { t2 }, Array.Empty<object>()), parameterReplaceDelegate, constructorPredicate);
-
-    public static object? CreateInstance(
+    private static object? CreateInstance(
         Type type,
         Func<Type, object?> classFactory,
         Func<ParameterInfo, object?>? parameterReplaceDelegate,
         Func<ConstructorInfo, bool>? constructorPredicate)
     {
-        if (type is null)
+        if (type.IsInterface)
         {
-            throw new ArgumentNullException(nameof(type));
-        }
-
-        if (classFactory is null)
-        {
-            throw new ArgumentNullException(nameof(classFactory));
+            return classFactory.Invoke(type);
         }
 
         var constructors = type.GetConstructors().Where(c => ShouldProcessConstructor(constructorPredicate, c)).ToArray();
-        if (constructors.Length > 0)
+        if (constructors.Length == 0)
         {
-            var constructor = constructors[0];
-            var parameters = constructor.GetParameters().ToArray();
-            var mocks = GetMocks(parameters, parameterReplaceDelegate, classFactory);
-            var mocksCopy = mocks.ToArray();
-            for (int i = 0; i < parameters.Length; i++)
+            // If there are no public constructors, let the DI framework (or manual class factory, whatever) handle this.
+            return classFactory.Invoke(type);
+        }
+
+        // For now, let's just pick the first constructor that matches.
+        // You can use a constructor predicate to narrow down the available constructors, so you can filter it down to exactly one.
+        var constructor = constructors[0];
+        var parameters = constructor.GetParameters().ToArray();
+        var mocks = GetMocks(parameters, parameterReplaceDelegate, classFactory);
+        var mocksCopy = mocks.ToArray();
+        for (int i = 0; i < parameters.Length; i++)
+        {
+            if (parameters[i].ParameterType.IsValueType)
             {
-                if (parameters[i].ParameterType.IsValueType)
-                {
-                    mocksCopy[i] = Activator.CreateInstance(parameters[i].ParameterType);
-                }
+                mocksCopy[i] = Activator.CreateInstance(parameters[i].ParameterType);
             }
-            FixStringsAndArrays(parameters, -1, mocksCopy);
-
-            return constructor.Invoke(mocksCopy);
         }
 
-        if (type.IsInterface)
-        {
-            return Substitute.For(new[] { type }, Array.Empty<object>());
-        }
+        FixStringsAndArrays(parameters, -1, mocksCopy);
 
-        // If everything else fails, let the DI framework (or manual class factory, whatever) handle this.
-        return classFactory.Invoke(type);
+        return constructor.Invoke(mocksCopy);
     }
 
     private static bool ShouldProcessConstructor(Func<ConstructorInfo, bool>? constructorPredicate, ConstructorInfo c)
