@@ -31,9 +31,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="AutoFixture" />
+    <Using Include="AutoFixture.AutoNSubstitute" />
+    <Using Include="AutoFixture.Xunit2" />
     <Using Include="FluentAssertions" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
     <Using Include="NSubstitute" />
+    <Using Include="Objectivity.AutoFixture.XUnit2.AutoNSubstitute.Attributes" />
     <Using Include="TemplateFramework.Runtime.Abstractions" />
     <Using Include="TemplateFramework.Runtime.Extensions" />
     <Using Include="Xunit" />

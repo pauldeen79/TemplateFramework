@@ -4,8 +4,11 @@ public class ServiceCollectionExtensionsTests
 {
     public class AddTemplateCommands
     {
-        [Fact]
-        public void All_Dependencies_Can_Be_Resolved()
+        [Theory, AutoMockData]
+        public void All_Dependencies_Can_Be_Resolved(
+            [Frozen] IAssemblyInfoContextService assemblyInfoContextService,
+            [Frozen] ITemplateFactory templateFactory,
+            [Frozen] ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
         {
             // Act
             var services = new ServiceCollection();
@@ -15,9 +18,9 @@ public class ServiceCollectionExtensionsTests
                 .AddTemplateFrameworkCodeGeneration()
                 .AddTemplateFrameworkRuntime()
                 .AddTemplateCommands()
-                .AddSingleton(Substitute.For<IAssemblyInfoContextService>())
-                .AddSingleton(Substitute.For<ITemplateFactory>())
-                .AddSingleton(Substitute.For<ITemplateComponentRegistryPluginFactory>())
+                .AddSingleton(assemblyInfoContextService)
+                .AddSingleton(templateFactory)
+                .AddSingleton(templateComponentRegistryPluginFactory)
                 .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
 
             // Assert
