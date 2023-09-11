@@ -1,7 +1,7 @@
 ﻿namespace TemplateFramework.Testing;
 
 [ExcludeFromCodeCoverage]
-public static class TestHelpers
+public static class TypeExtensions
 {
     /// <summary>
     /// Asserts that the specified type performs argument null checks on all arguments in all (public) constructors, using NSubstitute to create mocks for reference types.
@@ -19,7 +19,7 @@ public static class TestHelpers
         Func<ConstructorInfo, bool>? constructorPredicate = null)
         => ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments(
             type,
-            t => Substitute.For(new[] { t }, Array.Empty<object>()),
+            t => CreateInstance(t, t2 => Substitute.For(new[] { t2 }, Array.Empty<object>()), parameterReplaceDelegate, constructorPredicate),
             parameterPredicate,
             parameterReplaceDelegate,
             constructorPredicate);
@@ -40,10 +40,10 @@ public static class TestHelpers
         Func<ParameterInfo, object?>? parameterReplaceDelegate = null,
         Func<ConstructorInfo, bool>? constructorPredicate = null)
     {
-        var ctors = type.GetConstructors();
-        ctors.Should().Match<ConstructorInfo[]?>(x => x != null && x.Length > 0, $"Type {type.FullName} should have public constructors");
+        var constructors = type.GetConstructors();
+        constructors.Should().Match<ConstructorInfo[]?>(x => x != null && x.Length > 0, $"Type {type.FullName} should have public constructors");
 
-        foreach (var constructor in ctors.Where<ConstructorInfo>(c => ShouldProcessConstructor(constructorPredicate, c)))
+        foreach (var constructor in constructors.Where<ConstructorInfo>(c => ShouldProcessConstructor(constructorPredicate, c)))
         {
             var parameters = constructor.GetParameters().ToArray();
             var mocks = GetMocks(parameters, parameterReplaceDelegate, classFactory);
@@ -77,8 +77,58 @@ public static class TestHelpers
         }
     }
 
+    public static object? CreateInstance(
+        Type type,
+        Func<ParameterInfo, object?>? parameterReplaceDelegate,
+        Func<ConstructorInfo, bool>? constructorPredicate)
+        => CreateInstance(type, t2 => Substitute.For(new[] { t2 }, Array.Empty<object>()), parameterReplaceDelegate, constructorPredicate);
+
+    public static object? CreateInstance(
+        Type type,
+        Func<Type, object?> classFactory,
+        Func<ParameterInfo, object?>? parameterReplaceDelegate,
+        Func<ConstructorInfo, bool>? constructorPredicate)
+    {
+        if (type is null)
+        {
+            throw new ArgumentNullException(nameof(type));
+        }
+
+        if (classFactory is null)
+        {
+            throw new ArgumentNullException(nameof(classFactory));
+        }
+
+        var constructors = type.GetConstructors().Where(c => ShouldProcessConstructor(constructorPredicate, c)).ToArray();
+        if (constructors.Length > 0)
+        {
+            var constructor = constructors[0];
+            var parameters = constructor.GetParameters().ToArray();
+            var mocks = GetMocks(parameters, parameterReplaceDelegate, classFactory);
+            var mocksCopy = mocks.ToArray();
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                if (parameters[i].ParameterType.IsValueType)
+                {
+                    mocksCopy[i] = Activator.CreateInstance(parameters[i].ParameterType);
+                }
+            }
+            FixStringsAndArrays(parameters, -1, mocksCopy);
+
+            return constructor.Invoke(mocksCopy);
+        }
+
+        if (type.IsInterface)
+        {
+            return Substitute.For(new[] { type }, Array.Empty<object>());
+        }
+
+        // If everything else fails, let the DI framework (or manual class factory, whatever) handle this.
+        return classFactory.Invoke(type);
+    }
+
     private static bool ShouldProcessConstructor(Func<ConstructorInfo, bool>? constructorPredicate, ConstructorInfo c)
-        => constructorPredicate is null 
+        => constructorPredicate is null
         || constructorPredicate(c);
 
     private static object? FillParameter(ParameterInfo[] parameters, int i)

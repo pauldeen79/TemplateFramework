@@ -16,13 +16,7 @@ public class ExpressionStringTemplateTests
         public void Throws_On_Null_Argument()
         {
             typeof(ExpressionStringTemplate).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments(
-                p => !new[] { "model", "iterationNumber", "iterationCount" }.Contains(p.Name),
-                p => p.Name switch
-                {
-                    "expressionStringTemplateIdentifier" => new ExpressionStringTemplateIdentifier("test", CultureInfo.InvariantCulture),
-                    "componentRegistrationContext" => new ComponentRegistrationContext(),
-                    _ => null
-                });
+                p => !new[] { "model", "iterationNumber", "iterationCount" }.Contains(p.Name));
         }
     }
 

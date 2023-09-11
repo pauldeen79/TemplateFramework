@@ -15,13 +15,7 @@ public class FormattableStringTemplateTests
         public void Throws_On_Null_Argument()
         {
             typeof(FormattableStringTemplate).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments(
-                p => !new[] { "model", "iterationNumber", "iterationCount" }.Contains(p.Name),
-                p => p.Name switch
-                {
-                    "formattableStringTemplateIdentifier" => new FormattableStringTemplateIdentifier("template", CultureInfo.InvariantCulture),
-                    "componentRegistrationContext" => new ComponentRegistrationContext(),
-                    _ => null
-                });
+                p => !new[] { "model", "iterationNumber", "iterationCount" }.Contains(p.Name));
         }
     }
 

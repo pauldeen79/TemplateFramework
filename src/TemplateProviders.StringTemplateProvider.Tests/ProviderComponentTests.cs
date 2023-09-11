@@ -14,8 +14,7 @@ public class ProviderComponentTests
         public void Throws_On_Null_Argument()
         {
             typeof(ProviderComponent).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments(
-                p => !new[] { "model", "iterationNumber", "iterationCount" }.Contains(p.Name),
-                p => p.Name == "componentRegistrationContext" ? new ComponentRegistrationContext() : null);
+                p => !new[] { "model", "iterationNumber", "iterationCount" }.Contains(p.Name));
         }
     }
 
