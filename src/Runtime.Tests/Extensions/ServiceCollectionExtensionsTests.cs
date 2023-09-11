@@ -1,8 +1,8 @@
-namespace TemplateFramework.Runtime.Tests.Extensions;
+﻿namespace TemplateFramework.Runtime.Tests.Extensions;
 
 public class ServiceCollectionExtensionsTests
 {
-    public class AddTemplateFrameworkCodeGeneration
+    public class AddTemplateFrameworkRuntime
     {
         [Fact]
         public void All_Dependencies_Can_Be_Resolved()
