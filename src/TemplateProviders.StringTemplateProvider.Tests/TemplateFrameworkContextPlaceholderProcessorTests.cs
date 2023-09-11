@@ -12,7 +12,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests
         [Fact]
         public void Throws_On_Null_Argument()
         {
-            typeof(ComponentRegistrationContext).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments(p => !new[] { "model", "iterationNumber", "iterationCount" }.Contains(p.Name));
+            typeof(ComponentRegistrationContext).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
         }
 
         [Fact]

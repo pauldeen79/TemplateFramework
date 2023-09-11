@@ -1,4 +1,7 @@
-﻿namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests;
+﻿using AutoFixture.Xunit2;
+using Objectivity.AutoFixture.XUnit2.AutoNSubstitute.Attributes;
+
+namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests;
 
 public class IntegrationTests
 {
@@ -30,18 +33,19 @@ public class IntegrationTests
         generationEnvironment.Contents.Single().Builder.ToString().Should().Be("Context IsRootContext: False");
     }
 
-    [Fact]
-    public void Can_Render_Multiple_Files_Into_One_File_Like_Current_CsharpClassGenerator()
+    [Theory, AutoMockData]
+    public void Can_Render_Multiple_Files_Into_One_File_Like_Current_CsharpClassGenerator(
+        [Frozen] ITemplateFactory templateFactory,
+        [Frozen] ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
     {
         // Arrange
-        var templateFactoryMock = Substitute.For<ITemplateFactory>();
-        templateFactoryMock.Create(Arg.Any<Type>()).Returns(x => Activator.CreateInstance(x.ArgAt<Type>(0))!);
+        templateFactory.Create(Arg.Any<Type>()).Returns(x => Activator.CreateInstance(x.ArgAt<Type>(0))!);
         using var provider = new ServiceCollection()
             .AddTemplateFramework()
             .AddTemplateFrameworkChildTemplateProvider()
             .AddTemplateFrameworkCodeGeneration()
-            .AddSingleton(templateFactoryMock) // note that normally, this class needs to be implemented by the host. (like TemplateFramework.Console)
-            .AddSingleton(Substitute.For<ITemplateComponentRegistryPluginFactory>()) // note that normally, this class needs to be implemented by the host. (like TemplateFramework.Console)
+            .AddSingleton(templateFactory) // note that normally, this class needs to be implemented by the host. (like TemplateFramework.Console)
+            .AddSingleton(templateComponentRegistryPluginFactory) // note that normally, this class needs to be implemented by the host. (like TemplateFramework.Console)
             .BuildServiceProvider(true);
         using var scope = provider.CreateScope();
 

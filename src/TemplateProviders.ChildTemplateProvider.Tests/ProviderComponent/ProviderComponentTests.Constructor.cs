@@ -7,9 +7,7 @@ public partial class ProviderComponentTests
         [Fact]
         public void Throws_On_Null_Argument()
         {
-            // Act & Assert
-            this.Invoking(_ => new ProviderComponent(childTemplateCreators: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("childTemplateCreators");
+            typeof(ProviderComponent).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
         }
 
         [Fact]

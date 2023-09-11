@@ -44,6 +44,7 @@
     <ProjectReference Include="..\Core.CodeGeneration\TemplateFramework.Core.CodeGeneration.csproj" />
     <ProjectReference Include="..\Core\TemplateFramework.Core.csproj" />
     <ProjectReference Include="..\TemplateProviders.ChildTemplateProvider\TemplateFramework.TemplateProviders.ChildTemplateProvider.csproj" />
+    <ProjectReference Include="..\Testing\TemplateFramework.Testing.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -67,6 +68,7 @@
     <Using Include="TemplateFramework.TemplateProviders.ChildTemplateProvider.Abstractions" />
     <Using Include="TemplateFramework.TemplateProviders.ChildTemplateProvider.Extensions" />
     <Using Include="TemplateFramework.TemplateProviders.ChildTemplateProvider.TemplateIdentifiers" />
+    <Using Include="TemplateFramework.Testing" />
     <Using Include="Xunit" />
   </ItemGroup>
 
