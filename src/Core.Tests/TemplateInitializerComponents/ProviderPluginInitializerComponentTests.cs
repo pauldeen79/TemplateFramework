@@ -12,11 +12,9 @@ public class ProviderPluginInitializerComponentTests
     public class Constructor
     {
         [Fact]
-        public void Throws_On_Null_Factory()
+        public void Throws_On_Null_Argument()
         {
-            // Act & Assert
-            this.Invoking(_ => new ProviderPluginInitializerComponent(factory: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("factory");
+            typeof(ProviderPluginInitializerComponent).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
         }
     }
 

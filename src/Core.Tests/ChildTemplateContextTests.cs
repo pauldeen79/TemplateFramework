@@ -1,4 +1,4 @@
-namespace TemplateFramework.Core.Tests;
+﻿namespace TemplateFramework.Core.Tests;
 
 public class ChildTemplateContextTests
 {
@@ -10,24 +10,9 @@ public class ChildTemplateContextTests
     public class Constructor : ChildTemplateContextTests
     {
         [Fact]
-        public void Throws_On_Null_Identifier_1()
+        public void Throws_On_Null_Argument()
         {
-            this.Invoking(_ => new ChildTemplateContext(identifier: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("identifier");
-        }
-
-        [Fact]
-        public void Throws_On_Null_Identifier_2()
-        {
-            this.Invoking(_ => new ChildTemplateContext(identifier: null!, null))
-                .Should().Throw<ArgumentNullException>().WithParameterName("identifier");
-        }
-
-        [Fact]
-        public void Throws_On_Null_Identifier_3()
-        {
-            this.Invoking(_ => new ChildTemplateContext(identifier: null!, null, null, null))
-                .Should().Throw<ArgumentNullException>().WithParameterName("identifier");
+            typeof(ChildTemplateContext).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments(p => !new[] { "model", "iterationNumber", "iterationCount" }.Contains(p.Name));
         }
 
         [Fact]

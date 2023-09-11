@@ -13,11 +13,9 @@ public class ParameterInitializerTests
     public class Constructor
     {
         [Fact]
-        public void Throws_On_Null_Converter()
+        public void Throws_On_Null_Argument()
         {
-            // Act & Assert
-            this.Invoking(_ => new ParameterInitializerComponent(converter: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("converter");
+            typeof(ParameterInitializerComponent).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
         }
     }
 

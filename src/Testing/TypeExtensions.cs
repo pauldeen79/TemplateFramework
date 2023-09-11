@@ -108,12 +108,18 @@ public static class TestHelpers
                 {
                     return string.Empty; // use string.Empty for string arguments, in case they require a null check
                 }
-                if (p.ParameterType.IsValueType || p.ParameterType.IsArray)
+                else if (p.ParameterType == typeof(StringBuilder))
+                {
+                    return new StringBuilder();
+                }
+                else if (p.ParameterType.IsValueType || p.ParameterType.IsArray)
                 {
                     return null; //skip value types and arrays
                 }
-
-                return classFactory.Invoke(p.ParameterType);
+                else
+                {
+                    return classFactory.Invoke(p.ParameterType);
+                }
             }
         ).ToArray();
 

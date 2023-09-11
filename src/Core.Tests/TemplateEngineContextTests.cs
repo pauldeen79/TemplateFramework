@@ -10,35 +10,9 @@ public class TemplateEngineContextTests
     public class Constructor : TemplateEngineContextTests
     {
         [Fact]
-        public void Should_Throw_On_Null_Request()
+        public void Throws_On_Null_Argument()
         {
-            // Act & Assert
-            this.Invoking(_ => new TemplateEngineContext(request: null!, EngineMock, ComponentRegistryMock, Template))
-                .Should().Throw<ArgumentNullException>().WithParameterName("request");
-        }
-
-        [Fact]
-        public void Should_Throw_On_Null_Engine()
-        {
-            // Act & Assert
-            this.Invoking(_ => new TemplateEngineContext(RequestMock, engine: null!, ComponentRegistryMock, Template))
-                .Should().Throw<ArgumentNullException>().WithParameterName("engine");
-        }
-
-        [Fact]
-        public void Should_Throw_On_Null_ComponentRegistry()
-        {
-            // Act & Assert
-            this.Invoking(_ => new TemplateEngineContext(RequestMock, EngineMock, componentRegistry: null!, Template))
-                .Should().Throw<ArgumentNullException>().WithParameterName("componentRegistry");
-        }
-
-        [Fact]
-        public void Should_Throw_On_Null_Template()
-        {
-            // Act & Assert
-            this.Invoking(_ => new TemplateEngineContext(RequestMock, EngineMock, ComponentRegistryMock, template: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("template");
+            typeof(TemplateEngineContext).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
         }
 
         [Fact]

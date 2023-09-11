@@ -5,11 +5,9 @@ public partial class StringBuilderTemplateRendererTests
     public class Constructor
     {
         [Fact]
-        public void Throws_On_Null_Renderers()
+        public void Throws_On_Null_Argument()
         {
-            // Act & Assert
-            this.Invoking(_ => new StringBuilderTemplateRenderer(renderers: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("renderers");
+            typeof(StringBuilderTemplateRenderer).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
         }
     }
 }

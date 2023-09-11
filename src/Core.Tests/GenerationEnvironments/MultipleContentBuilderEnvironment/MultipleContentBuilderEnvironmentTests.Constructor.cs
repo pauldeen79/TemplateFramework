@@ -1,15 +1,13 @@
-namespace TemplateFramework.Core.Tests.GenerationEnvironments;
+﻿namespace TemplateFramework.Core.Tests.GenerationEnvironments;
 
 public partial class MultipleContentBuilderEnvironmentTests
 {
     public class Constructor : MultipleContentBuilderEnvironmentTests
     {
         [Fact]
-        public void Throws_On_Null_Builder()
+        public void Throws_On_Null_Argument()
         {
-            // Act & Assert
-            this.Invoking(_ => new MultipleContentBuilderEnvironment(FileSystemMock, RetryMechanism, builder: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("builder");
+            typeof(MultipleContentBuilderEnvironment).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
         }
 
         [Fact]

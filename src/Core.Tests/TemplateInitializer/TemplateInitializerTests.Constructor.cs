@@ -5,11 +5,9 @@ public partial class TemplateInitializerTests
     public class Constructor
     {
         [Fact]
-        public void Throws_On_Null_Components()
+        public void Throws_On_Null_Argument()
         {
-            // Act & Assert
-            this.Invoking(_ => new TemplateInitializer(components: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("components");
+            typeof(TemplateInitializer).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
         }
     }
 }

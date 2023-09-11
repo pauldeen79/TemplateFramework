@@ -1,15 +1,13 @@
-namespace TemplateFramework.Core.Tests.GenerationEnvironments;
+﻿namespace TemplateFramework.Core.Tests.GenerationEnvironments;
 
 public partial class StringBuilderEnvironmentTests
 {
     public class Constructor : StringBuilderEnvironmentTests
     {
         [Fact]
-        public void Throws_On_Null_Builder()
+        public void Throws_On_Null_Argument()
         {
-            // Act & Assert
-            this.Invoking(_ => new StringBuilderEnvironment(FileSystemMock, builder: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("builder");
+            typeof(StringBuilderEnvironment).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
         }
 
         [Fact]

@@ -9,11 +9,9 @@ public class ValueConverterTests
     public class Constructor
     {
         [Fact]
-        public void Throws_On_Null_Converters()
+        public void Throws_On_Null_Argument()
         {
-            // Act & Assert
-            this.Invoking(_ => new ValueConverter(converters: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("converters");
+            typeof(ValueConverter).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
         }
     }
 

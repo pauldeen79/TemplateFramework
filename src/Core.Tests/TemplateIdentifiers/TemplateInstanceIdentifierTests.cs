@@ -5,11 +5,9 @@ public class TemplateInstanceIdentifierTests
     public class Constructor
     {
         [Fact]
-        public void Throws_On_Null_Instance()
+        public void Throws_On_Null_Argument()
         {
-            // Act & Assert
-            this.Invoking(_ => new TemplateInstanceIdentifier(instance: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("instance");
+            typeof(TemplateInstanceIdentifier).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
         }
 
         [Fact]

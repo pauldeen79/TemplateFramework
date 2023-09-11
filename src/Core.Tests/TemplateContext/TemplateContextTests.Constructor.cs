@@ -1,42 +1,13 @@
-namespace TemplateFramework.Core.Tests;
+﻿namespace TemplateFramework.Core.Tests;
 
 public partial class TemplateContextTests
 {
     public class Constructor : TemplateContextTests
     {
         [Fact]
-        public void Throws_On_Null_Engine()
+        public void Throws_On_Null_Argument()
         {
-            this.Invoking(_ => new TemplateContext(engine: null!, ProviderMock, DefaultFilename, new TemplateInstanceIdentifier(this), this))
-                .Should().Throw<ArgumentNullException>().WithParameterName("engine");
-        }
-
-        [Fact]
-        public void Throws_On_Null_TemplateComponentRegistry()
-        {
-            this.Invoking(_ => new TemplateContext(EngineMock, templateComponentRegistry: null!, DefaultFilename, new TemplateInstanceIdentifier(this), this))
-                .Should().Throw<ArgumentNullException>().WithParameterName("templateComponentRegistry");
-        }
-
-        [Fact]
-        public void Throws_On_Null_DefaultFilename()
-        {
-            this.Invoking(_ => new TemplateContext(EngineMock, ProviderMock, defaultFilename: null!, new TemplateInstanceIdentifier(this), this))
-                .Should().Throw<ArgumentNullException>().WithParameterName("defaultFilename");
-        }
-
-        [Fact]
-        public void Throws_On_Null_Identifier()
-        {
-            this.Invoking(_ => new TemplateContext(EngineMock, ProviderMock, DefaultFilename, identifier: null!, template: this))
-                .Should().Throw<ArgumentNullException>().WithParameterName("identifier");
-        }
-
-        [Fact]
-        public void Throws_On_Null_Template()
-        {
-            this.Invoking(_ => new TemplateContext(EngineMock, ProviderMock, DefaultFilename, new TemplateInstanceIdentifier(this), template: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("template");
+            typeof(TemplateContext).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments(p => !new[] { "model", "parentContext", "iterationNumber", "iterationCount" }.Contains(p.Name));
         }
 
         [Fact]

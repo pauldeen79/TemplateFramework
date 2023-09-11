@@ -5,11 +5,9 @@ public partial class MultipleContentTemplateRendererTests
     public class Constructor : MultipleContentTemplateRendererTests
     {
         [Fact]
-        public void Throws_On_Null_Creators()
+        public void Throws_On_Null_Argument()
         {
-            // Act & Assert
-            this.Invoking(_ => new MultipleContentTemplateRenderer(creators: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("creators");
+            typeof(MultipleContentTemplateRenderer).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
         }
     }
 }

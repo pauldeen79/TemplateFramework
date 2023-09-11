@@ -9,11 +9,9 @@ public class TemplateProviderTests
     public class Constructor
     {
         [Fact]
-        public void Throws_On_Null_Components()
+        public void Throws_On_Null_Argument()
         {
-            // Act & Assert
-            this.Invoking(_ => new TemplateProvider(components: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("components");
+            typeof(TemplateProvider).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
         }
     }
 

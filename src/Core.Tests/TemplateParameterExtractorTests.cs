@@ -9,11 +9,9 @@ public class TemplateParameterExtractorTests
     public class Constructor
     {
         [Fact]
-        public void Throws_On_Null_Components()
+        public void Throws_On_Null_Argument()
         {
-            // Act & Assert
-            this.Invoking(_ => new TemplateParameterExtractor(components: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("components");
+            typeof(TemplateParameterExtractor).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
         }
     }
     public class Extract : TemplateParameterExtractorTests

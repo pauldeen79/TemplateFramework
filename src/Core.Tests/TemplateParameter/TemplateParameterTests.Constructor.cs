@@ -5,19 +5,9 @@ public class TemplateParameterTests
     public class Constructor
     {
         [Fact]
-        public void Throws_On_Null_Name()
+        public void Throws_On_Null_Argument()
         {
-            // Act & Assert
-            this.Invoking(_ => new TemplateParameter(name: null!, GetType()))
-                .Should().Throw<ArgumentNullException>().WithParameterName("name");
-        }
-
-        [Fact]
-        public void Throws_On_Null_Type()
-        {
-            // Act & Assert
-            this.Invoking(_ => new TemplateParameter("Name", type: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("type");
+            typeof(TemplateParameter).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
         }
 
         [Fact]
