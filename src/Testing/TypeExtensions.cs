@@ -64,7 +64,7 @@ public static class TestHelpers
                     constructor.Invoke(mocksCopy);
                     if (!parameters[i].ParameterType.IsValueType)
                     {
-                        ((ArgumentNullException?)null).Should().NotBeNull(string.Format(CultureInfo.InvariantCulture, "ArgumentNullException expected for parameter {0} of constructor, but no exception was thrown", parameters[i].Name));
+                        ((ArgumentNullException?)null).Should().NotBeNull($"ArgumentNullException expected for parameter {parameters[i].Name} of constructor, but no exception was thrown");
                     }
                 }
                 catch (TargetInvocationException ex)
