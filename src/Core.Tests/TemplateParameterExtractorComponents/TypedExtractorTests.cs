@@ -2,71 +2,58 @@
 
 public class TypedExtractorTests
 {
-    protected TypedExtractor CreateSut() => new();
-
-    protected IParameterizedTemplate ParameterizedTemplateMock { get; } = Substitute.For<IParameterizedTemplate>();
-
-    public class Extract : TypedExtractorTests
+    public class Extract
     {
-        [Fact]
-        public void Throws_On_Null_TemplateInstance()
+        [Theory, AutoMockData]
+        public void Throws_On_Null_TemplateInstance(TypedExtractor sut)
         {
-            // Arrange
-            var sut = CreateSut();
-
             // Act & Assert
             sut.Invoking(x => x.Extract(templateInstance: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("templateInstance");
         }
 
-        [Fact]
-        public void Throws_On_TemplateInstance_Of_Wrong_Type()
+        [Theory, AutoMockData]
+        public void Throws_On_TemplateInstance_Of_Wrong_Type(TypedExtractor sut)
         {
-            // Arrange
-            var sut = CreateSut();
-
             // Act & Assert
             sut.Invoking(x => x.Extract(templateInstance: new object()))
                .Should().Throw<ArgumentException>().WithParameterName("templateInstance");
         }
 
-        [Fact]
-        public void Returns_Result_From_TemplateInstance_When_It_Implements_IParameterizedTemplate()
+        [Theory, AutoMockData]
+        public void Returns_Result_From_TemplateInstance_When_It_Implements_IParameterizedTemplate(
+            [Frozen] IParameterizedTemplate parameterizedTemplate,
+            TypedExtractor sut)
         {
             // Arrange
-            var sut = CreateSut();
             var parameters = new[] { new TemplateParameter("SomeName", typeof(string)) };
-            ParameterizedTemplateMock.GetParameters().Returns(parameters);
+            parameterizedTemplate.GetParameters().Returns(parameters);
 
             // Act
-            var result = sut.Extract(ParameterizedTemplateMock);
+            var result = sut.Extract(parameterizedTemplate);
 
             // Assert
             result.Should().BeEquivalentTo(parameters);
         }
     }
 
-    public class Supports : TypedExtractorTests
+    public class Supports
     {
-        [Fact]
-        public void Returns_True_When_Template_Implements_IParameterizedTemplate()
+        [Theory, AutoMockData]
+        public void Returns_True_When_Template_Implements_IParameterizedTemplate(
+            [Frozen] IParameterizedTemplate parameterizedTemplate,
+            TypedExtractor sut)
         {
-            // Arrange
-            var sut = CreateSut();
-
             // Act
-            var result = sut.Supports(ParameterizedTemplateMock);
+            var result = sut.Supports(parameterizedTemplate);
 
             // Assert
             result.Should().BeTrue();
         }
 
-        [Fact]
-        public void Returns_False_When_Template_Is_Null()
+        [Theory, AutoMockData]
+        public void Returns_False_When_Template_Is_Null(TypedExtractor sut)
         {
-            // Arrange
-            var sut = CreateSut();
-
             // Act
             var result = sut.Supports(null!);
 
@@ -74,12 +61,9 @@ public class TypedExtractorTests
             result.Should().BeFalse();
         }
 
-        [Fact]
-        public void Returns_False_When_Template_Is_Not_Null_But_Does_Not_Implement_IParameterizedTemplate()
+        [Theory, AutoMockData]
+        public void Returns_False_When_Template_Is_Not_Null_But_Does_Not_Implement_IParameterizedTemplate(TypedExtractor sut)
         {
-            // Arrange
-            var sut = CreateSut();
-
             // Act
             var result = sut.Supports(new object());
 

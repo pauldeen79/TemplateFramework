@@ -11,7 +11,7 @@ public class RunTemplateCommandTests
         }
     }
 
-    public class Initialize : RunTemplateCommandTests
+    public class Initialize
     {
         [Theory, AutoMockData]
         public void Initialize_Adds_Command_To_Application(RunTemplateCommand sut)
@@ -35,7 +35,7 @@ public class RunTemplateCommandTests
         }
     }
 
-    public class ExecuteCommand : RunTemplateCommandTests
+    public class ExecuteCommand
     {
         [Theory, AutoMockData]
         public void Empty_AssemblyName_Results_In_Error(RunTemplateCommand sut)

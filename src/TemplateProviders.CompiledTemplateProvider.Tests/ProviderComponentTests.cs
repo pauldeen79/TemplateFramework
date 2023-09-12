@@ -1,10 +1,8 @@
-﻿using System.Reflection;
+﻿namespace TemplateFramework.TemplateProviders.CompiledTemplateProvider.Tests;
 
-namespace TemplateFramework.TemplateProviders.CompiledTemplateProvider.Tests;
-
-public partial class ProviderComponentTests
+public class ProviderComponentTests
 {
-    public class Constructor : ProviderComponentTests
+    public class Constructor
     {
         [Fact]
         public void Throws_On_Null_Arguments()
@@ -13,7 +11,7 @@ public partial class ProviderComponentTests
         }
     }
 
-    public class Create : ProviderComponentTests
+    public class Create
     {
         private void SetupAssemblyService(IAssemblyService assemblyService)
         {
@@ -30,10 +28,12 @@ public partial class ProviderComponentTests
         }
 
         [Theory, AutoMockData]
-        public void Throws_On_Identifier_Other_Than_CreateCompiledTemplateRequest(ProviderComponent sut)
+        public void Throws_On_Identifier_Other_Than_CreateCompiledTemplateRequest(
+            [Frozen] ITemplateIdentifier templateIdentifier,
+            ProviderComponent sut)
         {
             // Act & Assert
-            sut.Invoking(x => x.Create(identifier: Substitute.For<ITemplateIdentifier>()))
+            sut.Invoking(x => x.Create(identifier: templateIdentifier))
                .Should().Throw<ArgumentException>().WithParameterName("identifier");
         }
 
@@ -79,7 +79,7 @@ public partial class ProviderComponentTests
         }
     }
 
-    public class Supports : ProviderComponentTests
+    public class Supports
     {
         [Theory, AutoMockData]
         public void Returns_False_On_Null_Request(ProviderComponent sut)
@@ -92,10 +92,12 @@ public partial class ProviderComponentTests
         }
 
         [Theory, AutoMockData]
-        public void Returns_False_On_Request_Other_Than_CreateCompiledTemplateRequest(ProviderComponent sut)
+        public void Returns_False_On_Request_Other_Than_CreateCompiledTemplateRequest(
+            [Frozen] ITemplateIdentifier templateIdentifier,
+            ProviderComponent sut)
         {
             // Act
-            var result = sut.Supports(Substitute.For<ITemplateIdentifier>());
+            var result = sut.Supports(templateIdentifier);
 
             // Assert
             result.Should().BeFalse();

@@ -2,9 +2,12 @@
 
 public class TemplateByNameIdentifierTests
 {
-    [Fact]
-    public void Throws_On_Null_Arguments()
+    public class Constructor
     {
-        typeof(TemplateByNameIdentifier).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
+        [Fact]
+        public void Throws_On_Null_Arguments()
+        {
+            typeof(TemplateByNameIdentifier).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
+        }
     }
 }

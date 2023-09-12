@@ -5,22 +5,6 @@ public class CommandBaseTests
     protected const string AssemblyName = "MyAssemblyName";
     protected const string Filename = "MyFile.txt";
 
-    protected void SetupMultipleContentBuilderMock(IMultipleContentBuilder multipleContentBuilder, string filenamePrefix)
-    {
-        var contentBuilderMock1 = Substitute.For<IContent>();
-        contentBuilderMock1.Filename.Returns($"{filenamePrefix}File1.txt");
-        contentBuilderMock1.Contents.Returns("Contents from file1");
-
-        var contentBuilderMock2 = Substitute.For<IContent>();
-        contentBuilderMock2.Filename.Returns($"{filenamePrefix}File2.txt");
-        contentBuilderMock2.Contents.Returns("Contents from file2");
-
-        var multipleContentMock = Substitute.For<IMultipleContent>();
-        multipleContentMock.Contents.Returns(new[] { contentBuilderMock1, contentBuilderMock2 });
-
-        multipleContentBuilder.Build().Returns(multipleContentMock);
-    }
-
     public class Constructor
     {
         [Fact]
@@ -30,7 +14,7 @@ public class CommandBaseTests
         }
     }
 
-    public class Watch : CommandBaseTests
+    public class Watch
     {
         [Theory, AutoMockData]
         public void Throws_On_Null_App(CommandBaseTest sut)
@@ -166,7 +150,7 @@ Error: Could not find file [MyFile.txt]. Could not watch file for changes.
         }
     }
 
-    public class GetCurrentDirectory : CommandBaseTests
+    public class GetCurrentDirectory
     {
         [Theory, AutoMockData]
         public void Returns_Empty_String_On_Null_AssemblyName(CommandBaseTest sut)
@@ -209,8 +193,24 @@ Error: Could not find file [MyFile.txt]. Could not watch file for changes.
         }
     }
 
-    public class GenerateSingleOutput : CommandBaseTests
+    public class GenerateSingleOutput
     {
+        private void SetupMultipleContentBuilderMock(IMultipleContentBuilder multipleContentBuilder, string filenamePrefix)
+        {
+            var contentBuilderMock1 = Substitute.For<IContent>();
+            contentBuilderMock1.Filename.Returns($"{filenamePrefix}File1.txt");
+            contentBuilderMock1.Contents.Returns("Contents from file1");
+
+            var contentBuilderMock2 = Substitute.For<IContent>();
+            contentBuilderMock2.Filename.Returns($"{filenamePrefix}File2.txt");
+            contentBuilderMock2.Contents.Returns("Contents from file2");
+
+            var multipleContentMock = Substitute.For<IMultipleContent>();
+            multipleContentMock.Contents.Returns(new[] { contentBuilderMock1, contentBuilderMock2 });
+
+            multipleContentBuilder.Build().Returns(multipleContentMock);
+        }
+
         [Theory, AutoMockData]
         public void Throws_On_Null_Builder(CommandBaseTest sut)
         {
@@ -306,7 +306,7 @@ Contents from file2
         }
     }
 
-    public class WriteOutputToHost : CommandBaseTests
+    public class WriteOutputToHost
     {
         [Theory, AutoMockData]
         public void Throws_On_Null_App(CommandBaseTest sut)
@@ -347,7 +347,7 @@ TemplateOutput
         }
     }
 
-    public class WriteOutputToClipboard : CommandBaseTests
+    public class WriteOutputToClipboard
     {
         [Theory, AutoMockData]
         public void Throws_On_Null_App(CommandBaseTest sut)
@@ -398,7 +398,7 @@ TemplateOutput
         }
     }
 
-    public class GetDryRun : CommandBaseTests
+    public class GetDryRun
     {
         [Theory,
             InlineAutoMockData(true, false, true),
@@ -415,7 +415,7 @@ TemplateOutput
         }
     }
 
-    public class GetDefaultFilename : CommandBaseTests
+    public class GetDefaultFilename
     {
         [Theory,
             InlineAutoMockData("Filled", "Filled"),
@@ -431,7 +431,7 @@ TemplateOutput
         }
     }
 
-    public class GetBasePath : CommandBaseTests
+    public class GetBasePath
     {
         [Theory,
             InlineAutoMockData("Filled", "Filled"),

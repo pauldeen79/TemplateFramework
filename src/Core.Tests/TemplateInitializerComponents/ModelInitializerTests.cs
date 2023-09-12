@@ -2,14 +2,6 @@
 
 public class ModelInitializerTests
 {
-    protected ModelInitializerComponent CreateSut() => new(ValueConverterMock);
-    
-    protected IValueConverter ValueConverterMock { get; } = Substitute.For<IValueConverter>();
-    protected ITemplateEngine TemplateEngineMock { get; } = Substitute.For<ITemplateEngine>();
-    protected ITemplateProvider TemplateProviderMock { get; } = Substitute.For<ITemplateProvider>();
-
-    protected const string DefaultFilename = "DefaultFilename.txt";
-
     public class Constructor
     {
         [Fact]
@@ -21,27 +13,29 @@ public class ModelInitializerTests
 
     public class Initialize : ModelInitializerTests
     {
-        [Fact]
-        public void Throws_On_Null_Context()
-        {
-            // Arrange
-            var sut = CreateSut();
+        private const string DefaultFilename = "DefaultFilename.txt";
 
+        [Theory, AutoMockData]
+        public void Throws_On_Null_Context(ModelInitializerComponent sut)
+        {
             // Act & Assert
             sut.Invoking(x => x.Initialize(context: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("context");
         }
 
-        [Fact]
-        public void Sets_Model_When_Possible()
+        [Theory, AutoMockData]
+        public void Sets_Model_When_Possible(
+            [Frozen] ITemplateEngine templateEngine,
+            [Frozen] ITemplateProvider templateProvider,
+            [Frozen] IValueConverter valueConverter,
+            ModelInitializerComponent sut)
         {
             // Arrange
-            var sut = CreateSut();
             var model = "Hello world!";
             var template = new TestData.TemplateWithModel<string>(_ => { });
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), model, new StringBuilder(), DefaultFilename);
-            var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
-            ValueConverterMock.Convert(Arg.Any<object?>(), Arg.Any<Type>()).Returns(x => x.Args()[0]);
+            var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
+            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>()).Returns(x => x.Args()[0]);
 
             // Act
             sut.Initialize(engineContext);

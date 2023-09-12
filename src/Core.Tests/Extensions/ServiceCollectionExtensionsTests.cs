@@ -1,16 +1,16 @@
-namespace TemplateFramework.Core.Tests.Extensions;
+﻿namespace TemplateFramework.Core.Tests.Extensions;
 
-public partial class ServiceCollectionExtensionsTests
+public class ServiceCollectionExtensionsTests
 {
     public class AddTemplateFramework
     {
-        [Fact]
-        public void All_Dependencies_Can_Be_Resolved()
+        [Theory, AutoMockData]
+        public void All_Dependencies_Can_Be_Resolved([Frozen] ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
         {
             // Act
             using var provider = new ServiceCollection()
                 .AddTemplateFramework()
-                .AddSingleton(Substitute.For<ITemplateComponentRegistryPluginFactory>())
+                .AddSingleton(templateComponentRegistryPluginFactory)
                 .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
 
             // Assert

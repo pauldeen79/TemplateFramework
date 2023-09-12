@@ -1,14 +1,14 @@
-namespace TemplateFramework.Core.Tests;
+﻿namespace TemplateFramework.Core.Tests;
 
 public class IntegrationTests
 {
-    [Fact]
-    public void Can_Render_Template()
+    [Theory, AutoMockData]
+    public void Can_Render_Template([Frozen]ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
     {
         // Arrange
         using var provider = new ServiceCollection()
             .AddTemplateFramework()
-            .AddSingleton(Substitute.For<ITemplateComponentRegistryPluginFactory>())
+            .AddSingleton(templateComponentRegistryPluginFactory)
             .BuildServiceProvider(true);
         using var scope = provider.CreateScope();
         var sut = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();

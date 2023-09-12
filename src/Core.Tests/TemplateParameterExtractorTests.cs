@@ -2,10 +2,6 @@
 
 public class TemplateParameterExtractorTests
 {
-    protected TemplateParameterExtractor CreateSut() => new(new[] { TemplateParameterExtractorComponentMock });
-
-    protected ITemplateParameterExtractorComponent TemplateParameterExtractorComponentMock { get; } = Substitute.For<ITemplateParameterExtractorComponent>();
-
     public class Constructor
     {
         [Fact]
@@ -14,24 +10,23 @@ public class TemplateParameterExtractorTests
             typeof(TemplateParameterExtractor).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
         }
     }
-    public class Extract : TemplateParameterExtractorTests
+    public class Extract
     {
-        [Fact]
-        public void Throws_On_Null_TemplateInstance()
+        [Theory, AutoMockData]
+        public void Throws_On_Null_TemplateInstance(TemplateParameterExtractor sut)
         {
-            // Arrange
-            var sut = CreateSut();
-
             // Act & Assert
             sut.Invoking(x => x.Extract(templateInstance: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("templateInstance");
         }
 
-        [Fact]
-        public void Returns_Empty_Result_On_Unsupported_Type()
+        [Theory, AutoMockData]
+        public void Returns_Empty_Result_On_Unsupported_Type(
+            [Frozen] ITemplateParameterExtractorComponent templateParameterExtractorComponent, 
+            TemplateParameterExtractor sut)
         {
             // Arrange
-            var sut = CreateSut();
+            templateParameterExtractorComponent.Supports(Arg.Any<object>()).Returns(false);
 
             // Act
             var result = sut.Extract(templateInstance: new object());
@@ -40,15 +35,16 @@ public class TemplateParameterExtractorTests
             result.Should().BeEmpty();
         }
 
-        [Fact]
-        public void Returns_Result_From_Component_On_Supported_Type()
+        [Theory, AutoMockData]
+        public void Returns_Result_From_Component_On_Supported_Type(
+            [Frozen] ITemplateParameterExtractorComponent templateParameterExtractorComponent,
+            TemplateParameterExtractor sut)
         {
             // Arrange
-            var sut = CreateSut();
             var template = new object();
             var parameters = new[] { new TemplateParameter("name", typeof(string)) };
-            TemplateParameterExtractorComponentMock.Supports(template).Returns(true);
-            TemplateParameterExtractorComponentMock.Extract(template).Returns(parameters);
+            templateParameterExtractorComponent.Supports(template).Returns(true);
+            templateParameterExtractorComponent.Extract(template).Returns(parameters);
 
             // Act
             var result = sut.Extract(template);

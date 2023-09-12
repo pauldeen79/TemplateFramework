@@ -2,10 +2,10 @@
 
 public class CodeGenerationSettingsTests
 {
-    protected const bool DryRun = true;
-
-    public class Constructor : CodeGenerationSettingsTests
+    public class Constructor
     {
+        private const bool DryRun = true;
+
         [Fact]
         public void Throws_On_Null_Arguments()
         {

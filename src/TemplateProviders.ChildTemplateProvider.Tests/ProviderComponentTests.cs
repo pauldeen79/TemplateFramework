@@ -1,8 +1,8 @@
 ﻿namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests;
 
-public partial class ProviderComponentTests
+public class ProviderComponentTests
 {
-    public class Constructor : ProviderComponentTests
+    public class Constructor
     {
         [Fact]
         public void Throws_On_Null_Arguments()
@@ -11,7 +11,7 @@ public partial class ProviderComponentTests
         }
     }
 
-    public class Create : ProviderComponentTests
+    public class Create
     {
         [Theory, AutoMockData]
         public void Throws_On_Null_Identifier(ProviderComponent sut)
@@ -22,15 +22,17 @@ public partial class ProviderComponentTests
         }
 
         [Theory, AutoMockData]
-        public void Throws_On_Unsupported_Request(ProviderComponent sut)
+        public void Throws_On_Unsupported_Request(
+            [Frozen] ITemplateIdentifier identifier,
+            ProviderComponent sut)
         {
             // Act & Assert
-            sut.Invoking(x => x.Create(Substitute.For<ITemplateIdentifier>()))
+            sut.Invoking(x => x.Create(identifier))
                .Should().Throw<NotSupportedException>();
         }
     }
 
-    public class CreateByModel : ProviderComponentTests
+    public class CreateByModel
     {
         [Theory, AutoMockData]
         public void Does_Not_Throw_On_Null_Argument(
@@ -104,7 +106,7 @@ public partial class ProviderComponentTests
         }
     }
 
-    public class CreateByName : ProviderComponentTests
+    public class CreateByName
     {
         [Theory, AutoMockData]
         public void Throws_On_Null_Argument(ProviderComponent sut)
@@ -159,7 +161,7 @@ public partial class ProviderComponentTests
         }
     }
 
-    public class Supports : ProviderComponentTests
+    public class Supports
     {
         [Theory, AutoMockData]
         public void Returns_False_On_Null_Identifier(ProviderComponent sut)
@@ -175,11 +177,10 @@ public partial class ProviderComponentTests
         }
 
         [Theory, AutoMockData]
-        public void Returns_False_On_Unsupported_Identifier(ProviderComponent sut)
+        public void Returns_False_On_Unsupported_Identifier(
+            [Frozen] ITemplateIdentifier identifier,
+            ProviderComponent sut)
         {
-            // Arrange
-            var identifier = Substitute.For<ITemplateIdentifier>();
-
             // Act
             var result = sut.Supports(identifier);
 

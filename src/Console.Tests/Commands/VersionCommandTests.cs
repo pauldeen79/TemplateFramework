@@ -2,30 +2,35 @@
 
 public class VersionCommandTests
 {
-    [Fact]
-    public void Ctor_Throws_On_Null_Arguments()
+    public class Constructor
     {
-        typeof(VersionCommand).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
+        [Fact]
+        public void Throws_On_Null_Arguments()
+        {
+            typeof(VersionCommand).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
+        }
     }
-
-    [Theory, AutoMockData]
-    public void Initialize_Adds_VersionCommand_To_Application(VersionCommand sut)
+    public class Initialize
     {
-        // Arrange
-        using var app = new CommandLineApplication();
+        [Theory, AutoMockData]
+        public void Adds_VersionCommand_To_Application(VersionCommand sut)
+        {
+            // Arrange
+            using var app = new CommandLineApplication();
 
-        // Act
-        sut.Initialize(app);
+            // Act
+            sut.Initialize(app);
 
-        // Assert
-        app.Commands.Should().BeEmpty(); // aparently, this does not add a command that is publicly visible...
-    }
+            // Assert
+            app.Commands.Should().BeEmpty(); // aparently, this does not add a command that is publicly visible...
+        }
 
-    [Theory, AutoMockData]
-    public void Initialize_Throws_On_Null_Argument(VersionCommand sut)
-    {
-        // Act & Assert
-        sut.Invoking(x => x.Initialize(null!))
-           .Should().Throw<ArgumentNullException>();
+        [Theory, AutoMockData]
+        public void Throws_On_Null_Argument(VersionCommand sut)
+        {
+            // Act & Assert
+            sut.Invoking(x => x.Initialize(null!))
+               .Should().Throw<ArgumentNullException>();
+        }
     }
 }

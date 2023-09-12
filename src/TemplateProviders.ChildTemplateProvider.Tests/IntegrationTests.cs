@@ -2,15 +2,15 @@
 
 public class IntegrationTests
 {
-    [Fact]
-    public void Can_Render_MultipleContentBuilderTemplate_With_ChildTemplate_And_TemplateContext()
+    [Theory, AutoMockData]
+    public void Can_Render_MultipleContentBuilderTemplate_With_ChildTemplate_And_TemplateContext([Frozen] ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
     {
         // Arrange
         using var provider = new ServiceCollection()
             .AddTemplateFramework()
             .AddTemplateFrameworkChildTemplateProvider()
             .AddChildTemplate("MyTemplate", _ => new TestData.PlainTemplateWithTemplateContext(context => "Context IsRootContext: " + context.IsRootContext))
-            .AddSingleton(Substitute.For<ITemplateComponentRegistryPluginFactory>())
+            .AddSingleton(templateComponentRegistryPluginFactory)
             .BuildServiceProvider(true);
         using var scope = provider.CreateScope();
         var engine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();

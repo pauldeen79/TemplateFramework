@@ -2,10 +2,6 @@
 
 public class ValueConverterTests
 {
-    protected ValueConverter CreateSut() => new(new[] { TemplateParameterConverterMock });
-
-    protected ITemplateParameterConverter TemplateParameterConverterMock { get; } = Substitute.For<ITemplateParameterConverter>();
-
     public class Constructor
     {
         [Fact]
@@ -15,14 +11,16 @@ public class ValueConverterTests
         }
     }
 
-    public class Convert : ValueConverterTests
+    public class Convert
     {
-        [Fact]
-        public void Returns_Input_Value_When_No_TemplateParameterConverter_Supports_The_Type()
+        [Theory, AutoMockData]
+        public void Returns_Input_Value_When_No_TemplateParameterConverter_Supports_The_Type(
+            [Frozen] ITemplateParameterConverter templateParameterConverter, 
+            ValueConverter sut)
         {
             // Arrange
-            var sut = CreateSut();
             var value = "Hello world!";
+            templateParameterConverter.TryConvert(Arg.Any<object?>(), Arg.Any<Type>(), out Arg.Any<object?>()).Returns(false);
 
             // Act
             var result = sut.Convert(value, value.GetType());
@@ -31,13 +29,14 @@ public class ValueConverterTests
             result.Should().BeSameAs(value);
         }
 
-        [Fact]
-        public void Returns_Converted_Value_When_TemplateParameterConverter_Supports_The_Type()
+        [Theory, AutoMockData]
+        public void Returns_Converted_Value_When_TemplateParameterConverter_Supports_The_Type(
+            [Frozen] ITemplateParameterConverter templateParameterConverter,
+            ValueConverter sut)
         {
             // Arrange
-            var sut = CreateSut();
             var value = "Hello world!";
-            TemplateParameterConverterMock.TryConvert(Arg.Any<object?>(), Arg.Any<Type>(), out Arg.Any<object?>()).Returns(x =>
+            templateParameterConverter.TryConvert(Arg.Any<object?>(), Arg.Any<Type>(), out Arg.Any<object?>()).Returns(x =>
             {
                 x[2] = value.ToUpperInvariant();
                 return true;
@@ -48,7 +47,6 @@ public class ValueConverterTests
 
             // Assert
             result.Should().BeEquivalentTo(value.ToUpperInvariant());
-            TemplateParameterConverterMock.Received().TryConvert(Arg.Any<object?>(), Arg.Any<Type>(), out Arg.Any<object?>());
         }
     }
 }

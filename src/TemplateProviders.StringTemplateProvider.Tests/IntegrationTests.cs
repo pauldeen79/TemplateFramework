@@ -2,15 +2,15 @@
 
 public class IntegrationTests
 {
-    [Fact]
-    public void Can_Process_Template_With_FormattableString_Placeholders()
+    [Theory, AutoMockData]
+    public void Can_Process_Template_With_FormattableString_Placeholders([Frozen] ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
     {
         // Arrange
         var services = new ServiceCollection()
             .AddParsers()
             .AddTemplateFramework()
             .AddTemplateFrameworkStringTemplateProvider()
-            .AddSingleton(Substitute.For<ITemplateComponentRegistryPluginFactory>());
+            .AddSingleton(templateComponentRegistryPluginFactory);
 
         using var provider = services.BuildServiceProvider(true);
         using var scope = provider.CreateScope();
@@ -49,23 +49,21 @@ public class IntegrationTests
         result.Select(x => x.Name).Should().BeEquivalentTo("Prefix", "Name");
     }
 
-    [Fact]
-    public void Can_Use_Custom_Registered_PlaceholderProcessor_In_FormattableStringTemplate()
+    [Theory, AutoMockData]
+    public void Can_Use_Custom_Registered_PlaceholderProcessor_In_FormattableStringTemplate([Frozen] ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
     {
         // Arrange
-        var templateComponentRegistryPluginFactoryMock = Substitute.For<ITemplateComponentRegistryPluginFactory>();
-
         var services = new ServiceCollection()
             .AddParsers()
             .AddTemplateFramework()
             .AddTemplateFrameworkStringTemplateProvider()
-            .AddSingleton(templateComponentRegistryPluginFactoryMock)
+            .AddSingleton(templateComponentRegistryPluginFactory)
             .AddScoped<ITemplateComponentRegistryPlugin, TestTemplateComponentRegistryPlugin>();
 
         using var provider = services.BuildServiceProvider(true);
         using var scope = provider.CreateScope();
 
-        templateComponentRegistryPluginFactoryMock.Create(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>())
+        templateComponentRegistryPluginFactory.Create(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>())
             .Returns(args
                 => scope.ServiceProvider.GetServices<ITemplateComponentRegistryPlugin>()
                     .OfType<TestTemplateComponentRegistryPlugin>()
@@ -93,17 +91,15 @@ public class IntegrationTests
         builder.ToString().Should().Be("aaa Hello world! zzz");
     }
 
-    [Fact]
-    public void Can_Use_Expression_In_Placeholder_In_FormattableStringTemplate()
+    [Theory, AutoMockData]
+    public void Can_Use_Expression_In_Placeholder_In_FormattableStringTemplate([Frozen] ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
     {
         // Arrange
-        var templateComponentRegistryPluginFactoryMock = Substitute.For<ITemplateComponentRegistryPluginFactory>();
-
         var services = new ServiceCollection()
             .AddParsers()
             .AddTemplateFramework()
             .AddTemplateFrameworkStringTemplateProvider()
-            .AddSingleton(templateComponentRegistryPluginFactoryMock);
+            .AddSingleton(templateComponentRegistryPluginFactory);
 
         using var provider = services.BuildServiceProvider(true);
         using var scope = provider.CreateScope();
@@ -126,23 +122,21 @@ public class IntegrationTests
         builder.ToString().Should().Be("aaa 2 zzz");
     }
 
-    [Fact]
-    public void Can_Use_Custom_Registered_FunctionResultParser_In_FormattableStringTemplate()
+    [Theory, AutoMockData]
+    public void Can_Use_Custom_Registered_FunctionResultParser_In_FormattableStringTemplate([Frozen] ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
     {
         // Arrange
-        var templateComponentRegistryPluginFactoryMock = Substitute.For<ITemplateComponentRegistryPluginFactory>();
-
         var services = new ServiceCollection()
             .AddParsers()
             .AddTemplateFramework()
             .AddTemplateFrameworkStringTemplateProvider()
-            .AddSingleton(templateComponentRegistryPluginFactoryMock)
+            .AddSingleton(templateComponentRegistryPluginFactory)
             .AddScoped<ITemplateComponentRegistryPlugin, TestTemplateComponentRegistryPlugin>();
 
         using var provider = services.BuildServiceProvider(true);
         using var scope = provider.CreateScope();
 
-        templateComponentRegistryPluginFactoryMock.Create(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>())
+        templateComponentRegistryPluginFactory.Create(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>())
             .Returns(args
                 => scope.ServiceProvider.GetServices<ITemplateComponentRegistryPlugin>()
                     .OfType<TestTemplateComponentRegistryPlugin>()
@@ -170,23 +164,21 @@ public class IntegrationTests
         builder.ToString().Should().Be("aaa Hello world! zzz");
     }
 
-    [Fact]
-    public void Can_Use_Custom_Registered_FunctionResultParser_In_ExpressionStringTemplate()
+    [Theory, AutoMockData]
+    public void Can_Use_Custom_Registered_FunctionResultParser_In_ExpressionStringTemplate([Frozen] ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
     {
         // Arrange
-        var templateComponentRegistryPluginFactoryMock = Substitute.For<ITemplateComponentRegistryPluginFactory>();
-
         var services = new ServiceCollection()
             .AddParsers()
             .AddTemplateFramework()
             .AddTemplateFrameworkStringTemplateProvider()
-            .AddSingleton(templateComponentRegistryPluginFactoryMock)
+            .AddSingleton(templateComponentRegistryPluginFactory)
             .AddScoped<ITemplateComponentRegistryPlugin, TestTemplateComponentRegistryPlugin>();
 
         using var provider = services.BuildServiceProvider(true);
         using var scope = provider.CreateScope();
 
-        templateComponentRegistryPluginFactoryMock.Create(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>())
+        templateComponentRegistryPluginFactory.Create(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>())
             .Returns(args
                 => scope.ServiceProvider.GetServices<ITemplateComponentRegistryPlugin>()
                     .OfType<TestTemplateComponentRegistryPlugin>()
@@ -214,17 +206,15 @@ public class IntegrationTests
         builder.ToString().Should().Be("aaa Hello world! zzz");
     }
 
-    [Fact]
-    public void Can_Use_ExpressionFramework_In_FormattableStringTemplate()
+    [Theory, AutoMockData]
+    public void Can_Use_ExpressionFramework_In_FormattableStringTemplate([Frozen] ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
     {
         // Arrange
-        var templateComponentRegistryPluginFactoryMock = Substitute.For<ITemplateComponentRegistryPluginFactory>();
-
         var services = new ServiceCollection()
             .AddParsers()
             .AddTemplateFramework()
             .AddTemplateFrameworkStringTemplateProvider()
-            .AddSingleton(templateComponentRegistryPluginFactoryMock)
+            .AddSingleton(templateComponentRegistryPluginFactory)
             .AddExpressionParser();
 
         using var provider = services.BuildServiceProvider(true);
@@ -248,17 +238,15 @@ public class IntegrationTests
         builder.ToString().Should().Be($"AAA {DateTime.Today.ToString(CultureInfo.InvariantCulture)} ZZZ"); // CultureInfo.InvariantCulture is important to make this test pass on all cultures!
     }
 
-    [Fact]
-    public void Can_Use_ExpressionFramework_In_ExpressionStringTemplate()
+    [Theory, AutoMockData]
+    public void Can_Use_ExpressionFramework_In_ExpressionStringTemplate([Frozen] ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
     {
         // Arrange
-        var templateComponentRegistryPluginFactoryMock = Substitute.For<ITemplateComponentRegistryPluginFactory>();
-
         var services = new ServiceCollection()
             .AddParsers()
             .AddTemplateFramework()
             .AddTemplateFrameworkStringTemplateProvider()
-            .AddSingleton(templateComponentRegistryPluginFactoryMock)
+            .AddSingleton(templateComponentRegistryPluginFactory)
             .AddExpressionParser();
 
         using var provider = services.BuildServiceProvider(true);

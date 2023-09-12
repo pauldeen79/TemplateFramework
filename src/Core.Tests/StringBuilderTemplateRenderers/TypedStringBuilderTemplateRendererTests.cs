@@ -1,59 +1,54 @@
-namespace TemplateFramework.Core.Tests.StringBuilderTemplateRenderers;
+﻿namespace TemplateFramework.Core.Tests.StringBuilderTemplateRenderers;
 
 public class TypedStringBuilderTemplateRendererTests
 {
-    [Fact]
-    public void Returns_False_On_Null_Instance()
+    public class TryRender
     {
-        // Arrange
-        var sut = new TypedStringBuilderTemplateRenderer();
+        [Theory, AutoMockData]
+        public void Returns_False_On_Null_Instance(TypedStringBuilderTemplateRenderer sut)
+        {
+            // Act
+            var result = sut.TryRender(instance: null!, new StringBuilder());
 
-        // Act
-        var result = sut.TryRender(instance: null!, new StringBuilder());
+            // Assert
+            result.Should().BeFalse();
+        }
 
-        // Assert
-        result.Should().BeFalse();
-    }
+        [Theory, AutoMockData]
+        public void Returns_False_On_NonNull_Instance_But_Wrong_Type(TypedStringBuilderTemplateRenderer sut)
+        {
+            // Act
+            var result = sut.TryRender(instance: this, new StringBuilder());
 
-    [Fact]
-    public void Returns_False_On_NonNull_Instance_But_Wrong_Type()
-    {
-        // Arrange
-        var sut = new TypedStringBuilderTemplateRenderer();
+            // Assert
+            result.Should().BeFalse();
+        }
 
-        // Act
-        var result = sut.TryRender(instance: this, new StringBuilder());
+        [Theory, AutoMockData]
+        public void Returns_True_On_IStringBuilderTemplate_Instance(
+            [Frozen] IStringBuilderTemplate stringBuilderTemplate,
+            TypedStringBuilderTemplateRenderer sut)
+        {
+            // Act
+            var result = sut.TryRender(instance: stringBuilderTemplate, new StringBuilder());
 
-        // Assert
-        result.Should().BeFalse();
-    }
+            // Assert
+            result.Should().BeTrue();
+        }
 
-    [Fact]
-    public void Returns_True_On_IStringBuilderTemplate_Instance()
-    {
-        // Arrange
-        var sut = new TypedStringBuilderTemplateRenderer();
-        var templateMock = Substitute.For<IStringBuilderTemplate>();
+        [Theory, AutoMockData]
+        public void Renders_Template_On_IStringBuilderTemplate_Instance(
+            [Frozen] IStringBuilderTemplate stringBuilderTemplate, 
+            TypedStringBuilderTemplateRenderer sut)
+        {
+            // Arrange
+            var builder = new StringBuilder();
 
-        // Act
-        var result = sut.TryRender(instance: templateMock, new StringBuilder());
+            // Act
+            _ = sut.TryRender(instance: stringBuilderTemplate, builder);
 
-        // Assert
-        result.Should().BeTrue();
-    }
-
-    [Fact]
-    public void Renders_Template_On_IStringBuilderTemplate_Instance()
-    {
-        // Arrange
-        var sut = new TypedStringBuilderTemplateRenderer();
-        var templateMock = Substitute.For<IStringBuilderTemplate>();
-        var builder = new StringBuilder();
-
-        // Act
-        _ = sut.TryRender(instance: templateMock, builder);
-
-        // Assert
-        templateMock.Received().Render(builder);
+            // Assert
+            stringBuilderTemplate.Received().Render(builder);
+        }
     }
 }

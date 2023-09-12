@@ -11,7 +11,7 @@ public class CodeGenerationAssemblyCommandTests
         }
     }
 
-    public class Initialize : CodeGenerationAssemblyCommandTests
+    public class Initialize
     {
         [Theory, AutoMockData]
         public void Initialize_Adds_Command_To_Application(CodeGenerationAssemblyCommand sut)
@@ -35,7 +35,7 @@ public class CodeGenerationAssemblyCommandTests
         }
     }
 
-    public class ExecuteComand : CodeGenerationAssemblyCommandTests
+    public class ExecuteComand
     {
         [Theory, AutoMockData]
         public void Empty_AssemblyName_Results_In_Error(CodeGenerationAssemblyCommand sut)
