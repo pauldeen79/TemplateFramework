@@ -10,7 +10,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests
     public class Process : TemplateFrameworkContextPlaceholderProcessorTests
     {
         [Fact]
-        public void Throws_On_Null_Argument()
+        public void Throws_On_Null_Arguments()
         {
             typeof(ComponentRegistrationContext).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
         }

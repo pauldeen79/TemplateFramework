@@ -1,6 +1,6 @@
-﻿namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests.Extensions.ServiceCollectionExtensions;
+﻿namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests.Extensions;
 
-public partial class ServiceCollectionExtensionsTests
+public class ServiceCollectionExtensionsTests
 {
     public class AddChildTemplate
     {
@@ -103,6 +103,23 @@ public partial class ServiceCollectionExtensionsTests
             // Assert
             scope.ServiceProvider.GetRequiredService<ITemplateCreator>().CreateByName("Name").Should().NotBeNull();
             scope.ServiceProvider.GetRequiredService<ITemplateCreator>().CreateByModel("some string model").Should().NotBeNull();
+        }
+    }
+
+    public class AddTemplateFrameworkChildTemplateProvider
+    {
+        [Theory, AutoMockData]
+        public void All_Dependencies_Can_Be_Resolved([Frozen] ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
+        {
+            // Act
+            using var provider = new ServiceCollection()
+                .AddTemplateFramework()
+                .AddTemplateFrameworkChildTemplateProvider()
+                .AddSingleton(templateComponentRegistryPluginFactory)
+                .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
+
+            // Assert
+            provider.Should().NotBeNull();
         }
     }
 }

@@ -1,7 +1,4 @@
-﻿using AutoFixture.Xunit2;
-using Objectivity.AutoFixture.XUnit2.AutoNSubstitute.Attributes;
-
-namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests;
+﻿namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests;
 
 public class IntegrationTests
 {

@@ -5,7 +5,7 @@ public partial class RenderTemplateRequestTests
     public class Typed : RenderTemplateRequestTests
     {
         [Fact]
-        public void Throws_On_Null_Argument()
+        public void Throws_On_Null_Arguments()
         {
             typeof(RenderTemplateRequest).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments(p => !new[] { "model", "additionalParameters", "context"}.Contains(p.Name));
         }

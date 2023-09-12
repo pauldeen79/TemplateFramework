@@ -4,15 +4,15 @@ public class ServiceCollectionExtensionsTests
 {
     public class AddTemplateFrameworkStringTemplateProvider
     {
-        [Fact]
-        public void All_Dependencies_Can_Be_Resolved()
+        [Theory, AutoMockData]
+        public void All_Dependencies_Can_Be_Resolved([Frozen] ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
         {
             // Act
             using var provider = new ServiceCollection()
                 .AddParsers()
                 .AddTemplateFramework()
                 .AddTemplateFrameworkStringTemplateProvider()
-                .AddSingleton(Substitute.For<ITemplateComponentRegistryPluginFactory>())
+                .AddSingleton(templateComponentRegistryPluginFactory)
                 .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
 
             // Assert

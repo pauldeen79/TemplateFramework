@@ -13,7 +13,7 @@ public class ExpressionStringTemplateTests
     public class Constructor : ExpressionStringTemplateTests
     {
         [Fact]
-        public void Throws_On_Null_Argument()
+        public void Throws_On_Null_Arguments()
         {
             typeof(ExpressionStringTemplate).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments(
                 p => !new[] { "model", "iterationNumber", "iterationCount" }.Contains(p.Name));

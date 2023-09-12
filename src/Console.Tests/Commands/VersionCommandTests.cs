@@ -3,7 +3,7 @@
 public class VersionCommandTests
 {
     [Fact]
-    public void Ctor_Throws_On_Null_Argument()
+    public void Ctor_Throws_On_Null_Arguments()
     {
         typeof(VersionCommand).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
     }

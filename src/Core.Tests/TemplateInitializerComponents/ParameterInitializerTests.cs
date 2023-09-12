@@ -13,7 +13,7 @@ public class ParameterInitializerTests
     public class Constructor
     {
         [Fact]
-        public void Throws_On_Null_Argument()
+        public void Throws_On_Null_Arguments()
         {
             typeof(ParameterInitializerComponent).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
         }

@@ -7,7 +7,7 @@ public class CodeGenerationSettingsTests
     public class Constructor : CodeGenerationSettingsTests
     {
         [Fact]
-        public void Throws_On_Null_Argument()
+        public void Throws_On_Null_Arguments()
         {
             typeof(CodeGenerationSettings).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments(
                 parameterPredicate: p => new[] { "basePath", "defaultFilename" }.Contains(p.Name));

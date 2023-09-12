@@ -2,19 +2,21 @@
 
 public class IntegrationTests
 {
-    [Fact]
-    public void Can_Render_Template_From_CompiledTemplateProvider()
+    [Theory, AutoMockData]
+    public void Can_Render_Template_From_CompiledTemplateProvider(
+        [Frozen] IAssemblyInfoContextService assemblyInfoContextService,
+        [Frozen] ITemplateFactory templateFactory,
+        [Frozen] ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
     {
         // Arrange
-        var templateFactoryMock = Substitute.For<ITemplateFactory>();
-        templateFactoryMock.Create(Arg.Any<Type>()).Returns(x => Activator.CreateInstance(x.ArgAt<Type>(0))!);
+        templateFactory.Create(Arg.Any<Type>()).Returns(x => Activator.CreateInstance(x.ArgAt<Type>(0))!);
         using var provider = new ServiceCollection()
             .AddTemplateFramework()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFrameworkCompiledTemplateProvider()
-            .AddSingleton(Substitute.For<IAssemblyInfoContextService>())
-            .AddSingleton(templateFactoryMock)
-            .AddSingleton(Substitute.For<ITemplateComponentRegistryPluginFactory>())
+            .AddSingleton(assemblyInfoContextService)
+            .AddSingleton(templateFactory)
+            .AddSingleton(templateComponentRegistryPluginFactory)
             .BuildServiceProvider(true);
         using var scope = provider.CreateScope();
         var templateProvider = scope.ServiceProvider.GetRequiredService<ITemplateProvider>();

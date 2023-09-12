@@ -5,7 +5,7 @@ public partial class TemplateContextTests
     public class Constructor : TemplateContextTests
     {
         [Fact]
-        public void Throws_On_Null_Argument()
+        public void Throws_On_Null_Arguments()
         {
             typeof(TemplateContext).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments(p => !new[] { "model", "parentContext", "iterationNumber", "iterationCount" }.Contains(p.Name));
         }

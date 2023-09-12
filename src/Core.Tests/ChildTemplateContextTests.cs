@@ -10,7 +10,7 @@ public class ChildTemplateContextTests
     public class Constructor : ChildTemplateContextTests
     {
         [Fact]
-        public void Throws_On_Null_Argument()
+        public void Throws_On_Null_Arguments()
         {
             typeof(ChildTemplateContext).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments(p => !new[] { "model", "iterationNumber", "iterationCount" }.Contains(p.Name));
         }

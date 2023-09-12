@@ -43,12 +43,17 @@
   <ItemGroup>
     <ProjectReference Include="..\Core\TemplateFramework.Core.csproj" />
     <ProjectReference Include="..\TemplateProviders.CompiledTemplateProvider\TemplateFramework.TemplateProviders.CompiledTemplateProvider.csproj" />
+    <ProjectReference Include="..\Testing\TemplateFramework.Testing.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="AutoFixture" />
+    <Using Include="AutoFixture.AutoNSubstitute" />
+    <Using Include="AutoFixture.Xunit2" />
     <Using Include="FluentAssertions" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
     <Using Include="NSubstitute" />
+    <Using Include="Objectivity.AutoFixture.XUnit2.AutoNSubstitute.Attributes" />
     <Using Include="System.Text" />
     <Using Include="TemplateFramework.Abstractions" />
     <Using Include="TemplateFramework.Abstractions.Templates" />
@@ -61,6 +66,7 @@
     <Using Include="TemplateFramework.Runtime.Extensions" />
     <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.Extensions" />
     <Using Include="TemplateFramework.TemplateProviders.CompiledTemplateProvider.TemplateIdentifiers" />
+    <Using Include="TemplateFramework.Testing" />
     <Using Include="Xunit" />
   </ItemGroup>
 

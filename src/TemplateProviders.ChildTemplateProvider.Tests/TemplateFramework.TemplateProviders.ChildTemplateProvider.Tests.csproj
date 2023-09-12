@@ -48,10 +48,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="AutoFixture" />
+    <Using Include="AutoFixture.AutoNSubstitute" />
+    <Using Include="AutoFixture.Xunit2" />
     <Using Include="CommunityToolkit.Diagnostics" />
     <Using Include="FluentAssertions" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
     <Using Include="NSubstitute" />
+    <Using Include="Objectivity.AutoFixture.XUnit2.AutoNSubstitute.Attributes" />
     <Using Include="System.Globalization" />
     <Using Include="System.Text" />
     <Using Include="TemplateFramework.Abstractions" />

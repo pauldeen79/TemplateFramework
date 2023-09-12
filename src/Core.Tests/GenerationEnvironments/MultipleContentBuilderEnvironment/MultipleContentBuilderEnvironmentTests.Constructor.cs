@@ -5,7 +5,7 @@ public partial class MultipleContentBuilderEnvironmentTests
     public class Constructor : MultipleContentBuilderEnvironmentTests
     {
         [Fact]
-        public void Throws_On_Null_Argument()
+        public void Throws_On_Null_Arguments()
         {
             typeof(MultipleContentBuilderEnvironment).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
         }

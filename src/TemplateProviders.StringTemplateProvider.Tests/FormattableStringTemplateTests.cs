@@ -12,7 +12,7 @@ public class FormattableStringTemplateTests
     public class Constructor : FormattableStringTemplateTests
     {
         [Fact]
-        public void Throws_On_Null_Argument()
+        public void Throws_On_Null_Arguments()
         {
             typeof(FormattableStringTemplate).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments(
                 p => !new[] { "model", "iterationNumber", "iterationCount" }.Contains(p.Name));
