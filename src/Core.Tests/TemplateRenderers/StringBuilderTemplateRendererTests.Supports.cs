@@ -1,4 +1,4 @@
-namespace TemplateFramework.Core.Tests.TemplateRenderers;
+﻿namespace TemplateFramework.Core.Tests.TemplateRenderers;
 
 public partial class StringBuilderTemplateRendererTests
 {

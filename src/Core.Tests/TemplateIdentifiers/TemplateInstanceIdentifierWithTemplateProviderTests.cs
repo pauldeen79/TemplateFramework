@@ -5,6 +5,12 @@ public class TemplateInstanceIdentifierWithTemplateProviderTests
     public class Constructor
     {
         [Fact]
+        public void Throws_On_Null_Arguments()
+        {
+            typeof(TemplateInstanceIdentifierWithTemplateProvider).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments(p => !new[] { "currentDirectory", "templateProviderAssemblyName", "templateProviderClassName" }.Contains(p.Name));
+        }
+
+        [Fact]
         public void Constructs_Without_Custom_CurrentDirectory()
         {
             // Act

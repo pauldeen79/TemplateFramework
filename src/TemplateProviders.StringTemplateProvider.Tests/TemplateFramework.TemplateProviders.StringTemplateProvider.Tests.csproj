@@ -14,7 +14,7 @@
     <PackageReference Include="FluentAssertions" Version="6.12.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
-    <PackageReference Include="NSubstitute" Version="5.0.0" />
+    <PackageReference Include="Objectivity.AutoFixture.XUnit2.AutoNSubstitute" Version="3.5.0" />
     <PackageReference Include="pauldeen79.ExpressionFramework.Domain.Parser" Version="0.5.14" />
     <PackageReference Include="xunit" Version="2.5.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.0">
@@ -30,9 +30,13 @@
   <ItemGroup>
     <ProjectReference Include="..\Core\TemplateFramework.Core.csproj" />
     <ProjectReference Include="..\TemplateProviders.StringTemplateProvider\TemplateFramework.TemplateProviders.StringTemplateProvider.csproj" />
+    <ProjectReference Include="..\Testing\TemplateFramework.Testing.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="AutoFixture" />
+    <Using Include="AutoFixture.AutoNSubstitute" />
+    <Using Include="AutoFixture.Xunit2" />
     <Using Include="CommunityToolkit.Diagnostics" />
     <Using Include="CrossCutting.Common.Results" />
     <Using Include="CrossCutting.Utilities.Parsers" />
@@ -42,6 +46,7 @@
     <Using Include="FluentAssertions" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
     <Using Include="NSubstitute" />
+    <Using Include="Objectivity.AutoFixture.XUnit2.AutoNSubstitute.Attributes" />
     <Using Include="System.Globalization" />
     <Using Include="System.Text" />
     <Using Include="TemplateFramework.Abstractions" />
@@ -54,6 +59,7 @@
     <Using Include="TemplateFramework.Runtime.Extensions" />
     <Using Include="TemplateFramework.TemplateProviders.StringTemplateProvider.Extensions" />
     <Using Include="TemplateFramework.TemplateProviders.StringTemplateProvider.TemplateIdentifiers" />
+    <Using Include="TemplateFramework.Testing" />
     <Using Include="Xunit" />
   </ItemGroup>
     

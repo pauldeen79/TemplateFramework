@@ -8,7 +8,6 @@ public sealed class FormattableStringTemplateIdentifier : ITemplateComponentRegi
     {
     }
 
-
     public FormattableStringTemplateIdentifier(
         string template,
         IFormatProvider formatProvider,

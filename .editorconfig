@@ -122,14 +122,8 @@ dotnet_analyzer_diagnostic.severity = warning
 dotnet_analyzer_diagnostic.category-Style.severity = silent
 
 # Specific exclusions
-# Do not nest type x. Alternatively, change its accessibility so that it is not externally visible. (I'm using this in unit tests extensively)
-dotnet_diagnostic.CA1034.severity = none
-# Type 'x' is a static holder type but is neither static nor NotInheritable (I'm using this in unit tests extensively)
-dotnet_diagnostic.CA1052.severity = none
 # Method 'x' passes a literal string as parameter 'y' of a call to 'z'. Retrieve the following string(s) from a resource table instead: "a".
 dotnet_diagnostic.CA1303.severity = none
-#Remove the underscores from member name x (I'm using this in unit tests extensively)
-dotnet_diagnostic.CA1707.severity = none
 #Avoid dead conditional code (does not seem to work on using statement?)
 dotnet_diagnostic.CA1508.severity = none
 # CA1822: Mark members as static (does not seem to work flawlessly)
@@ -144,6 +138,14 @@ dotnet_code_quality.CA1062.exclude_extension_method_this_parameter = true
 [*Test*.cs]
 # Getting false positives on arguments possibly being null. They're injected using AutoFixture!
 dotnet_diagnostic.CA1062.severity = none
+# Do not nest type x. Alternatively, change its accessibility so that it is not externally visible. (I'm using this in unit tests extensively)
+dotnet_diagnostic.CA1034.severity = none
+# Type 'x' is a static holder type but is neither static nor NotInheritable (I'm using this in unit tests extensively)
+dotnet_diagnostic.CA1052.severity = none
+#Remove the underscores from member name x (I'm using this in unit tests extensively)
+dotnet_diagnostic.CA1707.severity = none
+#pragma warning disable S2344 // Enumeration type names should not have "Flags" or "Enum" suffixes
+dotnet_diagnostic.S2344.severity = none
 
 ###############################
 # VB Coding Conventions       #

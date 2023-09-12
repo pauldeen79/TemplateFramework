@@ -1,87 +1,80 @@
-namespace TemplateFramework.Core.Tests.StringBuilderTemplateRenderers;
+﻿namespace TemplateFramework.Core.Tests.StringBuilderTemplateRenderers;
 
 public class TypedTextTransformTemplateRendererTests
 {
-    [Fact]
-    public void Returns_False_On_Null_Instance()
+    public class TryRender
     {
-        // Arrange
-        var sut = new TypedTextTransformTemplateRenderer();
+        [Theory, AutoMockData]
+        public void Returns_False_On_Null_Instance(TypedTextTransformTemplateRenderer sut)
+        {
+            // Act
+            var result = sut.TryRender(instance: null!, new StringBuilder());
 
-        // Act
-        var result = sut.TryRender(instance: null!, new StringBuilder());
+            // Assert
+            result.Should().BeFalse();
+        }
 
-        // Assert
-        result.Should().BeFalse();
-    }
+        [Theory, AutoMockData]
+        public void Returns_False_On_NonNull_Instance_But_Wrong_Type(TypedTextTransformTemplateRenderer sut)
+        {
+            // Act
+            var result = sut.TryRender(instance: this, new StringBuilder());
 
-    [Fact]
-    public void Returns_False_On_NonNull_Instance_But_Wrong_Type()
-    {
-        // Arrange
-        var sut = new TypedTextTransformTemplateRenderer();
+            // Assert
+            result.Should().BeFalse();
+        }
 
-        // Act
-        var result = sut.TryRender(instance: this, new StringBuilder());
+        [Theory, AutoMockData]
+        public void Returns_True_On_ITextTransformTemplate_Instance(
+            [Frozen] ITextTransformTemplate textTransformTemplate,
+            TypedTextTransformTemplateRenderer sut)
+        {
+            // Act
+            var result = sut.TryRender(instance: textTransformTemplate, new StringBuilder());
 
-        // Assert
-        result.Should().BeFalse();
-    }
+            // Assert
+            result.Should().BeTrue();
+        }
 
-    [Fact]
-    public void Returns_True_On_ITextTransformTemplate_Instance()
-    {
-        // Arrange
-        var sut = new TypedTextTransformTemplateRenderer();
-        var templateMock = Substitute.For<ITextTransformTemplate>();
+        [Theory, AutoMockData]
+        public void Renders_Template_On_IStringBuilderTemplate_Instance(
+            [Frozen] ITextTransformTemplate textTransformTemplate,
+            TypedTextTransformTemplateRenderer sut)
+        {
+            // Act
+            _ = sut.TryRender(instance: textTransformTemplate, new StringBuilder());
 
-        // Act
-        var result = sut.TryRender(instance: templateMock, new StringBuilder());
+            // Assert
+            textTransformTemplate.Received().TransformText();
+        }
 
-        // Assert
-        result.Should().BeTrue();
-    }
+        [Theory, AutoMockData]
+        public void Appends_Result_From_Template_To_GenerationEnvironment_On_IStringBuilderTemplate_Instance(
+            [Frozen] ITextTransformTemplate textTransformTemplate,
+            TypedTextTransformTemplateRenderer sut)
+        {
+            // Arrange
+            textTransformTemplate.TransformText().Returns("Hello world!");
+            var builder = new StringBuilder();
 
-    [Fact]
-    public void Renders_Template_On_IStringBuilderTemplate_Instance()
-    {
-        // Arrange
-        var sut = new TypedTextTransformTemplateRenderer();
-        var templateMock = Substitute.For<ITextTransformTemplate>();
+            // Act
+            _ = sut.TryRender(instance: textTransformTemplate, builder);
 
-        // Act
-        _ = sut.TryRender(instance: templateMock, new StringBuilder());
+            // Assert
+            builder.ToString().Should().Be("Hello world!");
+        }
 
-        // Assert
-        templateMock.Received().TransformText();
-    }
+        [Theory, AutoMockData]
+        public void Throws_On_Null_GenerationEnvironment(
+            [Frozen] ITextTransformTemplate textTransformTemplate,
+            TypedTextTransformTemplateRenderer sut)
+        {
+            // Arrange
+            textTransformTemplate.TransformText().Returns("Hello world!");
 
-    [Fact]
-    public void Appends_Result_From_Template_To_GenerationEnvironment_On_IStringBuilderTemplate_Instance()
-    {
-        // Arrange
-        var sut = new TypedTextTransformTemplateRenderer();
-        var templateMock = Substitute.For<ITextTransformTemplate>();
-        templateMock.TransformText().Returns("Hello world!");
-        var builder = new StringBuilder();
-
-        // Act
-        _ = sut.TryRender(instance: templateMock, builder);
-
-        // Assert
-        builder.ToString().Should().Be("Hello world!");
-    }
-
-    [Fact]
-    public void Throws_On_Null_GenerationEnvironment()
-    {
-        // Arrange
-        var sut = new TypedTextTransformTemplateRenderer();
-        var templateMock = Substitute.For<ITextTransformTemplate>();
-        templateMock.TransformText().Returns("Hello world!");
-
-        // Act & Assert
-        sut.Invoking(x => x.TryRender(templateMock, builder: null!))
-           .Should().Throw<ArgumentNullException>().WithParameterName("builder");
+            // Act & Assert
+            sut.Invoking(x => x.TryRender(textTransformTemplate, builder: null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("builder");
+        }
     }
 }

@@ -5,32 +5,16 @@ public class CommandBaseTests
     protected const string AssemblyName = "MyAssemblyName";
     protected const string Filename = "MyFile.txt";
 
-    protected void SetupMultipleContentBuilderMock(IMultipleContentBuilder multipleContentBuilderMock, string filenamePrefix)
-    {
-        var contentBuilderMock1 = Substitute.For<IContent>();
-        contentBuilderMock1.Filename.Returns($"{filenamePrefix}File1.txt");
-        contentBuilderMock1.Contents.Returns("Contents from file1");
-
-        var contentBuilderMock2 = Substitute.For<IContent>();
-        contentBuilderMock2.Filename.Returns($"{filenamePrefix}File2.txt");
-        contentBuilderMock2.Contents.Returns("Contents from file2");
-
-        var multipleContentMock = Substitute.For<IMultipleContent>();
-        multipleContentMock.Contents.Returns(new[] { contentBuilderMock1, contentBuilderMock2 });
-
-        multipleContentBuilderMock.Build().Returns(multipleContentMock);
-    }
-
     public class Constructor
     {
         [Fact]
-        public void Throws_On_Null_Argument()
+        public void Throws_On_Null_Arguments()
         {
-            typeof(CommandBaseTest).ShouldArgumentNullExceptionsInConstructorOnNullArguments();
+            typeof(CommandBaseTest).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
         }
     }
 
-    public class Watch : CommandBaseTests
+    public class Watch
     {
         [Theory, AutoMockData]
         public void Throws_On_Null_App(CommandBaseTest sut)
@@ -78,11 +62,11 @@ public class CommandBaseTests
 
         [Theory, AutoMockData]
         public void Writes_ErrorMessage_When_Watch_Argument_Is_True_And_File_Does_Not_Exist(
-            [Frozen] IFileSystem fileSystemMock,
+            [Frozen] IFileSystem fileSystem,
             CommandBaseTest sut)
         {
             // Arrange
-            fileSystemMock.FileExists(Filename).Returns(false);
+            fileSystem.FileExists(Filename).Returns(false);
 
             // Act
             var result = CommandLineCommandHelper.ExecuteCommand(app => sut.WatchPublic(app, true, Filename, () => { }));
@@ -93,13 +77,13 @@ public class CommandBaseTests
 
         [Theory, AutoMockData]
         public void Does_Not_Execute_Action_When_Watch_Argument_Is_True_And_File_Does_Not_Exist(
-            [Frozen] IFileSystem fileSystemMock,
+            [Frozen] IFileSystem fileSystem,
             CommandBaseTest sut)
         {
             // Arrange
             using var app = new CommandLineApplication();
             var counter = 0;
-            fileSystemMock.FileExists(Filename).Returns(false);
+            fileSystem.FileExists(Filename).Returns(false);
 
             // Act
             sut.WatchPublic(app, true, Filename, () => counter++);
@@ -110,14 +94,14 @@ public class CommandBaseTests
 
         [Theory, AutoMockData]
         public void Repeats_Action_When_File_Has_Changed(
-            [Frozen] IFileSystem fileSystemMock,
+            [Frozen] IFileSystem fileSystem,
             CommandBaseTest sut)
         {
             // Arrange
             using var app = new CommandLineApplication();
             var fileSystemCallCounter = 0;
             var actionCallCounter = 0;
-            fileSystemMock.FileExists(Filename).Returns(_ =>
+            fileSystem.FileExists(Filename).Returns(_ =>
             {
                 if (fileSystemCallCounter > 2)
                 {
@@ -125,7 +109,7 @@ public class CommandBaseTests
                 }
                 return true;
             });
-            fileSystemMock.GetFileLastWriteTime(Filename).Returns(_ =>
+            fileSystem.GetFileLastWriteTime(Filename).Returns(_ =>
             {
                 fileSystemCallCounter++;
                 return DateTime.MinValue.AddDays(fileSystemCallCounter);
@@ -140,17 +124,17 @@ public class CommandBaseTests
 
         [Theory, AutoMockData]
         public void Breaks_Watch_Loop_When_File_Has_Been_Removed(
-            [Frozen] IFileSystem fileSystemMock,
+            [Frozen] IFileSystem fileSystem,
             CommandBaseTest sut)
         {
             // Arrange
             var fileSystemCallCounter = 0;
             var actionCallCounter = 0;
-            fileSystemMock.FileExists(Filename).Returns(_ =>
+            fileSystem.FileExists(Filename).Returns(_ =>
             {
                 return fileSystemCallCounter < 3;
             });
-            fileSystemMock.GetFileLastWriteTime(Filename).Returns(_ =>
+            fileSystem.GetFileLastWriteTime(Filename).Returns(_ =>
             {
                 fileSystemCallCounter++;
                 return DateTime.MinValue.AddDays(fileSystemCallCounter);
@@ -166,7 +150,7 @@ Error: Could not find file [MyFile.txt]. Could not watch file for changes.
         }
     }
 
-    public class GetCurrentDirectory : CommandBaseTests
+    public class GetCurrentDirectory
     {
         [Theory, AutoMockData]
         public void Returns_Empty_String_On_Null_AssemblyName(CommandBaseTest sut)
@@ -209,8 +193,24 @@ Error: Could not find file [MyFile.txt]. Could not watch file for changes.
         }
     }
 
-    public class GenerateSingleOutput : CommandBaseTests
+    public class GenerateSingleOutput
     {
+        private void SetupMultipleContentBuilderMock(IMultipleContentBuilder multipleContentBuilder, string filenamePrefix)
+        {
+            var contentBuilderMock1 = Substitute.For<IContent>();
+            contentBuilderMock1.Filename.Returns($"{filenamePrefix}File1.txt");
+            contentBuilderMock1.Contents.Returns("Contents from file1");
+
+            var contentBuilderMock2 = Substitute.For<IContent>();
+            contentBuilderMock2.Filename.Returns($"{filenamePrefix}File2.txt");
+            contentBuilderMock2.Contents.Returns("Contents from file2");
+
+            var multipleContentMock = Substitute.For<IMultipleContent>();
+            multipleContentMock.Contents.Returns(new[] { contentBuilderMock1, contentBuilderMock2 });
+
+            multipleContentBuilder.Build().Returns(multipleContentMock);
+        }
+
         [Theory, AutoMockData]
         public void Throws_On_Null_Builder(CommandBaseTest sut)
         {
@@ -221,24 +221,24 @@ Error: Could not find file [MyFile.txt]. Could not watch file for changes.
 
         [Theory, AutoMockData]
         public void Throws_On_Null_BasePath(
-            [Frozen] IMultipleContentBuilder multipleContentBuilderMock,
+            [Frozen] IMultipleContentBuilder multipleContentBuilder,
             CommandBaseTest sut)
         {
             // Act & Assert
-            sut.Invoking(x => x.GenerateSingleOutputPublic(multipleContentBuilderMock, basePath: null!))
+            sut.Invoking(x => x.GenerateSingleOutputPublic(multipleContentBuilder, basePath: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("basePath");
         }
 
         [Theory, AutoMockData]
         public void Uses_Filename_From_Content_When_BasePath_Is_Empty(
-            [Frozen] IMultipleContentBuilder multipleContentBuilderMock,
+            [Frozen] IMultipleContentBuilder multipleContentBuilder,
             CommandBaseTest sut)
         {
             // Arrange
-            SetupMultipleContentBuilderMock(multipleContentBuilderMock, string.Empty);
+            SetupMultipleContentBuilderMock(multipleContentBuilder, string.Empty);
 
             // Act
-            var result = sut.GenerateSingleOutputPublic(multipleContentBuilderMock, string.Empty);
+            var result = sut.GenerateSingleOutputPublic(multipleContentBuilder, string.Empty);
 
             // Assert
             result.Should().Be(@"File1.txt:
@@ -250,14 +250,14 @@ Contents from file2
 
         [Theory, AutoMockData]
         public void Uses_Combined_Filename_When_Content_Filename_Is_PathRooted_And_BasePath_Is_Filled(
-            [Frozen] IMultipleContentBuilder multipleContentBuilderMock,
+            [Frozen] IMultipleContentBuilder multipleContentBuilder,
             CommandBaseTest sut)
         {
             // Arrange
-            SetupMultipleContentBuilderMock(multipleContentBuilderMock, Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar);
+            SetupMultipleContentBuilderMock(multipleContentBuilder, Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar);
 
             // Act
-            var result = sut.GenerateSingleOutputPublic(multipleContentBuilderMock, "BasePath" + Path.DirectorySeparatorChar);
+            var result = sut.GenerateSingleOutputPublic(multipleContentBuilder, "BasePath" + Path.DirectorySeparatorChar);
 
             // Assert
             result.Should().Be($@"{Directory.GetCurrentDirectory()}{Path.DirectorySeparatorChar}File1.txt:
@@ -269,14 +269,14 @@ Contents from file2
 
         [Theory, AutoMockData]
         public void Uses_Combined_Filename_When_Content_Filename_Is_PathRooted_And_BasePath_Is_Not_Filled(
-            [Frozen] IMultipleContentBuilder multipleContentBuilderMock,
+            [Frozen] IMultipleContentBuilder multipleContentBuilder,
             CommandBaseTest sut)
         {
             // Arrange
-            SetupMultipleContentBuilderMock(multipleContentBuilderMock, string.Empty);
+            SetupMultipleContentBuilderMock(multipleContentBuilder, string.Empty);
 
             // Act
-            var result = sut.GenerateSingleOutputPublic(multipleContentBuilderMock, "BasePath" + Path.DirectorySeparatorChar);
+            var result = sut.GenerateSingleOutputPublic(multipleContentBuilder, "BasePath" + Path.DirectorySeparatorChar);
 
             // Assert
             result.Should().Be($@"BasePath{Path.DirectorySeparatorChar}File1.txt:
@@ -284,19 +284,18 @@ Contents from file1
 BasePath{Path.DirectorySeparatorChar}File2.txt:
 Contents from file2
 ");
-
         }
 
         [Theory, AutoMockData]
         public void Uses_Filename_From_Content_When_Content_Filename_Is_Not_PathRooted_And_BasePath_Is_Empty(
-            [Frozen] IMultipleContentBuilder multipleContentBuilderMock,
+            [Frozen] IMultipleContentBuilder multipleContentBuilder,
             CommandBaseTest sut)
         {
             // Arrange
-            SetupMultipleContentBuilderMock(multipleContentBuilderMock, string.Empty);
+            SetupMultipleContentBuilderMock(multipleContentBuilder, string.Empty);
 
             // Act
-            var result = sut.GenerateSingleOutputPublic(multipleContentBuilderMock, string.Empty);
+            var result = sut.GenerateSingleOutputPublic(multipleContentBuilder, string.Empty);
 
             // Assert
             result.Should().Be($@"File1.txt:
@@ -307,7 +306,7 @@ Contents from file2
         }
     }
 
-    public class WriteOutputToHost : CommandBaseTests
+    public class WriteOutputToHost
     {
         [Theory, AutoMockData]
         public void Throws_On_Null_App(CommandBaseTest sut)
@@ -348,7 +347,7 @@ TemplateOutput
         }
     }
 
-    public class WriteOutputToClipboard : CommandBaseTests
+    public class WriteOutputToClipboard
     {
         [Theory, AutoMockData]
         public void Throws_On_Null_App(CommandBaseTest sut)
@@ -368,14 +367,14 @@ TemplateOutput
 
         [Theory, AutoMockData]
         public void Copies_Output_To_Clipboard(
-            [Frozen] IClipboard clipboardMock,
+            [Frozen] IClipboard clipboard,
             CommandBaseTest sut)
         {
             // Act
             _ = CommandLineCommandHelper.ExecuteCommand(app => sut.WriteOutputToClipboardPublic(app, "TemplateOutput", true));
 
             // Assert
-            clipboardMock.Received().SetText("TemplateOutput");
+            clipboard.Received().SetText("TemplateOutput");
         }
 
         [Theory, AutoMockData]
@@ -399,7 +398,7 @@ TemplateOutput
         }
     }
 
-    public class GetDryRun : CommandBaseTests
+    public class GetDryRun
     {
         [Theory,
             InlineAutoMockData(true, false, true),
@@ -416,7 +415,7 @@ TemplateOutput
         }
     }
 
-    public class GetDefaultFilename : CommandBaseTests
+    public class GetDefaultFilename
     {
         [Theory,
             InlineAutoMockData("Filled", "Filled"),
@@ -432,7 +431,7 @@ TemplateOutput
         }
     }
 
-    public class GetBasePath : CommandBaseTests
+    public class GetBasePath
     {
         [Theory,
             InlineAutoMockData("Filled", "Filled"),

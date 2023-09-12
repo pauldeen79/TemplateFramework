@@ -12,27 +12,10 @@ public class FormattableStringTemplateTests
     public class Constructor : FormattableStringTemplateTests
     {
         [Fact]
-        public void Throws_On_Null_FormattableStringTemplateIdentifier()
+        public void Throws_On_Null_Arguments()
         {
-            // Act & Assert
-            this.Invoking(_ => new FormattableStringTemplate(formattableStringTemplateIdentifier: null!, FormattableStringParserMock, ComponentRegistrationContext))
-                .Should().Throw<ArgumentNullException>().WithParameterName("formattableStringTemplateIdentifier");
-        }
-
-        [Fact]
-        public void Throws_On_Null_FormattableStringParser()
-        {
-            // Act & Assert
-            this.Invoking(_ => new FormattableStringTemplate(Identifier, formattableStringParser: null!, ComponentRegistrationContext))
-                .Should().Throw<ArgumentNullException>().WithParameterName("formattableStringParser");
-        }
-
-        [Fact]
-        public void Throws_On_Null_ComponentRegistrationContext()
-        {
-            // Act & Assert
-            this.Invoking(_ => new FormattableStringTemplate(Identifier, FormattableStringParserMock, componentRegistrationContext: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("componentRegistrationContext");
+            typeof(FormattableStringTemplate).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments(
+                p => !new[] { "model", "iterationNumber", "iterationCount" }.Contains(p.Name));
         }
     }
 

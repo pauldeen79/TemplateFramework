@@ -13,35 +13,10 @@ public class ExpressionStringTemplateTests
     public class Constructor : ExpressionStringTemplateTests
     {
         [Fact]
-        public void Throws_On_Null_ExpressionStringTemplateIdentifier()
+        public void Throws_On_Null_Arguments()
         {
-            // Act & Assert
-            this.Invoking(_ => new ExpressionStringTemplate(expressionStringTemplateIdentifier: null!, ExpressionStringParserMock, FormattableStringParserMock, ComponentRegistrationContext))
-                .Should().Throw<ArgumentNullException>().WithParameterName("expressionStringTemplateIdentifier");
-        }
-
-        [Fact]
-        public void Throws_On_Null_ExpressionStringParser()
-        {
-            // Act & Assert
-            this.Invoking(_ => new ExpressionStringTemplate(Identifier, expressionStringParser: null!, FormattableStringParserMock, ComponentRegistrationContext))
-                .Should().Throw<ArgumentNullException>().WithParameterName("expressionStringParser");
-        }
-
-        [Fact]
-        public void Throws_On_Null_FormattableStringParser()
-        {
-            // Act & Assert
-            this.Invoking(_ => new ExpressionStringTemplate(Identifier, ExpressionStringParserMock, formattableStringParser: null!, ComponentRegistrationContext))
-                .Should().Throw<ArgumentNullException>().WithParameterName("formattableStringParser");
-        }
-
-        [Fact]
-        public void Throws_On_Null_ComponentRegistrationContext()
-        {
-            // Act & Assert
-            this.Invoking(_ => new ExpressionStringTemplate(Identifier, ExpressionStringParserMock, FormattableStringParserMock, componentRegistrationContext: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("componentRegistrationContext");
+            typeof(ExpressionStringTemplate).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments(
+                p => !new[] { "model", "iterationNumber", "iterationCount" }.Contains(p.Name));
         }
     }
 

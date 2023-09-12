@@ -2,10 +2,12 @@
 
 public class TemplateByNameIdentifierTests
 {
-    [Fact]
-    public void Throws_On_Null_Argument()
+    public class Constructor
     {
-        this.Invoking(_ => new TemplateByNameIdentifier(name: null!))
-            .Should().Throw<ArgumentNullException>().WithParameterName("name");
+        [Fact]
+        public void Throws_On_Null_Arguments()
+        {
+            typeof(TemplateByNameIdentifier).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
+        }
     }
 }

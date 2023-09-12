@@ -5,21 +5,11 @@ public class ExpressionStringTemplateIdentifierTests
     public class Constructor
     {
         [Fact]
-        public void Throws_On_Null_Template()
+        public void Throws_On_Null_Arguments()
         {
-            // Act & Assert
-            this.Invoking(_ => new ExpressionStringTemplateIdentifier(template: null!, CultureInfo.CurrentCulture))
-                .Should().Throw<ArgumentNullException>().WithParameterName("template");
+            typeof(ExpressionStringTemplateIdentifier).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments(p => !new[] { "pluginAssemblyName", "pluginClassName", "currentDirectory" }.Contains(p.Name));
         }
-
-        [Fact]
-        public void Throws_On_Null_FormatProvider()
-        {
-            // Act & Assert
-            this.Invoking(_ => new ExpressionStringTemplateIdentifier("some template", formatProvider: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("formatProvider");
-        }
-        
+       
         [Fact]
         public void Sets_Properties_Correctly_On_Empty_CurrentDirectory()
         {

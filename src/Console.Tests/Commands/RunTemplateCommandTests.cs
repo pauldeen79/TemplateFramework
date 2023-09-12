@@ -5,13 +5,13 @@ public class RunTemplateCommandTests
     public class Constructor
     {
         [Fact]
-        public void Throws_On_Null_Argument()
+        public void Throws_On_Null_Arguments()
         {
-            typeof(RunTemplateCommand).ShouldArgumentNullExceptionsInConstructorOnNullArguments();
+            typeof(RunTemplateCommand).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
         }
     }
 
-    public class Initialize : RunTemplateCommandTests
+    public class Initialize
     {
         [Theory, AutoMockData]
         public void Initialize_Adds_Command_To_Application(RunTemplateCommand sut)
@@ -35,7 +35,7 @@ public class RunTemplateCommandTests
         }
     }
 
-    public class ExecuteCommand : RunTemplateCommandTests
+    public class ExecuteCommand
     {
         [Theory, AutoMockData]
         public void Empty_AssemblyName_Results_In_Error(RunTemplateCommand sut)
