@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.TemplateProviders.CompiledTemplateProvider.Tests;
 
-public class ProviderComponentTests
+public class ProviderComponentTests : TestBase<ProviderComponent>
 {
     public class Constructor
     {
@@ -11,7 +11,7 @@ public class ProviderComponentTests
         }
     }
 
-    public class Create
+    public class Create : ProviderComponentTests
     {
         private void SetupAssemblyService(IAssemblyService assemblyService)
         {
@@ -19,33 +19,38 @@ public class ProviderComponentTests
                            .Returns(GetType().Assembly);
         }
 
-        [Theory, AutoMockData]
-        public void Throws_On_Null_Identifier(ProviderComponent sut)
+        [Fact]
+        public void Throws_On_Null_Identifier()
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act & Assert
             sut.Invoking(x => x.Create(identifier: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("identifier");
         }
 
-        [Theory, AutoMockData]
-        public void Throws_On_Identifier_Other_Than_CreateCompiledTemplateRequest(
-            [Frozen] ITemplateIdentifier templateIdentifier,
-            ProviderComponent sut)
+        [Fact]
+        public void Throws_On_Identifier_Other_Than_CreateCompiledTemplateRequest()
         {
+            // Arrange
+            var templateIdentifier = Fixture.Freeze<ITemplateIdentifier>();
+            var sut = CreateSut();
+
             // Act & Assert
             sut.Invoking(x => x.Create(identifier: templateIdentifier))
                .Should().Throw<ArgumentException>().WithParameterName("identifier");
         }
 
-        [Theory, AutoMockData]
-        public void Returns_Template_Instance_Correctly(
-            [Frozen] ITemplateFactory compiledTemplateFactory,
-            [Frozen] IAssemblyService assemblyService,
-            ProviderComponent sut)
+        [Fact]
+        public void Returns_Template_Instance_Correctly()
         {
             // Arrange
+            var templateFactory = Fixture.Freeze<ITemplateFactory>();
+            var assemblyService = Fixture.Freeze<IAssemblyService>();
             SetupAssemblyService(assemblyService);
-            compiledTemplateFactory.Create(Arg.Any<Type>()).Returns(x => Activator.CreateInstance(x.ArgAt<Type>(0))!);
+            templateFactory.Create(Arg.Any<Type>()).Returns(x => Activator.CreateInstance(x.ArgAt<Type>(0))!);
+            var sut = CreateSut();
 
             // Act
             var instance = sut.Create(new CompiledTemplateIdentifier(GetType().Assembly.FullName!, GetType().FullName!));
@@ -55,23 +60,30 @@ public class ProviderComponentTests
             instance.Should().BeOfType<Create>();
         }
 
-        [Theory, AutoMockData]
-        public void Throws_On_Wrong_ClassName(ProviderComponent sut)
+        [Fact]
+        public void Throws_On_Wrong_ClassName()
         {
+            // Arrange
+            var templateFactory = Fixture.Freeze<ITemplateFactory>();
+            var assemblyService = Fixture.Freeze<IAssemblyService>();
+            SetupAssemblyService(assemblyService);
+            templateFactory.Create(Arg.Any<Type>()).Returns(default(object?));
+            var sut = CreateSut();
+
             // Act & Assert
             sut.Invoking(x => x.Create(new CompiledTemplateIdentifier(GetType().Assembly.FullName!, "WrongName")))
                .Should().Throw<InvalidOperationException>();
         }
 
-        [Theory, AutoMockData]
-        public void Throws_When_Factory_Does_Not_Create_A_Template_Instance(
-            [Frozen] IAssemblyService assemblyService,
-            [Frozen] ITemplateFactory templateFactory,
-            ProviderComponent sut)
+        [Fact]
+        public void Throws_When_Factory_Does_Not_Create_A_Template_Instance()
         {
             // Arrange
+            var assemblyService = Fixture.Freeze<IAssemblyService>();
+            var templateFactory = Fixture.Freeze<ITemplateFactory>();
             SetupAssemblyService(assemblyService);
             templateFactory.Create(Arg.Any<Type>()).Returns(default(object));
+            var sut = CreateSut();
 
             // Act & Assert
             sut.Invoking(x => x.Create(new CompiledTemplateIdentifier(GetType().Assembly.FullName!, GetType().FullName!)))
@@ -79,11 +91,14 @@ public class ProviderComponentTests
         }
     }
 
-    public class Supports
+    public class Supports : ProviderComponentTests
     {
-        [Theory, AutoMockData]
-        public void Returns_False_On_Null_Request(ProviderComponent sut)
+        [Fact]
+        public void Returns_False_On_Null_Request()
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act
             var result = sut.Supports(null!);
 
@@ -91,11 +106,13 @@ public class ProviderComponentTests
             result.Should().BeFalse();
         }
 
-        [Theory, AutoMockData]
-        public void Returns_False_On_Request_Other_Than_CreateCompiledTemplateRequest(
-            [Frozen] ITemplateIdentifier templateIdentifier,
-            ProviderComponent sut)
+        [Fact]
+        public void Returns_False_On_Request_Other_Than_CreateCompiledTemplateRequest()
         {
+            // Arrange
+            var templateIdentifier = Fixture.Freeze<ITemplateIdentifier>();
+            var sut = CreateSut();
+
             // Act
             var result = sut.Supports(templateIdentifier);
 
@@ -103,9 +120,12 @@ public class ProviderComponentTests
             result.Should().BeFalse();
         }
 
-        [Theory, AutoMockData]
-        public void Returns_True_On_CreateCompiledTemplateRequest(ProviderComponent sut)
+        [Fact]
+        public void Returns_True_On_CreateCompiledTemplateRequest()
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act
             var result = sut.Supports(new CompiledTemplateIdentifier(GetType().Assembly.FullName!, GetType().FullName!, string.Empty));
 

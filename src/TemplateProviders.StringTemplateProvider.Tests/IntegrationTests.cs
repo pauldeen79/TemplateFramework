@@ -1,11 +1,12 @@
 ﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider.Tests;
 
-public class IntegrationTests
+public class IntegrationTests : TestBase
 {
-    [Theory, AutoMockData]
-    public void Can_Process_Template_With_FormattableString_Placeholders([Frozen] ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
+    [Fact]
+    public void Can_Process_Template_With_FormattableString_Placeholders()
     {
         // Arrange
+        var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
         var services = new ServiceCollection()
             .AddParsers()
             .AddTemplateFramework()
@@ -49,10 +50,11 @@ public class IntegrationTests
         result.Select(x => x.Name).Should().BeEquivalentTo("Prefix", "Name");
     }
 
-    [Theory, AutoMockData]
-    public void Can_Use_Custom_Registered_PlaceholderProcessor_In_FormattableStringTemplate([Frozen] ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
+    [Fact]
+    public void Can_Use_Custom_Registered_PlaceholderProcessor_In_FormattableStringTemplate()
     {
         // Arrange
+        var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
         var services = new ServiceCollection()
             .AddParsers()
             .AddTemplateFramework()
@@ -91,10 +93,11 @@ public class IntegrationTests
         builder.ToString().Should().Be("aaa Hello world! zzz");
     }
 
-    [Theory, AutoMockData]
-    public void Can_Use_Expression_In_Placeholder_In_FormattableStringTemplate([Frozen] ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
+    [Fact]
+    public void Can_Use_Expression_In_Placeholder_In_FormattableStringTemplate()
     {
         // Arrange
+        var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
         var services = new ServiceCollection()
             .AddParsers()
             .AddTemplateFramework()
@@ -122,10 +125,11 @@ public class IntegrationTests
         builder.ToString().Should().Be("aaa 2 zzz");
     }
 
-    [Theory, AutoMockData]
-    public void Can_Use_Custom_Registered_FunctionResultParser_In_FormattableStringTemplate([Frozen] ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
+    [Fact]
+    public void Can_Use_Custom_Registered_FunctionResultParser_In_FormattableStringTemplate()
     {
         // Arrange
+        var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
         var services = new ServiceCollection()
             .AddParsers()
             .AddTemplateFramework()
@@ -164,10 +168,11 @@ public class IntegrationTests
         builder.ToString().Should().Be("aaa Hello world! zzz");
     }
 
-    [Theory, AutoMockData]
-    public void Can_Use_Custom_Registered_FunctionResultParser_In_ExpressionStringTemplate([Frozen] ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
+    [Fact]
+    public void Can_Use_Custom_Registered_FunctionResultParser_In_ExpressionStringTemplate()
     {
         // Arrange
+        var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
         var services = new ServiceCollection()
             .AddParsers()
             .AddTemplateFramework()
@@ -206,10 +211,11 @@ public class IntegrationTests
         builder.ToString().Should().Be("aaa Hello world! zzz");
     }
 
-    [Theory, AutoMockData]
-    public void Can_Use_ExpressionFramework_In_FormattableStringTemplate([Frozen] ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
+    [Fact]
+    public void Can_Use_ExpressionFramework_In_FormattableStringTemplate()
     {
         // Arrange
+        var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
         var services = new ServiceCollection()
             .AddParsers()
             .AddTemplateFramework()
@@ -238,10 +244,11 @@ public class IntegrationTests
         builder.ToString().Should().Be($"AAA {DateTime.Today.ToString(CultureInfo.InvariantCulture)} ZZZ"); // CultureInfo.InvariantCulture is important to make this test pass on all cultures!
     }
 
-    [Theory, AutoMockData]
-    public void Can_Use_ExpressionFramework_In_ExpressionStringTemplate([Frozen] ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
+    [Fact]
+    public void Can_Use_ExpressionFramework_In_ExpressionStringTemplate()
     {
         // Arrange
+        var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
         var services = new ServiceCollection()
             .AddParsers()
             .AddTemplateFramework()

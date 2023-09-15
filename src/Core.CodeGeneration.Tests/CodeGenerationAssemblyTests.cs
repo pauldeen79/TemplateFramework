@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Core.CodeGeneration.Tests;
 
-public class CodeGenerationAssemblyTests
+public class CodeGenerationAssemblyTests : TestBase<CodeGenerationAssembly>
 {
     public class Constructor
     {
@@ -11,40 +11,43 @@ public class CodeGenerationAssemblyTests
         }
     }
 
-    public class Generate
+    public class Generate : CodeGenerationAssemblyTests
     {
-        [Theory, AutoMockData]
-        public void Throws_On_Null_Settings(
-            [Frozen] IGenerationEnvironment generationEnvironment,
-            CodeGenerationAssembly sut) 
+        [Fact]
+        public void Throws_On_Null_Settings() 
         {
+            // Arrange
+            var generationEnvironment = Fixture.Freeze<IGenerationEnvironment>();
+            var sut = CreateSut();
+
             // Act & Assert
             sut.Invoking(x => x.Generate(settings: null!, generationEnvironment))
                .Should().Throw<ArgumentNullException>().WithParameterName("settings");
         }
 
-        [Theory, AutoMockData]
-        public void Throws_On_Null_GenerationEnvironment(CodeGenerationAssembly sut)
+        [Fact]
+        public void Throws_On_Null_GenerationEnvironment()
         {
             // Arrange
             var settings = new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), currentDirectory: TestData.BasePath);
+            var sut = CreateSut();
 
             // Act & Assert
             sut.Invoking(x => x.Generate(settings, generationEnvironment: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("generationEnvironment");
         }
 
-        [Theory, AutoMockData]
-        public void Runs_All_CodeGenerators_In_Specified_Assembly(
-            [Frozen] IGenerationEnvironment generationEnvironment,
-            [Frozen] ICodeGenerationEngine codeGenerationEngine,
-            [Frozen] IAssemblyService assemblyService,
-            [Frozen] ICodeGenerationProviderCreator codeGenerationProviderCreator,
-            CodeGenerationAssembly sut)
+        [Fact]
+        public void Runs_All_CodeGenerators_In_Specified_Assembly()
         {
             // Arrange
+            var generationEnvironment = Fixture.Freeze<IGenerationEnvironment>();
+            var codeGenerationEngine = Fixture.Freeze<ICodeGenerationEngine>();
+            var assemblyService = Fixture.Freeze<IAssemblyService>();
+            var codeGenerationProviderCreator = Fixture.Freeze<ICodeGenerationProviderCreator>();
             SetupAssemblyService(assemblyService);
             SetupCodeGenerationProviderCreator(codeGenerationProviderCreator);
+            var sut = CreateSut();
 
             // Act
             sut.Generate(new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), currentDirectory: TestData.BasePath), generationEnvironment);
@@ -53,17 +56,17 @@ public class CodeGenerationAssemblyTests
             codeGenerationEngine.Received().Generate(Arg.Any<ICodeGenerationProvider>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<ICodeGenerationSettings>());
         }
 
-        [Theory, AutoMockData]
-        public void Runs_Filtered_CodeGenerators_In_Specified_Assembly(
-            [Frozen] IGenerationEnvironment generationEnvironment,
-            [Frozen] ICodeGenerationEngine codeGenerationEngine,
-            [Frozen] IAssemblyService assemblyService,
-            [Frozen] ICodeGenerationProviderCreator codeGenerationProviderCreator,
-            CodeGenerationAssembly sut)
+        [Fact]
+        public void Runs_Filtered_CodeGenerators_In_Specified_Assembly()
         {
             // Arrange
+            var generationEnvironment = Fixture.Freeze<IGenerationEnvironment>();
+            var codeGenerationEngine = Fixture.Freeze<ICodeGenerationEngine>();
+            var assemblyService = Fixture.Freeze<IAssemblyService>();
+            var codeGenerationProviderCreator = Fixture.Freeze<ICodeGenerationProviderCreator>();
             SetupAssemblyService(assemblyService);
             SetupCodeGenerationProviderCreator(codeGenerationProviderCreator);
+            var sut = CreateSut();
 
             // Act
             sut.Generate(new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), currentDirectory: TestData.BasePath, classNameFilter: new[] { typeof(MyGeneratorProvider).FullName! }), generationEnvironment);
@@ -72,17 +75,17 @@ public class CodeGenerationAssemblyTests
             codeGenerationEngine.Received().Generate(Arg.Any<ICodeGenerationProvider>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<ICodeGenerationSettings>());
         }
 
-        [Theory, AutoMockData]
-        public void Runs_Filtered_CodeGenerators_In_Specified_Assembly_No_Matches(
-            [Frozen] IGenerationEnvironment generationEnvironment,
-            [Frozen] ICodeGenerationEngine codeGenerationEngine,
-            [Frozen] IAssemblyService assemblyService,
-            [Frozen] ICodeGenerationProviderCreator codeGenerationProviderCreator,
-            CodeGenerationAssembly sut)
+        [Fact]
+        public void Runs_Filtered_CodeGenerators_In_Specified_Assembly_No_Matches()
         {
             // Arrange
+            var generationEnvironment = Fixture.Freeze<IGenerationEnvironment>();
+            var codeGenerationEngine = Fixture.Freeze<ICodeGenerationEngine>();
+            var assemblyService = Fixture.Freeze<IAssemblyService>();
+            var codeGenerationProviderCreator = Fixture.Freeze<ICodeGenerationProviderCreator>();
             SetupAssemblyService(assemblyService);
             SetupCodeGenerationProviderCreator(codeGenerationProviderCreator);
+            var sut = CreateSut();
 
             // Act
             sut.Generate(new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), currentDirectory: TestData.BasePath, classNameFilter: new[] { "WrongName" }), generationEnvironment);

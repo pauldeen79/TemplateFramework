@@ -1,15 +1,17 @@
 ﻿namespace TemplateFramework.Core.CodeGeneration.Tests.Extensions;
 
-public class ServiceCollectionExtensionsTests
+public class ServiceCollectionExtensionsTests : TestBase
 {
-    public class AddTemplateFrameworkCodeGeneration
+    public class AddTemplateFrameworkCodeGeneration : ServiceCollectionExtensionsTests
     {
-        [Theory, AutoMockData]
-        public void All_Dependencies_Can_Be_Resolved(
-            [Frozen] IAssemblyInfoContextService assemblyInfoContextService,
-            [Frozen] ITemplateFactory templateFactory,
-            [Frozen] ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
+        [Fact]
+        public void All_Dependencies_Can_Be_Resolved()
         {
+            // Arrange
+            var assemblyInfoContextService = Fixture.Freeze<IAssemblyInfoContextService>();
+            var templateFactory = Fixture.Freeze<ITemplateFactory>();
+            var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
+
             // Act
             using var provider = new ServiceCollection()
                 .AddTemplateFramework()

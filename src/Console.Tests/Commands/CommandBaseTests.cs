@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Console.Tests.Commands;
 
-public class CommandBaseTests
+public class CommandBaseTests : TestBase<CommandBaseTests.CommandBaseTest>
 {
     protected const string AssemblyName = "MyAssemblyName";
     protected const string Filename = "MyFile.txt";
@@ -14,44 +14,57 @@ public class CommandBaseTests
         }
     }
 
-    public class Watch
+    public class Watch : CommandBaseTests
     {
-        [Theory, AutoMockData]
-        public void Throws_On_Null_App(CommandBaseTest sut)
+        private IFileSystem fileSystem { get; }
+
+        public Watch()
         {
+            fileSystem = Fixture.Freeze<IFileSystem>();
+        }
+
+        [Fact]
+        public void Throws_On_Null_App()
+        {
+            // Arrange
+            var sut = CreateSut();
+
             // Act & Assert
             sut.Invoking(x => x.WatchPublic(app: null!, false, Filename, () => { }))
                .Should().Throw<ArgumentNullException>().WithParameterName("app");
         }
 
-        [Theory, AutoMockData]
-        public void Throws_On_Null_Filename(CommandBaseTest sut)
+        [Fact]
+        public void Throws_On_Null_Filename()
         {
             // Arrange
             using var app = new CommandLineApplication();
+            var sut = CreateSut();
 
             // Act & Assert
             sut.Invoking(x => x.WatchPublic(app, false, filename: null!, () => { }))
                .Should().Throw<ArgumentNullException>().WithParameterName("filename");
         }
 
-        [Theory, AutoMockData]
-        public void Throws_On_Null_Action(CommandBaseTest sut)
+        [Fact]
+        public void Throws_On_Null_Action()
         {
             // Arrange
             using var app = new CommandLineApplication();
+            var sut = CreateSut();
 
             // Act & Assert
             sut.Invoking(x => x.WatchPublic(app, false, Filename, action: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("action");
         }
 
-        [Theory, AutoMockData]
-        public void Executes_Action_Once_When_Watch_Argument_Is_False(CommandBaseTest sut)
+        [Fact]
+        public void Executes_Action_Once_When_Watch_Argument_Is_False()
         {
             // Arrange
             using var app = new CommandLineApplication();
             var counter = 0;
+            var sut = CreateSut();
 
             // Act
             sut.WatchPublic(app, false, Filename, () => counter++);
@@ -60,13 +73,12 @@ public class CommandBaseTests
             counter.Should().Be(1);
         }
 
-        [Theory, AutoMockData]
-        public void Writes_ErrorMessage_When_Watch_Argument_Is_True_And_File_Does_Not_Exist(
-            [Frozen] IFileSystem fileSystem,
-            CommandBaseTest sut)
+        [Fact]
+        public void Writes_ErrorMessage_When_Watch_Argument_Is_True_And_File_Does_Not_Exist()
         {
             // Arrange
             fileSystem.FileExists(Filename).Returns(false);
+            var sut = CreateSut();
 
             // Act
             var result = CommandLineCommandHelper.ExecuteCommand(app => sut.WatchPublic(app, true, Filename, () => { }));
@@ -75,15 +87,14 @@ public class CommandBaseTests
             result.Should().Be("Error: Could not find file [MyFile.txt]. Could not watch file for changes." + Environment.NewLine);
         }
 
-        [Theory, AutoMockData]
-        public void Does_Not_Execute_Action_When_Watch_Argument_Is_True_And_File_Does_Not_Exist(
-            [Frozen] IFileSystem fileSystem,
-            CommandBaseTest sut)
+        [Fact]
+        public void Does_Not_Execute_Action_When_Watch_Argument_Is_True_And_File_Does_Not_Exist()
         {
             // Arrange
             using var app = new CommandLineApplication();
             var counter = 0;
             fileSystem.FileExists(Filename).Returns(false);
+            var sut = CreateSut();
 
             // Act
             sut.WatchPublic(app, true, Filename, () => counter++);
@@ -92,13 +103,12 @@ public class CommandBaseTests
             counter.Should().Be(0);
         }
 
-        [Theory, AutoMockData]
-        public void Repeats_Action_When_File_Has_Changed(
-            [Frozen] IFileSystem fileSystem,
-            CommandBaseTest sut)
+        [Fact]
+        public void Repeats_Action_When_File_Has_Changed()
         {
             // Arrange
             using var app = new CommandLineApplication();
+            var sut = CreateSut();
             var fileSystemCallCounter = 0;
             var actionCallCounter = 0;
             fileSystem.FileExists(Filename).Returns(_ =>
@@ -122,14 +132,13 @@ public class CommandBaseTests
             actionCallCounter.Should().Be(4);
         }
 
-        [Theory, AutoMockData]
-        public void Breaks_Watch_Loop_When_File_Has_Been_Removed(
-            [Frozen] IFileSystem fileSystem,
-            CommandBaseTest sut)
+        [Fact]
+        public void Breaks_Watch_Loop_When_File_Has_Been_Removed()
         {
             // Arrange
             var fileSystemCallCounter = 0;
             var actionCallCounter = 0;
+            var sut = CreateSut();
             fileSystem.FileExists(Filename).Returns(_ =>
             {
                 return fileSystemCallCounter < 3;
@@ -150,11 +159,14 @@ Error: Could not find file [MyFile.txt]. Could not watch file for changes.
         }
     }
 
-    public class GetCurrentDirectory
+    public class GetCurrentDirectory : CommandBaseTests
     {
-        [Theory, AutoMockData]
-        public void Returns_Empty_String_On_Null_AssemblyName(CommandBaseTest sut)
+        [Fact]
+        public void Returns_Empty_String_On_Null_AssemblyName()
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act
             var result = sut.GetCurrentDirectoryPublic(string.Empty, assemblyName: null!);
 
@@ -162,9 +174,12 @@ Error: Could not find file [MyFile.txt]. Could not watch file for changes.
             result.Should().BeEmpty();
         }
 
-        [Theory, AutoMockData]
-        public void Returns_CurrentDirectoryOption_Value_When_Present(CommandBaseTest sut)
+        [Fact]
+        public void Returns_CurrentDirectoryOption_Value_When_Present()
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act
             var result = sut.GetCurrentDirectoryPublic("CurrentDirectory", assemblyName: AssemblyName);
 
@@ -172,9 +187,12 @@ Error: Could not find file [MyFile.txt]. Could not watch file for changes.
             result.Should().Be("CurrentDirectory");
         }
 
-        [Theory, AutoMockData]
-        public void Returns_Directory_Of_Assembly_When_AssemblyName_Ends_With_Dll_And_CurrentDirectory_Is_Empty(CommandBaseTest sut)
+        [Fact]
+        public void Returns_Directory_Of_Assembly_When_AssemblyName_Ends_With_Dll_And_CurrentDirectory_Is_Empty()
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act
             var result = sut.GetCurrentDirectoryPublic(null, assemblyName: Path.Combine("Directory", "Assembly.dll"));
 
@@ -182,9 +200,12 @@ Error: Could not find file [MyFile.txt]. Could not watch file for changes.
             result.Should().Be("Directory");
         }
 
-        [Theory, AutoMockData]
-        public void Returns_Empty_String_When_AssemblyName_Does_Not_End_With_Dll(CommandBaseTest sut)
+        [Fact]
+        public void Returns_Empty_String_When_AssemblyName_Does_Not_End_With_Dll()
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act
             var result = sut.GetCurrentDirectoryPublic(null, assemblyName: AssemblyName);
 
@@ -193,9 +214,16 @@ Error: Could not find file [MyFile.txt]. Could not watch file for changes.
         }
     }
 
-    public class GenerateSingleOutput
+    public class GenerateSingleOutput : CommandBaseTests
     {
-        private void SetupMultipleContentBuilderMock(IMultipleContentBuilder multipleContentBuilder, string filenamePrefix)
+        private IMultipleContentBuilder multipleContentBuilder { get; }
+        
+        public GenerateSingleOutput()
+        {
+            multipleContentBuilder = Fixture.Freeze<IMultipleContentBuilder>();
+        }
+
+        private void SetupMultipleContentBuilder(string filenamePrefix)
         {
             var contentBuilderMock1 = Substitute.For<IContent>();
             contentBuilderMock1.Filename.Returns($"{filenamePrefix}File1.txt");
@@ -211,31 +239,34 @@ Error: Could not find file [MyFile.txt]. Could not watch file for changes.
             multipleContentBuilder.Build().Returns(multipleContentMock);
         }
 
-        [Theory, AutoMockData]
-        public void Throws_On_Null_Builder(CommandBaseTest sut)
+        [Fact]
+        public void Throws_On_Null_Builder()
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act & Assert
             sut.Invoking(x => x.GenerateSingleOutputPublic(builder: null!, string.Empty))
                .Should().Throw<ArgumentNullException>().WithParameterName("builder");
         }
 
-        [Theory, AutoMockData]
-        public void Throws_On_Null_BasePath(
-            [Frozen] IMultipleContentBuilder multipleContentBuilder,
-            CommandBaseTest sut)
+        [Fact]
+        public void Throws_On_Null_BasePath()
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act & Assert
             sut.Invoking(x => x.GenerateSingleOutputPublic(multipleContentBuilder, basePath: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("basePath");
         }
 
-        [Theory, AutoMockData]
-        public void Uses_Filename_From_Content_When_BasePath_Is_Empty(
-            [Frozen] IMultipleContentBuilder multipleContentBuilder,
-            CommandBaseTest sut)
+        [Fact]
+        public void Uses_Filename_From_Content_When_BasePath_Is_Empty()
         {
             // Arrange
-            SetupMultipleContentBuilderMock(multipleContentBuilder, string.Empty);
+            SetupMultipleContentBuilder(string.Empty);
+            var sut = CreateSut();
 
             // Act
             var result = sut.GenerateSingleOutputPublic(multipleContentBuilder, string.Empty);
@@ -248,13 +279,12 @@ Contents from file2
 ");
         }
 
-        [Theory, AutoMockData]
-        public void Uses_Combined_Filename_When_Content_Filename_Is_PathRooted_And_BasePath_Is_Filled(
-            [Frozen] IMultipleContentBuilder multipleContentBuilder,
-            CommandBaseTest sut)
+        [Fact]
+        public void Uses_Combined_Filename_When_Content_Filename_Is_PathRooted_And_BasePath_Is_Filled()
         {
             // Arrange
-            SetupMultipleContentBuilderMock(multipleContentBuilder, Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar);
+            SetupMultipleContentBuilder(Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar);
+            var sut = CreateSut();
 
             // Act
             var result = sut.GenerateSingleOutputPublic(multipleContentBuilder, "BasePath" + Path.DirectorySeparatorChar);
@@ -267,13 +297,12 @@ Contents from file2
 ");
         }
 
-        [Theory, AutoMockData]
-        public void Uses_Combined_Filename_When_Content_Filename_Is_PathRooted_And_BasePath_Is_Not_Filled(
-            [Frozen] IMultipleContentBuilder multipleContentBuilder,
-            CommandBaseTest sut)
+        [Fact]
+        public void Uses_Combined_Filename_When_Content_Filename_Is_PathRooted_And_BasePath_Is_Not_Filled()
         {
             // Arrange
-            SetupMultipleContentBuilderMock(multipleContentBuilder, string.Empty);
+            var sut = CreateSut();
+            SetupMultipleContentBuilder(string.Empty);
 
             // Act
             var result = sut.GenerateSingleOutputPublic(multipleContentBuilder, "BasePath" + Path.DirectorySeparatorChar);
@@ -286,13 +315,12 @@ Contents from file2
 ");
         }
 
-        [Theory, AutoMockData]
-        public void Uses_Filename_From_Content_When_Content_Filename_Is_Not_PathRooted_And_BasePath_Is_Empty(
-            [Frozen] IMultipleContentBuilder multipleContentBuilder,
-            CommandBaseTest sut)
+        [Fact]
+        public void Uses_Filename_From_Content_When_Content_Filename_Is_Not_PathRooted_And_BasePath_Is_Empty()
         {
             // Arrange
-            SetupMultipleContentBuilderMock(multipleContentBuilder, string.Empty);
+            var sut = CreateSut();
+            SetupMultipleContentBuilder(string.Empty);
 
             // Act
             var result = sut.GenerateSingleOutputPublic(multipleContentBuilder, string.Empty);
@@ -306,27 +334,36 @@ Contents from file2
         }
     }
 
-    public class WriteOutputToHost
+    public class WriteOutputToHost : CommandBaseTests
     {
-        [Theory, AutoMockData]
-        public void Throws_On_Null_App(CommandBaseTest sut)
+        [Fact]
+        public void Throws_On_Null_App()
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act & Assert
             sut.Invoking(x => CommandLineCommandHelper.ExecuteCommand(_ => x.WriteOutputToHostPublic(app: null!, "TemplateOutput", true)))
                .Should().Throw<ArgumentNullException>().WithParameterName("app");
         }
 
-        [Theory, AutoMockData]
-        public void Throws_On_Null_TemplateOutput(CommandBaseTest sut)
+        [Fact]
+        public void Throws_On_Null_TemplateOutput()
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act & Assert
             sut.Invoking(x => CommandLineCommandHelper.ExecuteCommand(app => x.WriteOutputToHostPublic(app, templateOutput: null!, true)))
                .Should().Throw<ArgumentNullException>().WithParameterName("templateOutput");
         }
 
-        [Theory, AutoMockData]
-        public void Writes_Output_To_Host_Correctly_When_Bare_Is_True(CommandBaseTest sut)
+        [Fact]
+        public void Writes_Output_To_Host_Correctly_When_Bare_Is_True()
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act
             var result = CommandLineCommandHelper.ExecuteCommand(app => sut.WriteOutputToHostPublic(app, "TemplateOutput", true));
 
@@ -334,9 +371,12 @@ Contents from file2
             result.Should().Be("TemplateOutput" + Environment.NewLine);
         }
 
-        [Theory, AutoMockData]
-        public void Writes_Output_To_Host_Correctly_When_Bare_Is_False(CommandBaseTest sut)
+        [Fact]
+        public void Writes_Output_To_Host_Correctly_When_Bare_Is_False()
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act
             var result = CommandLineCommandHelper.ExecuteCommand(app => sut.WriteOutputToHostPublic(app, "TemplateOutput", false));
 
@@ -347,29 +387,43 @@ TemplateOutput
         }
     }
 
-    public class WriteOutputToClipboard
+    public class WriteOutputToClipboard : CommandBaseTests
     {
-        [Theory, AutoMockData]
-        public void Throws_On_Null_App(CommandBaseTest sut)
+        private IClipboard clipboard { get; }
+
+        public WriteOutputToClipboard()
         {
+            clipboard = Fixture.Freeze<IClipboard>();
+        }
+
+        [Fact]
+        public void Throws_On_Null_App()
+        {
+            // Arrange
+            var sut = CreateSut();
+
             // Act & Assert
             sut.Invoking(x => CommandLineCommandHelper.ExecuteCommand(_ => x.WriteOutputToClipboardPublic(app: null!, "TemplateOutput", true)))
                .Should().Throw<ArgumentNullException>().WithParameterName("app");
         }
 
-        [Theory, AutoMockData]
-        public void Throws_On_Null_TemplateOutput(CommandBaseTest sut)
+        [Fact]
+        public void Throws_On_Null_TemplateOutput()
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act & Assert
             sut.Invoking(x => CommandLineCommandHelper.ExecuteCommand(app => x.WriteOutputToClipboardPublic(app, templateOutput: null!, true)))
                .Should().Throw<ArgumentNullException>().WithParameterName("templateOutput");
         }
 
-        [Theory, AutoMockData]
-        public void Copies_Output_To_Clipboard(
-            [Frozen] IClipboard clipboard,
-            CommandBaseTest sut)
+        [Fact]
+        public void Copies_Output_To_Clipboard()
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act
             _ = CommandLineCommandHelper.ExecuteCommand(app => sut.WriteOutputToClipboardPublic(app, "TemplateOutput", true));
 
@@ -377,9 +431,12 @@ TemplateOutput
             clipboard.Received().SetText("TemplateOutput");
         }
 
-        [Theory, AutoMockData]
-        public void Writes_Message_To_Host_When_Base_Is_False(CommandBaseTest sut)
+        [Fact]
+        public void Writes_Message_To_Host_When_Base_Is_False()
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act
             var result = CommandLineCommandHelper.ExecuteCommand(app => sut.WriteOutputToClipboardPublic(app, "TemplateOutput", false));
 
@@ -387,9 +444,12 @@ TemplateOutput
             result.Should().Be("Copied code generation output to clipboard" + Environment.NewLine);
         }
 
-        [Theory, AutoMockData]
-        public void Does_Not_Write_Message_To_Host_When_Base_Is_True(CommandBaseTest sut)
+        [Fact]
+        public void Does_Not_Write_Message_To_Host_When_Base_Is_True()
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act
             var result = CommandLineCommandHelper.ExecuteCommand(app => sut.WriteOutputToClipboardPublic(app, "TemplateOutput", true));
 
@@ -398,15 +458,18 @@ TemplateOutput
         }
     }
 
-    public class GetDryRun
+    public class GetDryRun : CommandBaseTests
     {
         [Theory,
-            InlineAutoMockData(true, false, true),
-            InlineAutoMockData(true, true, true),
-            InlineAutoMockData(false, true, true),
-            InlineAutoMockData(false, false, false)]
-        public void Returns_Correct_Result(bool dryRun, bool clipboard, bool expectedResult, CommandBaseTest sut)
+            InlineData(true, false, true),
+            InlineData(true, true, true),
+            InlineData(false, true, true),
+            InlineData(false, false, false)]
+        public void Returns_Correct_Result(bool dryRun, bool clipboard, bool expectedResult)
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act
             var result = sut.GetDryRunPublic(dryRun, clipboard);
 
@@ -415,14 +478,17 @@ TemplateOutput
         }
     }
 
-    public class GetDefaultFilename
+    public class GetDefaultFilename : CommandBaseTests
     {
         [Theory,
-            InlineAutoMockData("Filled", "Filled"),
-            InlineAutoMockData("", ""),
-            InlineAutoMockData(null, "")]
-        public void Returns_Correct_Result(string? defaultFilename, string expectedResult, CommandBaseTest sut)
+            InlineData("Filled", "Filled"),
+            InlineData("", ""),
+            InlineData(null, "")]
+        public void Returns_Correct_Result(string? defaultFilename, string expectedResult)
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act
             var result = sut.GetDefaultFilenamePublic(defaultFilename);
 
@@ -431,14 +497,17 @@ TemplateOutput
         }
     }
 
-    public class GetBasePath
+    public class GetBasePath : CommandBaseTests
     {
         [Theory,
-            InlineAutoMockData("Filled", "Filled"),
-            InlineAutoMockData("", ""),
-            InlineAutoMockData(null, "")]
-        public void Returns_Correct_Result(string? basePath, string expectedResult, CommandBaseTest sut)
+            InlineData("Filled", "Filled"),
+            InlineData("", ""),
+            InlineData(null, "")]
+        public void Returns_Correct_Result(string? basePath, string expectedResult)
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act
             var result = sut.GetBasePathPublic(basePath);
 

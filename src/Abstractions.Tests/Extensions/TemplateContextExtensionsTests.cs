@@ -1,12 +1,15 @@
 ﻿namespace TemplateFramework.Abstractions.Tests.Extensions.TemplateContextExtensions;
 
-public class TemplateContextExtensionsTests
+public class TemplateContextExtensionsTests : TestBase
 {
     public class GetContextByTemplateType : TemplateContextExtensionsTests
     {
-        [Theory, AutoMockData]
-        public void Without_Arguments_Works_Correctly([Frozen] ITemplateContext sut)
+        [Fact]
+        public void Without_Arguments_Works_Correctly()
         {
+            // Arrange
+            var sut = Fixture.Freeze<ITemplateContext>();
+
             // Act
             sut.GetContextByTemplateType<string>();
 
@@ -17,9 +20,12 @@ public class TemplateContextExtensionsTests
 
     public class GetModelFromContextByType : TemplateContextExtensionsTests
     {
-        [Theory, AutoMockData]
-        public void Without_Arguments_Works_Correctly([Frozen] ITemplateContext sut)
+        [Fact]
+        public void Without_Arguments_Works_Correctly()
         {
+            // Arrange
+            var sut = Fixture.Freeze<ITemplateContext>();
+
             // Act
             sut.GetModelFromContextByType<string>();
 

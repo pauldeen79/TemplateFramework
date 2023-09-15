@@ -1,12 +1,15 @@
 ﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider.Tests.Extensions;
 
-public class ServiceCollectionExtensionsTests
+public class ServiceCollectionExtensionsTests : TestBase
 {
-    public class AddTemplateFrameworkStringTemplateProvider
+    public class AddTemplateFrameworkStringTemplateProvider : ServiceCollectionExtensionsTests
     {
-        [Theory, AutoMockData]
-        public void All_Dependencies_Can_Be_Resolved([Frozen] ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
+        [Fact]
+        public void All_Dependencies_Can_Be_Resolved()
         {
+            // Arrange
+            var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
+
             // Act
             using var provider = new ServiceCollection()
                 .AddParsers()

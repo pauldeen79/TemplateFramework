@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Console.Tests.Commands;
 
-public class VersionCommandTests
+public class VersionCommandTests : TestBase<VersionCommand>
 {
     public class Constructor
     {
@@ -10,13 +10,14 @@ public class VersionCommandTests
             typeof(VersionCommand).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
         }
     }
-    public class Initialize
+    public class Initialize : VersionCommandTests
     {
-        [Theory, AutoMockData]
-        public void Adds_VersionCommand_To_Application(VersionCommand sut)
+        [Fact]
+        public void Adds_VersionCommand_To_Application()
         {
             // Arrange
             using var app = new CommandLineApplication();
+            var sut = CreateSut();
 
             // Act
             sut.Initialize(app);
@@ -25,9 +26,12 @@ public class VersionCommandTests
             app.Commands.Should().BeEmpty(); // aparently, this does not add a command that is publicly visible...
         }
 
-        [Theory, AutoMockData]
-        public void Throws_On_Null_Argument(VersionCommand sut)
+        [Fact]
+        public void Throws_On_Null_Argument()
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act & Assert
             sut.Invoking(x => x.Initialize(null!))
                .Should().Throw<ArgumentNullException>();

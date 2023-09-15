@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Console.Tests.Commands;
 
-public class CodeGenerationAssemblyCommandTests
+public class CodeGenerationAssemblyCommandTests : TestBase<CodeGenerationAssemblyCommand>
 {
     public class Constructor
     {
@@ -11,13 +11,14 @@ public class CodeGenerationAssemblyCommandTests
         }
     }
 
-    public class Initialize
+    public class Initialize : CodeGenerationAssemblyCommandTests
     {
-        [Theory, AutoMockData]
-        public void Initialize_Adds_Command_To_Application(CodeGenerationAssemblyCommand sut)
+        [Fact]
+        public void Initialize_Adds_Command_To_Application()
         {
             // Arrange
             using var app = new CommandLineApplication();
+            var sut = CreateSut();
 
             // Act
             sut.Initialize(app);
@@ -26,20 +27,26 @@ public class CodeGenerationAssemblyCommandTests
             app.Commands.Should().ContainSingle();
         }
 
-        [Theory, AutoMockData]
-        public void Initialize_Throws_On_Null_Argument(CodeGenerationAssemblyCommand sut)
+        [Fact]
+        public void Initialize_Throws_On_Null_Argument()
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act & Assert
             sut.Invoking(x => x.Initialize(app: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("app");
         }
     }
 
-    public class ExecuteComand
+    public class ExecuteComand : CodeGenerationAssemblyCommandTests
     {
-        [Theory, AutoMockData]
-        public void Empty_AssemblyName_Results_In_Error(CodeGenerationAssemblyCommand sut)
+        [Fact]
+        public void Empty_AssemblyName_Results_In_Error()
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act
             var output = CommandLineCommandHelper.ExecuteCommand(sut);
 
@@ -47,11 +54,13 @@ public class CodeGenerationAssemblyCommandTests
             output.Should().Be("Error: Assembly name is required." + Environment.NewLine);
         }
 
-        [Theory, AutoMockData]
-        public void Uses_Current_Directory_As_CurrentDirectory_When_AssemblyName_Is_Not_A_Filename(
-            [Frozen] ICodeGenerationAssembly codeGenerationAssembly,
-            CodeGenerationAssemblyCommand sut)
+        [Fact]
+        public void Uses_Current_Directory_As_CurrentDirectory_When_AssemblyName_Is_Not_A_Filename()
         {
+            // Arrange
+            var codeGenerationAssembly = Fixture.Freeze<ICodeGenerationAssembly>();
+            var sut = CreateSut();
+
             // Act
             _ = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}");
 
@@ -59,11 +68,13 @@ public class CodeGenerationAssemblyCommandTests
             codeGenerationAssembly.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.CurrentDirectory == Directory.GetCurrentDirectory()), Arg.Any<IGenerationEnvironment>());
         }
 
-        [Theory, AutoMockData]
-        public void Uses_Directory_Of_Assembly_As_CurrentDirectory_When_AssemblyName_Is_Not_A_Filename(
-            [Frozen] ICodeGenerationAssembly codeGenerationAssembly,
-            CodeGenerationAssemblyCommand sut)
+        [Fact]
+        public void Uses_Directory_Of_Assembly_As_CurrentDirectory_When_AssemblyName_Is_Not_A_Filename()
         {
+            // Arrange
+            var codeGenerationAssembly = Fixture.Freeze<ICodeGenerationAssembly>();
+            var sut = CreateSut();
+
             // Act
             _ = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {Path.Combine(TestData.BasePath, "myassembly.dll")}");
 
@@ -71,11 +82,13 @@ public class CodeGenerationAssemblyCommandTests
             codeGenerationAssembly.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.CurrentDirectory == TestData.BasePath), Arg.Any<IGenerationEnvironment>());
         }
 
-        [Theory, AutoMockData]
-        public void Uses_Specified_CurrentDirectory_When_Available(
-            [Frozen] ICodeGenerationAssembly codeGenerationAssembly,
-            CodeGenerationAssemblyCommand sut)
+        [Fact]
+        public void Uses_Specified_CurrentDirectory_When_Available()
         {
+            // Arrange
+            var codeGenerationAssembly = Fixture.Freeze<ICodeGenerationAssembly>();
+            var sut = CreateSut();
+
             // Act
             _ = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {Path.Combine(TestData.BasePath, "myassembly.dll")}", "--directory something");
 
@@ -83,11 +96,13 @@ public class CodeGenerationAssemblyCommandTests
             codeGenerationAssembly.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.CurrentDirectory == "something"), Arg.Any<IGenerationEnvironment>());
         }
 
-        [Theory, AutoMockData]
-        public void Uses_Specified_BasePath_From_Arguments_When_Present(
-            [Frozen] ICodeGenerationAssembly codeGenerationAssembly,
-            CodeGenerationAssemblyCommand sut)
+        [Fact]
+        public void Uses_Specified_BasePath_From_Arguments_When_Present()
         {
+            // Arrange
+            var codeGenerationAssembly = Fixture.Freeze<ICodeGenerationAssembly>();
+            var sut = CreateSut();
+
             // Act
             _ = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", $"--path {TestData.BasePath}");
 
@@ -95,11 +110,13 @@ public class CodeGenerationAssemblyCommandTests
             codeGenerationAssembly.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.BasePath == TestData.BasePath), Arg.Any<IGenerationEnvironment>());
         }
 
-        [Theory, AutoMockData]
-        public void Uses_Empty_BasePath_When_Not_Present_In_Arguments(
-            [Frozen] ICodeGenerationAssembly codeGenerationAssembly,
-            CodeGenerationAssemblyCommand sut)
+        [Fact]
+        public void Uses_Empty_BasePath_When_Not_Present_In_Arguments()
         {
+            // Arrange
+            var codeGenerationAssembly = Fixture.Freeze<ICodeGenerationAssembly>();
+            var sut = CreateSut();
+
             // Act
             _ = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}");
 
@@ -107,11 +124,13 @@ public class CodeGenerationAssemblyCommandTests
             codeGenerationAssembly.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.BasePath == string.Empty), Arg.Any<IGenerationEnvironment>());
         }
 
-        [Theory, AutoMockData]
-        public void Uses_Specified_DefaultFIlename_From_Arguments_When_Present(
-            [Frozen] ICodeGenerationAssembly codeGenerationAssembly,
-            CodeGenerationAssemblyCommand sut)
+        [Fact]
+        public void Uses_Specified_DefaultFIlename_From_Arguments_When_Present()
         {
+            // Arrange
+            var codeGenerationAssembly = Fixture.Freeze<ICodeGenerationAssembly>();
+            var sut = CreateSut();
+            
             // Act
             _ = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--default MyFile.txt");
 
@@ -119,11 +138,13 @@ public class CodeGenerationAssemblyCommandTests
             codeGenerationAssembly.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.DefaultFilename == "MyFile.txt"), Arg.Any<IGenerationEnvironment>());
         }
 
-        [Theory, AutoMockData]
-        public void Uses_Empty_DefaultFilename_When_Not_Present_In_Arguments(
-            [Frozen] ICodeGenerationAssembly codeGenerationAssembly,
-            CodeGenerationAssemblyCommand sut)
+        [Fact]
+        public void Uses_Empty_DefaultFilename_When_Not_Present_In_Arguments()
         {
+            // Arrange
+            var codeGenerationAssembly = Fixture.Freeze<ICodeGenerationAssembly>();
+            var sut = CreateSut();
+
             // Act
             _ = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}");
 
@@ -131,11 +152,13 @@ public class CodeGenerationAssemblyCommandTests
             codeGenerationAssembly.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.DefaultFilename == string.Empty), Arg.Any<IGenerationEnvironment>());
         }
 
-        [Theory, AutoMockData]
-        public void Uses_DryRun_When_DryRun_Option_Is_Present_In_Arguments(
-            [Frozen] ICodeGenerationAssembly codeGenerationAssembly,
-            CodeGenerationAssemblyCommand sut)
+        [Fact]
+        public void Uses_DryRun_When_DryRun_Option_Is_Present_In_Arguments()
         {
+            // Arrange
+            var codeGenerationAssembly = Fixture.Freeze<ICodeGenerationAssembly>();
+            var sut = CreateSut();
+
             // Act
             _ = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--dryrun");
 
@@ -143,11 +166,13 @@ public class CodeGenerationAssemblyCommandTests
             codeGenerationAssembly.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.DryRun), Arg.Any<IGenerationEnvironment>());
         }
 
-        [Theory, AutoMockData]
-        public void Uses_DryRun_When_Cipboard_Option_Is_Present_In_Arguments(
-            [Frozen] ICodeGenerationAssembly codeGenerationAssembly,
-            CodeGenerationAssemblyCommand sut)
+        [Fact]
+        public void Uses_DryRun_When_Cipboard_Option_Is_Present_In_Arguments()
         {
+            // Arrange
+            var codeGenerationAssembly = Fixture.Freeze<ICodeGenerationAssembly>();
+            var sut = CreateSut();
+
             // Act
             _ = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--clipboard");
 
@@ -155,11 +180,13 @@ public class CodeGenerationAssemblyCommandTests
             codeGenerationAssembly.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.DryRun), Arg.Any<IGenerationEnvironment>());
         }
 
-        [Theory, AutoMockData]
-        public void Uses_DryRun_When_Cipboard_And_DryRun_Options_Are_Present_In_Arguments(
-            [Frozen] ICodeGenerationAssembly codeGenerationAssembly,
-            CodeGenerationAssemblyCommand sut)
+        [Fact]
+        public void Uses_DryRun_When_Cipboard_And_DryRun_Options_Are_Present_In_Arguments()
         {
+            // Arrange
+            var codeGenerationAssembly = Fixture.Freeze<ICodeGenerationAssembly>();
+            var sut = CreateSut();
+
             // Act
             _ = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--clipboard", "--dryrun");
 
@@ -167,9 +194,12 @@ public class CodeGenerationAssemblyCommandTests
             codeGenerationAssembly.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.DryRun), Arg.Any<IGenerationEnvironment>());
         }
 
-        [Theory, AutoMockData]
-        public void Reports_Output_Directory_When_DryRun_Is_False_And_BasePath_Is_Specified(CodeGenerationAssemblyCommand sut)
+        [Fact]
+        public void Reports_Output_Directory_When_DryRun_Is_False_And_BasePath_Is_Specified()
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act
             var output = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", $"--path {TestData.BasePath}");
 
@@ -177,9 +207,12 @@ public class CodeGenerationAssemblyCommandTests
             output.Should().Be("Written code generation output to path: " + TestData.BasePath + Environment.NewLine);
         }
 
-        [Theory, AutoMockData]
-        public void Reports_Output_Directory_When_DryRun_Is_Not_Specified_And_BasePath_Is_Not_Specified(CodeGenerationAssemblyCommand sut)
+        [Fact]
+        public void Reports_Output_Directory_When_DryRun_Is_Not_Specified_And_BasePath_Is_Not_Specified()
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act
             var output = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}");
 
@@ -187,9 +220,12 @@ public class CodeGenerationAssemblyCommandTests
             output.Should().Be("Written code generation output to path: " + Directory.GetCurrentDirectory() + Environment.NewLine);
         }
 
-        [Theory, AutoMockData]
-        public void Does_Not_Report_Output_Directory_When_DryRun_Is_Not_Specified_And_BareOption_Is_Specified(CodeGenerationAssemblyCommand sut)
+        [Fact]
+        public void Does_Not_Report_Output_Directory_When_DryRun_Is_Not_Specified_And_BareOption_Is_Specified()
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act
             var output = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--bare");
 
@@ -197,12 +233,14 @@ public class CodeGenerationAssemblyCommandTests
             output.Should().BeEmpty();
         }
 
-        [Theory, AutoMockData]
-        public void Copies_Output_To_Clipboard_When_ClipboardOption_Is_Specified(
-            [Frozen] ICodeGenerationAssembly codeGenerationAssembly,
-            [Frozen] IClipboard clipboardMock,
-            CodeGenerationAssemblyCommand sut)
+        [Fact]
+        public void Copies_Output_To_Clipboard_When_ClipboardOption_Is_Specified()
         {
+            // Arrange
+            var codeGenerationAssembly = Fixture.Freeze<ICodeGenerationAssembly>();
+            var clipboardMock = Fixture.Freeze<IClipboard>();
+            var sut = CreateSut();
+
             // Arrange
             codeGenerationAssembly.When(x => x.Generate(Arg.Any<ICodeGenerationAssemblySettings>(), Arg.Any<IGenerationEnvironment>()))
                                       .Do(args =>
@@ -219,9 +257,12 @@ Hello!
 ");
         }
 
-        [Theory, AutoMockData]
-        public void Reports_Output_Being_Copied_To_Clipboard_When_BareOption_Is_Not_Specified(CodeGenerationAssemblyCommand sut)
+        [Fact]
+        public void Reports_Output_Being_Copied_To_Clipboard_When_BareOption_Is_Not_Specified()
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act
             var output = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--clipboard");
 
@@ -229,9 +270,12 @@ Hello!
             output.Should().Be("Copied code generation output to clipboard" + Environment.NewLine);
         }
 
-        [Theory, AutoMockData]
-        public void Does_Not_Report_Output_Being_Copied_To_Clipboard_When_BareOption_Is_Specified(CodeGenerationAssemblyCommand sut)
+        [Fact]
+        public void Does_Not_Report_Output_Being_Copied_To_Clipboard_When_BareOption_Is_Specified()
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act
             var output = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--clipboard", "--bare");
 
@@ -239,11 +283,13 @@ Hello!
             output.Should().BeEmpty();
         }
 
-        [Theory, AutoMockData]
-        public void Reports_Output_To_Host_When_DryRun_Option_Is_Present_In_Arguments_And_Clipboard_And_Bare_Options_Are_Not_Present_Without_BasePath(
-            [Frozen] ICodeGenerationAssembly codeGenerationAssembly,
-            CodeGenerationAssemblyCommand sut)
+        [Fact]
+        public void Reports_Output_To_Host_When_DryRun_Option_Is_Present_In_Arguments_And_Clipboard_And_Bare_Options_Are_Not_Present_Without_BasePath()
         {
+            // Arrange
+            var codeGenerationAssembly = Fixture.Freeze<ICodeGenerationAssembly>();
+            var sut = CreateSut();
+
             // Arrange
             codeGenerationAssembly.When(x => x.Generate(Arg.Any<ICodeGenerationAssemblySettings>(), Arg.Any<IGenerationEnvironment>()))
                                       .Do(args =>
@@ -261,18 +307,18 @@ Hello!
 " + Environment.NewLine);
         }
 
-        [Theory, AutoMockData]
-        public void Reports_Output_To_Host_When_DryRun_Option_Is_Present_In_Arguments_And_Clipboard_And_Bare_Options_Are_Not_Present_With_BasePath(
-            [Frozen] ICodeGenerationAssembly codeGenerationAssembly,
-            CodeGenerationAssemblyCommand sut)
+        [Fact]
+        public void Reports_Output_To_Host_When_DryRun_Option_Is_Present_In_Arguments_And_Clipboard_And_Bare_Options_Are_Not_Present_With_BasePath()
         {
             // Arrange
+            var codeGenerationAssembly = Fixture.Freeze<ICodeGenerationAssembly>();
             codeGenerationAssembly.When(x => x.Generate(Arg.Any<ICodeGenerationAssemblySettings>(), Arg.Any<IGenerationEnvironment>()))
                                       .Do(args =>
                                       {
                                           var x = args.ArgAt<MultipleContentBuilderEnvironment>(1);
                                           x.Builder.AddContent("MyFile.txt").Builder.Append("Hello!");
                                       });
+            var sut = CreateSut();
 
             // Act
             var output = CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--dryrun", $"--path {TestData.BasePath}");

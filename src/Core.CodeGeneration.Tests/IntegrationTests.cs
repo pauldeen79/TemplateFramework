@@ -1,14 +1,14 @@
 ﻿namespace TemplateFramework.Core.CodeGeneration.Tests;
 
-public class IntegrationTests
+public class IntegrationTests : TestBase
 {
-    [Theory, AutoMockData]
-    public void Can_Generate_Code_Using_CodeGenerationAssembly(
-        [Frozen] IFileSystem fileSystem,
-        [Frozen] ITemplateFactory templateFactory,
-        [Frozen] ITemplateComponentRegistryPluginFactory templateProviderPluginFactory)
+    [Fact]
+    public void Can_Generate_Code_Using_CodeGenerationAssembly()
     {
         // Arrange
+        var fileSystem = Fixture.Freeze<IFileSystem>();
+        var templateFactory = Fixture.Freeze<ITemplateFactory>();
+        var templateProviderPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
         using var serviceProvider = new ServiceCollection()
             .AddTemplateFramework()
             .AddTemplateFrameworkCodeGeneration()

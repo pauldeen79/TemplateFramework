@@ -1,11 +1,12 @@
 ﻿namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests;
 
-public class IntegrationTests
+public class IntegrationTests : TestBase
 {
-    [Theory, AutoMockData]
-    public void Can_Render_MultipleContentBuilderTemplate_With_ChildTemplate_And_TemplateContext([Frozen] ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
+    [Fact]
+    public void Can_Render_MultipleContentBuilderTemplate_With_ChildTemplate_And_TemplateContext()
     {
         // Arrange
+        var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
         using var provider = new ServiceCollection()
             .AddTemplateFramework()
             .AddTemplateFrameworkChildTemplateProvider()
@@ -30,12 +31,12 @@ public class IntegrationTests
         generationEnvironment.Contents.Single().Builder.ToString().Should().Be("Context IsRootContext: False");
     }
 
-    [Theory, AutoMockData]
-    public void Can_Render_Multiple_Files_Into_One_File_Like_Current_CsharpClassGenerator(
-        [Frozen] ITemplateFactory templateFactory,
-        [Frozen] ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
+    [Fact]
+    public void Can_Render_Multiple_Files_Into_One_File_Like_Current_CsharpClassGenerator()
     {
         // Arrange
+        var templateFactory = Fixture.Freeze<ITemplateFactory>();
+        var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
         templateFactory.Create(Arg.Any<Type>()).Returns(x => Activator.CreateInstance(x.ArgAt<Type>(0))!);
         using var provider = new ServiceCollection()
             .AddTemplateFramework()

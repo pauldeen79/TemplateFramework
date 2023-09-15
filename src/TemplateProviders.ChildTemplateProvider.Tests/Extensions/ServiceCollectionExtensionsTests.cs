@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests.Extensions;
 
-public class ServiceCollectionExtensionsTests
+public class ServiceCollectionExtensionsTests : TestBase
 {
     public class AddChildTemplate
     {
@@ -106,11 +106,14 @@ public class ServiceCollectionExtensionsTests
         }
     }
 
-    public class AddTemplateFrameworkChildTemplateProvider
+    public class AddTemplateFrameworkChildTemplateProvider : ServiceCollectionExtensionsTests
     {
-        [Theory, AutoMockData]
-        public void All_Dependencies_Can_Be_Resolved([Frozen] ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
+        [Fact]
+        public void All_Dependencies_Can_Be_Resolved()
         {
+            // Arrange
+            var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
+
             // Act
             using var provider = new ServiceCollection()
                 .AddTemplateFramework()

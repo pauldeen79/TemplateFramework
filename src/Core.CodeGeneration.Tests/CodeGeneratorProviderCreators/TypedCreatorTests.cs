@@ -1,22 +1,26 @@
 ﻿namespace TemplateFramework.Core.CodeGeneration.Tests.CodeGeneratorProviderCreators;
 
-public class TypedCreatorTests
+public class TypedCreatorTests : TestBase<TypedCreator>
 {
-    public class TryCreateInstance
+    public class TryCreateInstance : TypedCreatorTests
     {
-        [Theory, AutoMockData]
-        public void Throws_On_Null_Type(TypedCreator sut)
+        [Fact]
+        public void Throws_On_Null_Type()
         {
+            // Arrange
+            var sut = CreateSut();
+
             // Act
             sut.Invoking(x => x.TryCreateInstance(type: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("type");
         }
 
-        [Theory, AutoMockData]
-        public void Returns_Instance_When_Type_Implements_ICodeGenerationProvider(TypedCreator sut)
+        [Fact]
+        public void Returns_Instance_When_Type_Implements_ICodeGenerationProvider()
         {
             // Arrange
             var type = typeof(MyGeneratorProvider);
+            var sut = CreateSut();
 
             // Act
             var result = sut.TryCreateInstance(type);
@@ -25,11 +29,12 @@ public class TypedCreatorTests
             result.Should().BeOfType<MyGeneratorProvider>();
         }
 
-        [Theory, AutoMockData]
-        public void Returns_Null_When_Type_Does_Not_Implement_ICodeGenerationProvider(TypedCreator sut)
+        [Fact]
+        public void Returns_Null_When_Type_Does_Not_Implement_ICodeGenerationProvider()
         {
             // Arrange
             var type = GetType();
+            var sut = CreateSut();
 
             // Act
             var result = sut.TryCreateInstance(type);

@@ -1,14 +1,14 @@
 ﻿namespace TemplateFramework.TemplateProviders.CompiledTemplateProvider.Tests;
 
-public class IntegrationTests
+public class IntegrationTests : TestBase
 {
-    [Theory, AutoMockData]
-    public void Can_Render_Template_From_CompiledTemplateProvider(
-        [Frozen] IAssemblyInfoContextService assemblyInfoContextService,
-        [Frozen] ITemplateFactory templateFactory,
-        [Frozen] ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
+    [Fact]
+    public void Can_Render_Template_From_CompiledTemplateProvider()
     {
         // Arrange
+        var assemblyInfoContextService = Fixture.Freeze<IAssemblyInfoContextService>();
+        var templateFactory = Fixture.Freeze<ITemplateFactory>();
+        var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
         templateFactory.Create(Arg.Any<Type>()).Returns(x => Activator.CreateInstance(x.ArgAt<Type>(0))!);
         using var provider = new ServiceCollection()
             .AddTemplateFramework()
