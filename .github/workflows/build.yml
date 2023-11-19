@@ -26,13 +26,13 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 7.0.x
+          dotnet-version: 8.0.x
       - name: Restore
         run: dotnet restore TemplateFramework.sln
       - name: Build
         run: dotnet build --no-restore TemplateFramework.sln -c Release
       - name: Test
-        run: dotnet test --no-restore TemplateFramework.sln -c Release -f net7.0
+        run: dotnet test --no-restore TemplateFramework.sln -c Release -f net8.0
   #    - name: Pack
   #      if: matrix.os == 'ubuntu-latest'
   #      run: dotnet pack TemplateFramework.sln -v normal -c Release -o ./artifacts --no-restore --include-symbols --include-source -p:PackageVersion=$GITHUB_RUN_ID
@@ -68,7 +68,7 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 7.0.x
+          dotnet-version: 8.0.x
       - name: Create Release NuGet package
         run: |
           arrTag=(${GITHUB_REF//\// })

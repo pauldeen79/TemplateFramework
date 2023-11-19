@@ -38,7 +38,7 @@ public class ExpressionStringTemplateTests
         {
             // Arrange
             ExpressionStringParserMock.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<TemplateFrameworkStringContext>(), Arg.Any<IFormattableStringParser>())
-                .Returns(Result<object?>.Error("Kaboom!"));
+                .Returns(Result.Error<object?>("Kaboom!"));
             var sut = CreateSut();
             var builder = new StringBuilder();
 
@@ -52,7 +52,7 @@ public class ExpressionStringTemplateTests
         {
             // Arrange
             ExpressionStringParserMock.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<TemplateFrameworkStringContext>(), Arg.Any<IFormattableStringParser>())
-                .Returns(Result<object?>.Success("Parse result"));
+                .Returns(Result.Success<object?>("Parse result"));
             var sut = CreateSut();
             var builder = new StringBuilder();
 

@@ -47,6 +47,6 @@ public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
     {
         var items = classNameFilter.ToArray();
 
-        return !items.Any() || Array.Find(items, x => x == type.FullName) is not null;
+        return items.Length == 0 || Array.Find(items, x => x == type.FullName) is not null;
     }
 }

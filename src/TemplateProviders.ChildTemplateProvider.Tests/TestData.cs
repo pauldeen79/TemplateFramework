@@ -303,7 +303,7 @@ internal static class TestData
             indentedBuilder.AppendLine("{"); // start class
 
             //TODO: Render child items
-            if (Model.Data.SubClasses?.Any() == true)
+            if (Model.Data.SubClasses is not null && Model.Data.SubClasses.Length > 0)
             {
                 Context.Engine.RenderChildTemplates(
                     Model.Data.SubClasses.Select(typeBase => new CsharpClassGeneratorViewModel<TypeBase>(typeBase, Model.Settings.ForSubclasses())),
