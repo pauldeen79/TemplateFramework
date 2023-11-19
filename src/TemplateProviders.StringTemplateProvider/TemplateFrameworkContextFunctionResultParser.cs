@@ -9,7 +9,7 @@ public class TemplateFrameworkContextFunctionResultParser : IFunctionResultParse
 
         if (context is not TemplateFrameworkStringContext templateFrameworkFormattableStringContext)
         {
-            return Result<object?>.Continue();
+            return Result.Continue<object?>();
         }
 
         foreach (var functionResultParser in templateFrameworkFormattableStringContext.Context.FunctionResultParsers)
@@ -29,6 +29,6 @@ public class TemplateFrameworkContextFunctionResultParser : IFunctionResultParse
         }
 
         // No custom FunctionResultParsers registered, the parent should continue to try other FunctionResultParsers statically injected into the ServiceCollection on application startup.
-        return Result<object?>.Continue();
+        return Result.Continue<object?>();
     }
 }

@@ -16,8 +16,8 @@ public sealed class TestTemplateComponentRegistryPlugin : ITemplateComponentRegi
         var processorProcessorMock = Substitute.For<IPlaceholderProcessor>();
         processorProcessorMock.Process(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>())
             .Returns(args => args.ArgAt<string>(0) == "__test"
-                ? Result<string>.Success("Hello world!")
-                : Result<string>.Continue());
+                ? Result.Success("Hello world!")
+                : Result.Continue<string>());
 
         var functionResultParserMock = Substitute.For<IFunctionResultParser>();
         functionResultParserMock.Parse(Arg.Any<FunctionParseResult>(), Arg.Any<object?>(), Arg.Any<IFunctionParseResultEvaluator>(), Arg.Any<IExpressionParser>())
@@ -25,10 +25,10 @@ public sealed class TestTemplateComponentRegistryPlugin : ITemplateComponentRegi
             {
                 if (args.ArgAt<FunctionParseResult>(0).FunctionName == "MyFunction")
                 {
-                    return Result<object?>.Success("Hello world!");
+                    return Result.Success<object?>("Hello world!");
                 }
 
-                return Result<object?>.Continue();
+                return Result.Continue<object?>();
             });
 
         ComponentRegistrationContext.PlaceholderProcessors.Add(processorProcessorMock);

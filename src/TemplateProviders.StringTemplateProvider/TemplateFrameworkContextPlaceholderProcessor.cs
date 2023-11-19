@@ -12,7 +12,7 @@ public sealed class TemplateFrameworkContextPlaceholderProcessor : IPlaceholderP
 
         if (context is not TemplateFrameworkStringContext templateFrameworkFormattableStringContext)
         {
-            return Result<string>.Continue();
+            return Result.Continue<string>();
         }
 
         foreach (var placholderProcessor in templateFrameworkFormattableStringContext.Context.PlaceholderProcessors.OrderBy(x => Order))
@@ -26,7 +26,7 @@ public sealed class TemplateFrameworkContextPlaceholderProcessor : IPlaceholderP
 
         if (templateFrameworkFormattableStringContext.ParametersDictionary.TryGetValue(value, out var parameterValue))
         {
-            return Result<string>.Success(parameterValue?.ToString() ?? string.Empty);
+            return Result.Success(parameterValue?.ToString() ?? string.Empty);
         }
 
         // Also return the parameter name, so GetParameters works.
@@ -39,9 +39,9 @@ public sealed class TemplateFrameworkContextPlaceholderProcessor : IPlaceholderP
         if (templateFrameworkFormattableStringContext.GetParametersOnly)
         {
             // When getting parameters, always return success, so the process always continues to get next parameters.
-            return Result<string>.Success(string.Empty);
+            return Result.Success(string.Empty);
         }
 
-        return Result<string>.Continue();
+        return Result.Continue<string>();
     }
 }
