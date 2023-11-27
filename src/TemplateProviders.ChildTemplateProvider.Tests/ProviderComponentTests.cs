@@ -133,7 +133,7 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
 
             // Act & Assert
             sut.Invoking(x => x.Create(new TemplateByNameIdentifier("test")))
-               .Should().Throw<NotSupportedException>().WithMessage("Name test is not supported");
+               .Should().Throw<NotSupportedException>().WithMessage("Template with name test is not supported");
         }
 
         [Fact]
