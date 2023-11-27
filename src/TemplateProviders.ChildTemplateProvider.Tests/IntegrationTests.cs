@@ -57,4 +57,44 @@ public class IntegrationTests : TestBase
         // Assert
         generationEnvironment.Builder.Contents.Should().HaveCount(4);
     }
+
+    [Fact]
+    public void Rendering_Unknown_Template_By_Name_Gives_Clear_ErrorMessage_What_Is_Wrong()
+    {
+        // Arrange
+        var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
+        using var provider = new ServiceCollection()
+            .AddTemplateFramework()
+            .AddTemplateFrameworkChildTemplateProvider()
+            .AddChildTemplate("MyTemplate", _ => new TestData.PlainTemplateWithTemplateContext(context => "Context IsRootContext: " + context.IsRootContext))
+            .AddSingleton(templateComponentRegistryPluginFactory)
+            .BuildServiceProvider(true);
+        using var scope = provider.CreateScope();
+        var engine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
+        var generationEnvironment = new MultipleContentBuilder();
+
+        // Act & Assert
+        engine.Invoking(x => x.Render(new RenderTemplateRequest(new TemplateByNameIdentifier("Unknown"), generationEnvironment)))
+              .Should().Throw<NotSupportedException>().WithMessage("Template with name Unknown is not supported");
+    }
+
+    [Fact]
+    public void Rendering_Unknown_Template_By_Model_Gives_Clear_ErrorMessage_What_Is_Wrong()
+    {
+        // Arrange
+        var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
+        using var provider = new ServiceCollection()
+            .AddTemplateFramework()
+            .AddTemplateFrameworkChildTemplateProvider()
+            .AddChildTemplate("MyTemplate", _ => new TestData.PlainTemplateWithTemplateContext(context => "Context IsRootContext: " + context.IsRootContext))
+            .AddSingleton(templateComponentRegistryPluginFactory)
+            .BuildServiceProvider(true);
+        using var scope = provider.CreateScope();
+        var engine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
+        var generationEnvironment = new MultipleContentBuilder();
+
+        // Act & Assert
+        engine.Invoking(x => x.Render(new RenderTemplateRequest(new TemplateByModelIdentifier("Unknown"), generationEnvironment)))
+              .Should().Throw<NotSupportedException>().WithMessage("Model of type System.String is not supported");
+    }
 }
