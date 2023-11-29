@@ -33,6 +33,11 @@ jobs:
         run: dotnet build --no-restore TemplateFramework.sln -c Release
       - name: Test
         run: dotnet test --no-restore TemplateFramework.sln -c Release -f net8.0
+      - name: Checking for external vulnerabilites
+        run: |
+          dotnet list package --vulnerable --include-transitive 2>&1 | tee vuln.log
+          echo "Analyze dotnet list package..."
+          ! grep -q -i "has the following vulnerable packages" vuln.log
   #    - name: Pack
   #      if: matrix.os == 'ubuntu-latest'
   #      run: dotnet pack TemplateFramework.sln -v normal -c Release -o ./artifacts --no-restore --include-symbols --include-source -p:PackageVersion=$GITHUB_RUN_ID
