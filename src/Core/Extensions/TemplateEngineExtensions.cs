@@ -10,7 +10,7 @@ public static class TemplateEngineExtensions
         var items = childModels.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
         foreach (var item in items)
         {
-            instance.Render(new RenderTemplateRequest(identifier, item.Model, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(identifier, item, item.Index, items.Length))));
+            instance.Render(new RenderTemplateRequest(identifier, item.Model, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(identifier, item.Model, item.Index, items.Length))));
         }
     }
 
@@ -24,7 +24,7 @@ public static class TemplateEngineExtensions
         foreach (var item in items)
         {
             var identifier = identifierFactory(item.Model);
-            instance.Render(new RenderTemplateRequest(identifier, item.Model, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(identifier, item, item.Index, items.Length))));
+            instance.Render(new RenderTemplateRequest(identifier, item.Model, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(identifier, item.Model, item.Index, items.Length))));
         }
     }
 
@@ -61,7 +61,7 @@ public static class TemplateEngineExtensions
         foreach (var item in items)
         {
             var identifier = templateIdentifierFactory(item.Model);
-            instance.Render(new RenderTemplateRequest(identifier, item.Model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(identifier, item, item.Index, items.Length))));
+            instance.Render(new RenderTemplateRequest(identifier, item.Model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(identifier, item.Model, item.Index, items.Length))));
         }
     }
 
@@ -88,7 +88,7 @@ public static class TemplateEngineExtensions
         var items = childModels.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
         foreach (var item in items)
         {
-            instance.Render(new RenderTemplateRequest(identifier, item.Model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(identifier, item, item.Index, items.Length))));
+            instance.Render(new RenderTemplateRequest(identifier, item.Model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(identifier, item.Model, item.Index, items.Length))));
         }
     }
 
