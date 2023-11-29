@@ -3,7 +3,7 @@ Template and code generation framework for C#
 
 If you want to create templates in any .NET language (C#, VB.Net, F#) and run them using a dotnet global tool, this framework is for you!
 
-We currently target .NET 7.0, but the code can easily be ported back to older .NET versions.
+We currently target .NET 8.0, but the code can easily be ported back to older .NET versions.
 
 # Difference between a template and code generation provider
 A code generation provider is a class that provides a template instance, along with optional model and additional parameters.
@@ -30,7 +30,7 @@ If you want to use the template abstraction level, then you have to make sure th
 - TemplateFramework.TemplateProviders.StringTemplateProvider: Adds support for text-based templates with formattable strings or expression strings
 
 # How to create a template
-You have to write a class in a .NET 7.0 project (class library project is good enough), and compile this project.
+You have to write a class in a .NET 8.0 project (class library project is good enough), and compile this project.
 Then you can either use the command line tool 'tf' (Template Framework) or write your own host and reference the Core and TemplateProviders.CompiledTemplateProvider packages.
 
 There are multiple types of templates supported out of the box:
@@ -96,10 +96,10 @@ Note that the following assemblies will be loaded from the host (Console) comman
 - TemplateFramework.TemplateProviders.ChildTemplateProvider
 - TemplateFramework.TemplateProviders.CompiledTemplateProvider
 - TemplateFramework.TemplateProviders.StringTemplateProvider
-- CrossCutting.Common (2.10.0)
-- CrossCutting.Utilities.Parsers (2.10.0)
-- Microsoft.Extensions.DependencyInjection (7.0.0)
-- Microsoft.Extensions.DependencyInjection.Abstractions (7.0.0)
+- CrossCutting.Common (3.3.0)
+- CrossCutting.Utilities.Parsers (3.3.0)
+- Microsoft.Extensions.DependencyInjection (8.0.0)
+- Microsoft.Extensions.DependencyInjection.Abstractions (8.0.0)
 
 Right now, the all TemplateFramework assemblies are built in one build pipeline within one GitHub repository, so all version numbers of the TemplateFramework assemblies are the same.
 This means, that if you install version x.y of TemplateFramework.Console, then your template assemblies should also use version x.y of TemplateFramework package references. (most likely TemplateFramework.Abstractions)
@@ -185,7 +185,7 @@ Finally, on the command line, use the assembly name and class name (and probably
 Probably something like this:
 
 ```Powershell
-tf template --formattablestring template.txt --dryrun --default myfile.txt --interactive --templateproviderplugin MyAssembly.MyTemplateComponentRegistryPlugin --assembly MyAssembly --directory D:\\somewhere\\MyAssembly\\bin\\debug\\net7.0
+tf template --formattablestring template.txt --dryrun --default myfile.txt --interactive --templateproviderplugin MyAssembly.MyTemplateComponentRegistryPlugin --assembly MyAssembly --directory D:\\somewhere\\MyAssembly\\bin\\debug\\net8.0
 ```
 
 There is also an example in launchSettings.json of the TemplateFramework.Console project, that uses a template provider plug-in of a unit test project.
