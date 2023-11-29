@@ -3,7 +3,7 @@
 public class TemplateEngineExtensionsTests
 {
     protected object Template { get; } = new object();
-    protected IEnumerable<object?> Models { get; } = new[] { new object(), new object(), new object() };
+    protected IEnumerable<int> Models { get; } = [1, 2, 3];
     protected object Model { get; } = new object();
 
     protected const string DefaultFilename = "DefaultFilename.txt";
@@ -414,6 +414,7 @@ public class TemplateEngineExtensionsTests
                 && request.DefaultFilename == string.Empty
                 && request.GenerationEnvironment == generationEnvironment
                 && request.Model != null
+                && request.Model is int
                 && request.Identifier == identifier));
             templateContext.Received(Models.Count()).CreateChildContext(Arg.Any<IChildTemplateContext>());
         }
@@ -461,6 +462,7 @@ public class TemplateEngineExtensionsTests
                 && request.DefaultFilename == string.Empty
                 && request.GenerationEnvironment == generationEnvironment
                 && request.Model != null
+                && request.Model is int
                 && request.Identifier == identifier));
             templateContext.Received(Models.Count()).CreateChildContext(Arg.Any<IChildTemplateContext>());
         }
@@ -492,7 +494,7 @@ public class TemplateEngineExtensionsTests
                 && request.DefaultFilename == string.Empty
                 && request.GenerationEnvironment == generationEnvironment
                 && request.Model != null
-                && request.Identifier == identifier));
+                && request.Model is int && request.Identifier == identifier));
         }
 
         [Theory, AutoMockData]
@@ -522,6 +524,7 @@ public class TemplateEngineExtensionsTests
                 && request.DefaultFilename == string.Empty
                 && request.GenerationEnvironment == generationEnvironment
                 && request.Model != null
+                && request.Model is int
                 && request.Identifier == identifier));
         }
 
@@ -583,6 +586,7 @@ public class TemplateEngineExtensionsTests
                 && request.DefaultFilename == templateContext.DefaultFilename
                 && request.GenerationEnvironment == generationEnvironment
                 && request.Model != null
+                && request.Model is int
                 && request.Identifier == identifier));
         }
 
@@ -638,6 +642,7 @@ public class TemplateEngineExtensionsTests
                 && request.DefaultFilename == templateContext.DefaultFilename
                 && request.GenerationEnvironment == generationEnvironment
                 && request.Model != null
+                && request.Model is int
                 && request.Identifier != null));
         }
 
@@ -696,6 +701,7 @@ public class TemplateEngineExtensionsTests
                 && request.DefaultFilename == templateContext.DefaultFilename
                 && request.GenerationEnvironment == generationEnvironment
                 && request.Model != null
+                && request.Model is int
                 && request.Identifier == identifier));
         }
     }
