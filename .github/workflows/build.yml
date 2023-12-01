@@ -35,7 +35,7 @@ jobs:
         run: dotnet build --no-restore TemplateFramework.sln -c Release
       - name: Test
         run: dotnet test --no-restore TemplateFramework.sln -c Release -f net8.0
-      - name: Checking for external vulnerabilites
+      - name: Checking for external vulnerabilities
         run: |
           dotnet list package --vulnerable --include-transitive 2>&1 | tee vuln.log
           echo "Analyze dotnet list package..."
