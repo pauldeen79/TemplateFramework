@@ -35,7 +35,7 @@ public class ModelInitializerTests
             var template = new TestData.TemplateWithModel<string>(_ => { });
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), model, new StringBuilder(), DefaultFilename);
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
-            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>()).Returns(x => x.Args()[0]);
+            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
 
             // Act
             sut.Initialize(engineContext);

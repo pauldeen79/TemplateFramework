@@ -38,7 +38,7 @@ public class ParameterInitializerComponent : ITemplateInitializerComponent
                 continue;
             }
 
-            parameterizedTemplate.SetParameter(item.Key, _converter.Convert(item.Value, parameter.Type));
+            parameterizedTemplate.SetParameter(item.Key, _converter.Convert(item.Value, parameter.Type, context));
         }
     }
 
@@ -62,7 +62,7 @@ public class ParameterInitializerComponent : ITemplateInitializerComponent
                 continue;
             }
 
-            prop.SetValue(context.Template, _converter.Convert(item.Value, prop.PropertyType));
+            prop.SetValue(context.Template, _converter.Convert(item.Value, prop.PropertyType, context));
         }
     }
 }

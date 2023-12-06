@@ -35,7 +35,7 @@ public class ParameterInitializerTests
             var template = new PlainTemplateWithAdditionalParameters();
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
-            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>()).Returns(x => x.Args()[0]);
+            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
 
             // Act
             sut.Initialize(engineContext);
@@ -55,8 +55,8 @@ public class ParameterInitializerTests
             var additionalParameters = new { AdditionalParameter = "?" };
             var template = new PlainTemplateWithAdditionalParameters();
             object? convertedValue = "Hello world!";
-            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>())
-                              .Returns(convertedValue);
+            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>())
+                          .Returns(convertedValue);
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
 
@@ -97,7 +97,7 @@ public class ParameterInitializerTests
             var template = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), model, new StringBuilder(), DefaultFilename, additionalParameters);
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
-            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>()).Returns(x => x.Args()[0]);
+            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
 
             // Act
             sut.Initialize(engineContext);
@@ -119,7 +119,7 @@ public class ParameterInitializerTests
             var viewModel = new TestData.NonConstructableViewModel("Some value");
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters: new { ViewModel = viewModel });
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
-            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>()).Returns(x => x.Args()[0]);
+            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
 
             // Act
             sut.Initialize(engineContext);
@@ -140,7 +140,7 @@ public class ParameterInitializerTests
             var template = new TestData.PocoParameterizedTemplate();
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
-            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>()).Returns(x => x.Args()[0]);
+            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
             templateEngine.GetParameters(Arg.Any<object>()).Returns(new[] { new TemplateParameter(nameof(TestData.PocoParameterizedTemplate.Parameter), typeof(string)) });
 
             // Act
@@ -162,7 +162,7 @@ public class ParameterInitializerTests
             var template = new TestData.PocoParameterizedTemplate();
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
-            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>()).Returns(x => x.Args()[0]);
+            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
             templateEngine.GetParameters(Arg.Any<object>()).Returns(new[] { new TemplateParameter(nameof(TestData.PocoParameterizedTemplate.Parameter), typeof(string)) });
 
             // Act & Assert
