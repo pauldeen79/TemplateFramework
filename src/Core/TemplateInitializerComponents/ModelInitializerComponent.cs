@@ -21,7 +21,7 @@ public class ModelInitializerComponent : ITemplateInitializerComponent
         if (Array.Exists(templateType.GetInterfaces(), t => t.FullName?.StartsWith("TemplateFramework.Abstractions.IModelContainer", StringComparison.InvariantCulture) == true))
         {
             var modelProperty = templateType.GetProperty(nameof(IModelContainer<object?>.Model))!;
-            modelProperty.SetValue(context.Template, _converter.Convert(context.Model, modelProperty.PropertyType));
+            modelProperty.SetValue(context.Template, _converter.Convert(context.Model, modelProperty.PropertyType, context));
         }
     }
 }

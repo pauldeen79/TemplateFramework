@@ -8,7 +8,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddChildTemplate<T>(this IServiceCollection services, Type modelType) where T : class
         => services
-            .AddScoped<T>()
+            .AddTransient<T>()
             .AddScoped<ITemplateCreator>(provider => new TemplateCreator<T>(() => provider.GetRequiredService<T>(), modelType, null));
 
     public static IServiceCollection AddChildTemplate<T>(this IServiceCollection services, Type modelType, Func<IServiceProvider, T> templateFactory) where T : class
@@ -17,7 +17,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddChildTemplate<T>(this IServiceCollection services, string name) where T : class
         => services
-            .AddScoped<T>()
+            .AddTransient<T>()
             .AddScoped<ITemplateCreator>(provider => new TemplateCreator<T>(() => provider.GetRequiredService<T>(), null, name));
 
     public static IServiceCollection AddChildTemplate<T>(this IServiceCollection services, string name, Func<IServiceProvider, T> templateFactory) where T : class

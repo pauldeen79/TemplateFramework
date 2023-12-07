@@ -2,5 +2,5 @@
 
 public interface IValueConverter
 {
-    object? Convert(object? value, Type type);
+    object? Convert(object? value, Type type, ITemplateEngineContext context);
 }
