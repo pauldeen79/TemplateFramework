@@ -2,8 +2,8 @@
 
 public sealed class MyAssemblyInfoContextService : IAssemblyInfoContextService
 {
-    public string[] GetExcludedAssemblies() => new[]
-    {
+    public string[] GetExcludedAssemblies() =>
+    [
         "System.Runtime",
         "System.Collections",
         "System.ComponentModel",
@@ -19,5 +19,5 @@ public sealed class MyAssemblyInfoContextService : IAssemblyInfoContextService
         "CrossCutting.Utilities.Parsers",
         "Microsoft.Extensions.DependencyInjection",
         "Microsoft.Extensions.DependencyInjection.Abstractions"
-    };
+    ];
 }

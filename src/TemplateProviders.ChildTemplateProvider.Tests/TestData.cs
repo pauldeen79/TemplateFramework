@@ -232,13 +232,13 @@ internal static class TestData
             }
         }
 
-        private readonly static string[] DefaultUsings = new[]
-{
+        private readonly static string[] DefaultUsings =
+[
             "System",
             "System.Collections.Generic",
             "System.Linq",
             "System.Text"
-        };
+        ];
 
         public IEnumerable<string> Usings
             => DefaultUsings
@@ -364,10 +364,10 @@ public sealed class CsharpClassGeneratorCodeGenerationProvider : ICodeGeneration
         );
         var model = new[]
         {
-            new TestData.TypeBase { Namespace  = "Namespace1", Name = "Class1a", Usings = new[] { "ModelFramework" } },
-            new TestData.TypeBase { Namespace  = "Namespace1", Name = "Class1b", Usings = new[] { "ModelFramework", "ModelFramework.Domain" } },
+            new TestData.TypeBase { Namespace  = "Namespace1", Name = "Class1a", Usings = ["ModelFramework"] },
+            new TestData.TypeBase { Namespace  = "Namespace1", Name = "Class1b", Usings = ["ModelFramework", "ModelFramework.Domain"] },
             new TestData.TypeBase { Namespace  = "Namespace2", Name = "Class2a" },
-            new TestData.TypeBase { Namespace  = "Namespace2", Name = "Class2b", SubClasses = new[] { new TestData.TypeBase { Namespace = "Ignored", Name = "Subclass1" }, new TestData.TypeBase { Namespace = "Ignored", Name = "Subclass2", SubClasses = new[] { new TestData.TypeBase { Namespace = "Ignored", Name = "Subclass2a" } } } } },
+            new TestData.TypeBase { Namespace  = "Namespace2", Name = "Class2b", SubClasses = [new TestData.TypeBase { Namespace = "Ignored", Name = "Subclass1" }, new TestData.TypeBase { Namespace = "Ignored", Name = "Subclass2", SubClasses = [new TestData.TypeBase { Namespace = "Ignored", Name = "Subclass2a" }] }] },
         };
 
         var viewModel = new TestData.CsharpClassGeneratorViewModel<IEnumerable<TestData.TypeBase>>(model, settings);

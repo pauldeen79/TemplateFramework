@@ -20,7 +20,7 @@ public static class TypeExtensions
         Func<ParameterInfo, object?>? parameterReplaceDelegate = null,
         Func<ConstructorInfo, bool>? constructorPredicate = null)
         => type.ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments(
-            t => t.CreateInstance(t2 => Substitute.For(new[] { t2 }, Array.Empty<object>()), parameterReplaceDelegate, constructorPredicate),
+            t => t.CreateInstance(t2 => Substitute.For([t2], Array.Empty<object>()), parameterReplaceDelegate, constructorPredicate),
             parameterPredicate,
             parameterReplaceDelegate,
             constructorPredicate);
