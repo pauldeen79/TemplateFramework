@@ -26,11 +26,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Abstractions\TemplateFramework.Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
      <Using Include="CommunityToolkit.Diagnostics" />
      <Using Include="Microsoft.Extensions.DependencyInjection" />
      <Using Include="System.Diagnostics.CodeAnalysis" />
      <Using Include="System.Reflection" />
      <Using Include="System.Runtime.Loader" />
+     <Using Include="TemplateFramework.Abstractions"/>
      <Using Include="TemplateFramework.Runtime.Abstractions" />
   </ItemGroup>
 
