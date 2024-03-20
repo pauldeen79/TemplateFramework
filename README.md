@@ -96,10 +96,10 @@ Note that the following assemblies will be loaded from the host (Console) comman
 - TemplateFramework.TemplateProviders.ChildTemplateProvider
 - TemplateFramework.TemplateProviders.CompiledTemplateProvider
 - TemplateFramework.TemplateProviders.StringTemplateProvider
-- CrossCutting.Common (3.3.0)
+- CrossCutting.Common (3.5.0)
 - CrossCutting.Utilities.Parsers (3.3.0)
 - Microsoft.Extensions.DependencyInjection (8.0.0)
-- Microsoft.Extensions.DependencyInjection.Abstractions (8.0.0)
+- Microsoft.Extensions.DependencyInjection.Abstractions (8.0.1)
 
 Right now, the all TemplateFramework assemblies are built in one build pipeline within one GitHub repository, so all version numbers of the TemplateFramework assemblies are the same.
 This means, that if you install version x.y of TemplateFramework.Console, then your template assemblies should also use version x.y of TemplateFramework package references. (most likely TemplateFramework.Abstractions)
