@@ -3,10 +3,11 @@
 public class StringBuilderEnvironmentTests
 {
     protected IFileSystem FileSystemMock { get; } = Substitute.For<IFileSystem>();
+    protected IRetryMechanism RetryMechanism { get; } = new FastRetryMechanism();
     protected ICodeGenerationProvider CodeGenerationProviderMock { get; } = Substitute.For<ICodeGenerationProvider>();
     protected StringBuilder Builder { get; } = new();
     
-    protected StringBuilderEnvironment CreateSut() => new(FileSystemMock, Builder);
+    protected StringBuilderEnvironment CreateSut() => new(FileSystemMock, RetryMechanism, Builder);
 
     public class Constructor : StringBuilderEnvironmentTests
     {
@@ -91,5 +92,10 @@ public class StringBuilderEnvironmentTests
             // Arrange
             FileSystemMock.Received().WriteAllText(Path.Combine(TestData.BasePath, "Filename.txt"), "Contents", Encoding.UTF32);
         }
+    }
+
+    private sealed class FastRetryMechanism : RetryMechanism
+    {
+        protected override int WaitTimeInMs => 1;
     }
 }

@@ -3,24 +3,26 @@
 public sealed class StringBuilderEnvironment : IGenerationEnvironment
 {
     public StringBuilderEnvironment()
-        : this(new FileSystem(), new StringBuilder())
+        : this(new FileSystem(), new RetryMechanism(), new StringBuilder())
     {
     }
 
     public StringBuilderEnvironment(StringBuilder builder)
-        : this(new FileSystem(), builder)
+        : this(new FileSystem(), new RetryMechanism(), builder)
     {
     }
 
-    internal StringBuilderEnvironment(IFileSystem fileSystem, StringBuilder builder)
+    internal StringBuilderEnvironment(IFileSystem fileSystem, IRetryMechanism retryMechanism, StringBuilder builder)
     {
         Guard.IsNotNull(builder);
 
         _fileSystem = fileSystem;
+        _retryMechanism = retryMechanism;
         Builder = builder;
     }
 
     private readonly IFileSystem _fileSystem;
+    private readonly IRetryMechanism _retryMechanism;
 
     public StringBuilder Builder { get; }
 
@@ -35,6 +37,13 @@ public sealed class StringBuilderEnvironment : IGenerationEnvironment
             ? defaultFilename
             : Path.Combine(basePath, defaultFilename);
 
-        _fileSystem.WriteAllText(path, Builder.ToString(), provider.Encoding);
+        var dir = Path.GetDirectoryName(path);
+        if (!string.IsNullOrEmpty(dir) && !_fileSystem.DirectoryExists(dir))
+        {
+            _fileSystem.CreateDirectory(dir);
+        }
+
+        var normalizedContents = Builder.ToString().NormalizeLineEndings();
+        _retryMechanism.Retry(() => _fileSystem.WriteAllText(path, normalizedContents, provider.Encoding));
     }
 }
