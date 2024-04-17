@@ -32,7 +32,7 @@ public class FormattableStringTemplateTests
                     // Note that in this unit test, we have to mock the behavior of FormattableStringParser :)
                     // There is also an Integration test to prove it works in real life ;-)
                     x.ArgAt<TemplateFrameworkStringContext>(2).ParameterNamesList.Add("Name");
-                    return Result.Success(string.Empty);
+                    return Result.Success<FormattableStringParserResult>(string.Empty);
                 });
 
             // Act
@@ -60,8 +60,9 @@ public class FormattableStringTemplateTests
         public void Throws_On_NonSuccesful_Result_From_FormattableStringParser()
         {
             // Arrange
-            FormattableStringParserMock.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<TemplateFrameworkStringContext>())
-                .Returns(Result.Error<string>("Kaboom!"));
+            FormattableStringParserMock
+                .Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<TemplateFrameworkStringContext>())
+                .Returns(Result.Error<FormattableStringParserResult>("Kaboom!"));
             var sut = CreateSut();
             var builder = new StringBuilder();
 
@@ -74,8 +75,9 @@ public class FormattableStringTemplateTests
         public void Appends_Result_From_FormattableStringParser_To_Builder_On_Succesful_Result()
         {
             // Arrange
-            FormattableStringParserMock.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<TemplateFrameworkStringContext>())
-                .Returns(Result.Success("Parse result"));
+            FormattableStringParserMock
+                .Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<TemplateFrameworkStringContext>())
+                .Returns(Result.Success<FormattableStringParserResult>("Parse result"));
             var sut = CreateSut();
             var builder = new StringBuilder();
 
@@ -95,12 +97,13 @@ public class FormattableStringTemplateTests
             // Arrange
             var sut = CreateSut();
             IDictionary<string, object?>? dictionary = null;
-            FormattableStringParserMock.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<TemplateFrameworkStringContext>())
+            FormattableStringParserMock
+                .Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<TemplateFrameworkStringContext>())
                 .Returns(x =>
                 {
                     dictionary = x.ArgAt<TemplateFrameworkStringContext>(2).ParametersDictionary;
 
-                    return Result.Success(string.Empty);
+                    return Result.Success<FormattableStringParserResult>(string.Empty);
                 });
 
             // Act
