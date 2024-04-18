@@ -28,7 +28,7 @@ public sealed class StringBuilderEnvironment : IGenerationEnvironment
 
     public GenerationEnvironmentType Type => GenerationEnvironmentType.StringBuilder;
 
-    public void SaveContents(ICodeGenerationProvider provider, string basePath, string defaultFilename)
+    public Task SaveContents(ICodeGenerationProvider provider, string basePath, string defaultFilename)
     {
         Guard.IsNotNull(provider);
         Guard.IsNotNullOrEmpty(defaultFilename);
@@ -45,5 +45,7 @@ public sealed class StringBuilderEnvironment : IGenerationEnvironment
 
         var normalizedContents = Builder.ToString().NormalizeLineEndings();
         _retryMechanism.Retry(() => _fileSystem.WriteAllText(path, normalizedContents, provider.Encoding));
+
+        return Task.CompletedTask;
     }
 }

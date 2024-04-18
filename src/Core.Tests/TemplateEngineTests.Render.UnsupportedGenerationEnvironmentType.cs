@@ -1,4 +1,4 @@
-namespace TemplateFramework.Core.Tests;
+﻿namespace TemplateFramework.Core.Tests;
 
 public partial class TemplateEngineTests
 {
@@ -14,8 +14,8 @@ public partial class TemplateEngineTests
             TemplateProviderMock.Create(Arg.Any<TemplateInstanceIdentifier>()).Returns(template);
 
             // Act & Assert
-            sut.Invoking(x => x.Render(request))
-               .Should().Throw<NotSupportedException>();
+            sut.Awaiting(x => x.Render(request))
+               .Should().ThrowAsync<NotSupportedException>();
         }
     }
 }

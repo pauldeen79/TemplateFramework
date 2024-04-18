@@ -2,5 +2,5 @@
 
 public interface ICodeGenerationEngine
 {
-    void Generate(ICodeGenerationProvider codeGenerationProvider, IGenerationEnvironment generationEnvironment, ICodeGenerationSettings settings);
+    Task Generate(ICodeGenerationProvider codeGenerationProvider, IGenerationEnvironment generationEnvironment, ICodeGenerationSettings settings);
 }

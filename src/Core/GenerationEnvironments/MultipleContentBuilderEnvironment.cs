@@ -28,7 +28,7 @@ public sealed class MultipleContentBuilderEnvironment : IGenerationEnvironment
 
     public GenerationEnvironmentType Type => GenerationEnvironmentType.MultipleContentBuilder;
 
-    public void SaveContents(ICodeGenerationProvider provider, string basePath, string defaultFilename)
+    public Task SaveContents(ICodeGenerationProvider provider, string basePath, string defaultFilename)
     {
         Guard.IsNotNull(provider);
 
@@ -41,6 +41,8 @@ public sealed class MultipleContentBuilderEnvironment : IGenerationEnvironment
         }
 
         SaveAll(_fileSystem, basePath, provider.Encoding, multipleContent.Contents);
+
+        return Task.CompletedTask;
     }
 
     internal void SaveAll(IFileSystem fileSystem, string basePath, Encoding encoding, IEnumerable<IContent> contents)

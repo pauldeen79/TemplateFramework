@@ -37,8 +37,8 @@ public class StringBuilderEnvironmentTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.SaveContents(provider: null!, TestData.BasePath, "Filename.txt"))
-               .Should().Throw<ArgumentNullException>().WithParameterName("provider");
+            sut.Awaiting(x => x.SaveContents(provider: null!, TestData.BasePath, "Filename.txt"))
+               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("provider");
         }
 
         [Fact]
@@ -48,8 +48,8 @@ public class StringBuilderEnvironmentTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.SaveContents(CodeGenerationProviderMock, TestData.BasePath, defaultFilename: null!))
-               .Should().Throw<ArgumentException>().WithParameterName("defaultFilename");
+            sut.Awaiting(x => x.SaveContents(CodeGenerationProviderMock, TestData.BasePath, defaultFilename: null!))
+               .Should().ThrowAsync<ArgumentException>().WithParameterName("defaultFilename");
         }
 
         [Fact]
@@ -59,8 +59,8 @@ public class StringBuilderEnvironmentTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.SaveContents(CodeGenerationProviderMock, TestData.BasePath, defaultFilename: string.Empty))
-               .Should().Throw<ArgumentException>().WithParameterName("defaultFilename");
+            sut.Awaiting(x => x.SaveContents(CodeGenerationProviderMock, TestData.BasePath, defaultFilename: string.Empty))
+               .Should().ThrowAsync<ArgumentException>().WithParameterName("defaultFilename");
         }
 
         [Fact]
