@@ -2,7 +2,7 @@
 
 public class TypedTextTransformTemplateRenderer : IStringBuilderTemplateRenderer
 {
-    public Task<bool> TryRender(object instance, StringBuilder builder)
+    public bool TryRender(object instance, StringBuilder builder)
     {
         if (instance is ITextTransformTemplate textTransformTemplate)
         {
@@ -14,9 +14,9 @@ public class TypedTextTransformTemplateRenderer : IStringBuilderTemplateRenderer
                 builder.Append(output);
             }
 
-            return Task.FromResult(true);
+            return true;
         }
 
-        return Task.FromResult(false);
+        return false;
     }
 }

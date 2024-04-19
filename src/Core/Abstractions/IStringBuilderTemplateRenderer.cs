@@ -2,5 +2,5 @@
 
 public interface IStringBuilderTemplateRenderer
 {
-    Task<bool> TryRender(object instance, StringBuilder builder);
+    bool TryRender(object instance, StringBuilder builder);
 }

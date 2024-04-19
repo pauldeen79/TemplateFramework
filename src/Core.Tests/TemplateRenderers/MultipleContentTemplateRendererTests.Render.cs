@@ -11,8 +11,8 @@ public partial class MultipleContentTemplateRendererTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.Render(context: null!))
-               .Should().ThrowAsync<ArgumentException>().WithParameterName("context");
+            sut.Invoking(x => x.Render(context: null!))
+               .Should().Throw<ArgumentException>().WithParameterName("context");
         }
 
         [Fact]
@@ -25,12 +25,12 @@ public partial class MultipleContentTemplateRendererTests
             var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
 
             // Act & Assert
-            sut.Awaiting(x => x.Render(engineContext))
-               .Should().ThrowAsync<NotSupportedException>();
+            sut.Invoking(x => x.Render(engineContext))
+               .Should().Throw<NotSupportedException>();
         }
 
         [Fact]
-        public async Task Renders_MultipleContentBuilderTemplate_Correctly()
+        public void Renders_MultipleContentBuilderTemplate_Correctly()
         {
             // Arrange
             var sut = CreateSut();
@@ -41,14 +41,14 @@ public partial class MultipleContentTemplateRendererTests
             MultipleContentBuilderTemplateCreatorMock.TryCreate(Arg.Any<object>()).Returns(templateMock);
 
             // Act
-            await sut.Render(engineContext);
+            sut.Render(engineContext);
 
             // Assert
             templateMock.Received().Render(Arg.Any<IMultipleContentBuilder>());
         }
 
         [Fact]
-        public async Task Renders_Non_MultipleContentBuilderTemplate_Correctly()
+        public void Renders_Non_MultipleContentBuilderTemplate_Correctly()
         {
             // Arrange
             var sut = CreateSut();
@@ -71,7 +71,7 @@ public partial class MultipleContentTemplateRendererTests
                 .Do(x => ((StringBuilderEnvironment)x.ArgAt<IRenderTemplateRequest>(0).GenerationEnvironment).Builder.Append(template.ToString()));
 
             // Act
-            await sut.Render(engineContext);
+            sut.Render(engineContext);
 
             // Assert
             contentBuilderMock.Builder.Should().NotBeNull();

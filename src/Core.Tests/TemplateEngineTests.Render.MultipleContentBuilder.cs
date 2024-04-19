@@ -16,12 +16,12 @@ public partial class TemplateEngineTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.Render(request: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("request");
+            sut.Invoking(x => x.Render(request: null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("request");
         }
 
         [Fact]
-        public async Task Initializes_Template_Correctly()
+        public void Initializes_Template_Correctly()
         {
             // Arrange
             var sut = CreateSut();
@@ -32,14 +32,14 @@ public partial class TemplateEngineTests
             TemplateProviderMock.Create(Arg.Any<TemplateInstanceIdentifier>()).Returns(template);
 
             // Act
-            await sut.Render(request);
+            sut.Render(request);
 
             // Assert
             TemplateInitializerMock.Received().Initialize(Arg.Any<ITemplateEngineContext>());
         }
 
         [Fact]
-        public async Task Renders_Template_Correctly()
+        public void Renders_Template_Correctly()
         {
             // Arrange
             var sut = CreateSut();
@@ -51,10 +51,10 @@ public partial class TemplateEngineTests
             TemplateProviderMock.Create(Arg.Any<TemplateInstanceIdentifier>()).Returns(template);
 
             // Act
-            await sut.Render(request);
+            sut.Render(request);
 
             // Assert
-            await TemplateRendererMock.Received().Render(Arg.Is<ITemplateEngineContext>(req =>
+            TemplateRendererMock.Received().Render(Arg.Is<ITemplateEngineContext>(req =>
                 req.Identifier is TemplateInstanceIdentifier
                 && req.GenerationEnvironment.Type == GenerationEnvironmentType.MultipleContentBuilder
                 && req.DefaultFilename == string.Empty));

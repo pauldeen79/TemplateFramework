@@ -2,6 +2,6 @@
 
 public interface ITemplateEngine
 {
-    Task Render(IRenderTemplateRequest request);
+    void Render(IRenderTemplateRequest request);
     ITemplateParameter[] GetParameters(object templateInstance);
 }

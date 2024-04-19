@@ -3,5 +3,5 @@
 public interface ITemplateRenderer
 {
     bool Supports(IGenerationEnvironment generationEnvironment);
-    Task Render(ITemplateEngineContext context);
+    void Render(ITemplateEngineContext context);
 }

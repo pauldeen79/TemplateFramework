@@ -2,14 +2,14 @@
 
 public class TypedStringBuilderTemplateRenderer : IStringBuilderTemplateRenderer
 {
-    public Task<bool> TryRender(object instance, StringBuilder builder)
+    public bool TryRender(object instance, StringBuilder builder)
     {
         if (instance is IStringBuilderTemplate typedTemplate)
         {
             typedTemplate.Render(builder);
-            return Task.FromResult(true);
+            return true;
         }
 
-        return Task.FromResult(false);
+        return false;
     }
 }

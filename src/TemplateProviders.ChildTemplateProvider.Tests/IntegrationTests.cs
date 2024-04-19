@@ -74,8 +74,8 @@ public class IntegrationTests : TestBase
         var generationEnvironment = new MultipleContentBuilder();
 
         // Act & Assert
-        engine.Awaiting(x => x.Render(new RenderTemplateRequest(new TemplateByNameIdentifier("Unknown"), generationEnvironment)))
-              .Should().ThrowAsync<NotSupportedException>().WithMessage("Template with name Unknown is not supported");
+        engine.Invoking(x => x.Render(new RenderTemplateRequest(new TemplateByNameIdentifier("Unknown"), generationEnvironment)))
+              .Should().Throw<NotSupportedException>().WithMessage("Template with name Unknown is not supported");
     }
 
     [Fact]
@@ -94,7 +94,7 @@ public class IntegrationTests : TestBase
         var generationEnvironment = new MultipleContentBuilder();
 
         // Act & Assert
-        engine.Awaiting(x => x.Render(new RenderTemplateRequest(new TemplateByModelIdentifier("Unknown"), generationEnvironment)))
-              .Should().ThrowAsync<NotSupportedException>().WithMessage("Model of type System.String is not supported");
+        engine.Invoking(x => x.Render(new RenderTemplateRequest(new TemplateByModelIdentifier("Unknown"), generationEnvironment)))
+              .Should().Throw<NotSupportedException>().WithMessage("Model of type System.String is not supported");
     }
 }
