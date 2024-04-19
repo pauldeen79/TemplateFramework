@@ -4,7 +4,7 @@ public sealed class TemplateFrameworkContextPlaceholderProcessor : IPlaceholderP
 {
     public int Order => 100;
 
-    public Result<string> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+    public Result<FormattableStringParserResult> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
     {
         Guard.IsNotNull(value);
         Guard.IsNotNull(formatProvider);
@@ -12,7 +12,7 @@ public sealed class TemplateFrameworkContextPlaceholderProcessor : IPlaceholderP
 
         if (context is not TemplateFrameworkStringContext templateFrameworkFormattableStringContext)
         {
-            return Result.Continue<string>();
+            return Result.Continue<FormattableStringParserResult>();
         }
 
         foreach (var placholderProcessor in templateFrameworkFormattableStringContext.Context.PlaceholderProcessors.OrderBy(x => Order))
@@ -26,7 +26,7 @@ public sealed class TemplateFrameworkContextPlaceholderProcessor : IPlaceholderP
 
         if (templateFrameworkFormattableStringContext.ParametersDictionary.TryGetValue(value, out var parameterValue))
         {
-            return Result.Success(parameterValue?.ToString() ?? string.Empty);
+            return Result.Success<FormattableStringParserResult>(parameterValue?.ToString() ?? string.Empty);
         }
 
         // Also return the parameter name, so GetParameters works.
@@ -39,9 +39,9 @@ public sealed class TemplateFrameworkContextPlaceholderProcessor : IPlaceholderP
         if (templateFrameworkFormattableStringContext.GetParametersOnly)
         {
             // When getting parameters, always return success, so the process always continues to get next parameters.
-            return Result.Success(string.Empty);
+            return Result.Success<FormattableStringParserResult>(string.Empty);
         }
 
-        return Result.Continue<string>();
+        return Result.Continue<FormattableStringParserResult>();
     }
 }

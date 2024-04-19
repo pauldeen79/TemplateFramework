@@ -51,7 +51,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("Value");
+            result.Value!.ToString(CultureInfo.InvariantCulture).Should().Be("Value");
         }
 
         [Fact]
@@ -70,7 +70,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEmpty();
+            result.Value!.ToString(CultureInfo.InvariantCulture).Should().BeEmpty();
         }
 
         [Fact]

@@ -14,10 +14,11 @@ public sealed class TestTemplateComponentRegistryPlugin : ITemplateComponentRegi
     public void Initialize(ITemplateComponentRegistry registry)
     {
         var processorProcessorMock = Substitute.For<IPlaceholderProcessor>();
-        processorProcessorMock.Process(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>())
+        processorProcessorMock
+            .Process(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>())
             .Returns(args => args.ArgAt<string>(0) == "__test"
-                ? Result.Success("Hello world!")
-                : Result.Continue<string>());
+                ? Result.Success<FormattableStringParserResult>("Hello world!")
+                : Result.Continue<FormattableStringParserResult>());
 
         var functionResultParserMock = Substitute.For<IFunctionResultParser>();
         functionResultParserMock.Parse(Arg.Any<FunctionParseResult>(), Arg.Any<object?>(), Arg.Any<IFunctionParseResultEvaluator>(), Arg.Any<IExpressionParser>())

@@ -232,8 +232,8 @@ internal static class TestData
             }
         }
 
-        private readonly static string[] DefaultUsings =
-[
+        private static readonly string[] DefaultUsings =
+        [
             "System",
             "System.Collections.Generic",
             "System.Linq",
@@ -344,11 +344,11 @@ public sealed class CsharpClassGeneratorCodeGenerationProvider : ICodeGeneration
     public string LastGeneratedFilesFilename => string.Empty;
     public Encoding Encoding => Encoding.UTF8;
 
-    public object? CreateAdditionalParameters() => null;
+    public Task<object?> CreateAdditionalParameters() => Task.FromResult(default(object));
 
     public Type GetGeneratorType() => typeof(TestData.CsharpClassGenerator);
 
-    public object? CreateModel()
+    public Task<object?> CreateModel()
     {
         var settings = new TestData.CsharpClassGeneratorSettings
         (
@@ -372,7 +372,7 @@ public sealed class CsharpClassGeneratorCodeGenerationProvider : ICodeGeneration
 
         var viewModel = new TestData.CsharpClassGeneratorViewModel<IEnumerable<TestData.TypeBase>>(model, settings);
 
-        return viewModel;
+        return Task.FromResult<object?>(viewModel);
     }
 
     public void Initialize(ITemplateComponentRegistry registry)

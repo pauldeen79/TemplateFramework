@@ -17,7 +17,7 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
     private readonly ITemplateFactory _templateFactory;
     private readonly ITemplateProvider _templateProvider;
 
-    public void Generate(ICodeGenerationProvider codeGenerationProvider, IGenerationEnvironment generationEnvironment, ICodeGenerationSettings settings)
+    public async Task Generate(ICodeGenerationProvider codeGenerationProvider, IGenerationEnvironment generationEnvironment, ICodeGenerationSettings settings)
     {
         Guard.IsNotNull(codeGenerationProvider);
         Guard.IsNotNull(generationEnvironment);
@@ -28,20 +28,23 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
         var plugin = codeGenerationProvider as ITemplateComponentRegistryPlugin;
         plugin?.Initialize(_templateProvider);
 
+        var model = await codeGenerationProvider.CreateModel().ConfigureAwait(false);
+        var additionalParameters = await codeGenerationProvider.CreateAdditionalParameters().ConfigureAwait(false);
+        
         _templateEngine.Render(
             new RenderTemplateRequest
             (
                 identifier: new TemplateTypeIdentifier(codeGenerationProvider.GetGeneratorType(), _templateFactory),
-                model: codeGenerationProvider.CreateModel(),
+                model: model,
                 generationEnvironment: generationEnvironment,
-                additionalParameters: codeGenerationProvider.CreateAdditionalParameters(),
+                additionalParameters: additionalParameters,
                 defaultFilename: settings.DefaultFilename,
                 context: null
             ));
 
         if (!settings.DryRun)
         {
-            generationEnvironment.SaveContents(codeGenerationProvider, settings.BasePath, settings.DefaultFilename);
+            await generationEnvironment.SaveContents(codeGenerationProvider, settings.BasePath, settings.DefaultFilename).ConfigureAwait(false);
         }
     }
 }

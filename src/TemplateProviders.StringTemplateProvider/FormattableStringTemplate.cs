@@ -41,7 +41,7 @@ public class FormattableStringTemplate : IParameterizedTemplate, IStringBuilderT
         var context = new TemplateFrameworkStringContext(_parametersDictionary, _componentRegistrationContext, false);
         var result = _formattableStringParser.Parse(_formattableStringTemplateIdentifier.Template, _formattableStringTemplateIdentifier.FormatProvider, context).GetValueOrThrow();
 
-        builder.Append(result);
+        builder.Append(result.ToString(_formattableStringTemplateIdentifier.FormatProvider));
     }
 
     public void SetParameter(string name, object? value) => _parametersDictionary[name] = value;

@@ -8,6 +8,6 @@ public interface ICodeGenerationProvider
     Encoding Encoding { get; }
 
     Type GetGeneratorType();
-    object? CreateAdditionalParameters();
-    object? CreateModel();
+    Task<object?> CreateAdditionalParameters();
+    Task<object?> CreateModel();
 }
