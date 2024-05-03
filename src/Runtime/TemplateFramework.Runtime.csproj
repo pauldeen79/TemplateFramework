@@ -9,7 +9,7 @@
     <Description>Framework for template processing and code generation</Description>
     <PackageTags>templateengine;codegeneration</PackageTags>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/pauldeen79/TemplateFramework/main/LICENSE</PackageLicenseUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryUrl>https://github.com/pauldeen79/TemplateFramework</RepositoryUrl>
     <!-- Used by code coverage -->
     <DebugType>full</DebugType>
@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <None Include="..\..\Readme.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
