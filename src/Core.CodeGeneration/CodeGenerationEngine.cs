@@ -23,7 +23,7 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
         Guard.IsNotNull(generationEnvironment);
         Guard.IsNotNull(settings);
 
-        _templateProvider.StartSession();
+        await _templateProvider.StartSession().ConfigureAwait(false);
 
         var plugin = codeGenerationProvider as ITemplateComponentRegistryPlugin;
         plugin?.Initialize(_templateProvider);

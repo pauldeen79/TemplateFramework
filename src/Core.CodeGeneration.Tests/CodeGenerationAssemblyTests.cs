@@ -22,7 +22,7 @@ public class CodeGenerationAssemblyTests : TestBase<CodeGenerationAssembly>
 
             // Act & Assert
             sut.Invoking(x => x.Generate(settings: null!, generationEnvironment))
-               .Should().Throw<ArgumentNullException>().WithParameterName("settings");
+               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("settings");
         }
 
         [Fact]
@@ -34,11 +34,11 @@ public class CodeGenerationAssemblyTests : TestBase<CodeGenerationAssembly>
 
             // Act & Assert
             sut.Invoking(x => x.Generate(settings, generationEnvironment: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("generationEnvironment");
+               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("generationEnvironment");
         }
 
         [Fact]
-        public void Runs_All_CodeGenerators_In_Specified_Assembly()
+        public async Task Runs_All_CodeGenerators_In_Specified_Assembly()
         {
             // Arrange
             var generationEnvironment = Fixture.Freeze<IGenerationEnvironment>();
@@ -50,14 +50,14 @@ public class CodeGenerationAssemblyTests : TestBase<CodeGenerationAssembly>
             var sut = CreateSut();
 
             // Act
-            sut.Generate(new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), currentDirectory: TestData.BasePath), generationEnvironment);
+            await sut.Generate(new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), currentDirectory: TestData.BasePath), generationEnvironment);
 
             // Assert
-            codeGenerationEngine.Received().Generate(Arg.Any<ICodeGenerationProvider>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<ICodeGenerationSettings>());
+            await codeGenerationEngine.Received().Generate(Arg.Any<ICodeGenerationProvider>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<ICodeGenerationSettings>());
         }
 
         [Fact]
-        public void Runs_Filtered_CodeGenerators_In_Specified_Assembly()
+        public async Task Runs_Filtered_CodeGenerators_In_Specified_Assembly()
         {
             // Arrange
             var generationEnvironment = Fixture.Freeze<IGenerationEnvironment>();
@@ -69,14 +69,14 @@ public class CodeGenerationAssemblyTests : TestBase<CodeGenerationAssembly>
             var sut = CreateSut();
 
             // Act
-            sut.Generate(new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), currentDirectory: TestData.BasePath, classNameFilter: new[] { typeof(MyGeneratorProvider).FullName! }), generationEnvironment);
+            await sut.Generate(new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), currentDirectory: TestData.BasePath, classNameFilter: new[] { typeof(MyGeneratorProvider).FullName! }), generationEnvironment);
 
             // Assert
-            codeGenerationEngine.Received().Generate(Arg.Any<ICodeGenerationProvider>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<ICodeGenerationSettings>());
+            await codeGenerationEngine.Received().Generate(Arg.Any<ICodeGenerationProvider>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<ICodeGenerationSettings>());
         }
 
         [Fact]
-        public void Runs_Filtered_CodeGenerators_In_Specified_Assembly_No_Matches()
+        public async Task Runs_Filtered_CodeGenerators_In_Specified_Assembly_No_Matches()
         {
             // Arrange
             var generationEnvironment = Fixture.Freeze<IGenerationEnvironment>();
@@ -88,10 +88,10 @@ public class CodeGenerationAssemblyTests : TestBase<CodeGenerationAssembly>
             var sut = CreateSut();
 
             // Act
-            sut.Generate(new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), currentDirectory: TestData.BasePath, classNameFilter: new[] { "WrongName" }), generationEnvironment);
+            await sut.Generate(new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), currentDirectory: TestData.BasePath, classNameFilter: new[] { "WrongName" }), generationEnvironment);
 
             // Assert
-            codeGenerationEngine.DidNotReceive().Generate(Arg.Any<ICodeGenerationProvider>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<ICodeGenerationSettings>());
+            await codeGenerationEngine.DidNotReceive().Generate(Arg.Any<ICodeGenerationProvider>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<ICodeGenerationSettings>());
         }
 
         private void SetupCodeGenerationProviderCreator(ICodeGenerationProviderCreator codeGenerationProviderCreator)

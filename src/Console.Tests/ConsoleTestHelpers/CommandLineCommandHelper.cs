@@ -2,10 +2,10 @@
 
 internal static class CommandLineCommandHelper
 {
-    internal static string ExecuteCommand<T>(T sut, params string[] arguments)
-        where T : ICommandLineCommand => ExecuteCommand(() => sut, arguments);
+    internal static async Task<string> ExecuteCommand<T>(T sut, params string[] arguments)
+        where T : ICommandLineCommand => await ExecuteCommand(() => sut, arguments).ConfigureAwait(false);
 
-    internal static string ExecuteCommand<T>(Func<T> sutCreateDelegate, params string[] arguments)
+    internal static async Task<string> ExecuteCommand<T>(Func<T> sutCreateDelegate, params string[] arguments)
         where T : ICommandLineCommand
     {
         // Arrange
@@ -18,13 +18,13 @@ internal static class CommandLineCommandHelper
         sut.Initialize(app);
 
         // Act
-        app.Commands.First().Execute(arguments);
+        await app.Commands.First().ExecuteAsync(arguments).ConfigureAwait(false);
 
-        writer.Flush();
+        await writer.FlushAsync().ConfigureAwait(false);
         return Encoding.UTF8.GetString(stream.ToArray());
     }
 
-    internal static string ExecuteCommand(Action<CommandLineApplication> appDelegate)
+    internal static async Task<string> ExecuteCommand(Func<CommandLineApplication, Task> appDelegate)
     {
         // Arrange
         using var stream = new MemoryStream();
@@ -34,9 +34,9 @@ internal static class CommandLineCommandHelper
         app.Error = writer;
 
         // Act
-        appDelegate(app);
-
-        writer.Flush();
+        await appDelegate(app).ConfigureAwait(false);
+        
+        await writer.FlushAsync().ConfigureAwait(false);
         return Encoding.UTF8.GetString(stream.ToArray());
     }
 }

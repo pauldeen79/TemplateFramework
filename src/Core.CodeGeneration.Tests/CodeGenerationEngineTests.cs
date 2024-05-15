@@ -134,7 +134,7 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             await sut.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
             // Assert
-            templateProvider.Received().StartSession();
+            await templateProvider.Received().StartSession();
         }
 
         private sealed class MyPluginCodeGenerationProvider : ICodeGenerationProvider, ITemplateComponentRegistryPlugin

@@ -17,11 +17,8 @@ public class TemplateProvider : ITemplateProvider
     {
         Guard.IsNotNull(identifier);
 
-        var component = _components.Find(x => x.Supports(identifier));
-        if (component is null)
-        {
-            throw new NotSupportedException($"Type of identifier {identifier.GetType().FullName} is not supported");
-        }
+        var component = _components.Find(x => x.Supports(identifier))
+            ?? throw new NotSupportedException($"Type of identifier {identifier.GetType().FullName} is not supported");
 
         return component.Create(identifier);
     }
@@ -33,14 +30,15 @@ public class TemplateProvider : ITemplateProvider
         _components.Add(component);
     }
 
-    public void StartSession()
+    public async Task StartSession()
     {
         _components.Clear();
         _components.AddRange(_originalComponents);
 
-        foreach (var sessionAwareComponent in _components.OfType<ISessionAwareComponent>())
-        {
-            sessionAwareComponent.StartSession();
-        }
+        var tasks = _components.OfType<ISessionAwareComponent>()
+            .Select(x => x.StartSession())
+            .ToArray();
+
+        await Task.WhenAll(tasks).ConfigureAwait(false);
     }
 }

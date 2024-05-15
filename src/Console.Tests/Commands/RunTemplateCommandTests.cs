@@ -42,33 +42,33 @@ public class RunTemplateCommandTests : TestBase<RunTemplateCommand>
     public class ExecuteCommand : RunTemplateCommandTests
     {
         [Fact]
-        public void Empty_AssemblyName_Results_In_Error()
+        public async Task Empty_AssemblyName_Results_In_Error()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act
-            var output = CommandLineCommandHelper.ExecuteCommand(sut, "--assembly ");
+            var output = await CommandLineCommandHelper.ExecuteCommand(sut, "--assembly ");
 
             // Assert
             output.Should().Be("Error: Assembly name is required." + Environment.NewLine);
         }
 
         [Fact]
-        public void Empty_ClassName_Results_In_Error()
+        public async Task Empty_ClassName_Results_In_Error()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act
-            var output = CommandLineCommandHelper.ExecuteCommand(sut, "--assembly MyAssembly", "--classname ");
+            var output = await CommandLineCommandHelper.ExecuteCommand(sut, "--assembly MyAssembly", "--classname ");
 
             // Assert
             output.Should().Be("Error: Class name is required." + Environment.NewLine);
         }
 
         [Fact]
-        public void Renders_Template_With_AssemblyName_And_ClassName()
+        public async Task Renders_Template_With_AssemblyName_And_ClassName()
         {
             // Arrange
             var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
@@ -78,14 +78,14 @@ public class RunTemplateCommandTests : TestBase<RunTemplateCommand>
             var sut = CreateSut();
 
             // Act
-            _ = CommandLineCommandHelper.ExecuteCommand(sut, "--assembly MyAssembly", "--classname MyClass", "MyArgumentName:MyArgumentValue");
+            _ = await CommandLineCommandHelper.ExecuteCommand(sut, "--assembly MyAssembly", "--classname MyClass", "MyArgumentName:MyArgumentValue");
 
             // Assert
             templateEngineMock.Received().Render(Arg.Is<IRenderTemplateRequest>(req => req.Context != null && req.Context.Identifier is CompiledTemplateIdentifier));
         }
 
         [Fact]
-        public void Renders_Template_With_FormattableString()
+        public async Task Renders_Template_With_FormattableString()
         {
             // Arrange
             var templateProviderMock = Fixture.Freeze<ITemplateProvider>();
@@ -98,14 +98,14 @@ public class RunTemplateCommandTests : TestBase<RunTemplateCommand>
             var sut = CreateSut();
 
             // Act
-            _ = CommandLineCommandHelper.ExecuteCommand(sut, "--formattablestring myfile.txt");
+            _ = await CommandLineCommandHelper.ExecuteCommand(sut, "--formattablestring myfile.txt");
 
             // Assert
             templateEngineMock.Received().Render(Arg.Is<IRenderTemplateRequest>(req => req.Context != null && req.Context.Identifier is FormattableStringTemplateIdentifier));
         }
 
         [Fact]
-        public void Renders_Template_With_ExpressionString()
+        public async Task Renders_Template_With_ExpressionString()
         {
             // Arrange
             var templateProviderMock = Fixture.Freeze<ITemplateProvider>();
@@ -118,14 +118,14 @@ public class RunTemplateCommandTests : TestBase<RunTemplateCommand>
             var sut = CreateSut();
 
             // Act
-            _ = CommandLineCommandHelper.ExecuteCommand(sut, "--expressionstring myfile.txt");
+            _ = await CommandLineCommandHelper.ExecuteCommand(sut, "--expressionstring myfile.txt");
 
             // Assert
             templateEngineMock.Received().Render(Arg.Is<IRenderTemplateRequest>(req => req.Context != null && req.Context.Identifier is ExpressionStringTemplateIdentifier));
         }
 
         [Fact]
-        public void Sets_Parameters_Correctly_On_Template_Instance()
+        public async Task Sets_Parameters_Correctly_On_Template_Instance()
         {
             // Arrange
             var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
@@ -135,7 +135,7 @@ public class RunTemplateCommandTests : TestBase<RunTemplateCommand>
             var sut = CreateSut();
 
             // Act
-            _ = CommandLineCommandHelper.ExecuteCommand(sut, "--assembly MyAssembly", "--classname MyClass", "MyArgumentName:MyArgumentValue");
+            _ = await CommandLineCommandHelper.ExecuteCommand(sut, "--assembly MyAssembly", "--classname MyClass", "MyArgumentName:MyArgumentValue");
 
             // Assert
             templateEngineMock.Received().Render(Arg.Is<IRenderTemplateRequest>(req =>
@@ -146,7 +146,7 @@ public class RunTemplateCommandTests : TestBase<RunTemplateCommand>
         }
 
         [Fact]
-        public void Gets_Parameter_Values_Interactively_When_Interactive_Argument_Is_Provided()
+        public async Task Gets_Parameter_Values_Interactively_When_Interactive_Argument_Is_Provided()
         {
             // Arrange
             var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
@@ -158,14 +158,14 @@ public class RunTemplateCommandTests : TestBase<RunTemplateCommand>
             var sut = CreateSut();
 
             // Act
-            _ = CommandLineCommandHelper.ExecuteCommand(sut, "--assembly MyAssembly", "--classname MyClass", "--interactive");
+            _ = await CommandLineCommandHelper.ExecuteCommand(sut, "--assembly MyAssembly", "--classname MyClass", "--interactive");
 
             // Assert
             userInputMock.Received().GetValue(Arg.Any<ITemplateParameter>());
         }
 
         [Fact]
-        public void Lists_Parameters_When_ListParameters_Argument_Is_Provided()
+        public async Task Lists_Parameters_When_ListParameters_Argument_Is_Provided()
         {
             // Arrange
             var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
@@ -176,7 +176,7 @@ public class RunTemplateCommandTests : TestBase<RunTemplateCommand>
             var sut = CreateSut();
 
             // Act
-            var output = CommandLineCommandHelper.ExecuteCommand(sut, "--assembly MyAssembly", "--classname MyClass", "--list-parameters", "--default parameters.txt", "--dryrun", "--bare");
+            var output = await CommandLineCommandHelper.ExecuteCommand(sut, "--assembly MyAssembly", "--classname MyClass", "--list-parameters", "--default parameters.txt", "--dryrun", "--bare");
 
             // Assert
             output.Should().Be(@"parameters.txt:
@@ -187,7 +187,7 @@ AdditionalParameter (System.String)
         }
 
         [Fact]
-        public void Writes_ErrorMessage_On_ListParameters_When_DefaultFilename_Is_Empty()
+        public async Task Writes_ErrorMessage_On_ListParameters_When_DefaultFilename_Is_Empty()
         {
             // Arrange
             var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
@@ -198,7 +198,7 @@ AdditionalParameter (System.String)
             var sut = CreateSut();
 
             // Act
-            var output = CommandLineCommandHelper.ExecuteCommand(sut, "--assembly MyAssembly", "--classname MyClass", "--list-parameters");
+            var output = await CommandLineCommandHelper.ExecuteCommand(sut, "--assembly MyAssembly", "--classname MyClass", "--list-parameters");
 
             // Assert
             output.Should().Be(@"Error: Default filename is required if you want to list parameters
@@ -206,7 +206,7 @@ AdditionalParameter (System.String)
         }
 
         [Fact]
-        public void Writes_ErrorMessage_When_FormattableString_File_Does_Not_Exist()
+        public async Task Writes_ErrorMessage_When_FormattableString_File_Does_Not_Exist()
         {
             // Arrange
             var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
@@ -219,7 +219,7 @@ AdditionalParameter (System.String)
             var sut = CreateSut();
 
             // Act
-            var output = CommandLineCommandHelper.ExecuteCommand(sut, "--formattablestring myfile.txt", "--default parameters.txt", "--dryrun");
+            var output = await CommandLineCommandHelper.ExecuteCommand(sut, "--formattablestring myfile.txt", "--default parameters.txt", "--dryrun");
 
             // Assert
             output.Should().Be(@"Error: File 'myfile.txt' does not exist
@@ -227,7 +227,7 @@ AdditionalParameter (System.String)
         }
 
         [Fact]
-        public void Writes_ErrorMessage_When_ExpressionString_File_Does_Not_Exist()
+        public async Task Writes_ErrorMessage_When_ExpressionString_File_Does_Not_Exist()
         {
             // Arrange
             var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
@@ -240,7 +240,7 @@ AdditionalParameter (System.String)
             var sut = CreateSut();
 
             // Act
-            var output = CommandLineCommandHelper.ExecuteCommand(sut, "--expressionstring myfile.txt", "--default parameters.txt", "--dryrun");
+            var output = await CommandLineCommandHelper.ExecuteCommand(sut, "--expressionstring myfile.txt", "--default parameters.txt", "--dryrun");
 
             // Assert
             output.Should().Be(@"Error: File 'myfile.txt' does not exist

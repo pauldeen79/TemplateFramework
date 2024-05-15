@@ -21,7 +21,7 @@ public abstract class CommandBase : ICommandLineCommand
         UserInput = userInput;
     }
 
-    protected void Watch(CommandLineApplication app, bool watch, string filename, Action action)
+    protected async Task Watch(CommandLineApplication app, bool watch, string filename, Func<Task> action)
     {
         Guard.IsNotNull(app);
         Guard.IsNotNull(filename);
@@ -29,35 +29,35 @@ public abstract class CommandBase : ICommandLineCommand
 
         if (watch && !FileSystem.FileExists(filename))
         {
-            app.Out.WriteLine($"Error: Could not find file [{filename}]. Could not watch file for changes.");
+            await app.Out.WriteLineAsync($"Error: Could not find file [{filename}]. Could not watch file for changes.").ConfigureAwait(false);
             return;
         }
 
-        action();
+        await action().ConfigureAwait(false);
 
         if (!watch)
         {
             return;
         }
 
-        app.Out.WriteLine($"Watching file [{filename}] for changes...");
+        await app.Out.WriteLineAsync($"Watching file [{filename}] for changes...").ConfigureAwait(false);
         var previousLastWriteTime = FileSystem.GetFileLastWriteTime(filename);
         while (!Abort)
         {
             if (!FileSystem.FileExists(filename))
             {
-                app.Out.WriteLine($"Error: Could not find file [{filename}]. Could not watch file for changes.");
-                return;
+                await app.Out.WriteLineAsync($"Error: Could not find file [{filename}]. Could not watch file for changes.").ConfigureAwait(false);
+                break;
             }
 
             var currentLastWriteTime = FileSystem.GetFileLastWriteTime(filename);
             if (currentLastWriteTime != previousLastWriteTime)
             {
                 previousLastWriteTime = currentLastWriteTime;
-                action();
+                await action().ConfigureAwait(false);
             }
 
-            Thread.Sleep(SleepTimeInMs);
+            await Task.Delay(SleepTimeInMs).ConfigureAwait(false);
         }
     }
 
@@ -91,20 +91,20 @@ public abstract class CommandBase : ICommandLineCommand
         return stringBuilder.ToString();
     }
 
-    protected static void WriteOutputToHost(CommandLineApplication app, string templateOutput, bool bare)
+    protected static async Task WriteOutputToHost(CommandLineApplication app, string templateOutput, bool bare)
     {
         Guard.IsNotNull(app);
         Guard.IsNotNull(templateOutput);
 
         if (!bare)
         {
-            app.Out.WriteLine("Code generation output:");
+            await app.Out.WriteLineAsync("Code generation output:").ConfigureAwait(false);
         }
 
-        app.Out.WriteLine(templateOutput);
+        await app.Out.WriteLineAsync(templateOutput).ConfigureAwait(false);
     }
 
-    protected void WriteOutput(CommandLineApplication app, MultipleContentBuilderEnvironment generationEnvironment, string basePath, bool bare, bool clipboard, bool dryRun)
+    protected async Task WriteOutput(CommandLineApplication app, MultipleContentBuilderEnvironment generationEnvironment, string basePath, bool bare, bool clipboard, bool dryRun)
     {
         Guard.IsNotNull(app);
         Guard.IsNotNull(generationEnvironment);
@@ -118,29 +118,29 @@ public abstract class CommandBase : ICommandLineCommand
                     ? Directory.GetCurrentDirectory()
                     : basePath;
 
-                app.Out.WriteLine($"Written code generation output to path: {dir}");
+                await app.Out.WriteLineAsync($"Written code generation output to path: {dir}").ConfigureAwait(false);
             }
         }
         else if (clipboard)
         {
-            WriteOutputToClipboard(app, GenerateSingleOutput(generationEnvironment.Builder, basePath), bare);
+            await WriteOutputToClipboard(app, GenerateSingleOutput(generationEnvironment.Builder, basePath), bare).ConfigureAwait(false);
         }
         else
         {
-            WriteOutputToHost(app, GenerateSingleOutput(generationEnvironment.Builder, basePath), bare);
+            await WriteOutputToHost(app, GenerateSingleOutput(generationEnvironment.Builder, basePath), bare).ConfigureAwait(false);
         }
     }
 
-    protected void WriteOutputToClipboard(CommandLineApplication app, string templateOutput, bool bare)
+    protected async Task WriteOutputToClipboard(CommandLineApplication app, string templateOutput, bool bare)
     {
         Guard.IsNotNull(app);
         Guard.IsNotNull(templateOutput);
 
-        _clipboard.SetText(templateOutput);
+        await _clipboard.SetTextAsync(templateOutput).ConfigureAwait(false);
 
         if (!bare)
         {
-            app.Out.WriteLine("Copied code generation output to clipboard");
+            await app.Out.WriteLineAsync("Copied code generation output to clipboard").ConfigureAwait(false);
         }
     }
     

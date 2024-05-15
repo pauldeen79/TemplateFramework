@@ -2,5 +2,5 @@
 
 public interface ISessionAwareComponent
 {
-    void StartSession();
+    Task StartSession();
 }

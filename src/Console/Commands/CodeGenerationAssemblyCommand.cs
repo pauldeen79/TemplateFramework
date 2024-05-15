@@ -28,26 +28,26 @@ public class CodeGenerationAssemblyCommand : CommandBase
             var clipboardOption = command.Option<bool>("-c|--clipboard", "Copy output to clipboard", CommandOptionType.NoValue);
             var filterClassNameOption = command.Option<string>("-f|--filter <CLASSNAME>", "Filter code generation provider by class name", CommandOptionType.MultipleValue);
             command.HelpOption();
-            command.OnExecute(() =>
+            command.OnExecuteAsync(async _ =>
             {
                 var assemblyName = assemblyOption.Value();
                 if (string.IsNullOrEmpty(assemblyName))
                 {
-                    app.Error.WriteLine("Error: Assembly name is required.");
+                    await app.Error.WriteLineAsync("Error: Assembly name is required.").ConfigureAwait(false);
                     return;
                 }
 
                 var basePath = GetBasePath(basePathOption.Value());
                 var dryRun = GetDryRun(dryRunOption.HasValue(), clipboardOption.HasValue());
 
-                Watch(app, watchOption.HasValue(), assemblyName, () =>
+                await Watch(app, watchOption.HasValue(), assemblyName, async () =>
                 {
                     var generationEnvironment = new MultipleContentBuilderEnvironment();
                     var classNameFilter = filterClassNameOption.Values.Where(x => x is not null).Select(x => x!);
                     var settings = new CodeGenerationAssemblySettings(basePath, GetDefaultFilename(defaultFilenameOption.Value()), assemblyName, dryRun, GetCurrentDirectory(currentDirectoryOption.Value(), assemblyName!), classNameFilter);
-                    _codeGenerationAssembly.Generate(settings, generationEnvironment);
-                    WriteOutput(app, generationEnvironment, basePath, bareOption.HasValue(), clipboardOption.HasValue(), dryRun);
-                });
+                    await _codeGenerationAssembly.Generate(settings, generationEnvironment).ConfigureAwait(false);
+                    await WriteOutput(app, generationEnvironment, basePath, bareOption.HasValue(), clipboardOption.HasValue(), dryRun).ConfigureAwait(false);
+                }).ConfigureAwait(false);
             });
         });
     }
