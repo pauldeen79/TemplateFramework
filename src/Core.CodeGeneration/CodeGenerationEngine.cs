@@ -31,7 +31,7 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
         var model = await codeGenerationProvider.CreateModel().ConfigureAwait(false);
         var additionalParameters = await codeGenerationProvider.CreateAdditionalParameters().ConfigureAwait(false);
         
-        _templateEngine.Render(
+        await _templateEngine.Render(
             new RenderTemplateRequest
             (
                 identifier: new TemplateTypeIdentifier(codeGenerationProvider.GetGeneratorType(), _templateFactory),
@@ -40,7 +40,7 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
                 additionalParameters: additionalParameters,
                 defaultFilename: settings.DefaultFilename,
                 context: null
-            ));
+            ), cancellationToken).ConfigureAwait(false);
 
         if (!settings.DryRun)
         {

@@ -2,7 +2,7 @@
 
 public static class TemplateEngineExtensions
 {
-    public static void RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, ITemplateIdentifier identifier, ITemplateContext context)
+    public static async Task RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, ITemplateIdentifier identifier, ITemplateContext context, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(childModels);
         Guard.IsNotNull(context);
@@ -10,11 +10,15 @@ public static class TemplateEngineExtensions
         var items = childModels.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
         foreach (var item in items)
         {
-            instance.Render(new RenderTemplateRequest(identifier, item.Model, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(identifier, item.Model, item.Index, items.Length))));
+            await instance.Render(new RenderTemplateRequest(identifier, item.Model, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(identifier, item.Model, item.Index, items.Length))), cancellationToken).ConfigureAwait(false);
+            if (cancellationToken.IsCancellationRequested)
+            {
+                break;
+            }
         }
     }
 
-    public static void RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, Func<object?, ITemplateIdentifier> identifierFactory, ITemplateContext context)
+    public static async Task RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, Func<object?, ITemplateIdentifier> identifierFactory, ITemplateContext context, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(childModels);
         Guard.IsNotNull(context);
@@ -24,22 +28,30 @@ public static class TemplateEngineExtensions
         foreach (var item in items)
         {
             var identifier = identifierFactory(item.Model);
-            instance.Render(new RenderTemplateRequest(identifier, item.Model, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(identifier, item.Model, item.Index, items.Length))));
+            await instance.Render(new RenderTemplateRequest(identifier, item.Model, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(identifier, item.Model, item.Index, items.Length))), cancellationToken).ConfigureAwait(false);
+            if (cancellationToken.IsCancellationRequested)
+            {
+                break;
+            }
         }
     }
 
-    public static void RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, ITemplateIdentifier identifier)
+    public static async Task RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, ITemplateIdentifier identifier, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(childModels);
 
         var items = childModels.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
         foreach (var item in items)
         {
-            instance.Render(new RenderTemplateRequest(identifier, item.Model, generationEnvironment, string.Empty, null, null));
+            await instance.Render(new RenderTemplateRequest(identifier, item.Model, generationEnvironment, string.Empty, null, null), cancellationToken).ConfigureAwait(false);
+            if (cancellationToken.IsCancellationRequested)
+            {
+                break;
+            }
         }
     }
 
-    public static void RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, Func<object?, ITemplateIdentifier> identifierFactory)
+    public static async Task RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, Func<object?, ITemplateIdentifier> identifierFactory, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(childModels);
         Guard.IsNotNull(identifierFactory);
@@ -47,11 +59,15 @@ public static class TemplateEngineExtensions
         foreach (var model in childModels)
         {
             var identifier = identifierFactory(model);
-            instance.Render(new RenderTemplateRequest(identifier, model, generationEnvironment, string.Empty, null, null));
+            await instance.Render(new RenderTemplateRequest(identifier, model, generationEnvironment, string.Empty, null, null), cancellationToken).ConfigureAwait(false);
+            if (cancellationToken.IsCancellationRequested)
+            {
+                break;
+            }
         }
     }
 
-    public static void RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, ITemplateContext context, Func<object?, ITemplateIdentifier> templateIdentifierFactory)
+    public static async Task RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, ITemplateContext context, Func<object?, ITemplateIdentifier> templateIdentifierFactory, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(childModels);
         Guard.IsNotNull(context);
@@ -61,11 +77,15 @@ public static class TemplateEngineExtensions
         foreach (var item in items)
         {
             var identifier = templateIdentifierFactory(item.Model);
-            instance.Render(new RenderTemplateRequest(identifier, item.Model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(identifier, item.Model, item.Index, items.Length))));
+            await instance.Render(new RenderTemplateRequest(identifier, item.Model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(identifier, item.Model, item.Index, items.Length))), cancellationToken).ConfigureAwait(false);
+            if (cancellationToken.IsCancellationRequested)
+            {
+                break;
+            }
         }
     }
 
-    public static void RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, ITemplateContext context, Func<object?, object> templateFactory)
+    public static async Task RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, ITemplateContext context, Func<object?, object> templateFactory, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(childModels);
         Guard.IsNotNull(context);
@@ -75,11 +95,15 @@ public static class TemplateEngineExtensions
         foreach (var item in items)
         {
             var template = templateFactory(item.Model);
-            instance.Render(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), item.Model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(new TemplateInstanceIdentifier(template), item, item.Index, items.Length))));
+            await instance.Render(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), item.Model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(new TemplateInstanceIdentifier(template), item, item.Index, items.Length))), cancellationToken).ConfigureAwait(false);
+            if (cancellationToken.IsCancellationRequested)
+            {
+                break;
+            }
         }
     }
 
-    public static void RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, ITemplateContext context, ITemplateIdentifier identifier)
+    public static async Task RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, ITemplateContext context, ITemplateIdentifier identifier, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(childModels);
         Guard.IsNotNull(context);
@@ -88,81 +112,85 @@ public static class TemplateEngineExtensions
         var items = childModels.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
         foreach (var item in items)
         {
-            instance.Render(new RenderTemplateRequest(identifier, item.Model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(identifier, item.Model, item.Index, items.Length))));
+            await instance.Render(new RenderTemplateRequest(identifier, item.Model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(identifier, item.Model, item.Index, items.Length))), cancellationToken).ConfigureAwait(false);
+            if (cancellationToken.IsCancellationRequested)
+            {
+                break;
+            }
         }
     }
 
-    public static void RenderChildTemplate(this ITemplateEngine instance, object? childModel, IGenerationEnvironment generationEnvironment, ITemplateIdentifier identifier, ITemplateContext context)
+    public static async Task RenderChildTemplate(this ITemplateEngine instance, object? childModel, IGenerationEnvironment generationEnvironment, ITemplateIdentifier identifier, ITemplateContext context, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(context);
 
-        instance.Render(new RenderTemplateRequest(identifier, childModel, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(identifier, childModel))));
+        await instance.Render(new RenderTemplateRequest(identifier, childModel, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(identifier, childModel))), cancellationToken).ConfigureAwait(false);
     }
 
-    public static void RenderChildTemplate(this ITemplateEngine instance, object? childModel, IGenerationEnvironment generationEnvironment, Func<object?, ITemplateIdentifier> identifierFactory, ITemplateContext context)
+    public static async Task RenderChildTemplate(this ITemplateEngine instance, object? childModel, IGenerationEnvironment generationEnvironment, Func<object?, ITemplateIdentifier> identifierFactory, ITemplateContext context, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(context);
         Guard.IsNotNull(identifierFactory);
 
         var identifier = identifierFactory(childModel);
-        instance.Render(new RenderTemplateRequest(identifier, childModel, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(identifier, childModel))));
+        await instance.Render(new RenderTemplateRequest(identifier, childModel, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(identifier, childModel))), cancellationToken).ConfigureAwait(false);
     }
 
-    public static void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, ITemplateIdentifier identifier, ITemplateContext context)
+    public static async Task RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, ITemplateIdentifier identifier, ITemplateContext context, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(context);
 
-        instance.Render(new RenderTemplateRequest(identifier, null, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(identifier))));
+        await instance.Render(new RenderTemplateRequest(identifier, null, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(identifier))), cancellationToken).ConfigureAwait(false);
     }
 
-    public static void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, Func<ITemplateIdentifier> identifierFactory, ITemplateContext context)
+    public static async Task RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, Func<ITemplateIdentifier> identifierFactory, ITemplateContext context, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(context);
         Guard.IsNotNull(identifierFactory);
 
         var identifier = identifierFactory();
-        instance.Render(new RenderTemplateRequest(identifier, null, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(identifier))));
+        await instance.Render(new RenderTemplateRequest(identifier, null, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(identifier))), cancellationToken).ConfigureAwait(false);
     }
 
-    public static void RenderChildTemplate(this ITemplateEngine instance, object? childModel, IGenerationEnvironment generationEnvironment, ITemplateIdentifier identifier)
+    public static async Task RenderChildTemplate(this ITemplateEngine instance, object? childModel, IGenerationEnvironment generationEnvironment, ITemplateIdentifier identifier, CancellationToken cancellationToken)
     {
-        instance.Render(new RenderTemplateRequest(identifier, childModel, generationEnvironment, string.Empty, null, null));
+        await instance.Render(new RenderTemplateRequest(identifier, childModel, generationEnvironment, string.Empty, null, null), cancellationToken).ConfigureAwait(false);
     }
 
-    public static void RenderChildTemplate(this ITemplateEngine instance, object? childModel, IGenerationEnvironment generationEnvironment, Func<object?, ITemplateIdentifier> identifierFactory)
+    public static async Task RenderChildTemplate(this ITemplateEngine instance, object? childModel, IGenerationEnvironment generationEnvironment, Func<object?, ITemplateIdentifier> identifierFactory, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(identifierFactory);
 
         var identifier = identifierFactory(childModel);
-        instance.Render(new RenderTemplateRequest(identifier, childModel, generationEnvironment, string.Empty, null, null));
+        await instance.Render(new RenderTemplateRequest(identifier, childModel, generationEnvironment, string.Empty, null, null), cancellationToken).ConfigureAwait(false);
     }
 
-    public static void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, ITemplateIdentifier identifier)
+    public static async Task RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, ITemplateIdentifier identifier, CancellationToken cancellationToken)
     {
-        instance.Render(new RenderTemplateRequest(identifier, null, generationEnvironment, string.Empty, null, null));
+        await instance.Render(new RenderTemplateRequest(identifier, null, generationEnvironment, string.Empty, null, null), cancellationToken).ConfigureAwait(false);
     }
 
-    public static void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, Func<ITemplateIdentifier> identifierFactory)
+    public static async Task RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, Func<ITemplateIdentifier> identifierFactory, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(identifierFactory);
 
         var identifier = identifierFactory();
-        instance.Render(new RenderTemplateRequest(identifier, null, generationEnvironment, string.Empty, null, null));
+        await instance.Render(new RenderTemplateRequest(identifier, null, generationEnvironment, string.Empty, null, null), cancellationToken).ConfigureAwait(false);
     }
 
-    public static void RenderChildTemplate(this ITemplateEngine instance, object? childModel, IGenerationEnvironment generationEnvironment, ITemplateContext context, ITemplateIdentifier identifier)
+    public static async Task RenderChildTemplate(this ITemplateEngine instance, object? childModel, IGenerationEnvironment generationEnvironment, ITemplateContext context, ITemplateIdentifier identifier, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(context);
         Guard.IsNotNull(identifier);
 
-        instance.Render(new RenderTemplateRequest(identifier, childModel, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(identifier, childModel))));
+        await instance.Render(new RenderTemplateRequest(identifier, childModel, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(identifier, childModel))), cancellationToken).ConfigureAwait(false);
     }
 
-    public static void RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, ITemplateContext context, ITemplateIdentifier identifier)
+    public static async Task RenderChildTemplate(this ITemplateEngine instance, IGenerationEnvironment generationEnvironment, ITemplateContext context, ITemplateIdentifier identifier, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(context);
         Guard.IsNotNull(identifier);
 
-        instance.Render(new RenderTemplateRequest(identifier, null, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(identifier))));
+        await instance.Render(new RenderTemplateRequest(identifier, null, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(identifier))), cancellationToken).ConfigureAwait(false);
     }
 }

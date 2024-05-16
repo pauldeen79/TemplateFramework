@@ -173,7 +173,7 @@ public class RunTemplateCommand : CommandBase
                 var identifier = new TemplateInstanceIdentifierWithTemplateProvider(template, args.currentDirectory, args.assemblyName, args.templateProviderPluginClassName);
                 var request = new RenderTemplateRequest(identifier, null, generationEnvironment, args.defaultFilename, args.parameters, context);
                 
-                _templateEngine.Render(request);
+                await _templateEngine.Render(request, args.cancellationToken).ConfigureAwait(false);
             }
 
             await WriteOutput(args.app, generationEnvironment, args.basePath, args.bare, args.clipboard, args.dryRun, args.cancellationToken).ConfigureAwait(false);

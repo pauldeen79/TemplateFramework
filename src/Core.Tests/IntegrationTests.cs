@@ -3,7 +3,7 @@
 public class IntegrationTests
 {
     [Theory, AutoMockData]
-    public void Can_Render_Template([Frozen]ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
+    public async Task Can_Render_Template([Frozen]ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
     {
         // Arrange
         using var provider = new ServiceCollection()
@@ -17,7 +17,7 @@ public class IntegrationTests
         var builder = new MultipleContentBuilder();
 
         // Act
-        sut.Render(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), builder));
+        await sut.Render(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), builder), CancellationToken.None);
 
         // Assert
         builder.Contents.Should().ContainSingle();

@@ -81,7 +81,7 @@ public class RunTemplateCommandTests : TestBase<RunTemplateCommand>
             _ = await CommandLineCommandHelper.ExecuteCommand(sut, "--assembly MyAssembly", "--classname MyClass", "MyArgumentName:MyArgumentValue");
 
             // Assert
-            templateEngineMock.Received().Render(Arg.Is<IRenderTemplateRequest>(req => req.Context != null && req.Context.Identifier is CompiledTemplateIdentifier));
+            await templateEngineMock.Received().Render(Arg.Is<IRenderTemplateRequest>(req => req.Context != null && req.Context.Identifier is CompiledTemplateIdentifier), Arg.Any<CancellationToken>());
         }
 
         [Fact]
@@ -101,7 +101,7 @@ public class RunTemplateCommandTests : TestBase<RunTemplateCommand>
             _ = await CommandLineCommandHelper.ExecuteCommand(sut, "--formattablestring myfile.txt");
 
             // Assert
-            templateEngineMock.Received().Render(Arg.Is<IRenderTemplateRequest>(req => req.Context != null && req.Context.Identifier is FormattableStringTemplateIdentifier));
+            await templateEngineMock.Received().Render(Arg.Is<IRenderTemplateRequest>(req => req.Context != null && req.Context.Identifier is FormattableStringTemplateIdentifier), Arg.Any<CancellationToken>());
         }
 
         [Fact]
@@ -121,7 +121,7 @@ public class RunTemplateCommandTests : TestBase<RunTemplateCommand>
             _ = await CommandLineCommandHelper.ExecuteCommand(sut, "--expressionstring myfile.txt");
 
             // Assert
-            templateEngineMock.Received().Render(Arg.Is<IRenderTemplateRequest>(req => req.Context != null && req.Context.Identifier is ExpressionStringTemplateIdentifier));
+            await templateEngineMock.Received().Render(Arg.Is<IRenderTemplateRequest>(req => req.Context != null && req.Context.Identifier is ExpressionStringTemplateIdentifier), Arg.Any<CancellationToken>());
         }
 
         [Fact]
@@ -138,11 +138,11 @@ public class RunTemplateCommandTests : TestBase<RunTemplateCommand>
             _ = await CommandLineCommandHelper.ExecuteCommand(sut, "--assembly MyAssembly", "--classname MyClass", "MyArgumentName:MyArgumentValue");
 
             // Assert
-            templateEngineMock.Received().Render(Arg.Is<IRenderTemplateRequest>(req =>
+            await templateEngineMock.Received().Render(Arg.Is<IRenderTemplateRequest>(req =>
                 req.AdditionalParameters.ToKeyValuePairs().Count() == 1
                 && req.AdditionalParameters.ToKeyValuePairs().First().Key == "MyArgumentName"
                 && req.AdditionalParameters.ToKeyValuePairs().First().Value != null
-                && req.AdditionalParameters.ToKeyValuePairs().First().Value!.ToString() == "MyArgumentValue"));
+                && req.AdditionalParameters.ToKeyValuePairs().First().Value!.ToString() == "MyArgumentValue"), Arg.Any<CancellationToken>());
         }
 
         [Fact]

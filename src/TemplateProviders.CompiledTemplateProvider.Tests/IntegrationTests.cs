@@ -3,7 +3,7 @@
 public class IntegrationTests : TestBase
 {
     [Fact]
-    public void Can_Render_Template_From_CompiledTemplateProvider()
+    public async Task Can_Render_Template_From_CompiledTemplateProvider()
     {
         // Arrange
         var assemblyInfoContextService = Fixture.Freeze<IAssemblyInfoContextService>();
@@ -26,7 +26,7 @@ public class IntegrationTests : TestBase
         var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), builder);
 
         // Act
-        templateEngine.Render(request);
+        await templateEngine.Render(request, CancellationToken.None);
 
         // Assert
         builder.ToString().Should().Be("Hello world!");
