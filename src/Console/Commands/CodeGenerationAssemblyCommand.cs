@@ -46,7 +46,7 @@ public class CodeGenerationAssemblyCommand : CommandBase
                     var classNameFilter = filterClassNameOption.Values.Where(x => x is not null).Select(x => x!);
                     var settings = new CodeGenerationAssemblySettings(basePath, GetDefaultFilename(defaultFilenameOption.Value()), assemblyName, dryRun, GetCurrentDirectory(currentDirectoryOption.Value(), assemblyName!), classNameFilter);
                     await _codeGenerationAssembly.Generate(settings, generationEnvironment, cancellationToken).ConfigureAwait(false);
-                    await WriteOutput(app, generationEnvironment, basePath, bareOption.HasValue(), clipboardOption.HasValue(), dryRun).ConfigureAwait(false);
+                    await WriteOutput(app, generationEnvironment, basePath, bareOption.HasValue(), clipboardOption.HasValue(), dryRun, cancellationToken).ConfigureAwait(false);
                 }, cancellationToken).ConfigureAwait(false);
             });
         });

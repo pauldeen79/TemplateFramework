@@ -68,7 +68,7 @@ public class RunTemplateCommand : CommandBase
                                defaultFilename: GetDefaultFilename(defaultFilenameOption.Value()),
                                dryRun: GetDryRun(dryRunOption.HasValue(), clipboardOption.HasValue()),
                                parameters: GetParameters(parametersArgument),
-                               cancellationToken: cancellationToken)).ConfigureAwait(false);
+                               cancellationToken)).ConfigureAwait(false);
             });
         });
     }
@@ -176,6 +176,6 @@ public class RunTemplateCommand : CommandBase
                 _templateEngine.Render(request);
             }
 
-            await WriteOutput(args.app, generationEnvironment, args.basePath, args.bare, args.clipboard, args.dryRun).ConfigureAwait(false);
+            await WriteOutput(args.app, generationEnvironment, args.basePath, args.bare, args.clipboard, args.dryRun, args.cancellationToken).ConfigureAwait(false);
         }, args.cancellationToken).ConfigureAwait(false);
 }

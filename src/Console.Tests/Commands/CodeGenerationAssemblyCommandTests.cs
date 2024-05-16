@@ -254,7 +254,7 @@ public class CodeGenerationAssemblyCommandTests : TestBase<CodeGenerationAssembl
             // Assert
             await clipboardMock.Received().SetTextAsync(@"MyFile.txt:
 Hello!
-");
+", Arg.Any<CancellationToken>());
         }
 
         [Fact]

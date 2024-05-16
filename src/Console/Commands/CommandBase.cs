@@ -104,7 +104,7 @@ public abstract class CommandBase : ICommandLineCommand
         await app.Out.WriteLineAsync(templateOutput).ConfigureAwait(false);
     }
 
-    protected async Task WriteOutput(CommandLineApplication app, MultipleContentBuilderEnvironment generationEnvironment, string basePath, bool bare, bool clipboard, bool dryRun)
+    protected async Task WriteOutput(CommandLineApplication app, MultipleContentBuilderEnvironment generationEnvironment, string basePath, bool bare, bool clipboard, bool dryRun, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(app);
         Guard.IsNotNull(generationEnvironment);
@@ -123,7 +123,7 @@ public abstract class CommandBase : ICommandLineCommand
         }
         else if (clipboard)
         {
-            await WriteOutputToClipboard(app, GenerateSingleOutput(generationEnvironment.Builder, basePath), bare).ConfigureAwait(false);
+            await WriteOutputToClipboard(app, GenerateSingleOutput(generationEnvironment.Builder, basePath), bare, cancellationToken).ConfigureAwait(false);
         }
         else
         {
@@ -131,12 +131,12 @@ public abstract class CommandBase : ICommandLineCommand
         }
     }
 
-    protected async Task WriteOutputToClipboard(CommandLineApplication app, string templateOutput, bool bare)
+    protected async Task WriteOutputToClipboard(CommandLineApplication app, string templateOutput, bool bare, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(app);
         Guard.IsNotNull(templateOutput);
 
-        await _clipboard.SetTextAsync(templateOutput).ConfigureAwait(false);
+        await _clipboard.SetTextAsync(templateOutput, cancellationToken).ConfigureAwait(false);
 
         if (!bare)
         {

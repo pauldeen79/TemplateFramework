@@ -540,10 +540,10 @@ TemplateOutput
             => WriteOutputToHost(app, templateOutput, bare);
 
         public Task WriteOutputPublic(CommandLineApplication app, MultipleContentBuilderEnvironment generationEnvironment, string basePath, bool bare, bool clipboard, bool dryRun)
-            => WriteOutput(app, generationEnvironment, basePath, bare, clipboard, dryRun);
+            => WriteOutput(app, generationEnvironment, basePath, bare, clipboard, dryRun, CancellationToken.None);
 
         public Task WriteOutputToClipboardPublic(CommandLineApplication app, string templateOutput, bool bare)
-            => WriteOutputToClipboard(app, templateOutput, bare);
+            => WriteOutputToClipboard(app, templateOutput, bare, CancellationToken.None);
 
         public bool GetDryRunPublic(bool dryRun, bool clipboard)
             => GetDryRun(dryRun, clipboard);
