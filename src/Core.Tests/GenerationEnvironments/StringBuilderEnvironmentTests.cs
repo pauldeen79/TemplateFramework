@@ -37,7 +37,7 @@ public class StringBuilderEnvironmentTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.SaveContents(provider: null!, TestData.BasePath, "Filename.txt"))
+            sut.Awaiting(x => x.SaveContents(provider: null!, TestData.BasePath, "Filename.txt", CancellationToken.None))
                .Should().ThrowAsync<ArgumentNullException>().WithParameterName("provider");
         }
 
@@ -48,7 +48,7 @@ public class StringBuilderEnvironmentTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.SaveContents(CodeGenerationProviderMock, TestData.BasePath, defaultFilename: null!))
+            sut.Awaiting(x => x.SaveContents(CodeGenerationProviderMock, TestData.BasePath, defaultFilename: null!, CancellationToken.None))
                .Should().ThrowAsync<ArgumentException>().WithParameterName("defaultFilename");
         }
 
@@ -59,12 +59,12 @@ public class StringBuilderEnvironmentTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.SaveContents(CodeGenerationProviderMock, TestData.BasePath, defaultFilename: string.Empty))
+            sut.Awaiting(x => x.SaveContents(CodeGenerationProviderMock, TestData.BasePath, defaultFilename: string.Empty, CancellationToken.None))
                .Should().ThrowAsync<ArgumentException>().WithParameterName("defaultFilename");
         }
 
         [Fact]
-        public void Writes_Contents_To_FileSystem_Without_BasePath()
+        public async Task Writes_Contents_To_FileSystem_Without_BasePath()
         {
             // Arrange
             var sut = CreateSut();
@@ -72,14 +72,14 @@ public class StringBuilderEnvironmentTests
             Builder.Append("Contents");
 
             // Act
-            sut.SaveContents(CodeGenerationProviderMock, string.Empty, "Filename.txt");
+            await sut.SaveContents(CodeGenerationProviderMock, string.Empty, "Filename.txt", CancellationToken.None);
 
             // Arrange
             FileSystemMock.Received().WriteAllText("Filename.txt", "Contents", Encoding.UTF32);
         }
 
         [Fact]
-        public void Writes_Contents_To_FileSystem_With_BasePath()
+        public async Task Writes_Contents_To_FileSystem_With_BasePath()
         {
             // Arrange
             var sut = CreateSut();
@@ -87,7 +87,7 @@ public class StringBuilderEnvironmentTests
             Builder.Append("Contents");
 
             // Act
-            sut.SaveContents(CodeGenerationProviderMock, TestData.BasePath, "Filename.txt");
+            await sut.SaveContents(CodeGenerationProviderMock, TestData.BasePath, "Filename.txt", CancellationToken.None);
 
             // Arrange
             FileSystemMock.Received().WriteAllText(Path.Combine(TestData.BasePath, "Filename.txt"), "Contents", Encoding.UTF32);

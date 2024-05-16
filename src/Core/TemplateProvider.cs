@@ -30,13 +30,13 @@ public class TemplateProvider : ITemplateProvider
         _components.Add(component);
     }
 
-    public async Task StartSession()
+    public async Task StartSession(CancellationToken cancellationToken)
     {
         _components.Clear();
         _components.AddRange(_originalComponents);
 
         var tasks = _components.OfType<ISessionAwareComponent>()
-            .Select(x => x.StartSession())
+            .Select(x => x.StartSession(cancellationToken))
             .ToArray();
 
         await Task.WhenAll(tasks).ConfigureAwait(false);

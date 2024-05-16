@@ -98,7 +98,7 @@ public class TemplateProviderTests
             sut.RegisterComponent(newTemplateProviderComponent);
 
             // Act
-            await sut.StartSession();
+            await sut.StartSession(CancellationToken.None);
 
             // Assert
             sut.Invoking(x => x.Create(identifier))
@@ -113,7 +113,7 @@ public class TemplateProviderTests
             var sut = new TemplateProvider(new[] { sessionAwareTemplateProviderComponent });
 
             // Act
-            await sut.StartSession();
+            await sut.StartSession(CancellationToken.None);
 
             // Assert
             sessionAwareTemplateProviderComponent.Counter.Should().Be(1);
@@ -128,7 +128,7 @@ public class TemplateProviderTests
                 throw new NotImplementedException();
             }
 
-            public Task StartSession()
+            public Task StartSession(CancellationToken cancellationToken)
             {
                 Counter++;
                 return Task.CompletedTask;

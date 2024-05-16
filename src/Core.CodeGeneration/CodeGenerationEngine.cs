@@ -17,13 +17,13 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
     private readonly ITemplateFactory _templateFactory;
     private readonly ITemplateProvider _templateProvider;
 
-    public async Task Generate(ICodeGenerationProvider codeGenerationProvider, IGenerationEnvironment generationEnvironment, ICodeGenerationSettings settings)
+    public async Task Generate(ICodeGenerationProvider codeGenerationProvider, IGenerationEnvironment generationEnvironment, ICodeGenerationSettings settings, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(codeGenerationProvider);
         Guard.IsNotNull(generationEnvironment);
         Guard.IsNotNull(settings);
 
-        await _templateProvider.StartSession().ConfigureAwait(false);
+        await _templateProvider.StartSession(cancellationToken).ConfigureAwait(false);
 
         var plugin = codeGenerationProvider as ITemplateComponentRegistryPlugin;
         plugin?.Initialize(_templateProvider);
@@ -44,7 +44,7 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
 
         if (!settings.DryRun)
         {
-            await generationEnvironment.SaveContents(codeGenerationProvider, settings.BasePath, settings.DefaultFilename).ConfigureAwait(false);
+            await generationEnvironment.SaveContents(codeGenerationProvider, settings.BasePath, settings.DefaultFilename, cancellationToken).ConfigureAwait(false);
         }
     }
 }

@@ -528,7 +528,7 @@ TemplateOutput
             => throw new NotImplementedException("Not implemented on purpose. This method is abstract, so does not need to be unit tested");
 
         public Task WatchPublic(CommandLineApplication app, bool watch, string filename, Func<Task> action)
-            => Watch(app, watch, filename, action);
+            => Watch(app, watch, filename, action, CancellationToken.None);
 
         public string? GetCurrentDirectoryPublic(string? currentDirectory, string assemblyName)
             => GetCurrentDirectory(currentDirectory, assemblyName);

@@ -38,7 +38,7 @@ public class RunTemplateCommand : CommandBase
             var bareOption = command.Option<bool>("-b|--bare", "Bare output (only template output)", CommandOptionType.NoValue);
             var clipboardOption = command.Option<bool>("-c|--clipboard", "Copy output to clipboard", CommandOptionType.NoValue);
             command.HelpOption();
-            command.OnExecuteAsync(async _ =>
+            command.OnExecuteAsync(async cancellationToken =>
             {
                 var assemblyName = assemblyOption.Value();
                 var className = classNameOption.Value();
@@ -67,7 +67,8 @@ public class RunTemplateCommand : CommandBase
                                basePath: GetBasePath(basePathOption.Value()),
                                defaultFilename: GetDefaultFilename(defaultFilenameOption.Value()),
                                dryRun: GetDryRun(dryRunOption.HasValue(), clipboardOption.HasValue()),
-                               parameters: GetParameters(parametersArgument))).ConfigureAwait(false);
+                               parameters: GetParameters(parametersArgument),
+                               cancellationToken: cancellationToken)).ConfigureAwait(false);
             });
         });
     }
@@ -128,7 +129,8 @@ public class RunTemplateCommand : CommandBase
                                 string basePath,
                                 string defaultFilename,
                                 bool dryRun,
-                                KeyValuePair<string, object?>[] parameters) args)
+                                KeyValuePair<string, object?>[] parameters,
+                                CancellationToken cancellationToken) args)
         => await Watch(args.app, args.watch, args.assemblyName ?? args.formattableStringFilename ?? args.expressionStringFilename!, async () =>
         {
             var generationEnvironment = new MultipleContentBuilderEnvironment();
@@ -146,7 +148,7 @@ public class RunTemplateCommand : CommandBase
                 templateIdentifier = new ExpressionStringTemplateIdentifier(FileSystem.ReadAllText(args.expressionStringFilename, Encoding.Default), CultureInfo.CurrentCulture, args.assemblyName, args.className, args.currentDirectory);
             }
 
-            await _templateProvider.StartSession().ConfigureAwait(false);
+            await _templateProvider.StartSession(args.cancellationToken).ConfigureAwait(false);
 
             var template = _templateProvider.Create(templateIdentifier);
 
@@ -175,5 +177,5 @@ public class RunTemplateCommand : CommandBase
             }
 
             await WriteOutput(args.app, generationEnvironment, args.basePath, args.bare, args.clipboard, args.dryRun).ConfigureAwait(false);
-        }).ConfigureAwait(false);
+        }, args.cancellationToken).ConfigureAwait(false);
 }

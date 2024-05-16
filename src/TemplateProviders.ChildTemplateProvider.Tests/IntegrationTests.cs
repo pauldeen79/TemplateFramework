@@ -32,7 +32,7 @@ public class IntegrationTests : TestBase
     }
 
     [Fact]
-    public void Can_Render_Multiple_Files_Into_One_File_Like_Current_CsharpClassGenerator()
+    public async Task Can_Render_Multiple_Files_Into_One_File_Like_Current_CsharpClassGenerator()
     {
         // Arrange
         var templateFactory = Fixture.Freeze<ITemplateFactory>();
@@ -52,7 +52,7 @@ public class IntegrationTests : TestBase
         var settings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        engine.Generate(new CsharpClassGeneratorCodeGenerationProvider(), generationEnvironment, settings);
+        await engine.Generate(new CsharpClassGeneratorCodeGenerationProvider(), generationEnvironment, settings, CancellationToken.None);
 
         // Assert
         generationEnvironment.Builder.Contents.Should().HaveCount(4);

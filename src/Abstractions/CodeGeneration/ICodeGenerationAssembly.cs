@@ -2,5 +2,5 @@
 
 public interface ICodeGenerationAssembly
 {
-    Task Generate(ICodeGenerationAssemblySettings settings, IGenerationEnvironment generationEnvironment);
+    Task Generate(ICodeGenerationAssemblySettings settings, IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken);
 }

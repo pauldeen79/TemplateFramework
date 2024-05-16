@@ -60,7 +60,7 @@ public class CodeGenerationAssemblySettingsTests
         public void Constructs_With_BasePath_And_DefaultFilename_And_AssemblyName_And_CurrentDirectory_And_ClassNameFilter()
         {
             // Act
-            var instance = new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), Path.Combine(TestData.BasePath, "SomeDirectory"), classNameFilter: new[] { "MyFilter" });
+            var instance = new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), Path.Combine(TestData.BasePath, "SomeDirectory"), classNameFilter: ["MyFilter"]);
 
             // Assert
             instance.BasePath.Should().Be(TestData.BasePath);
@@ -88,7 +88,7 @@ public class CodeGenerationAssemblySettingsTests
         public void Constructs_With_All_Arguments()
         {
             // Act
-            var instance = new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), true, null, new[] { "Filter" });
+            var instance = new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), true, null, ["Filter"]);
 
             // Assert
             instance.BasePath.Should().Be(TestData.BasePath);

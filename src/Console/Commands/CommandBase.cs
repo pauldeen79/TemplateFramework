@@ -21,7 +21,7 @@ public abstract class CommandBase : ICommandLineCommand
         UserInput = userInput;
     }
 
-    protected async Task Watch(CommandLineApplication app, bool watch, string filename, Func<Task> action)
+    protected async Task Watch(CommandLineApplication app, bool watch, string filename, Func<Task> action, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(app);
         Guard.IsNotNull(filename);
@@ -57,7 +57,7 @@ public abstract class CommandBase : ICommandLineCommand
                 await action().ConfigureAwait(false);
             }
 
-            await Task.Delay(SleepTimeInMs).ConfigureAwait(false);
+            await Task.Delay(SleepTimeInMs, cancellationToken).ConfigureAwait(false);
         }
     }
 

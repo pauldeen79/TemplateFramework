@@ -27,7 +27,7 @@ public class IntegrationTests : TestBase
         templateFactory.Create(Arg.Any<Type>()).Returns(x => Activator.CreateInstance(x.ArgAt<Type>(0))!);
 
         // Act
-        sut.Generate(codeGenerationProvider, generationEnvironment, new CodeGenerationSettings(TestData.BasePath, "DefaultFilename.txt", false));
+        sut.Generate(codeGenerationProvider, generationEnvironment, new CodeGenerationSettings(TestData.BasePath, "DefaultFilename.txt", false), CancellationToken.None);
 
         // Assert
         builder.Contents.Should().ContainSingle();

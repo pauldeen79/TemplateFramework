@@ -22,7 +22,7 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var sut = CreateSut();
 
             // Act
-            sut.Awaiting(x => x.Generate(codeGenerationProvider: null!, generationEnvironment, codeGenerationSettings))
+            sut.Awaiting(x => x.Generate(codeGenerationProvider: null!, generationEnvironment, codeGenerationSettings, CancellationToken.None))
                .Should().ThrowAsync<ArgumentNullException>().WithParameterName("codeGenerationProvider");
         }
 
@@ -35,7 +35,7 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var sut = CreateSut();
 
             // Act
-            sut.Awaiting(x => x.Generate(codeGenerationProvider, generationEnvironment: null!, codeGenerationSettings))
+            sut.Awaiting(x => x.Generate(codeGenerationProvider, generationEnvironment: null!, codeGenerationSettings, CancellationToken.None))
                .Should().ThrowAsync<ArgumentNullException>().WithParameterName("generationEnvironment");
         }
 
@@ -48,7 +48,7 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var sut = CreateSut();
 
             // Act
-            sut.Awaiting(x => x.Generate(codeGenerationProvider, generationEnvironment, settings: null!))
+            sut.Awaiting(x => x.Generate(codeGenerationProvider, generationEnvironment, settings: null!, CancellationToken.None))
                .Should().ThrowAsync<ArgumentNullException>().WithParameterName("settings");
         }
 
@@ -68,10 +68,10 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var sut = CreateSut();
 
             // Act
-            await sut.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+            await sut.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
             // Assert
-            await generationEnvironment.Received().SaveContents(codeGenerationProvider, TestData.BasePath, "Filename.txt");
+            await generationEnvironment.Received().SaveContents(codeGenerationProvider, TestData.BasePath, "Filename.txt", CancellationToken.None);
         }
 
         [Fact]
@@ -89,10 +89,10 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var sut = CreateSut();
 
             // Act
-            await sut.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+            await sut.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
             // Assert
-            await generationEnvironment.DidNotReceive().SaveContents(codeGenerationProvider, TestData.BasePath, "Filename.txt");
+            await generationEnvironment.DidNotReceive().SaveContents(codeGenerationProvider, TestData.BasePath, "Filename.txt", CancellationToken.None);
         }
 
         [Fact]
@@ -109,7 +109,7 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var sut = CreateSut();
 
             // Act
-            await sut.Generate(provider, generationEnvironment, codeGenerationSettings);
+            await sut.Generate(provider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
             // Assert
             counter.Should().Be(1);
@@ -131,10 +131,10 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var sut = CreateSut();
 
             // Act
-            await sut.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+            await sut.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
             // Assert
-            await templateProvider.Received().StartSession();
+            await templateProvider.Received().StartSession(CancellationToken.None);
         }
 
         private sealed class MyPluginCodeGenerationProvider : ICodeGenerationProvider, ITemplateComponentRegistryPlugin
