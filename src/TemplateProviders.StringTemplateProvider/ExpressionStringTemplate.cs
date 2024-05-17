@@ -27,7 +27,7 @@ public class ExpressionStringTemplate : IStringBuilderTemplate
         _parametersDictionary = new Dictionary<string, object?>();
     }
 
-    public void Render(StringBuilder builder)
+    public Task Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
 
@@ -35,5 +35,7 @@ public class ExpressionStringTemplate : IStringBuilderTemplate
         var result = _expressionStringParser.Parse(_expressionStringTemplateIdentifier.Template, _expressionStringTemplateIdentifier.FormatProvider, context, _formattableStringParser).GetValueOrThrow();
 
         builder.Append(result);
+
+        return Task.CompletedTask;
     }
 }

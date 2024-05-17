@@ -52,8 +52,8 @@ public class FormattableStringTemplateTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Render(builder: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("builder");
+            sut.Awaiting(x => x.Render(builder: null!, CancellationToken.None))
+               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("builder");
         }
 
         [Fact]
@@ -67,12 +67,12 @@ public class FormattableStringTemplateTests
             var builder = new StringBuilder();
 
             // Act & Assert
-            sut.Invoking(x => x.Render(builder))
-               .Should().Throw<InvalidOperationException>().WithMessage("Result: Error, ErrorMessage: Kaboom!");
+            sut.Awaiting(x => x.Render(builder, CancellationToken.None))
+               .Should().ThrowAsync<InvalidOperationException>().WithMessage("Result: Error, ErrorMessage: Kaboom!");
         }
 
         [Fact]
-        public void Appends_Result_From_FormattableStringParser_To_Builder_On_Succesful_Result()
+        public async Task Appends_Result_From_FormattableStringParser_To_Builder_On_Succesful_Result()
         {
             // Arrange
             FormattableStringParserMock
@@ -82,7 +82,7 @@ public class FormattableStringTemplateTests
             var builder = new StringBuilder();
 
             // Act
-            sut.Render(builder);
+            await sut.Render(builder, CancellationToken.None);
 
             // Assert
             builder.ToString().Should().Be("Parse result");
@@ -92,7 +92,7 @@ public class FormattableStringTemplateTests
     public class SetParameter : FormattableStringTemplateTests
     {
         [Fact]
-        public void Adds_Parameter_To_Context()
+        public async Task Adds_Parameter_To_Context()
         {
             // Arrange
             var sut = CreateSut();
@@ -110,7 +110,7 @@ public class FormattableStringTemplateTests
             sut.SetParameter("Name", "Value");
 
             // Assert
-            sut.Render(new StringBuilder());
+            await sut.Render(new StringBuilder(), CancellationToken.None);
             dictionary.Should().NotBeNull();
             dictionary!.First().Key.Should().Be("Name");
             dictionary!.First().Value.Should().Be("Value");

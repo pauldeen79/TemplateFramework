@@ -2,13 +2,13 @@
 
 public class TypedTextTransformTemplateRenderer : IStringBuilderTemplateRenderer
 {
-    public bool TryRender(object instance, StringBuilder builder)
+    public async Task<bool> TryRender(object instance, StringBuilder builder, CancellationToken cancellationToken)
     {
         if (instance is ITextTransformTemplate textTransformTemplate)
         {
             Guard.IsNotNull(builder);
 
-            var output = textTransformTemplate.TransformText();
+            var output = await textTransformTemplate.TransformText(cancellationToken).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(output))
             {
                 builder.Append(output);

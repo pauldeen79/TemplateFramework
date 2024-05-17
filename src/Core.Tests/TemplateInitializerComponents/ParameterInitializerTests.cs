@@ -19,12 +19,12 @@ public class ParameterInitializerTests
         public void Throws_On_Null_Context(ParameterInitializerComponent sut)
         {
             // Act & Assert
-            sut.Invoking(x => x.Initialize(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            sut.Awaiting(x => x.Initialize(context: null!, CancellationToken.None))
+               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Theory, AutoMockData]
-        public void Sets_AdditionalParameters_When_Template_Implements_IParameterizedTemplate(
+        public async Task Sets_AdditionalParameters_When_Template_Implements_IParameterizedTemplate(
             [Frozen] ITemplateEngine templateEngine,
             [Frozen] ITemplateProvider templateProvider,
             [Frozen] IValueConverter valueConverter,
@@ -38,14 +38,14 @@ public class ParameterInitializerTests
             valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
 
             // Act
-            sut.Initialize(engineContext);
+            await sut.Initialize(engineContext, CancellationToken.None);
 
             // Assert
             template.AdditionalParameter.Should().Be(additionalParameters.AdditionalParameter);
         }
 
         [Theory, AutoMockData]
-        public void Converts_AdditionalParameter_When_Converter_Is_Available(
+        public async Task Converts_AdditionalParameter_When_Converter_Is_Available(
             [Frozen] ITemplateEngine templateEngine,
             [Frozen] ITemplateProvider templateProvider,
             [Frozen] IValueConverter valueConverter,
@@ -61,7 +61,7 @@ public class ParameterInitializerTests
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
 
             // Act
-            sut.Initialize(engineContext);
+            await sut.Initialize(engineContext, CancellationToken.None);
 
             // Assert
             template.AdditionalParameter.Should().BeEquivalentTo(convertedValue.ToString());
@@ -80,12 +80,12 @@ public class ParameterInitializerTests
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
 
             // Act & Assert
-            sut.Invoking(x => x.Initialize(engineContext))
-               .Should().NotThrow();
+            sut.Awaiting(x => x.Initialize(engineContext, CancellationToken.None))
+               .Should().NotThrowAsync();
         }
 
         [Theory, AutoMockData]
-        public void Skips_Model_AdditionalParameter(
+        public async Task Skips_Model_AdditionalParameter(
             [Frozen] ITemplateEngine templateEngine,
             [Frozen] ITemplateProvider templateProvider,
             [Frozen] IValueConverter valueConverter,
@@ -100,7 +100,7 @@ public class ParameterInitializerTests
             valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
 
             // Act
-            sut.Initialize(engineContext);
+            await sut.Initialize(engineContext, CancellationToken.None);
 
             // Assert
             template.Model.Should().BeNull();
@@ -108,7 +108,7 @@ public class ParameterInitializerTests
         }
 
         [Theory, AutoMockData]
-        public void Can_Inject_ViewModel_On_Template_Using_AdditionalParameters(
+        public async Task Can_Inject_ViewModel_On_Template_Using_AdditionalParameters(
             [Frozen] ITemplateEngine templateEngine,
             [Frozen] ITemplateProvider templateProvider,
             [Frozen] IValueConverter valueConverter,
@@ -122,14 +122,14 @@ public class ParameterInitializerTests
             valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
 
             // Act
-            sut.Initialize(engineContext);
+            await sut.Initialize(engineContext, CancellationToken.None);
 
             // Assert
             template.ViewModel.Should().BeSameAs(viewModel);
         }
 
         [Theory, AutoMockData]
-        public void Sets_AdditionalParameters_When_Template_Has_Public_Readable_And_Writable_Properties(
+        public async Task Sets_AdditionalParameters_When_Template_Has_Public_Readable_And_Writable_Properties(
             [Frozen] ITemplateEngine templateEngine,
             [Frozen] ITemplateProvider templateProvider,
             [Frozen] IValueConverter valueConverter,
@@ -144,7 +144,7 @@ public class ParameterInitializerTests
             templateEngine.GetParameters(Arg.Any<object>()).Returns(new[] { new TemplateParameter(nameof(TestData.PocoParameterizedTemplate.Parameter), typeof(string)) });
 
             // Act
-            sut.Initialize(engineContext);
+            await sut.Initialize(engineContext, CancellationToken.None);
 
             // Assert
             template.Parameter.Should().Be(additionalParameters.Parameter);
@@ -166,7 +166,8 @@ public class ParameterInitializerTests
             templateEngine.GetParameters(Arg.Any<object>()).Returns(new[] { new TemplateParameter(nameof(TestData.PocoParameterizedTemplate.Parameter), typeof(string)) });
 
             // Act & Assert
-            sut.Invoking(x => x.Initialize(engineContext)).Should().NotThrow();
+            sut.Awaiting(x => x.Initialize(engineContext, CancellationToken.None))
+               .Should().NotThrowAsync();
         }
     }
 }

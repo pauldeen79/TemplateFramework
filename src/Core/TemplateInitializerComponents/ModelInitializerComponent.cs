@@ -11,7 +11,7 @@ public class ModelInitializerComponent : ITemplateInitializerComponent
         _converter = converter;
     }
 
-    public void Initialize(ITemplateEngineContext context)
+    public Task Initialize(ITemplateEngineContext context, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(context);
         Guard.IsNotNull(context.Template);
@@ -23,5 +23,7 @@ public class ModelInitializerComponent : ITemplateInitializerComponent
             var modelProperty = templateType.GetProperty(nameof(IModelContainer<object?>.Model))!;
             modelProperty.SetValue(context.Template, _converter.Convert(context.Model, modelProperty.PropertyType, context));
         }
+
+        return Task.CompletedTask;
     }
 }

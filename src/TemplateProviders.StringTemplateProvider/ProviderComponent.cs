@@ -40,9 +40,11 @@ public class ProviderComponent : ITemplateProviderComponent, ISessionAwareCompon
         }
     }
 
-    public void StartSession()
+    public Task StartSession(CancellationToken cancellationToken)
     {
         _componentRegistrationContext.PlaceholderProcessors.Clear();
         _componentRegistrationContext.FunctionResultParsers.Clear();
+
+        return Task.CompletedTask;
     }
 }

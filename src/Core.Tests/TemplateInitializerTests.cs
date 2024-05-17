@@ -17,21 +17,21 @@ public class TemplateInitializerTests
         public void Throws_On_Null_Context(TemplateInitializer sut)
         {
             // Act & Assert
-            sut.Invoking(x => x.Initialize(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            sut.Awaiting(x => x.Initialize(context: null!, CancellationToken.None))
+               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Theory, AutoMockData]
-        public void Processes_TemplateInitializeComponents_On_Non_Null_Arguments(
+        public async Task Processes_TemplateInitializeComponents_On_Non_Null_Arguments(
             [Frozen] ITemplateEngineContext templateEngineContext,
             [Frozen] ITemplateInitializerComponent templateInitializerComponent,
             TemplateInitializer sut)
         {
             // Act
-            sut.Initialize(templateEngineContext);
+            await sut.Initialize(templateEngineContext, CancellationToken.None);
 
             // Assert
-            templateInitializerComponent.Received().Initialize(Arg.Any<ITemplateEngineContext>());
+            await templateInitializerComponent.Received().Initialize(Arg.Any<ITemplateEngineContext>(), Arg.Any<CancellationToken>());
         }
     }
 }

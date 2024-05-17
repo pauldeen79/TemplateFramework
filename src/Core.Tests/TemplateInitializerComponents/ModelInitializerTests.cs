@@ -19,12 +19,12 @@ public class ModelInitializerTests
         public void Throws_On_Null_Context(ModelInitializerComponent sut)
         {
             // Act & Assert
-            sut.Invoking(x => x.Initialize(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            sut.Awaiting(x => x.Initialize(context: null!, CancellationToken.None))
+               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Theory, AutoMockData]
-        public void Sets_Model_When_Possible(
+        public async Task Sets_Model_When_Possible(
             [Frozen] ITemplateEngine templateEngine,
             [Frozen] ITemplateProvider templateProvider,
             [Frozen] IValueConverter valueConverter,
@@ -38,7 +38,7 @@ public class ModelInitializerTests
             valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
 
             // Act
-            sut.Initialize(engineContext);
+            await sut.Initialize(engineContext, CancellationToken.None);
 
             // Assert
             template.Model.Should().Be(model);

@@ -14,7 +14,7 @@ public sealed class MultipleContentTemplateRenderer : ITemplateRenderer
 
     public bool Supports(IGenerationEnvironment generationEnvironment) => generationEnvironment is MultipleContentBuilderEnvironment;
 
-    public void Render(ITemplateEngineContext context)
+    public async Task Render(ITemplateEngineContext context, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(context);
         Guard.IsNotNull(context.Template);
@@ -31,7 +31,7 @@ public sealed class MultipleContentTemplateRenderer : ITemplateRenderer
         {
             // No need to convert string to MultipleContentBuilder, and then add it again..
             // We can simply pass the MultipleContentBuilder instance
-            multipleContentBuilderTemplate.Render(multipleContentBuilder);
+            await multipleContentBuilderTemplate.Render(multipleContentBuilder, cancellationToken).ConfigureAwait(false);
             return;
         }
 
@@ -39,7 +39,7 @@ public sealed class MultipleContentTemplateRenderer : ITemplateRenderer
         // Render using a stringbuilder, then add it to multiple contents
         var stringBuilder = new StringBuilder();
         var singleRequest = new RenderTemplateRequest(context.Identifier, context.Model, stringBuilder, context.DefaultFilename, context.AdditionalParameters, context.Context);
-        context.Engine.Render(singleRequest);
+        await context.Engine.Render(singleRequest, cancellationToken).ConfigureAwait(false);
 
         multipleContentBuilder.AddContent(context.DefaultFilename, false, new StringBuilder(stringBuilder.ToString()));
     }

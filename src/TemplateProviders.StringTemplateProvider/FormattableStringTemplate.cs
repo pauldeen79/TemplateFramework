@@ -34,7 +34,7 @@ public class FormattableStringTemplate : IParameterizedTemplate, IStringBuilderT
             .ToArray();
     }
 
-    public void Render(StringBuilder builder)
+    public Task Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
 
@@ -42,6 +42,8 @@ public class FormattableStringTemplate : IParameterizedTemplate, IStringBuilderT
         var result = _formattableStringParser.Parse(_formattableStringTemplateIdentifier.Template, _formattableStringTemplateIdentifier.FormatProvider, context).GetValueOrThrow();
 
         builder.Append(result.ToString(_formattableStringTemplateIdentifier.FormatProvider));
+
+        return Task.CompletedTask;
     }
 
     public void SetParameter(string name, object? value) => _parametersDictionary[name] = value;

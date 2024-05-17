@@ -414,55 +414,55 @@ public class MultipleContentBuilderEnvironmentTests
         }
 
         [Fact]
-        public void Deletes_LastGeneratedFiles_When_LastGeneratedFilesFilename_Is_Not_Empty()
+        public async Task Deletes_LastGeneratedFiles_When_LastGeneratedFilesFilename_Is_Not_Empty()
         {
             // Arrange
             var sut = CreateSut();
             FileSystemMock.FileExists(Path.Combine(TestData.BasePath, "Subdirectory", "LastGeneratedFiles.txt")).Returns(true);
 
             // Act
-            sut.SaveContents(CodeGenerationProviderMock, TestData.BasePath, string.Empty);
+            await sut.SaveContents(CodeGenerationProviderMock, TestData.BasePath, string.Empty, CancellationToken.None);
 
             // Assert
             FileSystemMock.Received().ReadAllLines(Path.Combine(TestData.BasePath, "Subdirectory", "LastGeneratedFiles.txt"), Encoding.Latin1);
         }
 
         [Fact]
-        public void Does_Not_Delete_LastGeneratedFiles_When_LastGeneratedFilesFilename_Is_Null()
+        public async Task Does_Not_Delete_LastGeneratedFiles_When_LastGeneratedFilesFilename_Is_Null()
         {
             // Arrange
             var sut = CreateSut();
             CodeGenerationProviderMock.LastGeneratedFilesFilename.Returns(default(string)!);
 
             // Act
-            sut.SaveContents(CodeGenerationProviderMock, TestData.BasePath, string.Empty);
+            await sut.SaveContents(CodeGenerationProviderMock, TestData.BasePath, string.Empty, CancellationToken.None);
 
             // Assert
             FileSystemMock.DidNotReceive().ReadAllLines(Arg.Any<string>(), Arg.Any<Encoding>());
         }
 
         [Fact]
-        public void Does_Not_Delete_LastGeneratedFiles_When_LastGeneratedFilesFilename_Is_Empty()
+        public async Task Does_Not_Delete_LastGeneratedFiles_When_LastGeneratedFilesFilename_Is_Empty()
         {
             // Arrange
             var sut = CreateSut();
             CodeGenerationProviderMock.LastGeneratedFilesFilename.Returns(string.Empty);
 
             // Act
-            sut.SaveContents(CodeGenerationProviderMock, TestData.BasePath, string.Empty);
+            await sut.SaveContents(CodeGenerationProviderMock, TestData.BasePath, string.Empty, CancellationToken.None);
 
             // Assert
             FileSystemMock.DidNotReceive().ReadAllLines(Arg.Any<string>(), Arg.Any<Encoding>());
         }
 
         [Fact]
-        public void Saves_All_Contents()
+        public async Task Saves_All_Contents()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act
-            sut.SaveContents(CodeGenerationProviderMock, TestData.BasePath, string.Empty);
+            await sut.SaveContents(CodeGenerationProviderMock, TestData.BasePath, string.Empty, CancellationToken.None);
 
             // Assert
             FileSystemMock.Received().WriteAllText(Path.Combine(TestData.BasePath, "Subdirectory", "Filename.txt"), "Content", Encoding.Latin1);

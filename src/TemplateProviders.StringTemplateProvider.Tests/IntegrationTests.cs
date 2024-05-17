@@ -3,7 +3,7 @@
 public class IntegrationTests : TestBase
 {
     [Fact]
-    public void Can_Process_Template_With_FormattableString_Placeholders()
+    public async Task Can_Process_Template_With_FormattableString_Placeholders()
     {
         // Arrange
         var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
@@ -22,7 +22,7 @@ public class IntegrationTests : TestBase
         var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), builder, new { Name = "world" });
 
         // Act
-        templateEngine.Render(request);
+        await templateEngine.Render(request, CancellationToken.None);
 
         // Assert
         builder.ToString().Should().Be("Hello world!");
@@ -51,7 +51,7 @@ public class IntegrationTests : TestBase
     }
 
     [Fact]
-    public void Can_Use_Custom_Registered_PlaceholderProcessor_In_FormattableStringTemplate()
+    public async Task Can_Use_Custom_Registered_PlaceholderProcessor_In_FormattableStringTemplate()
     {
         // Arrange
         var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
@@ -87,14 +87,14 @@ public class IntegrationTests : TestBase
         var request = new RenderTemplateRequest(identifier, builder, context);
 
         // Act
-        templateEngine.Render(request);
+        await templateEngine.Render(request, CancellationToken.None);
 
         // Assert
         builder.ToString().Should().Be("aaa Hello world! zzz");
     }
 
     [Fact]
-    public void Can_Use_Expression_In_Placeholder_In_FormattableStringTemplate()
+    public async Task Can_Use_Expression_In_Placeholder_In_FormattableStringTemplate()
     {
         // Arrange
         var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
@@ -119,14 +119,14 @@ public class IntegrationTests : TestBase
         var request = new RenderTemplateRequest(identifier, builder, context);
 
         // Act
-        templateEngine.Render(request);
+        await templateEngine.Render(request, CancellationToken.None);
 
         // Assert
         builder.ToString().Should().Be("aaa 2 zzz");
     }
 
     [Fact]
-    public void Can_Use_Custom_Registered_FunctionResultParser_In_FormattableStringTemplate()
+    public async Task Can_Use_Custom_Registered_FunctionResultParser_In_FormattableStringTemplate()
     {
         // Arrange
         var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
@@ -162,14 +162,14 @@ public class IntegrationTests : TestBase
         var request = new RenderTemplateRequest(identifier, builder, context);
 
         // Act
-        templateEngine.Render(request);
+        await templateEngine.Render(request, CancellationToken.None);
 
         // Assert
         builder.ToString().Should().Be("aaa Hello world! zzz");
     }
 
     [Fact]
-    public void Can_Use_Custom_Registered_FunctionResultParser_In_ExpressionStringTemplate()
+    public async Task Can_Use_Custom_Registered_FunctionResultParser_In_ExpressionStringTemplate()
     {
         // Arrange
         var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
@@ -205,14 +205,14 @@ public class IntegrationTests : TestBase
         var request = new RenderTemplateRequest(identifier, builder, context);
 
         // Act
-        templateEngine.Render(request);
+        await templateEngine.Render(request, CancellationToken.None);
 
         // Assert
         builder.ToString().Should().Be("aaa Hello world! zzz");
     }
 
     [Fact]
-    public void Can_Use_ExpressionFramework_In_FormattableStringTemplate()
+    public async Task Can_Use_ExpressionFramework_In_FormattableStringTemplate()
     {
         // Arrange
         var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
@@ -238,14 +238,14 @@ public class IntegrationTests : TestBase
         var request = new RenderTemplateRequest(identifier, builder, context);
 
         // Act
-        templateEngine.Render(request);
+        await templateEngine.Render(request, CancellationToken.None);
 
         // Assert
         builder.ToString().Should().Be($"AAA {DateTime.Today.ToString(CultureInfo.InvariantCulture)} ZZZ"); // CultureInfo.InvariantCulture is important to make this test pass on all cultures!
     }
 
     [Fact]
-    public void Can_Use_ExpressionFramework_In_ExpressionStringTemplate()
+    public async Task Can_Use_ExpressionFramework_In_ExpressionStringTemplate()
     {
         // Arrange
         var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
@@ -271,7 +271,7 @@ public class IntegrationTests : TestBase
         var request = new RenderTemplateRequest(identifier, builder, context);
 
         // Act
-        templateEngine.Render(request);
+        await templateEngine.Render(request, CancellationToken.None);
 
         // Assert
         builder.ToString().Should().Be($"AAA {DateTime.Today.ToString(CultureInfo.InvariantCulture)} ZZZ"); // CultureInfo.InvariantCulture is important to make this test pass on all cultures!

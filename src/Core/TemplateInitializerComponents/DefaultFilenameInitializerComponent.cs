@@ -2,7 +2,7 @@
 
 public class DefaultFilenameInitializerComponent : ITemplateInitializerComponent
 {
-    public void Initialize(ITemplateEngineContext context)
+    public Task Initialize(ITemplateEngineContext context, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(context);
         Guard.IsNotNull(context.Template);
@@ -14,5 +14,7 @@ public class DefaultFilenameInitializerComponent : ITemplateInitializerComponent
             var defaultFilenameProperty = templateType.GetProperty(nameof(IDefaultFilenameContainer.DefaultFilename))!;
             defaultFilenameProperty.SetValue(context.Template, context.DefaultFilename);
         }
+
+        return Task.CompletedTask;
     }
 }

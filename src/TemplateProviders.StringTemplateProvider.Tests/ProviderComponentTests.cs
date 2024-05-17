@@ -129,28 +129,28 @@ public class ProviderComponentTests
     public class StartSession : ProviderComponentTests
     {
         [Fact]
-        public void Clears_PlaceholderProcessors()
+        public async Task Clears_PlaceholderProcessors()
         {
             // Arrange
             ComponentRegistrationContext.PlaceholderProcessors.Add(Substitute.For<IPlaceholderProcessor>());
             var sut = CreateSut();
 
             // Act
-            sut.StartSession();
+            await sut.StartSession(CancellationToken.None);
 
             // Assert
             ComponentRegistrationContext.PlaceholderProcessors.Should().BeEmpty();
         }
 
         [Fact]
-        public void Clears_FunctionResultParsers()
+        public async Task Clears_FunctionResultParsers()
         {
             // Arrange
             ComponentRegistrationContext.FunctionResultParsers.Add(Substitute.For<IFunctionResultParser>());
             var sut = CreateSut();
 
             // Act
-            sut.StartSession();
+            await sut.StartSession(CancellationToken.None);
 
             // Assert
             ComponentRegistrationContext.FunctionResultParsers.Should().BeEmpty();

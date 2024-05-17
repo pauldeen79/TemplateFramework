@@ -3,7 +3,7 @@
 public class IntegrationTests : TestBase
 {
     [Fact]
-    public void Can_Render_MultipleContentBuilderTemplate_With_ChildTemplate_And_TemplateContext()
+    public async Task Can_Render_MultipleContentBuilderTemplate_With_ChildTemplate_And_TemplateContext()
     {
         // Arrange
         var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
@@ -16,15 +16,15 @@ public class IntegrationTests : TestBase
         using var scope = provider.CreateScope();
         var engine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
 
-        var template = new TestData.MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine((builder, context) =>
+        var template = new TestData.MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine(async (builder, context) =>
         {
             var identifier = new TemplateByNameIdentifier("MyTemplate");
-            context.Engine.RenderChildTemplate(new MultipleContentBuilderEnvironment(builder), identifier, context);
+            await context.Engine.RenderChildTemplate(new MultipleContentBuilderEnvironment(builder), identifier, context, CancellationToken.None).ConfigureAwait(false);
         });
         var generationEnvironment = new MultipleContentBuilder();
 
         // Act
-        engine.Render(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), generationEnvironment));
+        await engine.Render(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), generationEnvironment), CancellationToken.None);
 
         // Assert
         generationEnvironment.Contents.Should().ContainSingle();
@@ -32,7 +32,7 @@ public class IntegrationTests : TestBase
     }
 
     [Fact]
-    public void Can_Render_Multiple_Files_Into_One_File_Like_Current_CsharpClassGenerator()
+    public async Task Can_Render_Multiple_Files_Into_One_File_Like_Current_CsharpClassGenerator()
     {
         // Arrange
         var templateFactory = Fixture.Freeze<ITemplateFactory>();
@@ -52,7 +52,7 @@ public class IntegrationTests : TestBase
         var settings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        engine.Generate(new CsharpClassGeneratorCodeGenerationProvider(), generationEnvironment, settings);
+        await engine.Generate(new CsharpClassGeneratorCodeGenerationProvider(), generationEnvironment, settings, CancellationToken.None);
 
         // Assert
         generationEnvironment.Builder.Contents.Should().HaveCount(4);
@@ -74,8 +74,8 @@ public class IntegrationTests : TestBase
         var generationEnvironment = new MultipleContentBuilder();
 
         // Act & Assert
-        engine.Invoking(x => x.Render(new RenderTemplateRequest(new TemplateByNameIdentifier("Unknown"), generationEnvironment)))
-              .Should().Throw<NotSupportedException>().WithMessage("Template with name Unknown is not supported");
+        engine.Awaiting(x => x.Render(new RenderTemplateRequest(new TemplateByNameIdentifier("Unknown"), generationEnvironment), CancellationToken.None))
+              .Should().ThrowAsync<NotSupportedException>().WithMessage("Template with name Unknown is not supported");
     }
 
     [Fact]
@@ -94,7 +94,7 @@ public class IntegrationTests : TestBase
         var generationEnvironment = new MultipleContentBuilder();
 
         // Act & Assert
-        engine.Invoking(x => x.Render(new RenderTemplateRequest(new TemplateByModelIdentifier("Unknown"), generationEnvironment)))
-              .Should().Throw<NotSupportedException>().WithMessage("Model of type System.String is not supported");
+        engine.Awaiting(x => x.Render(new RenderTemplateRequest(new TemplateByModelIdentifier("Unknown"), generationEnvironment), CancellationToken.None))
+              .Should().ThrowAsync<NotSupportedException>().WithMessage("Model of type System.String is not supported");
     }
 }

@@ -38,7 +38,7 @@ public class RunTemplateCommand : CommandBase
             var bareOption = command.Option<bool>("-b|--bare", "Bare output (only template output)", CommandOptionType.NoValue);
             var clipboardOption = command.Option<bool>("-c|--clipboard", "Copy output to clipboard", CommandOptionType.NoValue);
             command.HelpOption();
-            command.OnExecute(() =>
+            command.OnExecuteAsync(async cancellationToken =>
             {
                 var assemblyName = assemblyOption.Value();
                 var className = classNameOption.Value();
@@ -48,26 +48,27 @@ public class RunTemplateCommand : CommandBase
                 var result = Validate(assemblyName, className, formattableStringTemplateFilename, expressionStringTemplateFilename);
                 if (!result.IsSuccessful())
                 {
-                    app.Error.WriteLine(result.ErrorMessage);
+                    await app.Error.WriteLineAsync(result.ErrorMessage).ConfigureAwait(false);
                     return;
                 }
 
-                Execute((app,
-                         watchOption.HasValue(),
-                         interactiveOption.HasValue(),
-                         listParametersOption.HasValue(),
-                         bareOption.HasValue(),
-                         clipboardOption.HasValue(),
-                         assemblyName,
-                         className,
-                         formattableStringTemplateFilename,
-                         expressionStringTemplateFilename,
-                         currentDirectory: GetCurrentDirectory(currentDirectoryOption.Value(), assemblyName!),
-                         templateProviderPluginClassName: templateProviderPluginClassNameOption.Value(),
-                         basePath: GetBasePath(basePathOption.Value()),
-                         defaultFilename: GetDefaultFilename(defaultFilenameOption.Value()),
-                         dryRun: GetDryRun(dryRunOption.HasValue(), clipboardOption.HasValue()),
-                         parameters: GetParameters(parametersArgument)));
+                await Execute((app,
+                               watchOption.HasValue(),
+                               interactiveOption.HasValue(),
+                               listParametersOption.HasValue(),
+                               bareOption.HasValue(),
+                               clipboardOption.HasValue(),
+                               assemblyName,
+                               className,
+                               formattableStringTemplateFilename,
+                               expressionStringTemplateFilename,
+                               currentDirectory: GetCurrentDirectory(currentDirectoryOption.Value(), assemblyName!),
+                               templateProviderPluginClassName: templateProviderPluginClassNameOption.Value(),
+                               basePath: GetBasePath(basePathOption.Value()),
+                               defaultFilename: GetDefaultFilename(defaultFilenameOption.Value()),
+                               dryRun: GetDryRun(dryRunOption.HasValue(), clipboardOption.HasValue()),
+                               parameters: GetParameters(parametersArgument),
+                               cancellationToken)).ConfigureAwait(false);
             });
         });
     }
@@ -113,23 +114,24 @@ public class RunTemplateCommand : CommandBase
         return Result.Success();
     }
 
-    private void Execute((CommandLineApplication app,
-                          bool watch,
-                          bool interactive,
-                          bool listParameters,
-                          bool bare,
-                          bool clipboard,
-                          string? assemblyName,
-                          string? className,
-                          string? formattableStringFilename,
-                          string? expressionStringFilename,
-                          string? currentDirectory,
-                          string? templateProviderPluginClassName,
-                          string basePath,
-                          string defaultFilename,
-                          bool dryRun,
-                          KeyValuePair<string, object?>[] parameters) args)
-        => Watch(args.app, args.watch, args.assemblyName ?? args.formattableStringFilename ?? args.expressionStringFilename!, () =>
+    private async Task Execute((CommandLineApplication app,
+                                bool watch,
+                                bool interactive,
+                                bool listParameters,
+                                bool bare,
+                                bool clipboard,
+                                string? assemblyName,
+                                string? className,
+                                string? formattableStringFilename,
+                                string? expressionStringFilename,
+                                string? currentDirectory,
+                                string? templateProviderPluginClassName,
+                                string basePath,
+                                string defaultFilename,
+                                bool dryRun,
+                                KeyValuePair<string, object?>[] parameters,
+                                CancellationToken cancellationToken) args)
+        => await Watch(args.app, args.watch, args.assemblyName ?? args.formattableStringFilename ?? args.expressionStringFilename!, async () =>
         {
             var generationEnvironment = new MultipleContentBuilderEnvironment();
             ITemplateIdentifier templateIdentifier = null!;
@@ -146,7 +148,7 @@ public class RunTemplateCommand : CommandBase
                 templateIdentifier = new ExpressionStringTemplateIdentifier(FileSystem.ReadAllText(args.expressionStringFilename, Encoding.Default), CultureInfo.CurrentCulture, args.assemblyName, args.className, args.currentDirectory);
             }
 
-            _templateProvider.StartSession();
+            await _templateProvider.StartSession(args.cancellationToken).ConfigureAwait(false);
 
             var template = _templateProvider.Create(templateIdentifier);
 
@@ -154,7 +156,7 @@ public class RunTemplateCommand : CommandBase
             {
                 if (string.IsNullOrEmpty(args.defaultFilename))
                 {
-                    args.app.Out.WriteLine("Error: Default filename is required if you want to list parameters");
+                    await args.app.Out.WriteLineAsync("Error: Default filename is required if you want to list parameters").ConfigureAwait(false);
                     return;
                 }
 
@@ -171,9 +173,9 @@ public class RunTemplateCommand : CommandBase
                 var identifier = new TemplateInstanceIdentifierWithTemplateProvider(template, args.currentDirectory, args.assemblyName, args.templateProviderPluginClassName);
                 var request = new RenderTemplateRequest(identifier, null, generationEnvironment, args.defaultFilename, args.parameters, context);
                 
-                _templateEngine.Render(request);
+                await _templateEngine.Render(request, args.cancellationToken).ConfigureAwait(false);
             }
 
-            WriteOutput(args.app, generationEnvironment, args.basePath, args.bare, args.clipboard, args.dryRun);
-        });
+            await WriteOutput(args.app, generationEnvironment, args.basePath, args.bare, args.clipboard, args.dryRun, args.cancellationToken).ConfigureAwait(false);
+        }, args.cancellationToken).ConfigureAwait(false);
 }

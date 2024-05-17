@@ -2,11 +2,11 @@
 
 public class TypedStringBuilderTemplateRenderer : IStringBuilderTemplateRenderer
 {
-    public bool TryRender(object instance, StringBuilder builder)
+    public async Task<bool> TryRender(object instance, StringBuilder builder, CancellationToken cancellationToken)
     {
         if (instance is IStringBuilderTemplate typedTemplate)
         {
-            typedTemplate.Render(builder);
+            await typedTemplate.Render(builder, cancellationToken).ConfigureAwait(false);
             return true;
         }
 

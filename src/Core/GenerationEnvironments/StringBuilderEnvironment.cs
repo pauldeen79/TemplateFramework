@@ -28,7 +28,7 @@ public sealed class StringBuilderEnvironment : IGenerationEnvironment
 
     public GenerationEnvironmentType Type => GenerationEnvironmentType.StringBuilder;
 
-    public Task SaveContents(ICodeGenerationProvider provider, string basePath, string defaultFilename)
+    public Task SaveContents(ICodeGenerationProvider provider, string basePath, string defaultFilename, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(provider);
         Guard.IsNotNullOrEmpty(defaultFilename);

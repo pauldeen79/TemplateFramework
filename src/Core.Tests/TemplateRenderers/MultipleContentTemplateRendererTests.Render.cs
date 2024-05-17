@@ -11,8 +11,8 @@ public partial class MultipleContentTemplateRendererTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Render(context: null!))
-               .Should().Throw<ArgumentException>().WithParameterName("context");
+            sut.Awaiting(x => x.Render(context: null!, CancellationToken.None))
+               .Should().ThrowAsync<ArgumentException>().WithParameterName("context");
         }
 
         [Fact]
@@ -25,12 +25,12 @@ public partial class MultipleContentTemplateRendererTests
             var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
 
             // Act & Assert
-            sut.Invoking(x => x.Render(engineContext))
-               .Should().Throw<NotSupportedException>();
+            sut.Awaiting(x => x.Render(engineContext, CancellationToken.None))
+               .Should().ThrowAsync<NotSupportedException>();
         }
 
         [Fact]
-        public void Renders_MultipleContentBuilderTemplate_Correctly()
+        public async Task Renders_MultipleContentBuilderTemplate_Correctly()
         {
             // Arrange
             var sut = CreateSut();
@@ -41,14 +41,14 @@ public partial class MultipleContentTemplateRendererTests
             MultipleContentBuilderTemplateCreatorMock.TryCreate(Arg.Any<object>()).Returns(templateMock);
 
             // Act
-            sut.Render(engineContext);
+            await sut.Render(engineContext, CancellationToken.None);
 
             // Assert
-            templateMock.Received().Render(Arg.Any<IMultipleContentBuilder>());
+            await templateMock.Received().Render(Arg.Any<IMultipleContentBuilder>(), Arg.Any<CancellationToken>());
         }
 
         [Fact]
-        public void Renders_Non_MultipleContentBuilderTemplate_Correctly()
+        public async Task Renders_Non_MultipleContentBuilderTemplate_Correctly()
         {
             // Arrange
             var sut = CreateSut();
@@ -67,11 +67,11 @@ public partial class MultipleContentTemplateRendererTests
             var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
             TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(template);
             TemplateEngineMock
-                .When(x => x.Render(Arg.Any<IRenderTemplateRequest>()))
+                .When(x => x.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()))
                 .Do(x => ((StringBuilderEnvironment)x.ArgAt<IRenderTemplateRequest>(0).GenerationEnvironment).Builder.Append(template.ToString()));
 
             // Act
-            sut.Render(engineContext);
+            await sut.Render(engineContext, CancellationToken.None);
 
             // Assert
             contentBuilderMock.Builder.Should().NotBeNull();

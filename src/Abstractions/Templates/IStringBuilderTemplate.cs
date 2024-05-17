@@ -2,5 +2,5 @@
 
 public interface IStringBuilderTemplate
 {
-    void Render(StringBuilder builder);
+    Task Render(StringBuilder builder, CancellationToken cancellationToken);
 }

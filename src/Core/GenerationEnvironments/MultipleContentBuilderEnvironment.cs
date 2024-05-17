@@ -28,7 +28,7 @@ public sealed class MultipleContentBuilderEnvironment : IGenerationEnvironment
 
     public GenerationEnvironmentType Type => GenerationEnvironmentType.MultipleContentBuilder;
 
-    public Task SaveContents(ICodeGenerationProvider provider, string basePath, string defaultFilename)
+    public Task SaveContents(ICodeGenerationProvider provider, string basePath, string defaultFilename, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(provider);
 

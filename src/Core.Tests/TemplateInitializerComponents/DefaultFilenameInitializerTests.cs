@@ -10,12 +10,12 @@ public class DefaultFilenameInitializerTests
         public void Throws_On_Null_Context(DefaultFilenameInitializerComponent sut)
         {
             // Act & Assert
-            sut.Invoking(x => x.Initialize(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            sut.Awaiting(x => x.Initialize(context: null!, CancellationToken.None))
+               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Theory, AutoMockData]
-        public void Sets_DefaultFilename_When_Possible(
+        public async Task Sets_DefaultFilename_When_Possible(
             [Frozen] ITemplateEngine templateEngine,
             [Frozen] ITemplateProvider templateProvider,
             DefaultFilenameInitializerComponent sut)
@@ -26,7 +26,7 @@ public class DefaultFilenameInitializerTests
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
 
             // Act
-            sut.Initialize(engineContext);
+            await sut.Initialize(engineContext, CancellationToken.None);
 
             // Assert
             template.DefaultFilename.Should().Be(DefaultFilename);

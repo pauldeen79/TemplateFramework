@@ -5,39 +5,39 @@ public class TypedStringBuilderTemplateRendererTests
     public class TryRender
     {
         [Theory, AutoMockData]
-        public void Returns_False_On_Null_Instance(TypedStringBuilderTemplateRenderer sut)
+        public async Task Returns_False_On_Null_Instance(TypedStringBuilderTemplateRenderer sut)
         {
             // Act
-            var result = sut.TryRender(instance: null!, new StringBuilder());
+            var result = await sut.TryRender(instance: null!, new StringBuilder(), CancellationToken.None);
 
             // Assert
             result.Should().BeFalse();
         }
 
         [Theory, AutoMockData]
-        public void Returns_False_On_NonNull_Instance_But_Wrong_Type(TypedStringBuilderTemplateRenderer sut)
+        public async Task Returns_False_On_NonNull_Instance_But_Wrong_Type(TypedStringBuilderTemplateRenderer sut)
         {
             // Act
-            var result = sut.TryRender(instance: this, new StringBuilder());
+            var result = await sut.TryRender(instance: this, new StringBuilder(), CancellationToken.None);
 
             // Assert
             result.Should().BeFalse();
         }
 
         [Theory, AutoMockData]
-        public void Returns_True_On_IStringBuilderTemplate_Instance(
+        public async Task Returns_True_On_IStringBuilderTemplate_Instance(
             [Frozen] IStringBuilderTemplate stringBuilderTemplate,
             TypedStringBuilderTemplateRenderer sut)
         {
             // Act
-            var result = sut.TryRender(instance: stringBuilderTemplate, new StringBuilder());
+            var result = await sut.TryRender(instance: stringBuilderTemplate, new StringBuilder(), CancellationToken.None);
 
             // Assert
             result.Should().BeTrue();
         }
 
         [Theory, AutoMockData]
-        public void Renders_Template_On_IStringBuilderTemplate_Instance(
+        public async Task Renders_Template_On_IStringBuilderTemplate_Instance(
             [Frozen] IStringBuilderTemplate stringBuilderTemplate, 
             TypedStringBuilderTemplateRenderer sut)
         {
@@ -45,10 +45,10 @@ public class TypedStringBuilderTemplateRendererTests
             var builder = new StringBuilder();
 
             // Act
-            _ = sut.TryRender(instance: stringBuilderTemplate, builder);
+            _ = await sut.TryRender(instance: stringBuilderTemplate, builder, CancellationToken.None);
 
             // Assert
-            stringBuilderTemplate.Received().Render(builder);
+            await stringBuilderTemplate.Received().Render(builder, Arg.Any<CancellationToken>());
         }
     }
 }

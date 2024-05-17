@@ -20,17 +20,16 @@ public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
         _creators = creators;
     }
 
-    public void Generate(ICodeGenerationAssemblySettings settings, IGenerationEnvironment generationEnvironment)
+    public async Task Generate(ICodeGenerationAssemblySettings settings, IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(settings);
         Guard.IsNotNull(generationEnvironment);
 
         var assembly = _assemblyService.GetAssembly(settings.AssemblyName, settings.CurrentDirectory);
 
-        foreach (var codeGenerationProvider in GetCodeGeneratorProviders(assembly, settings.ClassNameFilter))
-        {
-            _codeGenerationEngine.Generate(codeGenerationProvider, generationEnvironment, settings);
-        }
+        await Task.WhenAll(GetCodeGeneratorProviders(assembly, settings.ClassNameFilter)
+            .Select(x => _codeGenerationEngine.Generate(x, generationEnvironment, settings, cancellationToken)))
+            .ConfigureAwait(false);
     }
 
     private IEnumerable<ICodeGenerationProvider> GetCodeGeneratorProviders(Assembly assembly, IEnumerable<string> classNameFilter)

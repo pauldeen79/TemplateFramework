@@ -18,6 +18,7 @@ If you want to use the template abstraction level, then you have to make sure th
 - Writes output to either console, clipboard or file system
 - Supports child templates, if you want to split your template into multiple logical templates
 - Battle tested
+- Fully async
 - Extensible using dependency injection (write new implementations, and register them in your DI container)
 
 # Packages
@@ -47,7 +48,7 @@ To create a StringBuilder template, implement this interface from the TemplateFr
 ```C#
 public interface IStringBuilderTemplate
 {
-    void Render(StringBuilder builder);
+    Task Render(StringBuilder builder, CancellationToken cancellationToken);
 }
 ```
 
@@ -56,7 +57,7 @@ To create a Text Transform template, implement this interface from the TemplateF
 ```C#
 public interface ITextTransformTemplate
 {
-    string TransformText();
+    Task<string> TransformText(CancellationToken cancellationToken);
 }
 ```
 
@@ -65,7 +66,7 @@ To create a Multiple Content Builder template, implement this interface from the
 ```C#
 public interface IMultipleContentBuilderTemplate
 {
-    void Render(IMultipleContentBuilder builder);
+    Task Render(IMultipleContentBuilder builder, CancellationToken cancellationToken);
 }
 ```
 
@@ -125,7 +126,7 @@ In order to register child templates, so that they can be resolved from the (roo
 ```C#
 public interface ITemplateProviderPlugin
 {
-    void Initialize(ITemplateProvider provider);
+    Task Initialize(ITemplateProvider provider, CancellationToken cancellationToken);
 }
 ```
 
@@ -149,7 +150,7 @@ To register this dynamically, you need to create a class that implements this in
 ```C#
 public interface ITemplateComponentRegistryPlugin
 {
-    void Initialize(ITemplateComponentRegistry registry);
+    Task Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken);
 }
 ```
 
@@ -167,13 +168,15 @@ public sealed class MyTemplateComponentRegistryPlugin : ITemplateComponentRegist
         ComponentRegistrationContext = componentRegistrationContext;
     }
 
-    public void Initialize(ITemplateComponentRegistry registry)
+    public Task Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken)
     {
         var processorProcessor = new MyPlaceholderProcessor();
         var functionResultParser = new MyFunctionResultParser();
 
         ComponentRegistrationContext.PlaceholderProcessors.Add(processorProcessor);
         ComponentRegistrationContext.FunctionResultParsers.Add(functionResultParser);
+
+        return Task.CompletedTask;
     }
 }
 ```

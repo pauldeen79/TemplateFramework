@@ -87,7 +87,7 @@ public class TemplateProviderTests
     public class StartSession : TemplateProviderTests
     {
         [Theory, AutoMockData]
-        public void Clears_Registration_Performed_On_Current_Instance(
+        public async Task Clears_Registration_Performed_On_Current_Instance(
             [Frozen] ITemplateProviderComponent newTemplateProviderComponent,
             [Frozen] ITemplateIdentifier identifier)
         {
@@ -98,7 +98,7 @@ public class TemplateProviderTests
             sut.RegisterComponent(newTemplateProviderComponent);
 
             // Act
-            sut.StartSession();
+            await sut.StartSession(CancellationToken.None);
 
             // Assert
             sut.Invoking(x => x.Create(identifier))
@@ -106,14 +106,14 @@ public class TemplateProviderTests
         }
 
         [Fact]
-        public void Calls_StartSession_On_All_Session_Aware_Components()
+        public async Task Calls_StartSession_On_All_Session_Aware_Components()
         {
             // Arrange
             var sessionAwareTemplateProviderComponent = new SessionAwareTemplateProviderComponent();
             var sut = new TemplateProvider(new[] { sessionAwareTemplateProviderComponent });
 
             // Act
-            sut.StartSession();
+            await sut.StartSession(CancellationToken.None);
 
             // Assert
             sessionAwareTemplateProviderComponent.Counter.Should().Be(1);
@@ -128,7 +128,11 @@ public class TemplateProviderTests
                 throw new NotImplementedException();
             }
 
-            public void StartSession() => Counter++;
+            public Task StartSession(CancellationToken cancellationToken)
+            {
+                Counter++;
+                return Task.CompletedTask;
+            }
 
             public bool Supports(ITemplateIdentifier identifier)
             {

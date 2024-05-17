@@ -17,21 +17,23 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
     private readonly ITemplateFactory _templateFactory;
     private readonly ITemplateProvider _templateProvider;
 
-    public async Task Generate(ICodeGenerationProvider codeGenerationProvider, IGenerationEnvironment generationEnvironment, ICodeGenerationSettings settings)
+    public async Task Generate(ICodeGenerationProvider codeGenerationProvider, IGenerationEnvironment generationEnvironment, ICodeGenerationSettings settings, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(codeGenerationProvider);
         Guard.IsNotNull(generationEnvironment);
         Guard.IsNotNull(settings);
 
-        _templateProvider.StartSession();
+        await _templateProvider.StartSession(cancellationToken).ConfigureAwait(false);
 
-        var plugin = codeGenerationProvider as ITemplateComponentRegistryPlugin;
-        plugin?.Initialize(_templateProvider);
+        if (codeGenerationProvider is ITemplateComponentRegistryPlugin plugin)
+        {
+            await plugin.Initialize(_templateProvider, cancellationToken).ConfigureAwait(false);
+        }
 
         var model = await codeGenerationProvider.CreateModel().ConfigureAwait(false);
         var additionalParameters = await codeGenerationProvider.CreateAdditionalParameters().ConfigureAwait(false);
         
-        _templateEngine.Render(
+        await _templateEngine.Render(
             new RenderTemplateRequest
             (
                 identifier: new TemplateTypeIdentifier(codeGenerationProvider.GetGeneratorType(), _templateFactory),
@@ -40,11 +42,11 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
                 additionalParameters: additionalParameters,
                 defaultFilename: settings.DefaultFilename,
                 context: null
-            ));
+            ), cancellationToken).ConfigureAwait(false);
 
         if (!settings.DryRun)
         {
-            await generationEnvironment.SaveContents(codeGenerationProvider, settings.BasePath, settings.DefaultFilename).ConfigureAwait(false);
+            await generationEnvironment.SaveContents(codeGenerationProvider, settings.BasePath, settings.DefaultFilename, cancellationToken).ConfigureAwait(false);
         }
     }
 }

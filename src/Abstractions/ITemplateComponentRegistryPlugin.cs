@@ -2,5 +2,5 @@
 
 public interface ITemplateComponentRegistryPlugin
 {
-    void Initialize(ITemplateComponentRegistry registry);
+    Task Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken);
 }
