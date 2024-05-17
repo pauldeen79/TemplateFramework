@@ -19,8 +19,9 @@ public sealed class PlainTemplateWithAdditionalParameters : IParameterizedTempla
 
 public sealed class TestTemplateComponentRegistryPlugin : ITemplateComponentRegistryPlugin
 {
-    public void Initialize(ITemplateComponentRegistry registry)
+    public Task Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken)
     {
+        return Task.CompletedTask;
     }
 }
 

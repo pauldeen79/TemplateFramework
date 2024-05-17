@@ -25,8 +25,10 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
 
         await _templateProvider.StartSession(cancellationToken).ConfigureAwait(false);
 
-        var plugin = codeGenerationProvider as ITemplateComponentRegistryPlugin;
-        plugin?.Initialize(_templateProvider);
+        if (codeGenerationProvider is ITemplateComponentRegistryPlugin plugin)
+        {
+            await plugin.Initialize(_templateProvider, cancellationToken).ConfigureAwait(false);
+        }
 
         var model = await codeGenerationProvider.CreateModel().ConfigureAwait(false);
         var additionalParameters = await codeGenerationProvider.CreateAdditionalParameters().ConfigureAwait(false);

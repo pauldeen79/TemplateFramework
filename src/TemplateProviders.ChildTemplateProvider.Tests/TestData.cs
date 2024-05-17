@@ -385,7 +385,7 @@ public sealed class CsharpClassGeneratorCodeGenerationProvider : ICodeGeneration
         return Task.FromResult<object?>(viewModel);
     }
 
-    public void Initialize(ITemplateComponentRegistry registry)
+    public Task Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(registry);
 
@@ -397,5 +397,7 @@ public sealed class CsharpClassGeneratorCodeGenerationProvider : ICodeGeneration
         };
 
         registry.RegisterComponent(new ProviderComponent(registrations));
+
+        return Task.CompletedTask;
     }
 }

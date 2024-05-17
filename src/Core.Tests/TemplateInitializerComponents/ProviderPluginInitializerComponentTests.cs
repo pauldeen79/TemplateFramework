@@ -65,7 +65,7 @@ public class ProviderPluginInitializerComponentTests
             await sut.Initialize(templateEngine, CancellationToken.None);
 
             // Assert
-            templateComponentRegistryPlugin.Received().Initialize(Arg.Any<ITemplateComponentRegistry>());
+            await templateComponentRegistryPlugin.Received().Initialize(Arg.Any<ITemplateComponentRegistry>(), Arg.Any<CancellationToken>());
         }
 
         [Theory, AutoMockData]
@@ -87,7 +87,7 @@ public class ProviderPluginInitializerComponentTests
             await sut.Initialize(templateEngine, CancellationToken.None);
 
             // Assert
-            templateComponentRegistryPlugin.Received().Initialize(Arg.Any<ITemplateComponentRegistry>());
+            await templateComponentRegistryPlugin.Received().Initialize(Arg.Any<ITemplateComponentRegistry>(), Arg.Any<CancellationToken>());
         }
 
         private sealed class IdentifierWithTemplateProviderPluginIdentifier : ITemplateComponentRegistryIdentifier

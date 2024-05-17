@@ -11,7 +11,7 @@ public sealed class TestTemplateComponentRegistryPlugin : ITemplateComponentRegi
         ComponentRegistrationContext = componentRegistrationContext;
     }
 
-    public void Initialize(ITemplateComponentRegistry registry)
+    public Task Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken)
     {
         var processorProcessorMock = Substitute.For<IPlaceholderProcessor>();
         processorProcessorMock
@@ -34,5 +34,7 @@ public sealed class TestTemplateComponentRegistryPlugin : ITemplateComponentRegi
 
         ComponentRegistrationContext.PlaceholderProcessors.Add(processorProcessorMock);
         ComponentRegistrationContext.FunctionResultParsers.Add(functionResultParserMock);
+
+        return Task.CompletedTask;
     }
 }
