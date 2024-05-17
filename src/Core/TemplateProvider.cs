@@ -35,10 +35,8 @@ public class TemplateProvider : ITemplateProvider
         _components.Clear();
         _components.AddRange(_originalComponents);
 
-        var tasks = _components.OfType<ISessionAwareComponent>()
-            .Select(x => x.StartSession(cancellationToken))
-            .ToArray();
-
-        await Task.WhenAll(tasks).ConfigureAwait(false);
+        await Task.WhenAll(_components.OfType<ISessionAwareComponent>()
+            .Select(x => x.StartSession(cancellationToken)))
+            .ConfigureAwait(false);
     }
 }

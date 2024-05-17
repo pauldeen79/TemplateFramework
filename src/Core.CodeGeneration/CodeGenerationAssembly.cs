@@ -27,11 +27,9 @@ public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
 
         var assembly = _assemblyService.GetAssembly(settings.AssemblyName, settings.CurrentDirectory);
 
-        var tasks = GetCodeGeneratorProviders(assembly, settings.ClassNameFilter)
-            .Select(x => _codeGenerationEngine.Generate(x, generationEnvironment, settings, cancellationToken))
-            .ToArray();
-
-        await Task.WhenAll(tasks).ConfigureAwait(false);
+        await Task.WhenAll(GetCodeGeneratorProviders(assembly, settings.ClassNameFilter)
+            .Select(x => _codeGenerationEngine.Generate(x, generationEnvironment, settings, cancellationToken)))
+            .ConfigureAwait(false);
     }
 
     private IEnumerable<ICodeGenerationProvider> GetCodeGeneratorProviders(Assembly assembly, IEnumerable<string> classNameFilter)
