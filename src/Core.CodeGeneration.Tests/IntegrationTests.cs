@@ -3,18 +3,18 @@
 public class IntegrationTests : TestBase
 {
     [Fact]
-    public void Can_Generate_Code_Using_CodeGenerationAssembly()
+    public async Task Can_Generate_Code_Using_CodeGenerationAssembly()
     {
         // Arrange
         var fileSystem = Fixture.Freeze<IFileSystem>();
-        var templateFactory = Fixture.Freeze<ITemplateFactory>();
         var templateProviderPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
         using var serviceProvider = new ServiceCollection()
             .AddTemplateFramework()
             .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
             .AddScoped(_ => fileSystem)
-            .AddScoped(_ => templateFactory)
             .AddScoped(_ => templateProviderPluginFactory)
+            .AddTransient<IntegrationTemplate>()
             .BuildServiceProvider(true);
         using var scope = serviceProvider.CreateScope();
         var sut = scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -24,10 +24,9 @@ public class IntegrationTests : TestBase
             scope.ServiceProvider.GetRequiredService<IFileSystem>(),
             scope.ServiceProvider.GetRequiredService<IRetryMechanism>(),
             builder);
-        templateFactory.Create(Arg.Any<Type>()).Returns(x => Activator.CreateInstance(x.ArgAt<Type>(0))!);
 
         // Act
-        sut.Generate(codeGenerationProvider, generationEnvironment, new CodeGenerationSettings(TestData.BasePath, "DefaultFilename.txt", false), CancellationToken.None);
+        await sut.Generate(codeGenerationProvider, generationEnvironment, new CodeGenerationSettings(TestData.BasePath, "DefaultFilename.txt", false), CancellationToken.None);
 
         // Assert
         builder.Contents.Should().ContainSingle();
