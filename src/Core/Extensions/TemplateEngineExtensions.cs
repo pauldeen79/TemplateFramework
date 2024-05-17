@@ -7,7 +7,10 @@ public static class TemplateEngineExtensions
         Guard.IsNotNull(childModels);
         Guard.IsNotNull(context);
 
-        var items = childModels.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
+        var items = childModels
+            .OfType<object?>()
+            .Select((model, index) => new { Model = model, Index = index })
+            .ToArray();
         await Task.WhenAll(items
             .Select(item => instance.Render(new RenderTemplateRequest(identifier, item.Model, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(identifier, item.Model, item.Index, items.Length))), cancellationToken))
             ).ConfigureAwait(false);
@@ -19,7 +22,10 @@ public static class TemplateEngineExtensions
         Guard.IsNotNull(context);
         Guard.IsNotNull(identifierFactory);
 
-        var items = childModels.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
+        var items = childModels
+            .OfType<object?>()
+            .Select((model, index) => new { Model = model, Index = index })
+            .ToArray();
         await Task.WhenAll(items.Select(async item =>
         {
             var identifier = identifierFactory(item.Model);
@@ -33,8 +39,8 @@ public static class TemplateEngineExtensions
 
         await Task.WhenAll(childModels
             .OfType<object?>()
-            .Select((model, index) => instance.Render(new RenderTemplateRequest(identifier, model, generationEnvironment, string.Empty, null, null), cancellationToken))
-            ).ConfigureAwait(false);
+            .Select((model, index) => instance.Render(new RenderTemplateRequest(identifier, model, generationEnvironment, string.Empty, null, null), cancellationToken)))
+            .ConfigureAwait(false);
     }
 
     public static async Task RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, Func<object?, ITemplateIdentifier> identifierFactory, CancellationToken cancellationToken)
@@ -42,11 +48,14 @@ public static class TemplateEngineExtensions
         Guard.IsNotNull(childModels);
         Guard.IsNotNull(identifierFactory);
 
-        await Task.WhenAll(childModels.OfType<object>().Select(async model =>
-        {
-            var identifier = identifierFactory(model);
-            await instance.Render(new RenderTemplateRequest(identifier, model, generationEnvironment, string.Empty, null, null), cancellationToken).ConfigureAwait(false);
-        })).ConfigureAwait(false);
+        await Task.WhenAll(childModels
+            .OfType<object>()
+            .Select(async model =>
+            {
+                var identifier = identifierFactory(model);
+                await instance.Render(new RenderTemplateRequest(identifier, model, generationEnvironment, string.Empty, null, null), cancellationToken).ConfigureAwait(false);
+            }))
+            .ConfigureAwait(false);
     }
 
     public static async Task RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, ITemplateContext context, Func<object?, ITemplateIdentifier> templateIdentifierFactory, CancellationToken cancellationToken)
@@ -56,11 +65,13 @@ public static class TemplateEngineExtensions
         Guard.IsNotNull(templateIdentifierFactory);
 
         var items = childModels.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
-        await Task.WhenAll(items.Select(async item =>
-        {
-            var identifier = templateIdentifierFactory(item.Model);
-            await instance.Render(new RenderTemplateRequest(identifier, item.Model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(identifier, item.Model, item.Index, items.Length))), cancellationToken).ConfigureAwait(false);
-        })).ConfigureAwait(false);
+        await Task.WhenAll(items
+            .Select(async item =>
+            {
+                var identifier = templateIdentifierFactory(item.Model);
+                await instance.Render(new RenderTemplateRequest(identifier, item.Model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(identifier, item.Model, item.Index, items.Length))), cancellationToken).ConfigureAwait(false);
+            }))
+            .ConfigureAwait(false);
     }
 
     public static async Task RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, ITemplateContext context, Func<object?, object> templateFactory, CancellationToken cancellationToken)
@@ -73,10 +84,11 @@ public static class TemplateEngineExtensions
             .OfType<object?>()
             .Select((model, index) => new { Model = model, Index = index })
             .Select(async item =>
-        {
-            var template = templateFactory(item.Model);
-            await instance.Render(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), item.Model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(new TemplateInstanceIdentifier(template), item, item.Index, childModels.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray().Length))), cancellationToken).ConfigureAwait(false);
-        })).ConfigureAwait(false);
+            {
+                var template = templateFactory(item.Model);
+                await instance.Render(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), item.Model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(new TemplateInstanceIdentifier(template), item, item.Index, childModels.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray().Length))), cancellationToken).ConfigureAwait(false);
+            }))
+            .ConfigureAwait(false);
     }
 
     public static async Task RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, ITemplateContext context, ITemplateIdentifier identifier, CancellationToken cancellationToken)
@@ -87,8 +99,8 @@ public static class TemplateEngineExtensions
 
         var items = childModels.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
         await Task.WhenAll(items
-            .Select(item => instance.Render(new RenderTemplateRequest(identifier, item.Model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(identifier, item.Model, item.Index, items.Length))), cancellationToken))
-            ).ConfigureAwait(false);
+            .Select(item => instance.Render(new RenderTemplateRequest(identifier, item.Model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(identifier, item.Model, item.Index, items.Length))), cancellationToken)))
+            .ConfigureAwait(false);
     }
 
     public static async Task RenderChildTemplate(this ITemplateEngine instance, object? childModel, IGenerationEnvironment generationEnvironment, ITemplateIdentifier identifier, ITemplateContext context, CancellationToken cancellationToken)
