@@ -126,7 +126,7 @@ In order to register child templates, so that they can be resolved from the (roo
 ```C#
 public interface ITemplateProviderPlugin
 {
-    void Initialize(ITemplateProvider provider);
+    Task Initialize(ITemplateProvider provider, CancellationToken cancellationToken);
 }
 ```
 
@@ -150,7 +150,7 @@ To register this dynamically, you need to create a class that implements this in
 ```C#
 public interface ITemplateComponentRegistryPlugin
 {
-    void Initialize(ITemplateComponentRegistry registry);
+    Task Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken);
 }
 ```
 
@@ -168,13 +168,15 @@ public sealed class MyTemplateComponentRegistryPlugin : ITemplateComponentRegist
         ComponentRegistrationContext = componentRegistrationContext;
     }
 
-    public void Initialize(ITemplateComponentRegistry registry)
+    public Task Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken)
     {
         var processorProcessor = new MyPlaceholderProcessor();
         var functionResultParser = new MyFunctionResultParser();
 
         ComponentRegistrationContext.PlaceholderProcessors.Add(processorProcessor);
         ComponentRegistrationContext.FunctionResultParsers.Add(functionResultParser);
+
+        return Task.CompletedTask;
     }
 }
 ```
