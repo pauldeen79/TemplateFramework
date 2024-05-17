@@ -11,13 +11,10 @@ public sealed class TemplateInitializer : ITemplateInitializer
         _components = components;
     }
 
-    public void Initialize(ITemplateEngineContext context)
+    public async Task Initialize(ITemplateEngineContext context, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(context);
 
-        foreach (var component in _components)
-        {
-            component.Initialize(context);
-        }
+        await Task.WhenAll(_components.Select(component => component.Initialize(context, cancellationToken))).ConfigureAwait(false);
     }
 }

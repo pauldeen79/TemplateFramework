@@ -11,13 +11,13 @@ public class ProviderPluginInitializerComponent : ITemplateInitializerComponent
         _factory = factory;
     }
 
-    public void Initialize(ITemplateEngineContext context)
+    public Task Initialize(ITemplateEngineContext context, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(context);
 
         if (context.Context is null)
         {
-            return;
+            return Task.CompletedTask;
         }
         
         if (context.Template is ITemplateComponentRegistryPlugin registryPlugin)
@@ -33,5 +33,7 @@ public class ProviderPluginInitializerComponent : ITemplateInitializerComponent
             
             identifierPlugin.Initialize(context.Context.TemplateComponentRegistry);
         }
+
+        return Task.CompletedTask;
     }
 }

@@ -10,12 +10,12 @@ public class ContextInitializerTests
         public void Throws_On_Null_Context(ContextInitializerComponent sut)
         {
             // Act & Assert
-            sut.Invoking(x => x.Initialize(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            sut.Awaiting(x => x.Initialize(context: null!, CancellationToken.None))
+               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Theory, AutoMockData]
-        public void Sets_TemplateContext_On_Template_When_Possible(
+        public async Task Sets_TemplateContext_On_Template_When_Possible(
             [Frozen] ITemplateEngine templateEngine,
             [Frozen] ITemplateProvider templateProvider,
             ContextInitializerComponent sut)
@@ -27,14 +27,14 @@ public class ContextInitializerTests
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
 
             // Act
-            sut.Initialize(engineContext);
+            await sut.Initialize(engineContext, CancellationToken.None);
 
             // Assert
             template.Context.Should().BeSameAs(context);
         }
 
         [Theory, AutoMockData]
-        public void Initializes_New_TemplateContext_Without_Model_When_Not_Provided(
+        public async Task Initializes_New_TemplateContext_Without_Model_When_Not_Provided(
             [Frozen] ITemplateEngine templateEngine,
             [Frozen] ITemplateProvider templateProvider,
             ContextInitializerComponent sut)
@@ -45,7 +45,7 @@ public class ContextInitializerTests
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
 
             // Act
-            sut.Initialize(engineContext);
+            await sut.Initialize(engineContext, CancellationToken.None);
 
             // Assert
             template.Context.Should().NotBeNull();
@@ -56,7 +56,7 @@ public class ContextInitializerTests
         }
 
         [Theory, AutoMockData]
-        public void Initializes_New_TemplateContext_With_Model_When_Not_Provided(
+        public async Task Initializes_New_TemplateContext_With_Model_When_Not_Provided(
             [Frozen] ITemplateEngine templateEngine,
             [Frozen] ITemplateProvider templateProvider,
             ContextInitializerComponent sut)
@@ -68,7 +68,7 @@ public class ContextInitializerTests
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
 
             // Act
-            sut.Initialize(engineContext);
+            await sut.Initialize(engineContext, CancellationToken.None);
 
             // Assert
             template.Context.Should().NotBeNull();

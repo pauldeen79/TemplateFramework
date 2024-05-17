@@ -43,7 +43,7 @@ public sealed class TemplateEngine : ITemplateEngine
 
         var engineContext = new TemplateEngineContext(request, this, _provider, template);
         
-        _initializer.Initialize(engineContext);
+        await _initializer.Initialize(engineContext, cancellationToken).ConfigureAwait(false);
 
         var renderer = _renderers.FirstOrDefault(x => x.Supports(request.GenerationEnvironment))
             ?? throw new NotSupportedException($"Type of GenerationEnvironment ({request.GenerationEnvironment.GetType().FullName}) is not supported");

@@ -35,7 +35,7 @@ public partial class TemplateEngineTests
             await sut.Render(request, CancellationToken.None);
 
             // Assert
-            TemplateInitializerMock.Received().Initialize(Arg.Any<ITemplateEngineContext>());
+            await TemplateInitializerMock.Received().Initialize(Arg.Any<ITemplateEngineContext>(), Arg.Any<CancellationToken>());
         }
 
         [Fact]

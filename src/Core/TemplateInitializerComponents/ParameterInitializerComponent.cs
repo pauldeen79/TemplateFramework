@@ -11,7 +11,7 @@ public class ParameterInitializerComponent : ITemplateInitializerComponent
         _converter = converter;
     }
 
-    public void Initialize(ITemplateEngineContext context)
+    public Task Initialize(ITemplateEngineContext context, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(context);
 
@@ -23,6 +23,8 @@ public class ParameterInitializerComponent : ITemplateInitializerComponent
         {
             TrySetProperties(context);
         }
+
+        return Task.CompletedTask;
     }
 
     private void SetTyped(ITemplateEngineContext context, IParameterizedTemplate parameterizedTemplate)

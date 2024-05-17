@@ -17,8 +17,8 @@ public class ProviderPluginInitializerComponentTests
         public void Throws_On_Null_Context(ProviderPluginInitializerComponent sut)
         {
             // Act & Assert
-            sut.Invoking(x => x.Initialize(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            sut.Awaiting(x => x.Initialize(context: null!, CancellationToken.None))
+               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Theory, AutoMockData]
@@ -31,8 +31,8 @@ public class ProviderPluginInitializerComponentTests
             templateEngine.Template.Returns(templateComponentRegistryPlugin);
 
             // Act & Assert
-            sut.Invoking(x => x.Initialize(templateEngine))
-               .Should().NotThrow();
+            sut.Awaiting(x => x.Initialize(templateEngine, CancellationToken.None))
+               .Should().NotThrowAsync();
         }
 
         [Theory, AutoMockData]
@@ -46,12 +46,12 @@ public class ProviderPluginInitializerComponentTests
             templateEngine.Template.Returns(new object());
 
             // Act & Assert
-            sut.Invoking(x => x.Initialize(templateEngine))
-               .Should().NotThrow();
+            sut.Awaiting(x => x.Initialize(templateEngine, CancellationToken.None))
+               .Should().NotThrowAsync();
         }
 
         [Theory, AutoMockData]
-        public void Initializes_Plugin_On_Template_When_Context_Context_Is_Not_Null_And_Context_Template_Is_TemplateProviderPlugin(
+        public async Task Initializes_Plugin_On_Template_When_Context_Context_Is_Not_Null_And_Context_Template_Is_TemplateProviderPlugin(
             [Frozen] ITemplateEngineContext templateEngine,
             [Frozen] ITemplateContext templateContext,
             [Frozen] ITemplateComponentRegistryPlugin templateComponentRegistryPlugin,
@@ -62,14 +62,14 @@ public class ProviderPluginInitializerComponentTests
             templateEngine.Template.Returns(templateComponentRegistryPlugin);
 
             // Act
-            sut.Initialize(templateEngine);
+            await sut.Initialize(templateEngine, CancellationToken.None);
 
             // Assert
             templateComponentRegistryPlugin.Received().Initialize(Arg.Any<ITemplateComponentRegistry>());
         }
 
         [Theory, AutoMockData]
-        public void Initializes_Plugin_On_Identifier_When_Identifier_Is_TemplateProviderPluginIdentifier(
+        public async Task Initializes_Plugin_On_Identifier_When_Identifier_Is_TemplateProviderPluginIdentifier(
             [Frozen] ITemplateEngineContext templateEngine,
             [Frozen] ITemplateContext templateContext,
             [Frozen] ITemplateComponentRegistryPluginFactory templateProviderPluginFactory,
@@ -84,7 +84,7 @@ public class ProviderPluginInitializerComponentTests
             templateProviderPluginFactory.Create(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>()).Returns(templateComponentRegistryPlugin);
 
             // Act
-            sut.Initialize(templateEngine);
+            await sut.Initialize(templateEngine, CancellationToken.None);
 
             // Assert
             templateComponentRegistryPlugin.Received().Initialize(Arg.Any<ITemplateComponentRegistry>());
