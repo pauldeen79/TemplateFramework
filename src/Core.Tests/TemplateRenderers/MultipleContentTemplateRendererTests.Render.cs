@@ -44,7 +44,7 @@ public partial class MultipleContentTemplateRendererTests
             await sut.Render(engineContext, CancellationToken.None);
 
             // Assert
-            templateMock.Received().Render(Arg.Any<IMultipleContentBuilder>());
+            await templateMock.Received().Render(Arg.Any<IMultipleContentBuilder>(), Arg.Any<CancellationToken>());
         }
 
         [Fact]

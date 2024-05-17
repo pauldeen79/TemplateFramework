@@ -42,7 +42,7 @@ internal static class TestData
 
         public Template(Action<StringBuilder> @delegate) => _delegate = @delegate;
 
-        public void Render(StringBuilder builder) => _delegate(builder);
+        public Task Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.CompletedTask; }
     }
 
     internal sealed class TemplateWithModel<T> : IStringBuilderTemplate, IModelContainer<T>
@@ -53,7 +53,7 @@ internal static class TestData
 
         public TemplateWithModel(Action<StringBuilder> @delegate) => _delegate = @delegate;
 
-        public void Render(StringBuilder builder) => _delegate(builder);
+        public Task Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.CompletedTask; }
     }
 
     internal sealed class TemplateWithDefaultFilename : IStringBuilderTemplate, IDefaultFilenameContainer
@@ -64,7 +64,7 @@ internal static class TestData
 
         public string DefaultFilename { get; set; } = "";
 
-        public void Render(StringBuilder builder) => _delegate(builder);
+        public Task Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.CompletedTask; }
     }
 
     internal sealed class TemplateWithViewModel<T> : IStringBuilderTemplate, IParameterizedTemplate
@@ -75,7 +75,7 @@ internal static class TestData
 
         public TemplateWithViewModel(Action<StringBuilder> @delegate) => _delegate = @delegate;
 
-        public void Render(StringBuilder builder) => _delegate(builder);
+        public Task Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.CompletedTask; }
 
         public void SetParameter(string name, object? value) // this is added in case of viewmodels which don't have a public parameterless constructor
         {
@@ -124,7 +124,7 @@ internal static class TestData
 
         public TextTransformTemplate(Func<string> @delegate) => _delegate = @delegate;
 
-        public string TransformText() => _delegate();
+        public Task<string> TransformText(CancellationToken cancellationToken) => Task.FromResult(_delegate());
     }
 
     /// <summary>

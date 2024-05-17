@@ -31,7 +31,7 @@ public sealed class MultipleContentTemplateRenderer : ITemplateRenderer
         {
             // No need to convert string to MultipleContentBuilder, and then add it again..
             // We can simply pass the MultipleContentBuilder instance
-            multipleContentBuilderTemplate.Render(multipleContentBuilder);
+            await multipleContentBuilderTemplate.Render(multipleContentBuilder, cancellationToken).ConfigureAwait(false);
             return;
         }
 

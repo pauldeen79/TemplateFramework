@@ -1,4 +1,6 @@
-﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider.Tests;
+﻿using System.Threading;
+
+namespace TemplateFramework.TemplateProviders.StringTemplateProvider.Tests;
 
 public class ExpressionStringTemplateTests
 {
@@ -29,8 +31,8 @@ public class ExpressionStringTemplateTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Render(builder: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("builder");
+            sut.Awaiting(x => x.Render(builder: null!, CancellationToken.None))
+               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("builder");
         }
 
         [Fact]
@@ -43,12 +45,12 @@ public class ExpressionStringTemplateTests
             var builder = new StringBuilder();
 
             // Act & Assert
-            sut.Invoking(x => x.Render(builder))
-               .Should().Throw<InvalidOperationException>().WithMessage("Result: Error, ErrorMessage: Kaboom!");
+            sut.Awaiting(x => x.Render(builder, CancellationToken.None))
+               .Should().ThrowAsync<InvalidOperationException>().WithMessage("Result: Error, ErrorMessage: Kaboom!");
         }
 
         [Fact]
-        public void Appends_Result_From_ExpressionStringParser_To_Builder_On_Succesful_Result()
+        public async Task Appends_Result_From_ExpressionStringParser_To_Builder_On_Succesful_Result()
         {
             // Arrange
             ExpressionStringParserMock.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<TemplateFrameworkStringContext>(), Arg.Any<IFormattableStringParser>())
@@ -57,7 +59,7 @@ public class ExpressionStringTemplateTests
             var builder = new StringBuilder();
 
             // Act
-            sut.Render(builder);
+            await sut.Render(builder, CancellationToken.None);
 
             // Assert
             builder.ToString().Should().Be("Parse result");

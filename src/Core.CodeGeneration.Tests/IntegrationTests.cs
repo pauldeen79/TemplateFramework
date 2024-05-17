@@ -50,10 +50,12 @@ public class IntegrationTests : TestBase
     {
         public string? Model { get; set; }
 
-        public void Render(IMultipleContentBuilder builder)
+        public Task Render(IMultipleContentBuilder builder, CancellationToken cancellationToken)
         {
             var content = builder.AddContent("Filename.txt");
             content.Builder.Append(CultureInfo.InvariantCulture, $"Model is: {Model}");
+
+            return Task.CompletedTask;
         }
     }
 }

@@ -2,14 +2,14 @@
 
 public class TypedStringBuilderTemplateRenderer : IStringBuilderTemplateRenderer
 {
-    public Task<bool> TryRender(object instance, StringBuilder builder, CancellationToken cancellationToken)
+    public async Task<bool> TryRender(object instance, StringBuilder builder, CancellationToken cancellationToken)
     {
         if (instance is IStringBuilderTemplate typedTemplate)
         {
-            typedTemplate.Render(builder);
-            return Task.FromResult(true);
+            await typedTemplate.Render(builder, cancellationToken).ConfigureAwait(false);
+            return true;
         }
 
-        return Task.FromResult(false);
+        return false;
     }
 }

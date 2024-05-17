@@ -45,7 +45,7 @@ public class TypedTextTransformTemplateRendererTests
             _ = await sut.TryRender(instance: textTransformTemplate, new StringBuilder(), CancellationToken.None);
 
             // Assert
-            textTransformTemplate.Received().TransformText();
+            await textTransformTemplate.Received().TransformText(Arg.Any<CancellationToken>());
         }
 
         [Theory, AutoMockData]
@@ -54,7 +54,7 @@ public class TypedTextTransformTemplateRendererTests
             TypedTextTransformTemplateRenderer sut)
         {
             // Arrange
-            textTransformTemplate.TransformText().Returns("Hello world!");
+            textTransformTemplate.TransformText(Arg.Any<CancellationToken>()).Returns("Hello world!");
             var builder = new StringBuilder();
 
             // Act
@@ -70,7 +70,7 @@ public class TypedTextTransformTemplateRendererTests
             TypedTextTransformTemplateRenderer sut)
         {
             // Arrange
-            textTransformTemplate.TransformText().Returns("Hello world!");
+            textTransformTemplate.TransformText(Arg.Any<CancellationToken>()).Returns("Hello world!");
 
             // Act & Assert
             sut.Awaiting(x => x.TryRender(textTransformTemplate, builder: null!, CancellationToken.None))

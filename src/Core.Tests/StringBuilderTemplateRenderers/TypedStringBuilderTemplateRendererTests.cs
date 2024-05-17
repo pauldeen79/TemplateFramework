@@ -48,7 +48,7 @@ public class TypedStringBuilderTemplateRendererTests
             _ = await sut.TryRender(instance: stringBuilderTemplate, builder, CancellationToken.None);
 
             // Assert
-            stringBuilderTemplate.Received().Render(builder);
+            await stringBuilderTemplate.Received().Render(builder, Arg.Any<CancellationToken>());
         }
     }
 }

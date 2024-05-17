@@ -2,5 +2,5 @@
 
 public interface IMultipleContentBuilderTemplate
 {
-    void Render(IMultipleContentBuilder builder);
+    Task Render(IMultipleContentBuilder builder, CancellationToken cancellationToken);
 }
