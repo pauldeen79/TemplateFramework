@@ -7,20 +7,17 @@ public class IntegrationTests : TestBase
     {
         // Arrange
         var assemblyInfoContextService = Fixture.Freeze<IAssemblyInfoContextService>();
-        var templateFactory = Fixture.Freeze<ITemplateFactory>();
         var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
-        templateFactory.Create(Arg.Any<Type>()).Returns(x => Activator.CreateInstance(x.ArgAt<Type>(0))!);
         using var provider = new ServiceCollection()
             .AddTemplateFramework()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFrameworkCompiledTemplateProvider()
             .AddSingleton(assemblyInfoContextService)
-            .AddSingleton(templateFactory)
             .AddSingleton(templateComponentRegistryPluginFactory)
             .BuildServiceProvider(true);
         using var scope = provider.CreateScope();
         var templateProvider = scope.ServiceProvider.GetRequiredService<ITemplateProvider>();
-        var template = templateProvider.Create(new CompiledTemplateIdentifier(GetType().Assembly.FullName!, typeof(MyTemplate).FullName!));
+        var template = templateProvider.Create(new TemplateInstanceIdentifier(new MyTemplate()));
         var templateEngine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
         var builder = new StringBuilder();
         var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), builder);
