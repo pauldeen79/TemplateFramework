@@ -52,7 +52,7 @@ public class IntegrationTests : TestBase
         var settings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        await engine.Generate(new CsharpClassGeneratorCodeGenerationProvider(), generationEnvironment, settings, CancellationToken.None);
+        await engine.Generate(new CsharpClassGeneratorCodeGenerationProvider(), generationEnvironment, settings);
 
         // Assert
         generationEnvironment.Builder.Contents.Should().HaveCount(4);

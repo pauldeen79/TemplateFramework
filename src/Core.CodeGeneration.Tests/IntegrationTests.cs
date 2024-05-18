@@ -26,7 +26,7 @@ public class IntegrationTests : TestBase
             builder);
 
         // Act
-        await sut.Generate(codeGenerationProvider, generationEnvironment, new CodeGenerationSettings(TestData.BasePath, "DefaultFilename.txt", false), CancellationToken.None);
+        await sut.Generate(codeGenerationProvider, generationEnvironment, new CodeGenerationSettings(TestData.BasePath, "DefaultFilename.txt", false));
 
         // Assert
         builder.Contents.Should().ContainSingle();
