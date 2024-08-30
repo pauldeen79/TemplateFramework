@@ -97,8 +97,8 @@ Note that the following assemblies will be loaded from the host (Console) comman
 - TemplateFramework.TemplateProviders.ChildTemplateProvider
 - TemplateFramework.TemplateProviders.CompiledTemplateProvider
 - TemplateFramework.TemplateProviders.StringTemplateProvider
-- CrossCutting.Common (3.7.0)
-- CrossCutting.Utilities.Parsers (3.7.0)
+- CrossCutting.Common (3.10.2)
+- CrossCutting.Utilities.Parsers (5.3.0)
 - Microsoft.Extensions.DependencyInjection (8.0.0)
 - Microsoft.Extensions.DependencyInjection.Abstractions (8.0.1)
 
