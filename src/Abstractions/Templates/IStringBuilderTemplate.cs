@@ -1,6 +1,5 @@
 ﻿namespace TemplateFramework.Abstractions.Templates;
 
-public interface IStringBuilderTemplate
+public interface IStringBuilderTemplate : IBuilderTemplate<StringBuilder>
 {
-    Task Render(StringBuilder builder, CancellationToken cancellationToken);
 }

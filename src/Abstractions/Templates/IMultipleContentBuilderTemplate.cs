@@ -1,6 +1,5 @@
 ﻿namespace TemplateFramework.Abstractions.Templates;
 
-public interface IMultipleContentBuilderTemplate
+public interface IMultipleContentBuilderTemplate : IBuilderTemplate<IMultipleContentBuilder>
 {
-    Task Render(IMultipleContentBuilder builder, CancellationToken cancellationToken);
 }
