@@ -9,7 +9,6 @@ public class ServiceCollectionExtensionsTests : TestBase
         {
             // Arrange
             var assemblyInfoContextService = Fixture.Freeze<IAssemblyInfoContextService>();
-            var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
 
             // Act
             var services = new ServiceCollection();
@@ -20,7 +19,6 @@ public class ServiceCollectionExtensionsTests : TestBase
                 .AddTemplateFrameworkRuntime()
                 .AddTemplateCommands()
                 .AddSingleton(assemblyInfoContextService)
-                .AddSingleton(templateComponentRegistryPluginFactory)
                 .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
 
             // Assert
