@@ -19,7 +19,7 @@ public class IntegrationTests : TestBase
         var template = new TestData.MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine(async (builder, context) =>
         {
             var identifier = new TemplateByNameIdentifier("MyTemplate");
-            await context.Engine.RenderChildTemplate(new MultipleContentBuilderEnvironment(builder), identifier, context, CancellationToken.None).ConfigureAwait(false);
+            await context.Engine.RenderChildTemplate(new MultipleContentBuilderEnvironment<StringBuilder>(builder), identifier, context, CancellationToken.None).ConfigureAwait(false);
         });
         var generationEnvironment = new MultipleContentBuilder();
 
@@ -48,7 +48,7 @@ public class IntegrationTests : TestBase
         using var scope = provider.CreateScope();
 
         var engine = scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
-        var generationEnvironment = new MultipleContentBuilderEnvironment();
+        var generationEnvironment = new MultipleContentBuilderEnvironment<StringBuilder>();
         var settings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act

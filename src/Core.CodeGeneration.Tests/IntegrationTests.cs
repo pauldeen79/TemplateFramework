@@ -20,7 +20,7 @@ public class IntegrationTests : TestBase
         var sut = scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = new IntegrationProvider();
         var builder = new MultipleContentBuilder();
-        var generationEnvironment = new MultipleContentBuilderEnvironment(
+        var generationEnvironment = new MultipleContentBuilderEnvironment<StringBuilder>(
             scope.ServiceProvider.GetRequiredService<IFileSystem>(),
             scope.ServiceProvider.GetRequiredService<IRetryMechanism>(),
             builder);

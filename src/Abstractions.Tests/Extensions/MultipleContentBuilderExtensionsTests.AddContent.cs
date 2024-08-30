@@ -8,7 +8,7 @@ public class MultipleContentBuilderExtensionsTests : TestBase
         public void Without_Arguments_Works_Correctly()
         {
             // Arrange
-            var sut = Fixture.Freeze<IMultipleContentBuilder>();
+            var sut = Fixture.Freeze<IMultipleContentBuilder<StringBuilder>>();
 
             // Act
             sut.AddContent();
@@ -21,7 +21,7 @@ public class MultipleContentBuilderExtensionsTests : TestBase
         public void With_Filename_Argument_Works_Correctly()
         {
             // Arrange
-            var sut = Fixture.Freeze<IMultipleContentBuilder>();
+            var sut = Fixture.Freeze<IMultipleContentBuilder<StringBuilder>>();
 
             // Act
             sut.AddContent("MyFilename.txt");
@@ -34,7 +34,7 @@ public class MultipleContentBuilderExtensionsTests : TestBase
         public void With_Filename_And_SkipWhenFileExists_Arguments_Works_Correctly()
         {
             // Arrange
-            var sut = Fixture.Freeze<IMultipleContentBuilder>();
+            var sut = Fixture.Freeze<IMultipleContentBuilder<StringBuilder>>();
 
             // Act
             sut.AddContent("MyFilename.txt", true);

@@ -27,7 +27,7 @@ public partial class StringBuilderTemplateRendererTests
             // Arrange
             var sut = CreateSut();
             var template = new TestData.Template(_ => { });
-            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), Substitute.For<IMultipleContentBuilder>());
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), Substitute.For<IMultipleContentBuilder<StringBuilder>>());
             var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
 
             // Act & Assert

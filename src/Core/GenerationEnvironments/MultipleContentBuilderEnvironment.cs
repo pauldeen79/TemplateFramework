@@ -1,21 +1,5 @@
 ﻿namespace TemplateFramework.Core.GenerationEnvironments;
 
-//TODO: Review if we want this. This is purely a backwards compatibility thing.
-public class MultipleContentBuilderEnvironment : MultipleContentBuilderEnvironment<StringBuilder>
-{
-    public MultipleContentBuilderEnvironment()
-    {
-    }
-
-    public MultipleContentBuilderEnvironment(IMultipleContentBuilder<StringBuilder> builder) : base(builder)
-    {
-    }
-
-    internal MultipleContentBuilderEnvironment(IFileSystem fileSystem, IRetryMechanism retryMechanism, IMultipleContentBuilder<StringBuilder> builder) : base(fileSystem, retryMechanism, builder)
-    {
-    }
-}
-
 public class MultipleContentBuilderEnvironment<T> : IGenerationEnvironment where T : class, new()
 {
     public MultipleContentBuilderEnvironment()

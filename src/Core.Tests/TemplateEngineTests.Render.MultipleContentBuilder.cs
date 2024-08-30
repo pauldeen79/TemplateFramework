@@ -26,7 +26,7 @@ public partial class TemplateEngineTests
             // Arrange
             var sut = CreateSut();
             var template = new PlainTemplateWithAdditionalParameters();
-            IMultipleContentBuilder? generationEnvironment = MultipleContentBuilderMock;
+            IMultipleContentBuilder<StringBuilder>? generationEnvironment = MultipleContentBuilderMock;
             var additionalParameters = new { AdditionalParameter = "Some value" };
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), generationEnvironment, additionalParameters);
             TemplateProviderMock.Create(Arg.Any<TemplateInstanceIdentifier>()).Returns(template);
@@ -44,7 +44,7 @@ public partial class TemplateEngineTests
             // Arrange
             var sut = CreateSut();
             var template = new PlainTemplateWithAdditionalParameters();
-            IMultipleContentBuilder? generationEnvironment = MultipleContentBuilderMock;
+            IMultipleContentBuilder<StringBuilder>? generationEnvironment = MultipleContentBuilderMock;
             var additionalParameters = new { AdditionalParameter = "Some value" };
             TemplateRendererMock.Supports(Arg.Any<IGenerationEnvironment>()).Returns(true);
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), additionalParameters, generationEnvironment);

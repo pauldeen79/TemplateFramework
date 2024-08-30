@@ -3,7 +3,7 @@
 public partial class TemplateEngineTests
 {
     protected StringBuilder StringBuilder { get; } = new();
-    protected IMultipleContentBuilder MultipleContentBuilderMock { get; } = Substitute.For<IMultipleContentBuilder>();
+    protected IMultipleContentBuilder<StringBuilder> MultipleContentBuilderMock { get; } = Substitute.For<IMultipleContentBuilder<StringBuilder>>();
 
     protected ITemplateProvider TemplateProviderMock { get; } = Substitute.For<ITemplateProvider>();
     protected ITemplateInitializer TemplateInitializerMock { get; } = Substitute.For<ITemplateInitializer>();

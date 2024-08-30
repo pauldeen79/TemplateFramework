@@ -35,7 +35,7 @@ public partial class MultipleContentTemplateOfStringBuilderRendererTests
             // Arrange
             var sut = CreateSut();
             var templateMock = Substitute.For<IMultipleContentBuilderTemplate<StringBuilder>>();
-            var generationEnvironment = Substitute.For<IMultipleContentBuilder>();
+            var generationEnvironment = Substitute.For<IMultipleContentBuilder<StringBuilder>>();
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(templateMock), DefaultFilename, generationEnvironment);
             var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, templateMock);
             MultipleContentBuilderTemplateCreatorMock.TryCreate(Arg.Any<object>()).Returns(templateMock);
@@ -44,7 +44,7 @@ public partial class MultipleContentTemplateOfStringBuilderRendererTests
             await sut.Render(engineContext, CancellationToken.None);
 
             // Assert
-            await templateMock.Received().Render(Arg.Any<IMultipleContentBuilder>(), Arg.Any<CancellationToken>());
+            await templateMock.Received().Render(Arg.Any<IMultipleContentBuilder<StringBuilder>>(), Arg.Any<CancellationToken>());
         }
 
         [Fact]
@@ -53,7 +53,7 @@ public partial class MultipleContentTemplateOfStringBuilderRendererTests
             // Arrange
             var sut = CreateSut();
             var template = new TestData.TextTransformTemplate(() => "Hello world!");
-            var generationEnvironment = Substitute.For<IMultipleContentBuilder>();
+            var generationEnvironment = Substitute.For<IMultipleContentBuilder<StringBuilder>>();
             var contentBuilderMock = Substitute.For<IContentBuilder<StringBuilder>>();
             MultipleContentBuilderTemplateCreatorMock.TryCreate(Arg.Any<object>()).Returns(default(IMultipleContentBuilderTemplate<StringBuilder>));
             generationEnvironment.AddContent(Arg.Any<string>(), Arg.Any<bool>(), Arg.Any<StringBuilder?>())

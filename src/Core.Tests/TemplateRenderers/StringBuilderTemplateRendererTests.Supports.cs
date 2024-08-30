@@ -23,7 +23,7 @@ public partial class StringBuilderTemplateRendererTests
         {
             // Arrange
             var sut = CreateSut();
-            var environment = new MultipleContentBuilderEnvironment();
+            var environment = new MultipleContentBuilderEnvironment<StringBuilder>();
 
             // Act
             var result = sut.Supports(environment);

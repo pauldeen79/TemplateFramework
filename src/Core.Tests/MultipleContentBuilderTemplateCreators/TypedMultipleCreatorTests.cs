@@ -7,7 +7,7 @@ public class TypedMultipleCreatorTests
         [Theory, AutoMockData]
         public void Returns_Instance_When_Instance_Is_Assignable_To_IMultipleContentBuilderTemplate(
             [Frozen] IMultipleContentBuilderTemplate multipleContentBuilderTemplate,
-            TypedMultipleCreator sut)
+            TypedMultipleCreator<StringBuilder> sut)
         {
             // Act
             var result = sut.TryCreate(multipleContentBuilderTemplate);
@@ -17,7 +17,7 @@ public class TypedMultipleCreatorTests
         }
 
         [Theory, AutoMockData]
-        public void Returns_Null_When_Instance_Is_Not_Assignable_To_IMultipleContentBuilderTemplate(TypedMultipleCreator sut)
+        public void Returns_Null_When_Instance_Is_Not_Assignable_To_IMultipleContentBuilderTemplate(TypedMultipleCreator<StringBuilder> sut)
         {
             // Arrange
             var template = new object();
@@ -30,7 +30,7 @@ public class TypedMultipleCreatorTests
         }
 
         [Theory, AutoMockData]
-        public void Returns_Null_When_Instance_Is_Null(TypedMultipleCreator sut)
+        public void Returns_Null_When_Instance_Is_Null(TypedMultipleCreator<StringBuilder> sut)
         {
             // Act
             var result = sut.TryCreate(instance: null!);

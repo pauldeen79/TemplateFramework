@@ -104,7 +104,7 @@ public abstract class CommandBase : ICommandLineCommand
         await app.Out.WriteLineAsync(templateOutput).ConfigureAwait(false);
     }
 
-    protected async Task WriteOutput(CommandLineApplication app, MultipleContentBuilderEnvironment generationEnvironment, string basePath, bool bare, bool clipboard, bool dryRun, CancellationToken cancellationToken)
+    protected async Task WriteOutput(CommandLineApplication app, MultipleContentBuilderEnvironment<StringBuilder> generationEnvironment, string basePath, bool bare, bool clipboard, bool dryRun, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(app);
         Guard.IsNotNull(generationEnvironment);
@@ -159,7 +159,7 @@ public abstract class CommandBase : ICommandLineCommand
         return list.ToArray();
     }
 
-    protected static void AppendParameters(MultipleContentBuilderEnvironment generationEnvironment, string defaultFilename, ITemplateParameter[] templateParameters)
+    protected static void AppendParameters(MultipleContentBuilderEnvironment<StringBuilder> generationEnvironment, string defaultFilename, ITemplateParameter[] templateParameters)
     {
         Guard.IsNotNull(generationEnvironment);
         Guard.IsNotNull(templateParameters);

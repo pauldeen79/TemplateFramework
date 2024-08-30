@@ -217,11 +217,11 @@ Error: Could not find file [MyFile.txt]. Could not watch file for changes.
 
     public class GenerateSingleOutput : CommandBaseTests
     {
-        private IMultipleContentBuilder multipleContentBuilder { get; }
+        private IMultipleContentBuilder<StringBuilder> multipleContentBuilder { get; }
         
         public GenerateSingleOutput()
         {
-            multipleContentBuilder = Fixture.Freeze<IMultipleContentBuilder>();
+            multipleContentBuilder = Fixture.Freeze<IMultipleContentBuilder<StringBuilder>>();
         }
 
         private void SetupMultipleContentBuilder(string filenamePrefix)
@@ -533,13 +533,13 @@ TemplateOutput
         public string? GetCurrentDirectoryPublic(string? currentDirectory, string assemblyName)
             => GetCurrentDirectory(currentDirectory, assemblyName);
 
-        public string GenerateSingleOutputPublic(IMultipleContentBuilder builder, string basePath)
+        public string GenerateSingleOutputPublic(IMultipleContentBuilder<StringBuilder> builder, string basePath)
             => GenerateSingleOutput(builder, basePath);
 
         public Task WriteOutputToHostPublic(CommandLineApplication app, string templateOutput, bool bare)
             => WriteOutputToHost(app, templateOutput, bare);
 
-        public Task WriteOutputPublic(CommandLineApplication app, MultipleContentBuilderEnvironment generationEnvironment, string basePath, bool bare, bool clipboard, bool dryRun)
+        public Task WriteOutputPublic(CommandLineApplication app, MultipleContentBuilderEnvironment<StringBuilder> generationEnvironment, string basePath, bool bare, bool clipboard, bool dryRun)
             => WriteOutput(app, generationEnvironment, basePath, bare, clipboard, dryRun, CancellationToken.None);
 
         public Task WriteOutputToClipboardPublic(CommandLineApplication app, string templateOutput, bool bare)

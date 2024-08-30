@@ -33,6 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="System.Text" />
     <Using Include="AutoFixture" />
     <Using Include="AutoFixture.AutoNSubstitute" />
     <Using Include="NSubstitute" />

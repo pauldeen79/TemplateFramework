@@ -245,7 +245,7 @@ public class CodeGenerationAssemblyCommandTests : TestBase<CodeGenerationAssembl
             codeGenerationAssembly.When(x => x.Generate(Arg.Any<ICodeGenerationAssemblySettings>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>()))
                                   .Do(args =>
                                   {
-                                      var x = args.ArgAt<MultipleContentBuilderEnvironment>(1);
+                                      var x = args.ArgAt<MultipleContentBuilderEnvironment<StringBuilder>>(1);
                                       x.Builder.AddContent("MyFile.txt").Builder.Append("Hello!");
                                   });
             // Act
@@ -294,7 +294,7 @@ Hello!
             codeGenerationAssembly.When(x => x.Generate(Arg.Any<ICodeGenerationAssemblySettings>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>()))
                                   .Do(args =>
                                   {
-                                      var x = args.ArgAt<MultipleContentBuilderEnvironment>(1);
+                                      var x = args.ArgAt<MultipleContentBuilderEnvironment<StringBuilder>>(1);
                                       x.Builder.AddContent("MyFile.txt").Builder.Append("Hello!");
                                   });
 
@@ -315,7 +315,7 @@ Hello!
             codeGenerationAssembly.When(x => x.Generate(Arg.Any<ICodeGenerationAssemblySettings>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>()))
                                   .Do(args =>
                                   {
-                                      var x = args.ArgAt<MultipleContentBuilderEnvironment>(1);
+                                      var x = args.ArgAt<MultipleContentBuilderEnvironment<StringBuilder>>(1);
                                       x.Builder.AddContent("MyFile.txt").Builder.Append("Hello!");
                                   });
             var sut = CreateSut();

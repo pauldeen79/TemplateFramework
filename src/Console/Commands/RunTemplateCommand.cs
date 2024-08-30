@@ -133,7 +133,7 @@ public class RunTemplateCommand : CommandBase
                                 CancellationToken cancellationToken) args)
         => await Watch(args.app, args.watch, args.assemblyName ?? args.formattableStringFilename ?? args.expressionStringFilename!, async () =>
         {
-            var generationEnvironment = new MultipleContentBuilderEnvironment();
+            var generationEnvironment = new MultipleContentBuilderEnvironment<StringBuilder>();
             ITemplateIdentifier templateIdentifier = null!;
             if (!string.IsNullOrEmpty(args.className))
             {

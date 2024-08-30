@@ -4,12 +4,12 @@ public class MultipleContentBuilderEnvironmentTests
 {
     protected IFileSystem FileSystemMock { get; } = Substitute.For<IFileSystem>();
     protected ICodeGenerationProvider CodeGenerationProviderMock { get; } = Substitute.For<ICodeGenerationProvider>();
-    protected IMultipleContentBuilder MultipleContentBuilderMock { get; } = Substitute.For<IMultipleContentBuilder>();
+    protected IMultipleContentBuilder<StringBuilder> MultipleContentBuilderMock { get; } = Substitute.For<IMultipleContentBuilder<StringBuilder>>();
     protected IMultipleContent MultipleContentMock { get; } = Substitute.For<IMultipleContent>();
     protected IContent ContentMock { get; } = Substitute.For<IContent>();
     protected IRetryMechanism RetryMechanism { get; } = new FastRetryMechanism();
 
-    protected MultipleContentBuilderEnvironment CreateSut() => new(FileSystemMock, RetryMechanism, MultipleContentBuilderMock);
+    protected MultipleContentBuilderEnvironment<StringBuilder> CreateSut() => new(FileSystemMock, RetryMechanism, MultipleContentBuilderMock);
 
     protected static IEnumerable<IContent> CreateContents(bool skipWhenFileExists = false)
     {
@@ -31,7 +31,7 @@ public class MultipleContentBuilderEnvironmentTests
         [Fact]
         public void Throws_On_Null_Arguments()
         {
-            typeof(MultipleContentBuilderEnvironment).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
+            typeof(MultipleContentBuilderEnvironment<StringBuilder>).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
         }
 
         [Fact]
@@ -48,7 +48,7 @@ public class MultipleContentBuilderEnvironmentTests
         public void Creates_Instance_Correctly_Without_Arguments()
         {
             // Act
-            var instance = new MultipleContentBuilderEnvironment();
+            var instance = new MultipleContentBuilderEnvironment<StringBuilder>();
 
             // Assert
             instance.Builder.Should().NotBeNull();
