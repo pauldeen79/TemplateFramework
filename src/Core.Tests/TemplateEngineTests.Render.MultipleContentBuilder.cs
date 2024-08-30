@@ -56,7 +56,7 @@ public partial class TemplateEngineTests
             // Assert
             await TemplateRendererMock.Received().Render(Arg.Is<ITemplateEngineContext>(req =>
                 req.Identifier is TemplateInstanceIdentifier
-                && req.GenerationEnvironment.Type == GenerationEnvironmentType.MultipleContentBuilder
+                && req.GenerationEnvironment is MultipleContentBuilderEnvironment
                 && req.DefaultFilename == string.Empty), Arg.Any<CancellationToken>());
         }
     }

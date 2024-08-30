@@ -9,10 +9,10 @@ public partial class StringBuilderTemplateRendererTests
         {
             // Arrange
             var sut = CreateSut();
-            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(this), new StringBuilder());
+            var environment = new StringBuilderEnvironment();
 
             // Act
-            var result = sut.Supports(request.GenerationEnvironment);
+            var result = sut.Supports(environment);
 
             // Assert
             result.Should().BeTrue();
@@ -23,10 +23,10 @@ public partial class StringBuilderTemplateRendererTests
         {
             // Arrange
             var sut = CreateSut();
-            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(this), Substitute.For<IMultipleContentBuilder>());
+            var environment = new MultipleContentBuilderEnvironment();
 
             // Act
-            var result = sut.Supports(request.GenerationEnvironment);
+            var result = sut.Supports(environment);
 
             // Assert
             result.Should().BeFalse();
