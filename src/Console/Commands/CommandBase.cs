@@ -78,7 +78,7 @@ public abstract class CommandBase : ICommandLineCommand
             : string.Empty;
     }
 
-    protected static string GenerateSingleOutput(IMultipleContentBuilder builder, string basePath)
+    protected static string GenerateSingleOutput(IMultipleContentBuilder<StringBuilder> builder, string basePath)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(basePath);

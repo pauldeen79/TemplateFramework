@@ -1,8 +1,8 @@
 ﻿namespace TemplateFramework.Core.Tests.TemplateRenderers;
 
-public partial class MultipleContentTemplateRendererTests
+public partial class MultipleContentTemplateOfStringBuilderRendererTests
 {
-    public class Render : MultipleContentTemplateRendererTests
+    public class Render : MultipleContentTemplateOfStringBuilderRendererTests
     {
         [Fact]
         public void Throws_When_Context_Is_Null()
@@ -34,7 +34,7 @@ public partial class MultipleContentTemplateRendererTests
         {
             // Arrange
             var sut = CreateSut();
-            var templateMock = Substitute.For<IMultipleContentBuilderTemplate>();
+            var templateMock = Substitute.For<IMultipleContentBuilderTemplate<StringBuilder>>();
             var generationEnvironment = Substitute.For<IMultipleContentBuilder>();
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(templateMock), DefaultFilename, generationEnvironment);
             var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, templateMock);
@@ -54,8 +54,8 @@ public partial class MultipleContentTemplateRendererTests
             var sut = CreateSut();
             var template = new TestData.TextTransformTemplate(() => "Hello world!");
             var generationEnvironment = Substitute.For<IMultipleContentBuilder>();
-            var contentBuilderMock = Substitute.For<IContentBuilder>();
-            MultipleContentBuilderTemplateCreatorMock.TryCreate(Arg.Any<object>()).Returns(default(IMultipleContentBuilderTemplate));
+            var contentBuilderMock = Substitute.For<IContentBuilder<StringBuilder>>();
+            MultipleContentBuilderTemplateCreatorMock.TryCreate(Arg.Any<object>()).Returns(default(IMultipleContentBuilderTemplate<StringBuilder>));
             generationEnvironment.AddContent(Arg.Any<string>(), Arg.Any<bool>(), Arg.Any<StringBuilder?>())
                                  .Returns(x =>
                                  {

@@ -1,27 +1,27 @@
 ﻿namespace TemplateFramework.Core.TemplateRenderers;
 
-public sealed class MultipleContentTemplateRenderer : ITemplateRenderer
+public class MultipleContentOfStringBuilderTemplateRenderer : ITemplateRenderer
 {
-    private readonly IEnumerable<IMultipleContentBuilderTemplateCreator> _creators;
+    private readonly IEnumerable<IMultipleContentBuilderTemplateCreator<StringBuilder>> _creators;
 
-    public MultipleContentTemplateRenderer(
-        IEnumerable<IMultipleContentBuilderTemplateCreator> creators)
+    public MultipleContentOfStringBuilderTemplateRenderer(
+        IEnumerable<IMultipleContentBuilderTemplateCreator<StringBuilder>> creators)
     {
         Guard.IsNotNull(creators);
 
         _creators = creators;
     }
 
-    public bool Supports(IGenerationEnvironment generationEnvironment) => generationEnvironment is MultipleContentBuilderEnvironment;
+    public bool Supports(IGenerationEnvironment generationEnvironment) => generationEnvironment is MultipleContentBuilderEnvironment<StringBuilder>;
 
     public async Task Render(ITemplateEngineContext context, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(context);
         Guard.IsNotNull(context.Template);
 
-        if (context.GenerationEnvironment is not MultipleContentBuilderEnvironment builderEnvironment)
+        if (context.GenerationEnvironment is not MultipleContentBuilderEnvironment<StringBuilder> builderEnvironment)
         {
-            throw new NotSupportedException("GenerationEnvironment should be of type IMultipleContentBuilder or IMultipleContentBuilderContainer");
+            throw new NotSupportedException("GenerationEnvironment should be of type MultipleContentBuilderEnvironment");
         }
 
         var multipleContentBuilder = builderEnvironment.Builder;
@@ -44,6 +44,6 @@ public sealed class MultipleContentTemplateRenderer : ITemplateRenderer
         multipleContentBuilder.AddContent(context.DefaultFilename, false, new StringBuilder(stringBuilder.ToString()));
     }
 
-    private IMultipleContentBuilderTemplate? TryGetMultipleContentBuilderTemplate(object template)
+    private IMultipleContentBuilderTemplate<StringBuilder>? TryGetMultipleContentBuilderTemplate(object template)
         => _creators.Select(x => x.TryCreate(template)).FirstOrDefault(x => x is not null);
 }

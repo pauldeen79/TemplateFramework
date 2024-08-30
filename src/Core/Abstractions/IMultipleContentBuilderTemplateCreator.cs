@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Core.Abstractions;
 
-public interface IMultipleContentBuilderTemplateCreator
+public interface IMultipleContentBuilderTemplateCreator<T> where T : class
 {
-    IMultipleContentBuilderTemplate? TryCreate(object instance);
+    IMultipleContentBuilderTemplate<T>? TryCreate(object instance);
 }

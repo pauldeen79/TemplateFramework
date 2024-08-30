@@ -130,125 +130,125 @@ public class RenderTemplateRequest : IRenderTemplateRequest
     public RenderTemplateRequest(
         ITemplateIdentifier identifier,
         object? model,
-        IMultipleContentBuilder builder,
+        IMultipleContentBuilder<StringBuilder> builder,
         string defaultFilename,
         object? additionalParameters,
         ITemplateContext? context)
-        : this(identifier, model, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, additionalParameters, context)
+        : this(identifier, model, new MultipleContentBuilderEnvironment<StringBuilder>(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, additionalParameters, context)
     {
     }
 
     public RenderTemplateRequest(
         ITemplateIdentifier identifier,
-        IMultipleContentBuilder builder,
+        IMultipleContentBuilder<StringBuilder> builder,
         string defaultFilename,
         object? additionalParameters,
         ITemplateContext? context)
-        : this(identifier, null, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, additionalParameters, context)
+        : this(identifier, null, new MultipleContentBuilderEnvironment<StringBuilder>(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, additionalParameters, context)
     {
     }
 
     public RenderTemplateRequest(
         ITemplateIdentifier identifier,
         object? model,
-        IMultipleContentBuilder builder)
-        : this(identifier, model, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, null, null)
+        IMultipleContentBuilder<StringBuilder> builder)
+        : this(identifier, model, new MultipleContentBuilderEnvironment<StringBuilder>(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, null, null)
     {
     }
 
     public RenderTemplateRequest(
         ITemplateIdentifier identifier,
-        IMultipleContentBuilder builder)
-        : this(identifier, null, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, null, null)
+        IMultipleContentBuilder<StringBuilder> builder)
+        : this(identifier, null, new MultipleContentBuilderEnvironment<StringBuilder>(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, null, null)
     {
     }
 
     public RenderTemplateRequest(
         ITemplateIdentifier identifier,
         object? model,
-        IMultipleContentBuilder builder,
+        IMultipleContentBuilder<StringBuilder> builder,
         string defaultFilename)
-        : this(identifier, model, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, null, null)
+        : this(identifier, model, new MultipleContentBuilderEnvironment<StringBuilder>(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, null, null)
     {
     }
 
     public RenderTemplateRequest(
         ITemplateIdentifier identifier,
-        IMultipleContentBuilder builder,
+        IMultipleContentBuilder<StringBuilder> builder,
         string defaultFilename)
-        : this(identifier, null, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, null, null)
+        : this(identifier, null, new MultipleContentBuilderEnvironment<StringBuilder>(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, null, null)
     {
     }
 
     public RenderTemplateRequest(
         ITemplateIdentifier identifier,
         object? model,
-        IMultipleContentBuilder builder,
+        IMultipleContentBuilder<StringBuilder> builder,
         string defaultFilename,
         object? additionalParameters)
-        : this(identifier, model, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, additionalParameters, null)
+        : this(identifier, model, new MultipleContentBuilderEnvironment<StringBuilder>(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, additionalParameters, null)
     {
     }
 
     public RenderTemplateRequest(
         ITemplateIdentifier identifier,
-        IMultipleContentBuilder builder,
+        IMultipleContentBuilder<StringBuilder> builder,
         string defaultFilename,
         object? additionalParameters)
-        : this(identifier, null, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, additionalParameters, null)
+        : this(identifier, null, new MultipleContentBuilderEnvironment<StringBuilder>(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, additionalParameters, null)
     {
     }
 
     public RenderTemplateRequest(
         ITemplateIdentifier identifier,
         object? model,
-        IMultipleContentBuilder builder,
+        IMultipleContentBuilder<StringBuilder> builder,
         object? additionalParameters)
-        : this(identifier, model, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, additionalParameters, null)
+        : this(identifier, model, new MultipleContentBuilderEnvironment<StringBuilder>(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, additionalParameters, null)
     {
     }
 
     public RenderTemplateRequest(
         ITemplateIdentifier identifier,
-        IMultipleContentBuilder builder,
+        IMultipleContentBuilder<StringBuilder> builder,
         object? additionalParameters)
-        : this(identifier, null, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, additionalParameters, null)
+        : this(identifier, null, new MultipleContentBuilderEnvironment<StringBuilder>(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, additionalParameters, null)
     {
     }
 
     public RenderTemplateRequest(
         ITemplateIdentifier identifier,
         object? model,
-        IMultipleContentBuilder builder,
+        IMultipleContentBuilder<StringBuilder> builder,
         string defaultFilename,
         ITemplateContext? context)
-        : this(identifier, model, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, null, context)
+        : this(identifier, model, new MultipleContentBuilderEnvironment<StringBuilder>(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, null, context)
     {
     }
 
     public RenderTemplateRequest(
         ITemplateIdentifier identifier,
-        IMultipleContentBuilder builder,
+        IMultipleContentBuilder<StringBuilder> builder,
         string defaultFilename,
         ITemplateContext? context)
-        : this(identifier, null, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, null, context)
+        : this(identifier, null, new MultipleContentBuilderEnvironment<StringBuilder>(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, null, context)
     {
     }
 
     public RenderTemplateRequest(
         ITemplateIdentifier identifier,
         object? model,
-        IMultipleContentBuilder builder,
+        IMultipleContentBuilder<StringBuilder> builder,
         ITemplateContext? context)
-        : this(identifier, model, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, null, context)
+        : this(identifier, model, new MultipleContentBuilderEnvironment<StringBuilder>(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, null, context)
     {
     }
 
     public RenderTemplateRequest(
         ITemplateIdentifier identifier,
-        IMultipleContentBuilder builder,
+        IMultipleContentBuilder<StringBuilder> builder,
         ITemplateContext? context)
-        : this(identifier, null, new MultipleContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, null, context)
+        : this(identifier, null, new MultipleContentBuilderEnvironment<StringBuilder>(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, null, context)
     {
     }
 

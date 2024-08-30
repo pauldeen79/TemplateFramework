@@ -11,7 +11,7 @@ public class MultipleContentBuilderEnvironmentTests
 
     protected MultipleContentBuilderEnvironment CreateSut() => new(FileSystemMock, RetryMechanism, MultipleContentBuilderMock);
 
-    protected IEnumerable<IContent> CreateContents(bool skipWhenFileExists = false)
+    protected static IEnumerable<IContent> CreateContents(bool skipWhenFileExists = false)
     {
         var builder = new MultipleContentBuilder();
         var c1 = builder.AddContent("File1.txt", skipWhenFileExists: skipWhenFileExists);

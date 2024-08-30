@@ -25,16 +25,16 @@ internal static class TestData
 
     internal sealed class MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine : IMultipleContentBuilderTemplate, ITemplateContextContainer
     {
-        private readonly Action<IMultipleContentBuilder, ITemplateContext> _delegate;
+        private readonly Action<IMultipleContentBuilder<StringBuilder>, ITemplateContext> _delegate;
 
-        public MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine(Action<IMultipleContentBuilder, ITemplateContext> @delegate)
+        public MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine(Action<IMultipleContentBuilder<StringBuilder>, ITemplateContext> @delegate)
         {
             _delegate = @delegate;
         }
 
         public ITemplateContext Context { get; set; } = default!;
 
-        public Task Render(IMultipleContentBuilder builder, CancellationToken cancellationToken) { _delegate(builder, Context); return Task.CompletedTask; }
+        public Task Render(IMultipleContentBuilder<StringBuilder> builder, CancellationToken cancellationToken) { _delegate(builder, Context); return Task.CompletedTask; }
     }
 
     internal sealed class CsharpClassGeneratorViewModel<TModel>
@@ -98,7 +98,7 @@ internal static class TestData
 #pragma warning disable CA1812 // Avoid uninstantiated internal classes
     internal sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>>, IMultipleContentBuilderTemplate, IStringBuilderTemplate
     {
-        public async Task Render(IMultipleContentBuilder builder, CancellationToken cancellationToken)
+        public async Task Render(IMultipleContentBuilder<StringBuilder> builder, CancellationToken cancellationToken)
         {
             Guard.IsNotNull(builder);
             Guard.IsNotNull(Model);
@@ -256,7 +256,7 @@ internal static class TestData
 
     public sealed class ClassTemplate : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel<TypeBase>>, IMultipleContentBuilderTemplate
     {
-        public async Task Render(IMultipleContentBuilder builder, CancellationToken cancellationToken)
+        public async Task Render(IMultipleContentBuilder<StringBuilder> builder, CancellationToken cancellationToken)
         {
             Guard.IsNotNull(builder);
             Guard.IsNotNull(Model);

@@ -1,8 +1,13 @@
 ﻿namespace TemplateFramework.Abstractions;
 
-public interface IMultipleContentBuilder
+//TODO: Review if we want this. This is purely a backwards compatibility thing.
+public interface IMultipleContentBuilder : IMultipleContentBuilder<StringBuilder>
 {
-    IEnumerable<IContentBuilder> Contents { get; }
-    IContentBuilder AddContent(string filename, bool skipWhenFileExists, StringBuilder? builder);
+}
+
+public interface IMultipleContentBuilder<T> where T : class
+{
+    IEnumerable<IContentBuilder<T>> Contents { get; }
+    IContentBuilder<T> AddContent(string filename, bool skipWhenFileExists, T? builder);
     IMultipleContent Build();
 }
