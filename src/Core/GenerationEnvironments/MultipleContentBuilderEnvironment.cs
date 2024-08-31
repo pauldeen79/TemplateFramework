@@ -1,12 +1,22 @@
 ﻿namespace TemplateFramework.Core.GenerationEnvironments;
 
-public class MultipleContentBuilderEnvironment<T> : IGenerationEnvironment where T : class, new()
+public class MultipleContentBuilderEnvironment : MultipleContentBuilderEnvironment<StringBuilder>
 {
-    public MultipleContentBuilderEnvironment()
-        : this(new FileSystem(), new RetryMechanism(), new MultipleContentBuilder<T>())
+    public MultipleContentBuilderEnvironment() : base(new MultipleContentBuilder())
     {
     }
 
+    public MultipleContentBuilderEnvironment(IMultipleContentBuilder<StringBuilder> builder) : base(builder)
+    {
+    }
+
+    internal MultipleContentBuilderEnvironment(IFileSystem fileSystem, IRetryMechanism retryMechanism, IMultipleContentBuilder<StringBuilder> builder) : base(fileSystem, retryMechanism, builder)
+    {
+    }
+}
+
+public class MultipleContentBuilderEnvironment<T> : IGenerationEnvironment where T : class, new()
+{
     public MultipleContentBuilderEnvironment(IMultipleContentBuilder<T> builder)
         : this(new FileSystem(), new RetryMechanism(), builder)
     {

@@ -2,34 +2,35 @@
 
 public class MultipleContentBuilder : MultipleContentBuilder<StringBuilder>
 {
-}
-
-public class MultipleContentBuilder<T> : IMultipleContentBuilder<T> where T : class, new()
-{
-    private readonly List<IContentBuilder<T>> _contentList;
-
-    public MultipleContentBuilder()
-    {
-        _contentList = new List<IContentBuilder<T>>();
-    }
-
-    public IContentBuilder<T> AddContent(string filename, bool skipWhenFileExists, T? builder)
+    public override IContentBuilder<StringBuilder> AddContent(string filename, bool skipWhenFileExists, StringBuilder? builder)
     {
         Guard.IsNotNull(filename);
 
         var content = builder is null
-            ? new ContentBuilder<T>()
-            : new ContentBuilder<T>(builder);
+            ? new ContentBuilderOfStringBuilder()
+            : new ContentBuilderOfStringBuilder(builder);
 
         content.Filename = filename;
         content.SkipWhenFileExists = skipWhenFileExists;
 
-        _contentList.Add(content);
+        ContentList.Add(content);
 
         return content;
     }
+}
 
-    public IEnumerable<IContentBuilder<T>> Contents => _contentList.AsReadOnly();
+public abstract class MultipleContentBuilder<T> : IMultipleContentBuilder<T> where T : class, new()
+{
+    protected Collection<IContentBuilder<T>> ContentList { get; }
+
+    protected MultipleContentBuilder()
+    {
+        ContentList = new Collection<IContentBuilder<T>>();
+    }
+
+    public abstract IContentBuilder<T> AddContent(string filename, bool skipWhenFileExists, T? builder);
+
+    public IEnumerable<IContentBuilder<T>> Contents => ContentList.AsReadOnly();
 
     public IMultipleContent Build() => new MultipleContent(Contents.Select(x => x.Build()));
 }

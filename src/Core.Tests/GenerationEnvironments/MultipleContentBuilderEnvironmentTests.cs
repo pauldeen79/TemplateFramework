@@ -48,7 +48,7 @@ public class MultipleContentBuilderEnvironmentTests
         public void Creates_Instance_Correctly_Without_Arguments()
         {
             // Act
-            var instance = new MultipleContentBuilderEnvironment<StringBuilder>();
+            var instance = new MultipleContentBuilderEnvironment();
 
             // Assert
             instance.Builder.Should().NotBeNull();

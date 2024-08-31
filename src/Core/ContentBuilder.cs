@@ -1,12 +1,25 @@
 ﻿namespace TemplateFramework.Core;
 
-public sealed class ContentBuilder<T> : IContentBuilder<T> where T : class, new()
+public class ContentBuilderOfStringBuilder : ContentBuilder<StringBuilder>
 {
-    public ContentBuilder() : this(new T())
+    public ContentBuilderOfStringBuilder()
     {
     }
 
-    public ContentBuilder(T builder)
+    public ContentBuilderOfStringBuilder(StringBuilder builder) : base(builder)
+    {
+    }
+
+    public override IContent Build() => new Content(Builder.ToString() ?? string.Empty, SkipWhenFileExists, Filename!);
+}
+
+public abstract class ContentBuilder<T> : IContentBuilder<T> where T : class, new()
+{
+    protected ContentBuilder() : this(new T())
+    {
+    }
+
+    protected ContentBuilder(T builder)
     {
         Guard.IsNotNull(builder);
         Builder = builder;
@@ -17,5 +30,5 @@ public sealed class ContentBuilder<T> : IContentBuilder<T> where T : class, new(
 
     public T Builder { get; }
 
-    public IContent Build() => new Content(Builder.ToString() ?? string.Empty, SkipWhenFileExists, Filename!);
+    public abstract IContent Build();
 }

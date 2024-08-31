@@ -48,7 +48,7 @@ public class IntegrationTests : TestBase
         using var scope = provider.CreateScope();
 
         var engine = scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
-        var generationEnvironment = new MultipleContentBuilderEnvironment<StringBuilder>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
         var settings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
