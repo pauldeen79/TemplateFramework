@@ -3,7 +3,7 @@
 public class IntegrationTests : TestBase
 {
     [Fact]
-    public async Task Can_Render_MultipleContentBuilderTemplate_With_ChildTemplate_And_TemplateContext()
+    public async Task Can_Render_MultipleStringContentBuilderTemplate_With_ChildTemplate_And_TemplateContext()
     {
         // Arrange
         var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
@@ -48,7 +48,7 @@ public class IntegrationTests : TestBase
         using var scope = provider.CreateScope();
 
         var engine = scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
-        var generationEnvironment = new MultipleContentBuilderEnvironment();
+        var generationEnvironment = new MultipleStringContentBuilderEnvironment();
         var settings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act

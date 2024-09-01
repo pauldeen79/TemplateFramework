@@ -1,16 +1,16 @@
 ﻿namespace TemplateFramework.Core.GenerationEnvironments;
 
-public class MultipleContentBuilderEnvironment : MultipleContentBuilderEnvironment<StringBuilder>
+public class MultipleStringContentBuilderEnvironment : MultipleContentBuilderEnvironment<StringBuilder>
 {
-    public MultipleContentBuilderEnvironment() : base(new MultipleContentBuilder())
+    public MultipleStringContentBuilderEnvironment() : base(new MultipleContentBuilder())
     {
     }
 
-    public MultipleContentBuilderEnvironment(IMultipleContentBuilder<StringBuilder> builder) : base(builder)
+    public MultipleStringContentBuilderEnvironment(IMultipleContentBuilder<StringBuilder> builder) : base(builder)
     {
     }
 
-    internal MultipleContentBuilderEnvironment(IFileSystem fileSystem, IRetryMechanism retryMechanism, IMultipleContentBuilder<StringBuilder> builder) : base(fileSystem, retryMechanism, builder)
+    internal MultipleStringContentBuilderEnvironment(IFileSystem fileSystem, IRetryMechanism retryMechanism, IMultipleContentBuilder<StringBuilder> builder) : base(fileSystem, retryMechanism, builder)
     {
     }
 }
