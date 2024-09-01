@@ -5,14 +5,6 @@ public class MultipleStringContentBuilderEnvironment : MultipleContentBuilderEnv
     public MultipleStringContentBuilderEnvironment() : base(new MultipleContentBuilder())
     {
     }
-
-    public MultipleStringContentBuilderEnvironment(IMultipleContentBuilder<StringBuilder> builder) : base(builder)
-    {
-    }
-
-    internal MultipleStringContentBuilderEnvironment(IFileSystem fileSystem, IRetryMechanism retryMechanism, IMultipleContentBuilder<StringBuilder> builder) : base(fileSystem, retryMechanism, builder)
-    {
-    }
 }
 
 public class MultipleContentBuilderEnvironment<T> : IGenerationEnvironment where T : class, new()

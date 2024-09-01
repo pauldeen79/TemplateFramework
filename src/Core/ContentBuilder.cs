@@ -10,7 +10,7 @@ public class ContentBuilderOfStringBuilder : ContentBuilder<StringBuilder>
     {
     }
 
-    public override IContent Build() => new Content(Builder.ToString() ?? string.Empty, SkipWhenFileExists, Filename!);
+    public override IContent Build() => new Content(Builder.ToString(), SkipWhenFileExists, Filename!);
 }
 
 public abstract class ContentBuilder<T> : IContentBuilder<T> where T : class, new()
