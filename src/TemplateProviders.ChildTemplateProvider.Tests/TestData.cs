@@ -19,8 +19,28 @@ internal static class TestData
         public PlainTemplateWithTemplateContext(Func<ITemplateContext, string> @delegate) => _delegate = @delegate;
 
         public ITemplateContext Context { get; set; } = default!;
-
         public override string ToString() => _delegate(Context);
+    }
+
+    internal sealed class TemplateWithViewModel<T> : IStringBuilderTemplate, IModelContainer<T>
+    {
+        public T? Model { get; set; }
+
+        private readonly Action<StringBuilder, T> _delegate;
+
+        public TemplateWithViewModel(Action<StringBuilder, T> @delegate) => _delegate = @delegate;
+
+        public Task Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder, Model!); return Task.CompletedTask; }
+    }
+
+    internal sealed class ViewModel<TModel> : IModelContainer<TModel>, IViewModel
+    {
+        public TModel? Model { get; set; }
+    }
+
+    internal sealed class Model
+    {
+        public string? Contents { get; set; }
     }
 
     internal sealed class MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine : IMultipleContentBuilderTemplate, ITemplateContextContainer

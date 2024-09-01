@@ -32,6 +32,38 @@ public class IntegrationTests : TestBase
     }
 
     [Fact]
+    public async Task Can_Render_MultipleStringContentBuilderTemplate_With_ChildTemplate_Containing_ViewModel_And_TemplateContext()
+    {
+        // Arrange
+        var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
+        using var provider = new ServiceCollection()
+            .AddTemplateFramework()
+            .AddTemplateFrameworkChildTemplateProvider()
+            .AddChildTemplate(typeof(TestData.Model), _ => new TestData.TemplateWithViewModel<TestData.ViewModel<TestData.Model>>((builder, viewModel) => builder.Append(viewModel?.Model?.Contents ?? string.Empty)))
+            .AddTransient<IViewModel, TestData.ViewModel<TestData.Model>>() // TODO: Replace with AddViewModel
+            .AddSingleton(templateComponentRegistryPluginFactory)
+            .BuildServiceProvider(true);
+        using var scope = provider.CreateScope();
+        var engine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
+
+        var template = new TestData.MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine(async (builder, context) =>
+        {
+            var model = new TestData.Model { Contents = "Hello world!" };
+            var identifier = new TemplateByModelIdentifier(model);
+            //TODO: Replace with RenderChildTemplateByModel
+            await context.Engine.RenderChildTemplate(model, new MultipleContentBuilderEnvironment<StringBuilder>(builder), identifier, context, CancellationToken.None).ConfigureAwait(false);
+        });
+        var generationEnvironment = new MultipleContentBuilder();
+
+        // Act
+        await engine.Render(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), generationEnvironment), CancellationToken.None);
+
+        // Assert
+        generationEnvironment.Contents.Should().ContainSingle();
+        generationEnvironment.Contents.Single().Builder.ToString().Should().Be("Hello world!");
+    }
+
+    [Fact]
     public async Task Can_Render_Multiple_Files_Into_One_File_Like_Current_CsharpClassGenerator()
     {
         // Arrange

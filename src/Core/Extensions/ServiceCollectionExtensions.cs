@@ -26,5 +26,6 @@ public static class ServiceCollectionExtensions
             .AddScoped<IRetryMechanism, RetryMechanism>()
             .AddScoped<ITemplateParameterExtractor, TemplateParameterExtractor>()
             .AddScoped<ISingleContentTemplateRenderer, StringBuilderTemplateRenderer>() // also register using its own type, so we can render a single template from  multiple content template renderer
+            .AddSingleton<ITemplateParameterConverter>(x => new ViewModelTemplateParameterConverter(() => x.GetServices<IViewModel>())) // Add support for ViewModels
             ;
 }
