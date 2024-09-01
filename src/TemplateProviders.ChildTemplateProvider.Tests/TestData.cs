@@ -128,7 +128,7 @@ internal static class TestData
             Guard.IsNotNull(Context);
 
             StringBuilder? singleStringBuilder = null;
-            IGenerationEnvironment generationEnvironment = new MultipleContentBuilderEnvironment<StringBuilder>(builder);
+            IGenerationEnvironment generationEnvironment = new MultipleStringContentBuilderEnvironment(builder);
 
             if (!Model.Settings.GenerateMultipleFiles)
             {
@@ -339,7 +339,7 @@ internal static class TestData
             {
                 await Context.Engine.RenderChildTemplates(
                     Model.Data.SubClasses.Select(typeBase => new CsharpClassGeneratorViewModel<TypeBase>(typeBase, Model.Settings.ForSubclasses())),
-                    new MultipleContentBuilderEnvironment<StringBuilder>(builder),
+                    new MultipleStringContentBuilderEnvironment(builder),
                     Context,
                     model => new TemplateByModelIdentifier(model!.GetType().GetProperty(nameof(CsharpClassGeneratorViewModel<TypeBase>.Data))!.GetValue(model)),
                     cancellationToken

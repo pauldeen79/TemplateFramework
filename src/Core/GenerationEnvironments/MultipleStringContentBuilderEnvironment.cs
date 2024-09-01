@@ -5,6 +5,10 @@ public class MultipleStringContentBuilderEnvironment : MultipleContentBuilderEnv
     public MultipleStringContentBuilderEnvironment() : base(new MultipleContentBuilder())
     {
     }
+
+    public MultipleStringContentBuilderEnvironment(IMultipleContentBuilder<StringBuilder> builder) : base(builder)
+    {
+    }
 }
 
 public class MultipleContentBuilderEnvironment<T> : IGenerationEnvironment where T : class, new()

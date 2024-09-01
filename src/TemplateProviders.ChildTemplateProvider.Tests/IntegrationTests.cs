@@ -19,7 +19,7 @@ public class IntegrationTests : TestBase
         var template = new TestData.MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine(async (builder, context) =>
         {
             var identifier = new TemplateByNameIdentifier("MyTemplate");
-            await context.Engine.RenderChildTemplate(new MultipleContentBuilderEnvironment<StringBuilder>(builder), identifier, context, CancellationToken.None).ConfigureAwait(false);
+            await context.Engine.RenderChildTemplate(new MultipleStringContentBuilderEnvironment(builder), identifier, context, CancellationToken.None).ConfigureAwait(false);
         });
         var generationEnvironment = new MultipleContentBuilder();
 
@@ -51,7 +51,7 @@ public class IntegrationTests : TestBase
             var model = new TestData.Model { Contents = "Hello world!" };
             var identifier = new TemplateByModelIdentifier(model);
             //TODO: Replace with RenderChildTemplateByModel
-            await context.Engine.RenderChildTemplate(model, new MultipleContentBuilderEnvironment<StringBuilder>(builder), identifier, context, CancellationToken.None).ConfigureAwait(false);
+            await context.Engine.RenderChildTemplate(model, new MultipleStringContentBuilderEnvironment(builder), identifier, context, CancellationToken.None).ConfigureAwait(false);
         });
         var generationEnvironment = new MultipleContentBuilder();
 
