@@ -1,8 +1,8 @@
 ﻿namespace TemplateFramework.Core.Tests.TemplateRenderers;
 
-public partial class MultipleContentTemplateOfStringBuilderRendererTests
+public partial class MultipleStringContentBuilderTemplateRendererTests
 {
-    public class Render : MultipleContentTemplateOfStringBuilderRendererTests
+    public class Render : MultipleStringContentBuilderTemplateRendererTests
     {
         [Fact]
         public void Throws_When_Context_Is_Null()

@@ -7,7 +7,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IFileSystem, FileSystem>()
             .AddScoped<ITemplateEngine, TemplateEngine>()
             .AddScoped<ITemplateInitializer, TemplateInitializer>()
-            .AddScoped<ITemplateRenderer, MultipleContentOfStringBuilderTemplateRenderer>()
+            .AddScoped<ITemplateRenderer, MultipleStringContentBuilderTemplateRenderer>()
             .AddScoped<ITemplateRenderer, StringBuilderTemplateRenderer>()
             .AddScoped<IMultipleContentBuilderTemplateCreator<StringBuilder>, TypedMultipleCreator<StringBuilder>>()
             .AddScoped<IStringBuilderTemplateRenderer, TypedStringBuilderTemplateRenderer>()

@@ -1,10 +1,10 @@
 ﻿namespace TemplateFramework.Core.TemplateRenderers;
 
-public class MultipleContentOfStringBuilderTemplateRenderer : ITemplateRenderer
+public class MultipleStringContentBuilderTemplateRenderer : ITemplateRenderer
 {
     private readonly IEnumerable<IMultipleContentBuilderTemplateCreator<StringBuilder>> _creators;
 
-    public MultipleContentOfStringBuilderTemplateRenderer(
+    public MultipleStringContentBuilderTemplateRenderer(
         IEnumerable<IMultipleContentBuilderTemplateCreator<StringBuilder>> creators)
     {
         Guard.IsNotNull(creators);

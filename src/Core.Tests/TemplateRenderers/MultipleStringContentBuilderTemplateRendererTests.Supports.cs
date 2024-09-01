@@ -1,8 +1,8 @@
 ﻿namespace TemplateFramework.Core.Tests.TemplateRenderers;
 
-public partial class MultipleContentTemplateOfStringBuilderRendererTests
+public partial class MultipleStringContentBuilderTemplateRendererTests
 {
-    public class Supports : MultipleContentTemplateOfStringBuilderRendererTests
+    public class Supports : MultipleStringContentBuilderTemplateRendererTests
     {
         [Fact]
         public void Returns_False_When_GenerationEnvironment_Is_StringBuilder()
