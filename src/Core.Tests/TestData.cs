@@ -89,6 +89,16 @@ internal static class TestData
         public ITemplateParameter[] GetParameters() => new[] { new TemplateParameter(nameof(ViewModel), typeof(T?)) };
     }
 
+    internal sealed class MyViewModel<T> : IViewModel, IModelContainer<T>
+    {
+        public T? Model { get; set; }
+    }
+
+    internal sealed class MyModel<T> : IModelContainer<T>
+    {
+        public T? Model { get; set; }
+    }
+
     internal sealed class PlainTemplateWithModelAndAdditionalParameters<T> : IModelContainer<T>, IParameterizedTemplate
     {
         public T? Model { get; set; } = default!;
