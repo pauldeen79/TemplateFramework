@@ -10,5 +10,5 @@ public partial class TemplateEngineTests
     protected ITemplateParameterExtractor TemplateParameterExtractorMock { get; } = Substitute.For<ITemplateParameterExtractor>();
     protected ITemplateRenderer TemplateRendererMock { get; } = Substitute.For<ITemplateRenderer>();
 
-    protected TemplateEngine CreateSut() => new(TemplateProviderMock, TemplateInitializerMock, TemplateParameterExtractorMock, new[] { TemplateRendererMock });
+    protected TemplateEngine CreateSut() => new(TemplateProviderMock, TemplateInitializerMock, TemplateParameterExtractorMock, [TemplateRendererMock]);
 }

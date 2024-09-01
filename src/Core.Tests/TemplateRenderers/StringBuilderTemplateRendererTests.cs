@@ -6,5 +6,5 @@ public partial class StringBuilderTemplateRendererTests
     protected ITemplateEngine TemplateEngineMock { get; } = Substitute.For<ITemplateEngine>();
     protected ITemplateProvider TemplateProviderMock { get; } = Substitute.For<ITemplateProvider>();
 
-    protected StringBuilderTemplateRenderer CreateSut() => new(new[] { StringBuilderTemplateRendererMock });
+    protected StringBuilderTemplateRenderer CreateSut() => new([StringBuilderTemplateRendererMock]);
 }

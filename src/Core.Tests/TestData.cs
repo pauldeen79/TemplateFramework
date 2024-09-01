@@ -12,7 +12,7 @@ public sealed class PlainTemplateWithAdditionalParameters : IParameterizedTempla
         }
     }
 
-    public ITemplateParameter[] GetParameters() => new[] { new TemplateParameter(nameof(AdditionalParameter), typeof(string)) };
+    public ITemplateParameter[] GetParameters() => [new TemplateParameter(nameof(AdditionalParameter), typeof(string))];
 
     public override string ToString() => AdditionalParameter;
 }
@@ -86,7 +86,7 @@ internal static class TestData
             }
         }
 
-        public ITemplateParameter[] GetParameters() => new[] { new TemplateParameter(nameof(ViewModel), typeof(T?)) };
+        public ITemplateParameter[] GetParameters() => [new TemplateParameter(nameof(ViewModel), typeof(T?))];
     }
 
     internal sealed class MyViewModel<T> : IViewModel, IModelContainer<T>
@@ -113,7 +113,7 @@ internal static class TestData
             }
         }
 
-        public ITemplateParameter[] GetParameters() => new[] { new TemplateParameter(nameof(AdditionalParameter), typeof(T?)) };
+        public ITemplateParameter[] GetParameters() => [new TemplateParameter(nameof(AdditionalParameter), typeof(T?))];
 
         public override string ToString() => AdditionalParameter;
     }
@@ -158,7 +158,7 @@ internal static class TestData
             }
         }
 
-        public ITemplateParameter[] GetParameters() => new[] { new TemplateParameter(nameof(Property), typeof(string)) };
+        public ITemplateParameter[] GetParameters() => [new TemplateParameter(nameof(Property), typeof(string))];
     }
 
     internal sealed class PocoParameterizedTemplate

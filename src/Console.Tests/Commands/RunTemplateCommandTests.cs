@@ -154,7 +154,7 @@ public class RunTemplateCommandTests : TestBase<RunTemplateCommand>
             var templateEngineMock = Fixture.Freeze<ITemplateEngine>();
             var userInputMock = Fixture.Freeze<IUserInput>();
             templateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(templateInstance);
-            templateEngineMock.GetParameters(Arg.Any<object>()).Returns(new[] { new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string)) });
+            templateEngineMock.GetParameters(Arg.Any<object>()).Returns([new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string))]);
             var sut = CreateSut();
 
             // Act
@@ -172,7 +172,7 @@ public class RunTemplateCommandTests : TestBase<RunTemplateCommand>
             var templateProviderMock = Fixture.Freeze<ITemplateProvider>();
             var templateEngineMock = Fixture.Freeze<ITemplateEngine>();
             templateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(templateInstance);
-            templateEngineMock.GetParameters(Arg.Any<object>()).Returns(new[] { new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string)) });
+            templateEngineMock.GetParameters(Arg.Any<object>()).Returns([new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string))]);
             var sut = CreateSut();
 
             // Act
@@ -194,7 +194,7 @@ AdditionalParameter (System.String)
             var templateProviderMock = Fixture.Freeze<ITemplateProvider>();
             var templateEngineMock = Fixture.Freeze<ITemplateEngine>();
             templateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(templateInstance);
-            templateEngineMock.GetParameters(Arg.Any<object>()).Returns(new[] { new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string)) });
+            templateEngineMock.GetParameters(Arg.Any<object>()).Returns([new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string))]);
             var sut = CreateSut();
 
             // Act
@@ -214,7 +214,7 @@ AdditionalParameter (System.String)
             var templateEngineMock = Fixture.Freeze<ITemplateEngine>();
             var fileSystemMock = Fixture.Freeze<IFileSystem>();
             templateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(templateInstance);
-            templateEngineMock.GetParameters(Arg.Any<object>()).Returns(new[] { new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string)) });
+            templateEngineMock.GetParameters(Arg.Any<object>()).Returns([new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string))]);
             fileSystemMock.FileExists("myfile.txt").Returns(false);
             var sut = CreateSut();
 
@@ -235,7 +235,7 @@ AdditionalParameter (System.String)
             var templateEngineMock = Fixture.Freeze<ITemplateEngine>();
             var fileSystemMock = Fixture.Freeze<IFileSystem>();
             templateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(templateInstance);
-            templateEngineMock.GetParameters(Arg.Any<object>()).Returns(new[] { new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string)) });
+            templateEngineMock.GetParameters(Arg.Any<object>()).Returns([new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string))]);
             fileSystemMock.FileExists("myfile.txt").Returns(false);
             var sut = CreateSut();
 

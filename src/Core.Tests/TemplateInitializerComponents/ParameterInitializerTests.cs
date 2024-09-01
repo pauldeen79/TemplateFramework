@@ -141,7 +141,7 @@ public class ParameterInitializerTests
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
             valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
-            templateEngine.GetParameters(Arg.Any<object>()).Returns(new[] { new TemplateParameter(nameof(TestData.PocoParameterizedTemplate.Parameter), typeof(string)) });
+            templateEngine.GetParameters(Arg.Any<object>()).Returns([new TemplateParameter(nameof(TestData.PocoParameterizedTemplate.Parameter), typeof(string))]);
 
             // Act
             await sut.Initialize(engineContext, CancellationToken.None);
@@ -163,7 +163,7 @@ public class ParameterInitializerTests
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
             valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
-            templateEngine.GetParameters(Arg.Any<object>()).Returns(new[] { new TemplateParameter(nameof(TestData.PocoParameterizedTemplate.Parameter), typeof(string)) });
+            templateEngine.GetParameters(Arg.Any<object>()).Returns([new TemplateParameter(nameof(TestData.PocoParameterizedTemplate.Parameter), typeof(string))]);
 
             // Act & Assert
             sut.Awaiting(x => x.Initialize(engineContext, CancellationToken.None))

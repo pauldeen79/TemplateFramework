@@ -235,7 +235,7 @@ Error: Could not find file [MyFile.txt]. Could not watch file for changes.
             contentBuilderMock2.Contents.Returns("Contents from file2");
 
             var multipleContentMock = Substitute.For<IMultipleContent>();
-            multipleContentMock.Contents.Returns(new[] { contentBuilderMock1, contentBuilderMock2 });
+            multipleContentMock.Contents.Returns([contentBuilderMock1, contentBuilderMock2]);
 
             multipleContentBuilder.Build().Returns(multipleContentMock);
         }

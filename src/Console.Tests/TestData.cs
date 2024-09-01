@@ -25,7 +25,7 @@ internal static class TestData
             }
         }
 
-        public ITemplateParameter[] GetParameters() => new[] { new TemplateParameter(nameof(AdditionalParameter), typeof(T?)) };
+        public ITemplateParameter[] GetParameters() => [new TemplateParameter(nameof(AdditionalParameter), typeof(T?))];
 
         public override string ToString() => AdditionalParameter;
     }

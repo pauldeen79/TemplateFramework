@@ -6,7 +6,7 @@ public partial class MultipleStringContentBuilderTemplateRendererTests
     protected IMultipleContentBuilderTemplateCreator<StringBuilder> MultipleContentBuilderTemplateCreatorMock { get; } = Substitute.For<IMultipleContentBuilderTemplateCreator<StringBuilder>>();
     protected ITemplateEngine TemplateEngineMock { get; } = Substitute.For<ITemplateEngine>();
 
-    protected MultipleStringContentBuilderTemplateRenderer CreateSut() => new(new[] { MultipleContentBuilderTemplateCreatorMock });
+    protected MultipleStringContentBuilderTemplateRenderer CreateSut() => new([MultipleContentBuilderTemplateCreatorMock]);
 
     protected const string DefaultFilename = "MyFile.txt";
 }

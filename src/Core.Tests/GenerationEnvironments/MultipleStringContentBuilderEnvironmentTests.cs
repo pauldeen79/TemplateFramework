@@ -176,7 +176,7 @@ public class MultipleStringContentBuilderEnvironmentTests
             // Arrange
             var sut = CreateSut();
             FileSystemMock.DirectoryExists(TestData.BasePath).Returns(true);
-            FileSystemMock.GetFiles(TestData.BasePath, "*.generated.cs", false).Returns(new[] { Path.Combine(TestData.BasePath, "File1.txt") });
+            FileSystemMock.GetFiles(TestData.BasePath, "*.generated.cs", false).Returns([Path.Combine(TestData.BasePath, "File1.txt")]);
 
             // Act
             sut.DeleteLastGeneratedFiles(FileSystemMock, TestData.BasePath, Encoding.Latin1, "*.generated.cs", false);
@@ -192,11 +192,11 @@ public class MultipleStringContentBuilderEnvironmentTests
             // Arrange
             var sut = CreateSut();
             FileSystemMock.DirectoryExists(TestData.BasePath).Returns(true);
-            FileSystemMock.GetFiles(TestData.BasePath, "*.generated.cs", true).Returns(new[]
-            {
+            FileSystemMock.GetFiles(TestData.BasePath, "*.generated.cs", true).Returns(
+            [
                 Path.Combine(TestData.BasePath, "File1.txt"),
                 Path.Combine(TestData.BasePath, "Subdirectory", "File2.txt")
-            });
+            ]);
 
             // Act
             sut.DeleteLastGeneratedFiles(FileSystemMock, TestData.BasePath, Encoding.Latin1, "*.generated.cs", true);
@@ -228,11 +228,11 @@ public class MultipleStringContentBuilderEnvironmentTests
             var sut = CreateSut();
             FileSystemMock.FileExists(Arg.Any<string>())
                           .Returns(x => x.ArgAt<string>(0) == "LastGeneratedFiles.txt" || x.ArgAt<string>(0) == "File1.txt");
-            FileSystemMock.ReadAllLines("LastGeneratedFiles.txt", Arg.Any<Encoding>()).Returns(new[]
-            {
+            FileSystemMock.ReadAllLines("LastGeneratedFiles.txt", Arg.Any<Encoding>()).Returns(
+            [
                 "File1.txt",
                 "File2.txt"
-            });
+            ]);
 
             // Act
             sut.DeleteLastGeneratedFiles(FileSystemMock, string.Empty, Encoding.Latin1, "LastGeneratedFiles.txt", false);
@@ -248,11 +248,11 @@ public class MultipleStringContentBuilderEnvironmentTests
             // Arrange
             var sut = CreateSut();
             FileSystemMock.FileExists(Arg.Any<string>()).Returns(x => x.ArgAt<string>(0) == Path.Combine(TestData.BasePath, "LastGeneratedFiles.txt") || x.ArgAt<string>(0) == Path.Combine(TestData.BasePath, "File1.txt"));
-            FileSystemMock.ReadAllLines(Path.Combine(TestData.BasePath, "LastGeneratedFiles.txt"), Arg.Any<Encoding>()).Returns(new[]
-            {
+            FileSystemMock.ReadAllLines(Path.Combine(TestData.BasePath, "LastGeneratedFiles.txt"), Arg.Any<Encoding>()).Returns(
+            [
                 "File1.txt",
                 "File2.txt"
-            });
+            ]);
 
             // Act
             sut.DeleteLastGeneratedFiles(FileSystemMock, TestData.BasePath, Encoding.Latin1, "LastGeneratedFiles.txt", false);
