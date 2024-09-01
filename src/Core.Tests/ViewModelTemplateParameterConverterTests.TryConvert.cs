@@ -51,6 +51,7 @@ public partial class ViewModelTemplateParameterConverterTests
             // Arrange
             var sut = CreateSut();
             var viewModel = new TestData.MyViewModel<TestData.MyModel<string>>();
+            ViewModels.Add(Substitute.For<IViewModel>()); // Let's add a ViewModel that does not have a Model property, to cover all code :)
             ViewModels.Add(viewModel);
 
             // Act
