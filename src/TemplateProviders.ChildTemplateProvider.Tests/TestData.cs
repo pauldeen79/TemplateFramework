@@ -33,10 +33,13 @@ internal static class TestData
         public Task Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder, Model!); return Task.CompletedTask; }
     }
 
+    // False positive, it gets created through DI container
+#pragma warning disable CA1812 // Avoid uninstantiated internal classes
     internal sealed class ViewModel<TModel> : IModelContainer<TModel>, IViewModel
     {
         public TModel? Model { get; set; }
     }
+#pragma warning restore CA1812 // Avoid uninstantiated internal classes
 
     internal sealed class Model
     {
