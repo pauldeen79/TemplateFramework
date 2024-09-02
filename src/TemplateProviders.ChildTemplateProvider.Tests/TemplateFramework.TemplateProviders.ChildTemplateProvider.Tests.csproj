@@ -57,11 +57,13 @@
     <Using Include="FluentAssertions" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
     <Using Include="NSubstitute" />
+    <Using Include="System.Collections" />
     <Using Include="System.Globalization" />
     <Using Include="System.Text" />
     <Using Include="TemplateFramework.Abstractions" />
     <Using Include="TemplateFramework.Abstractions.CodeGeneration" />
     <Using Include="TemplateFramework.Abstractions.Extensions" />
+    <Using Include="TemplateFramework.Abstractions.Requests" />
     <Using Include="TemplateFramework.Abstractions.Templates" />
     <Using Include="TemplateFramework.Core" />
     <Using Include="TemplateFramework.Core.Extensions" />
