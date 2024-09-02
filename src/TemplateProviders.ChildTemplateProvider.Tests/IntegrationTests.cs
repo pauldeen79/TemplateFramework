@@ -40,7 +40,7 @@ public class IntegrationTests : TestBase
             .AddTemplateFramework()
             .AddTemplateFrameworkChildTemplateProvider()
             .AddChildTemplate(typeof(TestData.Model), _ => new TestData.TemplateWithViewModel<TestData.ViewModel<TestData.Model>>((builder, viewModel) => builder.Append(viewModel?.Model?.Contents ?? string.Empty)))
-            .AddTransient<IViewModel, TestData.ViewModel<TestData.Model>>() // TODO: Replace with AddViewModel
+            .AddViewModel<TestData.ViewModel<TestData.Model>>()
             .AddSingleton(templateComponentRegistryPluginFactory)
             .BuildServiceProvider(true);
         using var scope = provider.CreateScope();
@@ -49,9 +49,7 @@ public class IntegrationTests : TestBase
         var template = new TestData.MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine(async (builder, context) =>
         {
             var model = new TestData.Model { Contents = "Hello world!" };
-            var identifier = new TemplateByModelIdentifier(model);
-            //TODO: Replace with RenderChildTemplateByModel
-            await context.Engine.RenderChildTemplate(model, new MultipleStringContentBuilderEnvironment(builder), identifier, context, CancellationToken.None).ConfigureAwait(false);
+            await context.Engine.RenderChildTemplate(model, new MultipleStringContentBuilderEnvironment(builder), context, CancellationToken.None).ConfigureAwait(false);
         });
         var generationEnvironment = new MultipleContentBuilder();
 

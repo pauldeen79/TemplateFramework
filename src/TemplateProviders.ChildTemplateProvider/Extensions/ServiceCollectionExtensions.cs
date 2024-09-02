@@ -23,4 +23,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddChildTemplate<T>(this IServiceCollection services, string name, Func<IServiceProvider, T> templateFactory) where T : class
         => services
             .AddScoped<ITemplateCreator>(provider => new TemplateCreator<T>(() => templateFactory(provider), null, name));
+
+    public static IServiceCollection AddViewModel<T>(this IServiceCollection services) where T : class, IViewModel
+        => services
+            .AddTransient<IViewModel, T>();
 }

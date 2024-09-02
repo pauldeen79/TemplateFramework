@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Abstractions\TemplateFramework.Abstractions.csproj" />
+    <ProjectReference Include="..\Core\TemplateFramework.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,7 +34,10 @@
   <ItemGroup>
     <Using Include="CommunityToolkit.Diagnostics" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="System.Collections" />
     <Using Include="TemplateFramework.Abstractions" />
+    <Using Include="TemplateFramework.Core" />
+    <Using Include="TemplateFramework.Core.Requests" />
     <Using Include="TemplateFramework.TemplateProviders.ChildTemplateProvider.Abstractions" />
     <Using Include="TemplateFramework.TemplateProviders.ChildTemplateProvider.TemplateIdentifiers" />
   </ItemGroup>
