@@ -420,22 +420,56 @@ public sealed class CsharpClassGeneratorCodeGenerationProvider : ICodeGeneration
         };
 
         registry.RegisterComponent(new ProviderComponent(registrations));
+        return Task.CompletedTask;
+    }
+}
+
+public class XDocumentTemplate : IBuilderTemplate<XDocumentBuilder>, ITemplateContextContainer, IModelContainer<XDocumentTestModel>
+{
+    public ITemplateContext Context { get; set; } = default!;
+    public XDocumentTestModel? Model { get; set; }
+
+    public async Task Render(XDocumentBuilder builder, CancellationToken cancellationToken)
+    {
+        Guard.IsNotNull(builder);
+        Guard.IsNotNull(Context);
+        Guard.IsNotNull(Model);
+
+        builder.CurrentElement.Add(new XAttribute("processed", true));
+
+        // POC to add an XElement with a collection.
+        // Note that currently, you have to update the current element, so the child template knows where content should be added to.
+        builder.CurrentElement.Add(new XElement("subItems"));
+        builder.CurrentElement = builder.CurrentElement.Element("subItems")!;
+        // Because this is just a POC, we are using a collection of strings, and a named template.
+        // If you are using a (View)Model, then you can omit the name and resolve the template by model type.
+        await Context.Engine.RenderChildTemplates(Model.SubItems, new XDocumentGenerationEnvironment(builder), new TemplateByNameIdentifier("SubItem"), Context, cancellationToken).ConfigureAwait(false);
+    }
+}
+
+public class SubItemTemplate : IBuilderTemplate<XDocumentBuilder>, IModelContainer<string>
+{
+    public string? Model { get; set; }
+
+    public Task Render(XDocumentBuilder builder, CancellationToken cancellationToken)
+    {
+        Guard.IsNotNull(builder);
+        Guard.IsNotNull(Model);
+
+        builder.CurrentElement.Add(new XElement("item", Model));
 
         return Task.CompletedTask;
     }
 }
 
-public class XDocumentTemplate : IBuilderTemplate<XDocumentBuilder>, ITemplateContextContainer
+public class XDocumentTestModel
 {
-    public ITemplateContext Context { get; set; } = default!;
-
-    public Task Render(XDocumentBuilder builder, CancellationToken cancellationToken)
+    public XDocumentTestModel(params string[] subItems)
     {
-        builder.CurrentElement.Add(new XAttribute("processed", true));
-        //await Context.Engine.RenderChildTemplate(new object(), new XDocumentGenerationEnvironment(builder), Context, cancellationToken).ConfigureAwait(false);
-
-        return Task.CompletedTask;
+        SubItems = subItems;
     }
+
+    public IReadOnlyCollection<string> SubItems { get; }
 }
 
 public class XDocumentBuilder

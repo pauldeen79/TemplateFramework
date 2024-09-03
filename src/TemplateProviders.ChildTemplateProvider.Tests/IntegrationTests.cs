@@ -98,19 +98,26 @@ public class IntegrationTests : TestBase
             .AddTemplateFrameworkChildTemplateProvider()
             .AddScoped<ITemplateRenderer, XDocumentBuilderTemplateRenderer>()
             .AddChildTemplate<XDocumentTemplate>("XDocumentTemplate")
+            .AddChildTemplate<SubItemTemplate>("SubItem")
             .AddViewModel<TestData.ViewModel<TestData.Model>>()
             .AddSingleton(templateComponentRegistryPluginFactory)
             .BuildServiceProvider(true);
         using var scope = provider.CreateScope();
         var engine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
-        var generationEnvironment = new XDocumentGenerationEnvironment(new System.Xml.Linq.XElement("MyRootElement"));
-        object? model = null;
+        var generationEnvironment = new XDocumentGenerationEnvironment(new XElement("MyRootElement"));
+        var model = new XDocumentTestModel("Item1", "Item2", "Item3");
 
         // Act
         await engine.Render(new RenderTemplateRequest(new TemplateByNameIdentifier("XDocumentTemplate"), model, generationEnvironment, string.Empty, null, null), CancellationToken.None);
 
         // Assert
-        generationEnvironment.Builder.Document.ToString().Should().Be(@"<MyRootElement processed=""true"" />");
+        generationEnvironment.Builder.Document.ToString().Should().Be(@"<MyRootElement processed=""true"">
+  <subItems>
+    <item>Item1</item>
+    <item>Item2</item>
+    <item>Item3</item>
+  </subItems>
+</MyRootElement>");
     }
 
     [Fact]
