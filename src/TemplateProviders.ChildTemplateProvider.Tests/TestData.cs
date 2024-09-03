@@ -424,3 +424,102 @@ public sealed class CsharpClassGeneratorCodeGenerationProvider : ICodeGeneration
         return Task.CompletedTask;
     }
 }
+
+public class XDocumentTemplate : IBuilderTemplate<XDocumentBuilder>, ITemplateContextContainer
+{
+    public ITemplateContext Context { get; set; } = default!;
+
+    public Task Render(XDocumentBuilder builder, CancellationToken cancellationToken)
+    {
+        builder.CurrentElement.Add(new XAttribute("processed", true));
+        //await Context.Engine.RenderChildTemplate(new object(), new XDocumentGenerationEnvironment(builder), Context, cancellationToken).ConfigureAwait(false);
+
+        return Task.CompletedTask;
+    }
+}
+
+public class XDocumentBuilder
+{
+    public XDocumentBuilder(XElement rootElement)
+    {
+        Guard.IsNotNull(rootElement);
+
+        Document = new XDocument(rootElement);
+        CurrentElement = Document.Root!;
+    }
+
+    public XDocument Document { get; }
+    public XElement CurrentElement { get; set; }
+}
+
+public class XDocumentGenerationEnvironment : IGenerationEnvironment
+{
+    public XDocumentGenerationEnvironment(XElement rootElement)
+        : this(new FileSystem(), new RetryMechanism(), new XDocumentBuilder(rootElement))
+    {
+    }
+
+    public XDocumentGenerationEnvironment(XDocumentBuilder builder)
+        : this(new FileSystem(), new RetryMechanism(), builder)
+    {
+    }
+
+    internal XDocumentGenerationEnvironment(IFileSystem fileSystem, IRetryMechanism retryMechanism, XDocumentBuilder builder)
+    {
+        Guard.IsNotNull(builder);
+
+        _fileSystem = fileSystem;
+        _retryMechanism = retryMechanism;
+        Builder = builder;
+    }
+
+    private readonly IFileSystem _fileSystem;
+    private readonly IRetryMechanism _retryMechanism;
+
+    public XDocumentBuilder Builder { get; }
+
+    public Task SaveContents(ICodeGenerationProvider provider, string basePath, string defaultFilename, CancellationToken cancellationToken)
+    {
+        Guard.IsNotNull(provider);
+        Guard.IsNotNullOrEmpty(defaultFilename);
+
+        var path = string.IsNullOrEmpty(basePath)
+            ? defaultFilename
+            : Path.Combine(basePath, defaultFilename);
+
+        var dir = Path.GetDirectoryName(path);
+        if (!string.IsNullOrEmpty(dir) && !_fileSystem.DirectoryExists(dir))
+        {
+            _fileSystem.CreateDirectory(dir);
+        }
+
+        var normalizedContents = Builder.Document.ToString().NormalizeLineEndings();
+        _retryMechanism.Retry(() => _fileSystem.WriteAllText(path, normalizedContents, provider.Encoding));
+
+        return Task.CompletedTask;
+    }
+}
+
+public class XDocumentBuilderTemplateRenderer : ITemplateRenderer
+{
+    public bool Supports(IGenerationEnvironment generationEnvironment) => generationEnvironment is XDocumentGenerationEnvironment;
+
+    public async Task Render(ITemplateEngineContext context, CancellationToken cancellationToken)
+    {
+        Guard.IsNotNull(context);
+        Guard.IsNotNull(context.Template);
+
+        if (context.GenerationEnvironment is not XDocumentGenerationEnvironment environment)
+        {
+            throw new NotSupportedException($"Type of GenerationEnvironment ({context.GenerationEnvironment.GetType().FullName}) is not supported");
+        }
+
+        if (context.Template is IBuilderTemplate<XDocumentBuilder> typedTemplate)
+        {
+            await typedTemplate.Render(environment.Builder, cancellationToken).ConfigureAwait(false);
+            return;
+        }
+
+        throw new NotSupportedException($"Type of Template ({context.Template.GetType().FullName}) is not supported");
+    }
+}

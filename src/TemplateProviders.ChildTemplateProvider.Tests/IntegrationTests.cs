@@ -89,6 +89,31 @@ public class IntegrationTests : TestBase
     }
 
     [Fact]
+    public async Task Can_Render_Template_To_Single_XDocument()
+    {
+        // Arrange
+        var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
+        using var provider = new ServiceCollection()
+            .AddTemplateFramework()
+            .AddTemplateFrameworkChildTemplateProvider()
+            .AddScoped<ITemplateRenderer, XDocumentBuilderTemplateRenderer>()
+            .AddChildTemplate<XDocumentTemplate>("XDocumentTemplate")
+            .AddViewModel<TestData.ViewModel<TestData.Model>>()
+            .AddSingleton(templateComponentRegistryPluginFactory)
+            .BuildServiceProvider(true);
+        using var scope = provider.CreateScope();
+        var engine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
+        var generationEnvironment = new XDocumentGenerationEnvironment(new System.Xml.Linq.XElement("MyRootElement"));
+        object? model = null;
+
+        // Act
+        await engine.Render(new RenderTemplateRequest(new TemplateByNameIdentifier("XDocumentTemplate"), model, generationEnvironment, string.Empty, null, null), CancellationToken.None);
+
+        // Assert
+        generationEnvironment.Builder.Document.ToString().Should().Be(@"<MyRootElement processed=""true"" />");
+    }
+
+    [Fact]
     public void Rendering_Unknown_Template_By_Name_Gives_Clear_ErrorMessage_What_Is_Wrong()
     {
         // Arrange
