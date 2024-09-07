@@ -5,7 +5,7 @@ public class TypedStringBuilderTemplateRendererTests
     public class TryRender
     {
         [Theory, AutoMockData]
-        public async Task Returns_False_On_Null_Instance(TypedStringBuilderTemplateRenderer sut)
+        public async Task Returns_False_On_Null_Instance(TypedBuilderTemplateRenderer<StringBuilder> sut)
         {
             // Act
             var result = await sut.TryRender(instance: null!, new StringBuilder(), CancellationToken.None);
@@ -15,7 +15,7 @@ public class TypedStringBuilderTemplateRendererTests
         }
 
         [Theory, AutoMockData]
-        public async Task Returns_False_On_NonNull_Instance_But_Wrong_Type(TypedStringBuilderTemplateRenderer sut)
+        public async Task Returns_False_On_NonNull_Instance_But_Wrong_Type(TypedBuilderTemplateRenderer<StringBuilder> sut)
         {
             // Act
             var result = await sut.TryRender(instance: this, new StringBuilder(), CancellationToken.None);
@@ -26,8 +26,8 @@ public class TypedStringBuilderTemplateRendererTests
 
         [Theory, AutoMockData]
         public async Task Returns_True_On_IStringBuilderTemplate_Instance(
-            [Frozen] IStringBuilderTemplate stringBuilderTemplate,
-            TypedStringBuilderTemplateRenderer sut)
+            [Frozen] IBuilderTemplate<StringBuilder> stringBuilderTemplate,
+            TypedBuilderTemplateRenderer<StringBuilder> sut)
         {
             // Act
             var result = await sut.TryRender(instance: stringBuilderTemplate, new StringBuilder(), CancellationToken.None);
@@ -38,8 +38,8 @@ public class TypedStringBuilderTemplateRendererTests
 
         [Theory, AutoMockData]
         public async Task Renders_Template_On_IStringBuilderTemplate_Instance(
-            [Frozen] IStringBuilderTemplate stringBuilderTemplate, 
-            TypedStringBuilderTemplateRenderer sut)
+            [Frozen] IBuilderTemplate<StringBuilder> stringBuilderTemplate, 
+            TypedBuilderTemplateRenderer<StringBuilder> sut)
         {
             // Arrange
             var builder = new StringBuilder();

@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider;
 
-public class FormattableStringTemplate : IParameterizedTemplate, IStringBuilderTemplate
+public class FormattableStringTemplate : IParameterizedTemplate, IBuilderTemplate<StringBuilder>
 {
     private readonly FormattableStringTemplateIdentifier _formattableStringTemplateIdentifier;
     private readonly IFormattableStringParser _formattableStringParser;

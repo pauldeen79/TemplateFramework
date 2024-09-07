@@ -22,7 +22,7 @@ internal static class TestData
         public override string ToString() => _delegate(Context);
     }
 
-    internal sealed class TemplateWithViewModel<T> : IStringBuilderTemplate, IModelContainer<T>
+    internal sealed class TemplateWithViewModel<T> : IBuilderTemplate<StringBuilder>, IModelContainer<T>
     {
         public T? Model { get; set; }
 
@@ -119,7 +119,7 @@ internal static class TestData
 
     // False positive, it gets created through DI container
 #pragma warning disable CA1812 // Avoid uninstantiated internal classes
-    internal sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>>, IMultipleContentBuilderTemplate, IStringBuilderTemplate
+    internal sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>>, IMultipleContentBuilderTemplate, IBuilderTemplate<StringBuilder>
     {
         public async Task Render(IMultipleContentBuilder<StringBuilder> builder, CancellationToken cancellationToken)
         {
@@ -207,7 +207,7 @@ internal static class TestData
         }
     }
 
-    public sealed class CodeGenerationHeaderTemplate : CsharpClassGeneratorBase<CsharpClassGeneratorSettings>, IStringBuilderTemplate
+    public sealed class CodeGenerationHeaderTemplate : CsharpClassGeneratorBase<CsharpClassGeneratorSettings>, IBuilderTemplate<StringBuilder>
     {
         public string Version
             => !string.IsNullOrEmpty(Model?.EnvironmentVersion)
@@ -240,7 +240,7 @@ internal static class TestData
         }
     }
 
-    public sealed class DefaultUsingsTemplate : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>>, IStringBuilderTemplate
+    public sealed class DefaultUsingsTemplate : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>>, IBuilderTemplate<StringBuilder>
     {
         public Task Render(StringBuilder builder, CancellationToken cancellationToken)
         {
@@ -506,26 +506,14 @@ public class XDocumentGenerationEnvironment : GenerationEnvironmentBase<XDocumen
     protected override string Build() => Builder.Document.ToString();
 }
 
-public class XDocumentBuilderTemplateRenderer : ITemplateRenderer
+public class XDocumentBuilderTemplateRenderer : BuilderTemplateRendererBase<XDocumentGenerationEnvironment, XDocumentBuilder>
 {
-    public bool Supports(IGenerationEnvironment generationEnvironment) => generationEnvironment is XDocumentGenerationEnvironment;
-
-    public async Task Render(ITemplateEngineContext context, CancellationToken cancellationToken)
+    public XDocumentBuilderTemplateRenderer(IEnumerable<IBuilderTemplateRenderer<XDocumentBuilder>> renderers) : base(renderers)
     {
-        Guard.IsNotNull(context);
-        Guard.IsNotNull(context.Template);
+    }
 
-        if (context.GenerationEnvironment is not XDocumentGenerationEnvironment environment)
-        {
-            throw new NotSupportedException($"Type of GenerationEnvironment ({context.GenerationEnvironment.GetType().FullName}) is not supported");
-        }
-
-        if (context.Template is IBuilderTemplate<XDocumentBuilder> typedTemplate)
-        {
-            await typedTemplate.Render(environment.Builder, cancellationToken).ConfigureAwait(false);
-            return;
-        }
-
-        throw new NotSupportedException($"Type of Template ({context.Template.GetType().FullName}) is not supported");
+    protected override Task DefaultImplementation(object templateInstance, XDocumentBuilder builder)
+    {
+        throw new NotSupportedException($"Type of Template ({templateInstance.GetType().FullName}) is not supported");
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Core.StringBuilderTemplateRenderers;
 
-public class TypedTextTransformTemplateRenderer : IStringBuilderTemplateRenderer
+public class TypedTextTransformTemplateRenderer : IBuilderTemplateRenderer<StringBuilder>
 {
     public async Task<bool> TryRender(object instance, StringBuilder builder, CancellationToken cancellationToken)
     {

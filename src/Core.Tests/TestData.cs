@@ -37,7 +37,7 @@ internal static class TestData
     internal const string BasePath = "Unknown basepath, only Windows, Linux and OSX are supported";
 #endif
 
-    internal sealed class Template : IStringBuilderTemplate
+    internal sealed class Template : IBuilderTemplate<StringBuilder>
     {
         private readonly Action<StringBuilder> _delegate;
 
@@ -46,7 +46,7 @@ internal static class TestData
         public Task Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.CompletedTask; }
     }
 
-    internal sealed class TemplateWithModel<T> : IStringBuilderTemplate, IModelContainer<T>
+    internal sealed class TemplateWithModel<T> : IBuilderTemplate<StringBuilder>, IModelContainer<T>
     {
         public T? Model { get; set; } = default!;
 
@@ -57,7 +57,7 @@ internal static class TestData
         public Task Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.CompletedTask; }
     }
 
-    internal sealed class TemplateWithDefaultFilename : IStringBuilderTemplate, IDefaultFilenameContainer
+    internal sealed class TemplateWithDefaultFilename : IBuilderTemplate<StringBuilder>, IDefaultFilenameContainer
     {
         private readonly Action<StringBuilder> _delegate;
 
@@ -68,7 +68,7 @@ internal static class TestData
         public Task Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.CompletedTask; }
     }
 
-    internal sealed class TemplateWithViewModel<T> : IStringBuilderTemplate, IParameterizedTemplate
+    internal sealed class TemplateWithViewModel<T> : IBuilderTemplate<StringBuilder>, IParameterizedTemplate
     {
         public T? ViewModel { get; set; } = default!;
 

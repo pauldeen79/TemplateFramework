@@ -2,7 +2,7 @@
 
 public partial class StringBuilderTemplateRendererTests
 {
-    protected IStringBuilderTemplateRenderer StringBuilderTemplateRendererMock { get; } = Substitute.For<IStringBuilderTemplateRenderer>();
+    protected IBuilderTemplateRenderer<StringBuilder> StringBuilderTemplateRendererMock { get; } = Substitute.For<IBuilderTemplateRenderer<StringBuilder>>();
     protected ITemplateEngine TemplateEngineMock { get; } = Substitute.For<ITemplateEngine>();
     protected ITemplateProvider TemplateProviderMock { get; } = Substitute.For<ITemplateProvider>();
 

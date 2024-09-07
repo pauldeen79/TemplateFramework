@@ -74,6 +74,7 @@
     <Using Include="TemplateFramework.Core.Infrastructure;"/>
     <Using Include="TemplateFramework.Core.Requests" />
     <Using Include="TemplateFramework.Core.TemplateIdentifiers" />
+    <Using Include="TemplateFramework.Core.TemplateRenderers" />
     <Using Include="TemplateFramework.Core.CodeGeneration" />
     <Using Include="TemplateFramework.Core.CodeGeneration.Extensions" />
     <Using Include="TemplateFramework.TemplateProviders.ChildTemplateProvider.Abstractions" />

@@ -1,4 +1,6 @@
-﻿namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests;
+﻿using TemplateFramework.Core.BuilderTemplateRenderers;
+
+namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests;
 
 public class IntegrationTests : TestBase
 {
@@ -97,6 +99,7 @@ public class IntegrationTests : TestBase
             .AddTemplateFramework()
             .AddTemplateFrameworkChildTemplateProvider()
             .AddScoped<ITemplateRenderer, XDocumentBuilderTemplateRenderer>()
+            .AddScoped<IBuilderTemplateRenderer<XDocumentBuilder>, TypedBuilderTemplateRenderer<XDocumentBuilder>>()
             .AddChildTemplate<XDocumentTemplate>("XDocumentTemplate")
             .AddChildTemplate<SubItemTemplate>("SubItem")
             .AddViewModel<TestData.ViewModel<TestData.Model>>()

@@ -1,46 +1,21 @@
 ﻿namespace TemplateFramework.Core.TemplateRenderers;
 
-public sealed class StringBuilderTemplateRenderer : ISingleContentTemplateRenderer
+public sealed class StringBuilderTemplateRenderer : BuilderTemplateRendererBase<StringBuilderEnvironment, StringBuilder>
 {
-    private readonly IEnumerable<IStringBuilderTemplateRenderer> _renderers;
-
-    public StringBuilderTemplateRenderer(IEnumerable<IStringBuilderTemplateRenderer> renderers)
+    public StringBuilderTemplateRenderer(IEnumerable<IBuilderTemplateRenderer<StringBuilder>> renderers) : base(renderers)
     {
-        Guard.IsNotNull(renderers);
-
-        _renderers = renderers;
     }
 
-    public bool Supports(IGenerationEnvironment generationEnvironment) => generationEnvironment is StringBuilderEnvironment;
-    
-    public async Task Render(ITemplateEngineContext context, CancellationToken cancellationToken)
+
+    protected override Task DefaultImplementation(object templateInstance, StringBuilder builder)
     {
-        Guard.IsNotNull(context);
-        Guard.IsNotNull(context.Template);
+        var output = templateInstance.ToString();
 
-        if (context.GenerationEnvironment is not StringBuilderEnvironment environment)
+        if (!string.IsNullOrEmpty(output))
         {
-            throw new NotSupportedException($"Type of GenerationEnvironment ({context.GenerationEnvironment.GetType().FullName}) is not supported");
+            builder.Append(output);
         }
 
-        var result = false;
-        foreach (var renderer in _renderers)
-        {
-            result = await renderer.TryRender(context.Template, environment.Builder, cancellationToken).ConfigureAwait(false);
-            if (result || cancellationToken.IsCancellationRequested)
-            {
-                break;
-            }
-        }
-
-        if (!result && !cancellationToken.IsCancellationRequested)
-        {
-            var output = context.Template.ToString();
-
-            if (!string.IsNullOrEmpty(output))
-            {
-                environment.Builder.Append(output);
-            }
-        }
+        return Task.CompletedTask;
     }
 }

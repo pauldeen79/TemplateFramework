@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider;
 
-public class ExpressionStringTemplate : IStringBuilderTemplate
+public class ExpressionStringTemplate : IBuilderTemplate<StringBuilder>
 {
     private readonly ExpressionStringTemplateIdentifier _expressionStringTemplateIdentifier;
     private readonly IExpressionStringParser _expressionStringParser;

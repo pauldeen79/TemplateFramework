@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider.Tests;
 
-public class TestFormattableStringTemplate : IParameterizedTemplate, IStringBuilderTemplate
+public class TestFormattableStringTemplate : IParameterizedTemplate, IBuilderTemplate<StringBuilder>
 {
     private readonly Dictionary<string, object?> _parameterValues = new();
     private readonly IFormattableStringParser _formattableStringParser;
