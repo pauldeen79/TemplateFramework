@@ -11,6 +11,7 @@ public class TemplateEngineExtensionsTests
             var templateEngine = Substitute.For<ITemplateEngine>();
             var generationEnvironment = Substitute.For<IGenerationEnvironment>();
             IEnumerable childModels = new object[] { new object(), new object(), new object() };
+            templateEngine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
 
             // Act
             await templateEngine.RenderChildTemplates(childModels, generationEnvironment, CancellationToken.None);
@@ -27,6 +28,7 @@ public class TemplateEngineExtensionsTests
             var generationEnvironment = Substitute.For<IGenerationEnvironment>();
             var templateContext = Substitute.For<ITemplateContext>();
             IEnumerable childModels = new object[] { new object(), new object(), new object() };
+            templateEngine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
 
             // Act
             await templateEngine.RenderChildTemplates(childModels, generationEnvironment, templateContext, CancellationToken.None);

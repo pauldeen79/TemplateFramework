@@ -32,7 +32,7 @@ public class TemplateEngineExtensionsTests
             templateContext.CreateChildContext(Arg.Any<IChildTemplateContext>()).Returns(templateContext);
 
             // Act
-            await sut.RenderChildTemplate(Model, generationEnvironment, identifier, templateContext, CancellationToken.None);
+            _ = await sut.RenderChildTemplate(Model, generationEnvironment, identifier, templateContext, CancellationToken.None);
 
             // Assert
             await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -78,7 +78,7 @@ public class TemplateEngineExtensionsTests
             templateContext.CreateChildContext(Arg.Any<IChildTemplateContext>()).Returns(templateContext);
 
             // Act
-            await sut.RenderChildTemplate(Model, generationEnvironment, _ => identifier, templateContext, CancellationToken.None);
+            _ = await sut.RenderChildTemplate(Model, generationEnvironment, _ => identifier, templateContext, CancellationToken.None);
 
             // Assert
             await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -113,7 +113,7 @@ public class TemplateEngineExtensionsTests
             templateContext.CreateChildContext(Arg.Any<IChildTemplateContext>()).Returns(templateContext);
 
             // Act
-            await sut.RenderChildTemplate(generationEnvironment, identifier, templateContext, CancellationToken.None);
+            _ = await sut.RenderChildTemplate(generationEnvironment, identifier, templateContext, CancellationToken.None);
 
             // Assert
             await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -159,7 +159,7 @@ public class TemplateEngineExtensionsTests
             templateContext.CreateChildContext(Arg.Any<IChildTemplateContext>()).Returns(templateContext);
 
             // Act
-            await sut.RenderChildTemplate(generationEnvironment, () => identifier, templateContext, CancellationToken.None);
+            _ = await sut.RenderChildTemplate(generationEnvironment, () => identifier, templateContext, CancellationToken.None);
 
             // Assert
             await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -179,7 +179,7 @@ public class TemplateEngineExtensionsTests
             ITemplateEngine sut)
         {
             // Act
-            await sut.RenderChildTemplate(Model, generationEnvironment, identifier, CancellationToken.None);
+            _ = await sut.RenderChildTemplate(Model, generationEnvironment, identifier, CancellationToken.None);
 
             // Assert
             await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -208,7 +208,7 @@ public class TemplateEngineExtensionsTests
             ITemplateEngine sut)
         {
             // Act
-            await sut.RenderChildTemplate(Model, generationEnvironment, _ => identifier, CancellationToken.None);
+            _ = await sut.RenderChildTemplate(Model, generationEnvironment, _ => identifier, CancellationToken.None);
 
             // Assert
             await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -227,7 +227,7 @@ public class TemplateEngineExtensionsTests
             ITemplateEngine sut)
         {
             // Act
-            await sut.RenderChildTemplate(generationEnvironment, identifier, CancellationToken.None);
+            _ = await sut.RenderChildTemplate(generationEnvironment, identifier, CancellationToken.None);
 
             // Assert
             await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -256,7 +256,7 @@ public class TemplateEngineExtensionsTests
             ITemplateEngine sut)
         {
             // Act
-            await sut.RenderChildTemplate(generationEnvironment, () => identifier, CancellationToken.None);
+            _ = await sut.RenderChildTemplate(generationEnvironment, () => identifier, CancellationToken.None);
 
             // Assert
             await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -306,7 +306,7 @@ public class TemplateEngineExtensionsTests
             templateProvider.Create(Arg.Any<ITemplateIdentifier>()).Returns(Template);
 
             // Act
-            await sut.RenderChildTemplate(Model, generationEnvironment, templateContext, identifier, CancellationToken.None);
+            _ = await sut.RenderChildTemplate(Model, generationEnvironment, templateContext, identifier, CancellationToken.None);
 
             // Assert
             await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -356,7 +356,7 @@ public class TemplateEngineExtensionsTests
             templateProvider.Create(Arg.Any<ITemplateIdentifier>()).Returns(Template);
 
             // Act
-            await sut.RenderChildTemplate(generationEnvironment, templateContext, identifier, CancellationToken.None);
+            _ = await sut.RenderChildTemplate(generationEnvironment, templateContext, identifier, CancellationToken.None);
 
             // Assert
             await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -405,7 +405,7 @@ public class TemplateEngineExtensionsTests
             templateContext.CreateChildContext(Arg.Any<IChildTemplateContext>()).Returns(templateContext);
 
             // Act
-            await sut.RenderChildTemplates(Models, generationEnvironment, identifier, templateContext, CancellationToken.None);
+            _ = await sut.RenderChildTemplates(Models, generationEnvironment, identifier, templateContext, CancellationToken.None);
 
             // Assert
             await sut.Received(Models.Count()).Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -453,7 +453,7 @@ public class TemplateEngineExtensionsTests
             templateContext.CreateChildContext(Arg.Any<IChildTemplateContext>()).Returns(templateContext);
 
             // Act
-            await sut.RenderChildTemplates(Models, generationEnvironment, _ => identifier, templateContext, CancellationToken.None);
+            _ = await sut.RenderChildTemplates(Models, generationEnvironment, _ => identifier, templateContext, CancellationToken.None);
 
             // Assert
             await sut.Received(Models.Count()).Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -485,7 +485,7 @@ public class TemplateEngineExtensionsTests
             ITemplateEngine sut)
         {
             // Act
-            await sut.RenderChildTemplates(Models, generationEnvironment, identifier, CancellationToken.None);
+            _ = await sut.RenderChildTemplates(Models, generationEnvironment, identifier, CancellationToken.None);
 
             // Assert
             await sut.Received(Models.Count()).Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -515,7 +515,7 @@ public class TemplateEngineExtensionsTests
             ITemplateEngine sut)
         {
             // Act
-            await sut.RenderChildTemplates(Models, generationEnvironment, _ => identifier, CancellationToken.None);
+            _ = await sut.RenderChildTemplates(Models, generationEnvironment, _ => identifier, CancellationToken.None);
 
             // Assert
             await sut.Received(Models.Count()).Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -577,7 +577,7 @@ public class TemplateEngineExtensionsTests
             templateProvider.Create(Arg.Any<ITemplateIdentifier>()).Returns(Template);
 
             // Act
-            await sut.RenderChildTemplates(Models, generationEnvironment, templateContext, _ => identifier, CancellationToken.None);
+            _ = await sut.RenderChildTemplates(Models, generationEnvironment, templateContext, _ => identifier, CancellationToken.None);
 
             // Assert
             await sut.Received(Models.Count()).Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -633,7 +633,7 @@ public class TemplateEngineExtensionsTests
             templateContext.DefaultFilename.Returns(DefaultFilename);
 
             // Act
-            await sut.RenderChildTemplates(Models, generationEnvironment, templateContext, _ => Template, CancellationToken.None);
+            _ = await sut.RenderChildTemplates(Models, generationEnvironment, templateContext, _ => Template, CancellationToken.None);
 
             // Assert
             await sut.Received(Models.Count()).Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -692,7 +692,7 @@ public class TemplateEngineExtensionsTests
             templateContext.DefaultFilename.Returns(DefaultFilename);
 
             // Act
-            await sut.RenderChildTemplates(Models, generationEnvironment, templateContext, identifier, CancellationToken.None);
+            _ = await sut.RenderChildTemplates(Models, generationEnvironment, templateContext, identifier, CancellationToken.None);
 
             // Assert
             await sut.Received(Models.Count()).Render(Arg.Is<IRenderTemplateRequest>(request =>
