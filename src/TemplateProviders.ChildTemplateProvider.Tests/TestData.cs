@@ -489,12 +489,12 @@ public class XDocumentBuilder
 public class XDocumentGenerationEnvironment : GenerationEnvironmentBase<XDocumentBuilder>
 {
     public XDocumentGenerationEnvironment(XElement rootElement)
-        : base(new FileSystem(), new RetryMechanism(), new XDocumentBuilder(rootElement))
+        : base(new XDocumentBuilder(rootElement))
     {
     }
 
     public XDocumentGenerationEnvironment(XDocumentBuilder builder)
-        : base(new FileSystem(), new RetryMechanism(), builder)
+        : base(builder)
     {
     }
 

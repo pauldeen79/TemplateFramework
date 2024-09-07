@@ -3,12 +3,12 @@
 public sealed class StringBuilderEnvironment : GenerationEnvironmentBase<StringBuilder>
 {
     public StringBuilderEnvironment()
-        : base(new FileSystem(), new RetryMechanism(), new StringBuilder())
+        : base(new StringBuilder())
     {
     }
 
     public StringBuilderEnvironment(StringBuilder builder)
-        : base(new FileSystem(), new RetryMechanism(), builder)
+        : base(builder)
     {
     }
 
