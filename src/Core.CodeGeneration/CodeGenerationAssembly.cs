@@ -20,16 +20,32 @@ public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
         _creators = creators;
     }
 
-    public async Task Generate(ICodeGenerationAssemblySettings settings, IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
+    public async Task<Result> Generate(ICodeGenerationAssemblySettings settings, IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(settings);
         Guard.IsNotNull(generationEnvironment);
 
         var assembly = _assemblyService.GetAssembly(settings.AssemblyName, settings.CurrentDirectory);
+        //TODO: Review code below
+        /*var totalResult = Result.Success();
+        await Parallel.ForEachAsync(GetCodeGeneratorProviders(assembly, settings.ClassNameFilter), async (provider, token) =>
+        {
+            if (!token.IsCancellationRequested && totalResult.IsSuccessful())
+            {
+                var result = await _codeGenerationEngine.Generate(provider, generationEnvironment, settings, token).ConfigureAwait(false);
+                if (!result.IsSuccessful())
+                {
+                    totalResult = result;
+                }
+            }
+        }).ConfigureAwait(false);
 
-        await Task.WhenAll(GetCodeGeneratorProviders(assembly, settings.ClassNameFilter)
-            .Select(x => _codeGenerationEngine.Generate(x, generationEnvironment, settings, cancellationToken)))
+        return totalResult;*/
+        var result = await GetCodeGeneratorProviders(assembly, settings.ClassNameFilter)
+            .SelectAsync(x => _codeGenerationEngine.Generate(x, generationEnvironment, settings, cancellationToken))
             .ConfigureAwait(false);
+
+        return Result.Aggregate(result.Where(x => x.IsSuccessful()), Result.Success(), nonSuccesfulResults => Result.Error(nonSuccesfulResults, "One or more code generation engines returned a non-succesful result, see the inner results for more details"));
     }
 
     private IEnumerable<ICodeGenerationProvider> GetCodeGeneratorProviders(Assembly assembly, IEnumerable<string> classNameFilter)

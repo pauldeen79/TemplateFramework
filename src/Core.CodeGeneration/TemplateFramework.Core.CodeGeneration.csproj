@@ -42,6 +42,8 @@
     <Using Include="System.Runtime.Loader" />
     <Using Include="System.Text" />
     <Using Include="CommunityToolkit.Diagnostics" />
+    <Using Include="CrossCutting.Common.Extensions" />
+    <Using Include="CrossCutting.Common.Results" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
     <Using Include="TemplateFramework.Abstractions" />
     <Using Include="TemplateFramework.Abstractions.CodeGeneration" />

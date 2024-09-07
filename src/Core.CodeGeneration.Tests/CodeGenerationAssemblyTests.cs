@@ -47,6 +47,7 @@ public class CodeGenerationAssemblyTests : TestBase<CodeGenerationAssembly>
             var codeGenerationProviderCreator = Fixture.Freeze<ICodeGenerationProviderCreator>();
             SetupAssemblyService(assemblyService);
             SetupCodeGenerationProviderCreator(codeGenerationProviderCreator);
+            codeGenerationEngine.Generate(Arg.Any<ICodeGenerationProvider>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<ICodeGenerationSettings>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
             var sut = CreateSut();
 
             // Act
@@ -66,6 +67,7 @@ public class CodeGenerationAssemblyTests : TestBase<CodeGenerationAssembly>
             var codeGenerationProviderCreator = Fixture.Freeze<ICodeGenerationProviderCreator>();
             SetupAssemblyService(assemblyService);
             SetupCodeGenerationProviderCreator(codeGenerationProviderCreator);
+            codeGenerationEngine.Generate(Arg.Any<ICodeGenerationProvider>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<ICodeGenerationSettings>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
             var sut = CreateSut();
 
             // Act

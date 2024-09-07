@@ -17,7 +17,7 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
     private readonly ITemplateFactory _templateFactory;
     private readonly ITemplateProvider _templateProvider;
 
-    public async Task Generate(ICodeGenerationProvider codeGenerationProvider, IGenerationEnvironment generationEnvironment, ICodeGenerationSettings settings, CancellationToken cancellationToken)
+    public async Task<Result> Generate(ICodeGenerationProvider codeGenerationProvider, IGenerationEnvironment generationEnvironment, ICodeGenerationSettings settings, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(codeGenerationProvider);
         Guard.IsNotNull(generationEnvironment);
@@ -46,12 +46,14 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
 
         if (!result.IsSuccessful())
         {
-            result.ThrowIfInvalid();
+            return result;
         }
 
         if (!settings.DryRun)
         {
-            await generationEnvironment.SaveContents(codeGenerationProvider, settings.BasePath, settings.DefaultFilename, cancellationToken).ConfigureAwait(false);
+            return await generationEnvironment.SaveContents(codeGenerationProvider, settings.BasePath, settings.DefaultFilename, cancellationToken).ConfigureAwait(false);
         }
+
+        return Result.Success();
     }
 }

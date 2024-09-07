@@ -2,5 +2,5 @@
 
 public interface IGenerationEnvironment
 {
-    Task SaveContents(ICodeGenerationProvider provider, string basePath, string defaultFilename, CancellationToken cancellationToken);
+    Task<Result> SaveContents(ICodeGenerationProvider provider, string basePath, string defaultFilename, CancellationToken cancellationToken);
 }

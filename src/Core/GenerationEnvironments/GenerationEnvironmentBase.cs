@@ -21,7 +21,7 @@ public abstract class GenerationEnvironmentBase<T> : IGenerationEnvironment
 
     public T Builder { get; }
 
-    public Task SaveContents(ICodeGenerationProvider provider, string basePath, string defaultFilename, CancellationToken cancellationToken)
+    public Task<Result> SaveContents(ICodeGenerationProvider provider, string basePath, string defaultFilename, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(provider);
         Guard.IsNotNullOrEmpty(defaultFilename);
@@ -39,7 +39,7 @@ public abstract class GenerationEnvironmentBase<T> : IGenerationEnvironment
         var normalizedContents = Build().NormalizeLineEndings();
         _retryMechanism.Retry(() => _fileSystem.WriteAllText(path, normalizedContents, provider.Encoding));
 
-        return Task.CompletedTask;
+        return Task.FromResult(Result.Success());
     }
 
     protected abstract string Build();

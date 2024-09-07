@@ -32,7 +32,7 @@ public class MultipleContentBuilderEnvironment<T> : IGenerationEnvironment where
 
     public IMultipleContentBuilder<T> Builder { get; }
 
-    public Task SaveContents(ICodeGenerationProvider provider, string basePath, string defaultFilename, CancellationToken cancellationToken)
+    public Task<Result> SaveContents(ICodeGenerationProvider provider, string basePath, string defaultFilename, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(provider);
 
@@ -46,7 +46,7 @@ public class MultipleContentBuilderEnvironment<T> : IGenerationEnvironment where
 
         SaveAll(_fileSystem, basePath, provider.Encoding, multipleContent.Contents);
 
-        return Task.CompletedTask;
+        return Task.FromResult(Result.Success());
     }
 
     internal void SaveAll(IFileSystem fileSystem, string basePath, Encoding encoding, IEnumerable<IContent> contents)
