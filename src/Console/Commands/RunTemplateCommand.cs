@@ -157,12 +157,6 @@ public class RunTemplateCommand : CommandBase
                         AppendParameters(generationEnvironment, args.defaultFilename, x.Value!);
                         success = true;
                     });
-                //if (!result.IsSuccessful())
-                //{
-                //    await args.app.Out.WriteLineAsync(result.ToString()).ConfigureAwait(false);
-                //    return;
-                //}
-                //AppendParameters(generationEnvironment, args.defaultFilename, result.Value!);
             }
             else
             {
@@ -176,12 +170,6 @@ public class RunTemplateCommand : CommandBase
                             args.parameters = MergeParameters(args.parameters, GetInteractiveParameterValues(x.Value!));
                             success = true;
                         });
-                    //if (!parametersResult.IsSuccessful())
-                    //{
-                    //    await args.app.Out.WriteLineAsync(parametersResult.ToString()).ConfigureAwait(false);
-                    //    return;
-                    //}
-                    //args.parameters = MergeParameters(args.parameters, GetInteractiveParameterValues(parametersResult.Value!));
                 }
 
                 var context = new TemplateContext(_templateEngine, _templateProvider, args.defaultFilename, templateIdentifier, template);
@@ -192,12 +180,6 @@ public class RunTemplateCommand : CommandBase
                 .Either(
                     async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false),
                     () => success = true);
-                
-                //if (!result.IsSuccessful())
-                //{
-                //    await args.app.Out.WriteLineAsync(result.ToString()).ConfigureAwait(false);
-                //    return;
-                //}
             }
 
             if (success)
