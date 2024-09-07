@@ -17,8 +17,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Using Include="CrossCutting.Common.Results" />
     <Using Include="System.Text" />
+    <Using Include="CrossCutting.Common.Results" />
+    <Using Include="CrossCutting.Common" />
     <Using Include="TemplateFramework.Abstractions.CodeGeneration" />
     <Using Include="TemplateFramework.Abstractions.Requests" />
     <Using Include="TemplateFramework.Abstractions.Templates" />

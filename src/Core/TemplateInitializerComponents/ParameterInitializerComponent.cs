@@ -11,7 +11,7 @@ public class ParameterInitializerComponent : ITemplateInitializerComponent
         _converter = converter;
     }
 
-    public Task Initialize(ITemplateEngineContext context, CancellationToken cancellationToken)
+    public async Task Initialize(ITemplateEngineContext context, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(context);
 
@@ -21,10 +21,8 @@ public class ParameterInitializerComponent : ITemplateInitializerComponent
         }
         else if (context.Template is not null)
         {
-            TrySetProperties(context);
+            await TrySetProperties(context).ConfigureAwait(false);
         }
-
-        return Task.CompletedTask;
     }
 
     private void SetTyped(ITemplateEngineContext context, IParameterizedTemplate parameterizedTemplate)
@@ -44,10 +42,11 @@ public class ParameterInitializerComponent : ITemplateInitializerComponent
         }
     }
 
-    private void TrySetProperties(ITemplateEngineContext context)
+    private async Task TrySetProperties(ITemplateEngineContext context)
     {
         var session = context.AdditionalParameters.ToKeyValuePairs();
-        var parameters = context.Engine.GetParameters(context.Template!);
+        var result = await context.Engine.GetParameters(context.Template!).ConfigureAwait(false);
+        var parameters = result.GetValueOrThrow();
         var templateType = context.Template!.GetType();
 
         foreach (var item in session.Where(x => x.Key != Constants.ModelKey))

@@ -24,11 +24,11 @@ public sealed class TemplateEngine : ITemplateEngine
         _renderers = renderers;
     }
 
-    public ITemplateParameter[] GetParameters(object templateInstance)
+    public Task<Result<ITemplateParameter[]>> GetParameters(object templateInstance)
     {
         Guard.IsNotNull(templateInstance);
 
-        return _parameterExtractor.Extract(templateInstance);
+        return Task.FromResult(Result.Success(_parameterExtractor.Extract(templateInstance)));
     }
 
     public async Task<Result> Render(IRenderTemplateRequest request, CancellationToken cancellationToken)

@@ -139,6 +139,7 @@ public class RunTemplateCommand : CommandBase
             await _templateProvider.StartSession(args.cancellationToken).ConfigureAwait(false);
 
             var template = _templateProvider.Create(templateIdentifier);
+            var success = false;
 
             if (args.listParameters)
             {
@@ -148,28 +149,61 @@ public class RunTemplateCommand : CommandBase
                     return;
                 }
 
-                AppendParameters(generationEnvironment, args.defaultFilename, _templateEngine.GetParameters(template));
+                (await _templateEngine.GetParameters(template).ConfigureAwait(false))
+                .Either(
+                    async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false),
+                    x =>
+                    {
+                        AppendParameters(generationEnvironment, args.defaultFilename, x.Value!);
+                        success = true;
+                    });
+                //if (!result.IsSuccessful())
+                //{
+                //    await args.app.Out.WriteLineAsync(result.ToString()).ConfigureAwait(false);
+                //    return;
+                //}
+                //AppendParameters(generationEnvironment, args.defaultFilename, result.Value!);
             }
             else
             {
                 if (args.interactive)
                 {
-                    args.parameters = MergeParameters(args.parameters, GetInteractiveParameterValues(_templateEngine.GetParameters(template)));
+                    (await _templateEngine.GetParameters(template).ConfigureAwait(false))
+                    .Either(
+                        async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false),
+                        x =>
+                        {
+                            args.parameters = MergeParameters(args.parameters, GetInteractiveParameterValues(x.Value!));
+                            success = true;
+                        });
+                    //if (!parametersResult.IsSuccessful())
+                    //{
+                    //    await args.app.Out.WriteLineAsync(parametersResult.ToString()).ConfigureAwait(false);
+                    //    return;
+                    //}
+                    //args.parameters = MergeParameters(args.parameters, GetInteractiveParameterValues(parametersResult.Value!));
                 }
 
                 var context = new TemplateContext(_templateEngine, _templateProvider, args.defaultFilename, templateIdentifier, template);
                 var identifier = new TemplateInstanceIdentifierWithTemplateProvider(template, args.currentDirectory, args.assemblyName, args.templateProviderPluginClassName);
                 var request = new RenderTemplateRequest(identifier, null, generationEnvironment, args.defaultFilename, args.parameters, context);
 
-                var result = await _templateEngine.Render(request, args.cancellationToken).ConfigureAwait(false);
-                if (!result.IsSuccessful())
-                {
-                    await args.app.Out.WriteLineAsync(result.ToString()).ConfigureAwait(false);
-                    return;
-                }
+                (await _templateEngine.Render(request, args.cancellationToken).ConfigureAwait(false))
+                .Either(
+                    async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false),
+                    () => success = true);
+                
+                //if (!result.IsSuccessful())
+                //{
+                //    await args.app.Out.WriteLineAsync(result.ToString()).ConfigureAwait(false);
+                //    return;
+                //}
             }
 
-            await WriteOutput(args.app, generationEnvironment, args.basePath, args.bare, args.clipboard, args.dryRun, args.cancellationToken).ConfigureAwait(false);
+            if (success)
+            {
+                await WriteOutput(args.app, generationEnvironment, args.basePath, args.bare, args.clipboard, args.dryRun, args.cancellationToken).ConfigureAwait(false);
+            }
         }, args.cancellationToken).ConfigureAwait(false);
 
     private ITemplateIdentifier GetTemplateIdentifier((CommandLineApplication app, bool watch, bool interactive, bool listParameters, bool bare, bool clipboard, string? assemblyName, string? className, string? formattableStringFilename, string? expressionStringFilename, string? currentDirectory, string? templateProviderPluginClassName, string basePath, string defaultFilename, bool dryRun, KeyValuePair<string, object?>[] parameters, CancellationToken cancellationToken) args)
