@@ -17,6 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Using Include="System.Collections" />
     <Using Include="System.Text" />
     <Using Include="CrossCutting.Common.Results" />
     <Using Include="CrossCutting.Common" />

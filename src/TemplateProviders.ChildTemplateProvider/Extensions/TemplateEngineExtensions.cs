@@ -12,32 +12,14 @@ public static class TemplateEngineExtensions
             .Select((model, index) => new { Model = model, Index = index, Identifier = new TemplateByModelIdentifier(model) })
             .ToArray();
 
-        foreach (var item in items)
-        {
-            var result = await instance.Render(new RenderTemplateRequest(item.Identifier, item.Model, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(item.Identifier, item.Model, item.Index, items.Length))), cancellationToken).ConfigureAwait(false);
-            if (!result.IsSuccessful())
-            {
-                return result;
-            }
-        }
-
-        return Result.Success();
+        return await items.PerformUntilFailure(x => instance.Render(new RenderTemplateRequest(x.Identifier, x.Model, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(x.Identifier, x.Model, x.Index, items.Length))), cancellationToken)).ConfigureAwait(false);
     }
 
     public static async Task<Result> RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(childModels);
 
-        foreach (var item in childModels)
-        {
-            var result = await instance.Render(new RenderTemplateRequest(new TemplateByModelIdentifier(item), item, generationEnvironment, string.Empty, null, null), cancellationToken).ConfigureAwait(false);
-            if (!result.IsSuccessful())
-            {
-                return result;
-            }
-        }
-
-        return Result.Success();
+        return await childModels.PerformUntilFailure(x => instance.Render(new RenderTemplateRequest(new TemplateByModelIdentifier(x), x, generationEnvironment, string.Empty, null, null), cancellationToken)).ConfigureAwait(false);
     }
 
     public static async Task<Result> RenderChildTemplate(this ITemplateEngine instance, object? childModel, IGenerationEnvironment generationEnvironment, ITemplateContext context, CancellationToken cancellationToken)
