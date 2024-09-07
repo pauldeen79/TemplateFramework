@@ -486,52 +486,24 @@ public class XDocumentBuilder
     public XElement CurrentElement { get; set; }
 }
 
-public class XDocumentGenerationEnvironment : IGenerationEnvironment
+public class XDocumentGenerationEnvironment : GenerationEnvironmentBase<XDocumentBuilder>
 {
     public XDocumentGenerationEnvironment(XElement rootElement)
-        : this(new FileSystem(), new RetryMechanism(), new XDocumentBuilder(rootElement))
+        : base(new FileSystem(), new RetryMechanism(), new XDocumentBuilder(rootElement))
     {
     }
 
     public XDocumentGenerationEnvironment(XDocumentBuilder builder)
-        : this(new FileSystem(), new RetryMechanism(), builder)
+        : base(new FileSystem(), new RetryMechanism(), builder)
     {
     }
 
     internal XDocumentGenerationEnvironment(IFileSystem fileSystem, IRetryMechanism retryMechanism, XDocumentBuilder builder)
+        : base(fileSystem, retryMechanism, builder)
     {
-        Guard.IsNotNull(builder);
-
-        _fileSystem = fileSystem;
-        _retryMechanism = retryMechanism;
-        Builder = builder;
     }
 
-    private readonly IFileSystem _fileSystem;
-    private readonly IRetryMechanism _retryMechanism;
-
-    public XDocumentBuilder Builder { get; }
-
-    public Task SaveContents(ICodeGenerationProvider provider, string basePath, string defaultFilename, CancellationToken cancellationToken)
-    {
-        Guard.IsNotNull(provider);
-        Guard.IsNotNullOrEmpty(defaultFilename);
-
-        var path = string.IsNullOrEmpty(basePath)
-            ? defaultFilename
-            : Path.Combine(basePath, defaultFilename);
-
-        var dir = Path.GetDirectoryName(path);
-        if (!string.IsNullOrEmpty(dir) && !_fileSystem.DirectoryExists(dir))
-        {
-            _fileSystem.CreateDirectory(dir);
-        }
-
-        var normalizedContents = Builder.Document.ToString().NormalizeLineEndings();
-        _retryMechanism.Retry(() => _fileSystem.WriteAllText(path, normalizedContents, provider.Encoding));
-
-        return Task.CompletedTask;
-    }
+    protected override string Build() => Builder.Document.ToString();
 }
 
 public class XDocumentBuilderTemplateRenderer : ITemplateRenderer
