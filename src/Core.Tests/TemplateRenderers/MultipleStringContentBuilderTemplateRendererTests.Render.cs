@@ -1,4 +1,6 @@
-﻿namespace TemplateFramework.Core.Tests.TemplateRenderers;
+﻿using CrossCutting.Common.Results;
+
+namespace TemplateFramework.Core.Tests.TemplateRenderers;
 
 public partial class MultipleStringContentBuilderTemplateRendererTests
 {
@@ -67,8 +69,12 @@ public partial class MultipleStringContentBuilderTemplateRendererTests
             var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
             TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(template);
             TemplateEngineMock
-                .When(x => x.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()))
-                .Do(x => ((StringBuilderEnvironment)x.ArgAt<IRenderTemplateRequest>(0).GenerationEnvironment).Builder.Append(template.ToString()));
+                .Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>())
+                .Returns(x =>
+                {
+                    ((StringBuilderEnvironment)x.ArgAt<IRenderTemplateRequest>(0).GenerationEnvironment).Builder.Append(template.ToString());
+                    return Result.Success();
+                });
 
             // Act
             await sut.Render(engineContext, CancellationToken.None);

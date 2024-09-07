@@ -9,7 +9,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         string defaultFilename,
         object? additionalParameters,
         ITemplateContext? context)
-        : this(identifier, model, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, additionalParameters, context)
+        : this(identifier, model, new StringBuilderEnvironment(builder), defaultFilename, additionalParameters, context)
     {
     }
 
@@ -19,7 +19,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         string defaultFilename,
         object? additionalParameters,
         ITemplateContext? context)
-        : this(identifier, null, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, additionalParameters, context)
+        : this(identifier, null, new StringBuilderEnvironment(builder), defaultFilename, additionalParameters, context)
     {
     }
 
@@ -27,14 +27,14 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         ITemplateIdentifier identifier,
         object? model,
         StringBuilder builder)
-        : this(identifier, model, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, null, null)
+        : this(identifier, model, new StringBuilderEnvironment(builder), string.Empty, null, null)
     {
     }
 
     public RenderTemplateRequest(
         ITemplateIdentifier identifier,
         StringBuilder builder)
-        : this(identifier, null, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, null, null)
+        : this(identifier, null, new StringBuilderEnvironment(builder), string.Empty, null, null)
     {
     }
 
@@ -43,7 +43,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         object? model,
         StringBuilder builder,
         string defaultFilename)
-        : this(identifier, model, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, null, null)
+        : this(identifier, model, new StringBuilderEnvironment(builder), defaultFilename, null, null)
     {
     }
 
@@ -51,7 +51,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         ITemplateIdentifier identifier,
         StringBuilder builder,
         string defaultFilename)
-        : this(identifier, null, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, null, null)
+        : this(identifier, null, new StringBuilderEnvironment(builder), defaultFilename, null, null)
     {
     }
 
@@ -61,7 +61,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         StringBuilder builder,
         string defaultFilename,
         object? additionalParameters)
-        : this(identifier, model, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, additionalParameters, null)
+        : this(identifier, model, new StringBuilderEnvironment(builder), defaultFilename, additionalParameters, null)
     {
     }
 
@@ -70,7 +70,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         StringBuilder builder,
         string defaultFilename,
         object? additionalParameters)
-        : this(identifier, null, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, additionalParameters, null)
+        : this(identifier, null, new StringBuilderEnvironment(builder), defaultFilename, additionalParameters, null)
     {
     }
 
@@ -79,7 +79,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         object? model,
         StringBuilder builder,
         object? additionalParameters)
-        : this(identifier, model, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, additionalParameters, null)
+        : this(identifier, model, new StringBuilderEnvironment(builder), string.Empty, additionalParameters, null)
     {
     }
 
@@ -87,7 +87,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         ITemplateIdentifier identifier,
         StringBuilder builder,
         object? additionalParameters)
-        : this(identifier, null, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, additionalParameters, null)
+        : this(identifier, null, new StringBuilderEnvironment(builder), string.Empty, additionalParameters, null)
     {
     }
 
@@ -97,7 +97,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         StringBuilder builder,
         string defaultFilename,
         ITemplateContext? context)
-        : this(identifier, model, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, null, context)
+        : this(identifier, model, new StringBuilderEnvironment(builder), defaultFilename, null, context)
     {
     }
 
@@ -106,7 +106,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         StringBuilder builder,
         string defaultFilename,
         ITemplateContext? context)
-        : this(identifier, null, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, null, context)
+        : this(identifier, null, new StringBuilderEnvironment(builder), defaultFilename, null, context)
     {
     }
 
@@ -115,7 +115,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         object? model,
         StringBuilder builder,
         ITemplateContext? context)
-        : this(identifier, model, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, null, context)
+        : this(identifier, model, new StringBuilderEnvironment(builder), string.Empty, null, context)
     {
     }
 
@@ -123,7 +123,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         ITemplateIdentifier identifier,
         StringBuilder builder,
         ITemplateContext? context)
-        : this(identifier, null, new StringBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, null, context)
+        : this(identifier, null, new StringBuilderEnvironment(builder), string.Empty, null, context)
     {
     }
 
@@ -134,7 +134,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         string defaultFilename,
         object? additionalParameters,
         ITemplateContext? context)
-        : this(identifier, model, new MultipleStringContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, additionalParameters, context)
+        : this(identifier, model, new MultipleStringContentBuilderEnvironment(builder), defaultFilename, additionalParameters, context)
     {
     }
 
@@ -144,7 +144,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         string defaultFilename,
         object? additionalParameters,
         ITemplateContext? context)
-        : this(identifier, null, new MultipleStringContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, additionalParameters, context)
+        : this(identifier, null, new MultipleStringContentBuilderEnvironment(builder), defaultFilename, additionalParameters, context)
     {
     }
 
@@ -152,14 +152,14 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         ITemplateIdentifier identifier,
         object? model,
         IMultipleContentBuilder<StringBuilder> builder)
-        : this(identifier, model, new MultipleStringContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, null, null)
+        : this(identifier, model, new MultipleStringContentBuilderEnvironment(builder), string.Empty, null, null)
     {
     }
 
     public RenderTemplateRequest(
         ITemplateIdentifier identifier,
         IMultipleContentBuilder<StringBuilder> builder)
-        : this(identifier, null, new MultipleStringContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, null, null)
+        : this(identifier, null, new MultipleStringContentBuilderEnvironment(builder), string.Empty, null, null)
     {
     }
 
@@ -168,7 +168,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         object? model,
         IMultipleContentBuilder<StringBuilder> builder,
         string defaultFilename)
-        : this(identifier, model, new MultipleStringContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, null, null)
+        : this(identifier, model, new MultipleStringContentBuilderEnvironment(builder), defaultFilename, null, null)
     {
     }
 
@@ -176,7 +176,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         ITemplateIdentifier identifier,
         IMultipleContentBuilder<StringBuilder> builder,
         string defaultFilename)
-        : this(identifier, null, new MultipleStringContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, null, null)
+        : this(identifier, null, new MultipleStringContentBuilderEnvironment(builder), defaultFilename, null, null)
     {
     }
 
@@ -186,7 +186,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         IMultipleContentBuilder<StringBuilder> builder,
         string defaultFilename,
         object? additionalParameters)
-        : this(identifier, model, new MultipleStringContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, additionalParameters, null)
+        : this(identifier, model, new MultipleStringContentBuilderEnvironment(builder), defaultFilename, additionalParameters, null)
     {
     }
 
@@ -195,7 +195,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         IMultipleContentBuilder<StringBuilder> builder,
         string defaultFilename,
         object? additionalParameters)
-        : this(identifier, null, new MultipleStringContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, additionalParameters, null)
+        : this(identifier, null, new MultipleStringContentBuilderEnvironment(builder), defaultFilename, additionalParameters, null)
     {
     }
 
@@ -204,7 +204,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         object? model,
         IMultipleContentBuilder<StringBuilder> builder,
         object? additionalParameters)
-        : this(identifier, model, new MultipleStringContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, additionalParameters, null)
+        : this(identifier, model, new MultipleStringContentBuilderEnvironment(builder), string.Empty, additionalParameters, null)
     {
     }
 
@@ -212,7 +212,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         ITemplateIdentifier identifier,
         IMultipleContentBuilder<StringBuilder> builder,
         object? additionalParameters)
-        : this(identifier, null, new MultipleStringContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, additionalParameters, null)
+        : this(identifier, null, new MultipleStringContentBuilderEnvironment(builder), string.Empty, additionalParameters, null)
     {
     }
 
@@ -222,7 +222,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         IMultipleContentBuilder<StringBuilder> builder,
         string defaultFilename,
         ITemplateContext? context)
-        : this(identifier, model, new MultipleStringContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, null, context)
+        : this(identifier, model, new MultipleStringContentBuilderEnvironment(builder), defaultFilename, null, context)
     {
     }
 
@@ -231,7 +231,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         IMultipleContentBuilder<StringBuilder> builder,
         string defaultFilename,
         ITemplateContext? context)
-        : this(identifier, null, new MultipleStringContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), defaultFilename, null, context)
+        : this(identifier, null, new MultipleStringContentBuilderEnvironment(builder), defaultFilename, null, context)
     {
     }
 
@@ -240,7 +240,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         object? model,
         IMultipleContentBuilder<StringBuilder> builder,
         ITemplateContext? context)
-        : this(identifier, model, new MultipleStringContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, null, context)
+        : this(identifier, model, new MultipleStringContentBuilderEnvironment(builder), string.Empty, null, context)
     {
     }
 
@@ -248,7 +248,7 @@ public class RenderTemplateRequest : IRenderTemplateRequest
         ITemplateIdentifier identifier,
         IMultipleContentBuilder<StringBuilder> builder,
         ITemplateContext? context)
-        : this(identifier, null, new MultipleStringContentBuilderEnvironment(builder ?? throw new ArgumentNullException(nameof(builder))), string.Empty, null, context)
+        : this(identifier, null, new MultipleStringContentBuilderEnvironment(builder), string.Empty, null, context)
     {
     }
 

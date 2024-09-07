@@ -14,14 +14,14 @@ public class MultipleStringContentBuilderTemplateRenderer : ITemplateRenderer
 
     public bool Supports(IGenerationEnvironment generationEnvironment) => generationEnvironment is MultipleContentBuilderEnvironment<StringBuilder>;
 
-    public async Task Render(ITemplateEngineContext context, CancellationToken cancellationToken)
+    public async Task<Result> Render(ITemplateEngineContext context, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(context);
         Guard.IsNotNull(context.Template);
 
         if (context.GenerationEnvironment is not MultipleContentBuilderEnvironment<StringBuilder> builderEnvironment)
         {
-            throw new NotSupportedException("GenerationEnvironment should be of type MultipleContentBuilderEnvironment");
+            return Result.NotSupported("GenerationEnvironment should be of type MultipleContentBuilderEnvironment");
         }
 
         var multipleContentBuilder = builderEnvironment.Builder;
@@ -32,16 +32,22 @@ public class MultipleStringContentBuilderTemplateRenderer : ITemplateRenderer
             // No need to convert string to MultipleContentBuilder, and then add it again..
             // We can simply pass the MultipleContentBuilder instance
             await multipleContentBuilderTemplate.Render(multipleContentBuilder, cancellationToken).ConfigureAwait(false);
-            return;
+            return Result.Success();
         }
 
         // Make a new request, because we are using a different generation environment.
         // Render using a stringbuilder, then add it to multiple contents
         var stringBuilder = new StringBuilder();
         var singleRequest = new RenderTemplateRequest(context.Identifier, context.Model, stringBuilder, context.DefaultFilename, context.AdditionalParameters, context.Context);
-        await context.Engine.Render(singleRequest, cancellationToken).ConfigureAwait(false);
+        var result = await context.Engine.Render(singleRequest, cancellationToken).ConfigureAwait(false);
+        if (!result.IsSuccessful())
+        {
+            return result;
+        }
 
         multipleContentBuilder.AddContent(context.DefaultFilename, false, new StringBuilder(stringBuilder.ToString()));
+
+        return Result.Success();
     }
 
     private IMultipleContentBuilderTemplate<StringBuilder>? TryGetMultipleContentBuilderTemplate(object template)

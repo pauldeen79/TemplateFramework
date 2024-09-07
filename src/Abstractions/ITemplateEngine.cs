@@ -2,6 +2,7 @@
 
 public interface ITemplateEngine
 {
-    Task Render(IRenderTemplateRequest request, CancellationToken cancellationToken);
+    Task<Result> Render(IRenderTemplateRequest request, CancellationToken cancellationToken);
+    //TODO: Convert to Result also?
     ITemplateParameter[] GetParameters(object templateInstance);
 }

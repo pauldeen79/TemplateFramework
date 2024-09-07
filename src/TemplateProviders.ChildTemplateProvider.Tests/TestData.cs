@@ -512,8 +512,6 @@ public class XDocumentBuilderTemplateRenderer : BuilderTemplateRendererBase<XDoc
     {
     }
 
-    protected override Task DefaultImplementation(object templateInstance, XDocumentBuilder builder)
-    {
-        throw new NotSupportedException($"Type of Template ({templateInstance.GetType().FullName}) is not supported");
-    }
+    protected override Task<Result> DefaultImplementation(object templateInstance, XDocumentBuilder builder)
+        => Task.FromResult(Result.NotSupported($"Type of Template ({templateInstance.GetType().FullName}) is not supported"));
 }

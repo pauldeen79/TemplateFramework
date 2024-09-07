@@ -2,6 +2,7 @@
 
 public static class TemplateEngineExtensions
 {
+    //TODO: Refactor all methods to use Task<Result> instead of Task
     public static async Task RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, ITemplateContext context, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(childModels);

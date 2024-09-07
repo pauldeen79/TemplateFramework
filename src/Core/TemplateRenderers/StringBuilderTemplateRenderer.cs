@@ -6,7 +6,7 @@ public sealed class StringBuilderTemplateRenderer : BuilderTemplateRendererBase<
     {
     }
 
-    protected override Task DefaultImplementation(object templateInstance, StringBuilder builder)
+    protected override Task<Result> DefaultImplementation(object templateInstance, StringBuilder builder)
     {
         var output = templateInstance.ToString();
 
@@ -15,6 +15,6 @@ public sealed class StringBuilderTemplateRenderer : BuilderTemplateRendererBase<
             builder.Append(output);
         }
 
-        return Task.CompletedTask;
+        return Task.FromResult(Result.Success());
     }
 }

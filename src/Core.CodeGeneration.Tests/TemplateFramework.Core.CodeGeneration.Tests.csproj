@@ -51,6 +51,7 @@
   <ItemGroup>
     <Using Include="AutoFixture" />
     <Using Include="AutoFixture.AutoNSubstitute" />
+    <Using Include="CrossCutting.Common.Results" />
     <Using Include="FluentAssertions" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
     <Using Include="NSubstitute" />

@@ -52,6 +52,7 @@
     <Using Include="AutoFixture" />
     <Using Include="AutoFixture.AutoNSubstitute" />
     <Using Include="CrossCutting.Common" />
+    <Using Include="CrossCutting.Common.Results" />
     <Using Include="FluentAssertions" />
     <Using Include="McMaster.Extensions.CommandLineUtils" />
     <Using Include="NSubstitute" />

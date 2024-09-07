@@ -134,19 +134,7 @@ public class RunTemplateCommand : CommandBase
         => await Watch(args.app, args.watch, args.assemblyName ?? args.formattableStringFilename ?? args.expressionStringFilename!, async () =>
         {
             var generationEnvironment = new MultipleStringContentBuilderEnvironment();
-            ITemplateIdentifier templateIdentifier = null!;
-            if (!string.IsNullOrEmpty(args.className))
-            {
-                templateIdentifier = new CompiledTemplateIdentifier(args.assemblyName!, args.className!, args.currentDirectory);
-            }
-            else if (!string.IsNullOrEmpty(args.formattableStringFilename))
-            {
-                templateIdentifier = new FormattableStringTemplateIdentifier(FileSystem.ReadAllText(args.formattableStringFilename, Encoding.Default), CultureInfo.CurrentCulture, args.assemblyName, args.className, args.currentDirectory);
-            }
-            else if (!string.IsNullOrEmpty(args.expressionStringFilename))
-            {
-                templateIdentifier = new ExpressionStringTemplateIdentifier(FileSystem.ReadAllText(args.expressionStringFilename, Encoding.Default), CultureInfo.CurrentCulture, args.assemblyName, args.className, args.currentDirectory);
-            }
+            var templateIdentifier = GetTemplateIdentifier(args);
 
             await _templateProvider.StartSession(args.cancellationToken).ConfigureAwait(false);
 
@@ -172,10 +160,34 @@ public class RunTemplateCommand : CommandBase
                 var context = new TemplateContext(_templateEngine, _templateProvider, args.defaultFilename, templateIdentifier, template);
                 var identifier = new TemplateInstanceIdentifierWithTemplateProvider(template, args.currentDirectory, args.assemblyName, args.templateProviderPluginClassName);
                 var request = new RenderTemplateRequest(identifier, null, generationEnvironment, args.defaultFilename, args.parameters, context);
-                
-                await _templateEngine.Render(request, args.cancellationToken).ConfigureAwait(false);
+
+                var result = await _templateEngine.Render(request, args.cancellationToken).ConfigureAwait(false);
+                if (!result.IsSuccessful())
+                {
+                    await args.app.Out.WriteLineAsync(result.ToString()).ConfigureAwait(false);
+                    return;
+                }
             }
 
             await WriteOutput(args.app, generationEnvironment, args.basePath, args.bare, args.clipboard, args.dryRun, args.cancellationToken).ConfigureAwait(false);
         }, args.cancellationToken).ConfigureAwait(false);
+
+    private ITemplateIdentifier GetTemplateIdentifier((CommandLineApplication app, bool watch, bool interactive, bool listParameters, bool bare, bool clipboard, string? assemblyName, string? className, string? formattableStringFilename, string? expressionStringFilename, string? currentDirectory, string? templateProviderPluginClassName, string basePath, string defaultFilename, bool dryRun, KeyValuePair<string, object?>[] parameters, CancellationToken cancellationToken) args)
+    {
+        ITemplateIdentifier templateIdentifier = null!;
+        if (!string.IsNullOrEmpty(args.className))
+        {
+            templateIdentifier = new CompiledTemplateIdentifier(args.assemblyName!, args.className!, args.currentDirectory);
+        }
+        else if (!string.IsNullOrEmpty(args.formattableStringFilename))
+        {
+            templateIdentifier = new FormattableStringTemplateIdentifier(FileSystem.ReadAllText(args.formattableStringFilename, Encoding.Default), CultureInfo.CurrentCulture, args.assemblyName, args.className, args.currentDirectory);
+        }
+        else if (!string.IsNullOrEmpty(args.expressionStringFilename))
+        {
+            templateIdentifier = new ExpressionStringTemplateIdentifier(FileSystem.ReadAllText(args.expressionStringFilename, Encoding.Default), CultureInfo.CurrentCulture, args.assemblyName, args.className, args.currentDirectory);
+        }
+
+        return templateIdentifier;
+    }
 }
