@@ -6,7 +6,6 @@ public sealed class StringBuilderTemplateRenderer : BuilderTemplateRendererBase<
     {
     }
 
-
     protected override Task DefaultImplementation(object templateInstance, StringBuilder builder)
     {
         var output = templateInstance.ToString();
