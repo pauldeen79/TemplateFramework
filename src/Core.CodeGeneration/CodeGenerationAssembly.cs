@@ -26,21 +26,6 @@ public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
         Guard.IsNotNull(generationEnvironment);
 
         var assembly = _assemblyService.GetAssembly(settings.AssemblyName, settings.CurrentDirectory);
-        //TODO: Review code below
-        /*var totalResult = Result.Success();
-        await Parallel.ForEachAsync(GetCodeGeneratorProviders(assembly, settings.ClassNameFilter), async (provider, token) =>
-        {
-            if (!token.IsCancellationRequested && totalResult.IsSuccessful())
-            {
-                var result = await _codeGenerationEngine.Generate(provider, generationEnvironment, settings, token).ConfigureAwait(false);
-                if (!result.IsSuccessful())
-                {
-                    totalResult = result;
-                }
-            }
-        }).ConfigureAwait(false);
-
-        return totalResult;*/
         var result = await GetCodeGeneratorProviders(assembly, settings.ClassNameFilter)
             .SelectAsync(x => _codeGenerationEngine.Generate(x, generationEnvironment, settings, cancellationToken))
             .ConfigureAwait(false);
