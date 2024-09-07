@@ -24,22 +24,16 @@ public abstract class BuilderTemplateRendererBase<TEnvironment, TBuilder> : ISin
             return Result.NotSupported($"Type of GenerationEnvironment ({context.GenerationEnvironment.GetType().FullName}) is not supported");
         }
 
-        var result = false;
         foreach (var renderer in _renderers)
         {
-            result = await renderer.TryRender(context.Template, environment.Builder, cancellationToken).ConfigureAwait(false);
-            if (result || cancellationToken.IsCancellationRequested)
+            var result = await renderer.TryRender(context.Template, environment.Builder, cancellationToken).ConfigureAwait(false);
+            if (!result.IsSuccessful() || result.Status != ResultStatus.Continue)
             {
-                return Result.Success(); //TODO: Is there a separate status code for cancellation requested?
+                return result;
             }
         }
 
-        if (!cancellationToken.IsCancellationRequested)
-        {
-            return await DefaultImplementation(context.Template, environment.Builder).ConfigureAwait(false);
-        }
-
-        return Result.Success(); ///TODO: Is there a separate status code for cancellation requested?
+        return await DefaultImplementation(context.Template, environment.Builder).ConfigureAwait(false);
     }
 
     protected abstract Task<Result> DefaultImplementation(object templateInstance, TBuilder builder);

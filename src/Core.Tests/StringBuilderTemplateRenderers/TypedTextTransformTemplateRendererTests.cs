@@ -5,27 +5,27 @@ public class TypedTextTransformTemplateRendererTests
     public class TryRender
     {
         [Theory, AutoMockData]
-        public async Task Returns_False_On_Null_Instance(TypedTextTransformTemplateRenderer sut)
+        public async Task Returns_Continue_On_Null_Instance(TypedTextTransformTemplateRenderer sut)
         {
             // Act
             var result = await sut.TryRender(instance: null!, new StringBuilder(), CancellationToken.None);
 
             // Assert
-            result.Should().BeFalse();
+            result.Status.Should().Be(ResultStatus.Continue);
         }
 
         [Theory, AutoMockData]
-        public async Task Returns_False_On_NonNull_Instance_But_Wrong_Type(TypedTextTransformTemplateRenderer sut)
+        public async Task Returns_Continue_On_NonNull_Instance_But_Wrong_Type(TypedTextTransformTemplateRenderer sut)
         {
             // Act
             var result = await sut.TryRender(instance: this, new StringBuilder(), CancellationToken.None);
 
             // Assert
-            result.Should().BeFalse();
+            result.Status.Should().Be(ResultStatus.Continue);
         }
 
         [Theory, AutoMockData]
-        public async Task Returns_True_On_ITextTransformTemplate_Instance(
+        public async Task Returns_Success_On_ITextTransformTemplate_Instance(
             [Frozen] ITextTransformTemplate textTransformTemplate,
             TypedTextTransformTemplateRenderer sut)
         {
@@ -33,7 +33,7 @@ public class TypedTextTransformTemplateRendererTests
             var result = await sut.TryRender(instance: textTransformTemplate, new StringBuilder(), CancellationToken.None);
 
             // Assert
-            result.Should().BeTrue();
+            result.Status.Should().Be(ResultStatus.Ok);
         }
 
         [Theory, AutoMockData]

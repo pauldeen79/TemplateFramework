@@ -7,7 +7,7 @@ public partial class StringBuilderTemplateRendererTests
         public Render()
         {
             StringBuilderTemplateRendererMock.TryRender(Arg.Any<object>(), Arg.Any<StringBuilder>(), Arg.Any<CancellationToken>())
-                .Returns(true);
+                .Returns(Result.Success());
         }
 
         [Fact]
@@ -62,7 +62,7 @@ public partial class StringBuilderTemplateRendererTests
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), generationEnvironment);
             var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
             StringBuilderTemplateRendererMock.TryRender(Arg.Any<object>(), Arg.Any<StringBuilder>(), Arg.Any<CancellationToken>())
-                .Returns(false);
+                .Returns(Result.Continue());
 
             // Act
             await sut.Render(engineContext, CancellationToken.None);

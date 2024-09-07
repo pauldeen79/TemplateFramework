@@ -5,27 +5,27 @@ public class TypedStringBuilderTemplateRendererTests
     public class TryRender
     {
         [Theory, AutoMockData]
-        public async Task Returns_False_On_Null_Instance(TypedBuilderTemplateRenderer<StringBuilder> sut)
+        public async Task Returns_Continue_On_Null_Instance(TypedBuilderTemplateRenderer<StringBuilder> sut)
         {
             // Act
             var result = await sut.TryRender(instance: null!, new StringBuilder(), CancellationToken.None);
 
             // Assert
-            result.Should().BeFalse();
+            result.Status.Should().Be(ResultStatus.Continue);
         }
 
         [Theory, AutoMockData]
-        public async Task Returns_False_On_NonNull_Instance_But_Wrong_Type(TypedBuilderTemplateRenderer<StringBuilder> sut)
+        public async Task Returns_Continue_On_NonNull_Instance_But_Wrong_Type(TypedBuilderTemplateRenderer<StringBuilder> sut)
         {
             // Act
             var result = await sut.TryRender(instance: this, new StringBuilder(), CancellationToken.None);
 
             // Assert
-            result.Should().BeFalse();
+            result.Status.Should().Be(ResultStatus.Continue);
         }
 
         [Theory, AutoMockData]
-        public async Task Returns_True_On_IStringBuilderTemplate_Instance(
+        public async Task Returns_Success_On_IStringBuilderTemplate_Instance(
             [Frozen] IBuilderTemplate<StringBuilder> stringBuilderTemplate,
             TypedBuilderTemplateRenderer<StringBuilder> sut)
         {
@@ -33,7 +33,7 @@ public class TypedStringBuilderTemplateRendererTests
             var result = await sut.TryRender(instance: stringBuilderTemplate, new StringBuilder(), CancellationToken.None);
 
             // Assert
-            result.Should().BeTrue();
+            result.Status.Should().Be(ResultStatus.Ok);
         }
 
         [Theory, AutoMockData]
