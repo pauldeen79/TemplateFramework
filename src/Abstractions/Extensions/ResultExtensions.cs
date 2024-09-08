@@ -60,16 +60,10 @@ public static class ResultExtensions
     {
         actionDelegate = actionDelegate.IsNotNull(nameof(actionDelegate));
 
-        foreach (var item in instance)
-        {
-            var result = actionDelegate(item);
-            if (!result.IsSuccessful())
-            {
-                return result;
-            }
-        }
-
-        return Result.Success();
+        return instance
+            .Select(x => actionDelegate(x))
+            .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
+            .LastOrDefault() ?? Result.Success();
     }
 
     public static async Task<Result> PerformUntilFailure<T>(this IEnumerable<T> instance, Func<T, Task<Result>> actionDelegate)

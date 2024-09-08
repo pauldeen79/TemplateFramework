@@ -19,8 +19,9 @@
   <ItemGroup>
     <Using Include="System.Collections" />
     <Using Include="System.Text" />
-    <Using Include="CrossCutting.Common.Results" />
     <Using Include="CrossCutting.Common" />
+    <Using Include="CrossCutting.Common.Extensions" />
+    <Using Include="CrossCutting.Common.Results" />
     <Using Include="TemplateFramework.Abstractions.CodeGeneration" />
     <Using Include="TemplateFramework.Abstractions.Requests" />
     <Using Include="TemplateFramework.Abstractions.Templates" />
