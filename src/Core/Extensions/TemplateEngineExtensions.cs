@@ -1,4 +1,6 @@
-﻿namespace TemplateFramework.Core.Extensions;
+﻿using System.Reflection;
+
+namespace TemplateFramework.Core.Extensions;
 
 public static class TemplateEngineExtensions
 {
@@ -33,16 +35,7 @@ public static class TemplateEngineExtensions
     {
         Guard.IsNotNull(childModels);
 
-        foreach (var item in childModels)
-        {
-            var result = await instance.Render(new RenderTemplateRequest(identifier, item, generationEnvironment, string.Empty, null, null), cancellationToken).ConfigureAwait(false);
-            if (!result.IsSuccessful())
-            {
-                return result;
-            }
-        }
-
-        return Result.Success();
+        return await childModels.PerformUntilFailure(x => instance.Render(new RenderTemplateRequest(identifier, x, generationEnvironment, string.Empty, null, null), cancellationToken)).ConfigureAwait(false);
     }
 
     public static async Task<Result> RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, Func<object?, ITemplateIdentifier> identifierFactory, CancellationToken cancellationToken)
@@ -50,17 +43,7 @@ public static class TemplateEngineExtensions
         Guard.IsNotNull(childModels);
         Guard.IsNotNull(identifierFactory);
 
-        foreach (var item in childModels)
-        {
-            var identifier = identifierFactory(item);
-            var result = await instance.Render(new RenderTemplateRequest(identifier, item, generationEnvironment, string.Empty, null, null), cancellationToken).ConfigureAwait(false);
-            if (!result.IsSuccessful())
-            {
-                return result;
-            }
-        }
-
-        return Result.Success();
+        return await childModels.PerformUntilFailure(x => instance.Render(new RenderTemplateRequest(identifierFactory(x), x, generationEnvironment, string.Empty, null, null), cancellationToken)).ConfigureAwait(false);
     }
 
     public static async Task<Result> RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, ITemplateContext context, Func<object?, ITemplateIdentifier> templateIdentifierFactory, CancellationToken cancellationToken)
@@ -69,18 +52,16 @@ public static class TemplateEngineExtensions
         Guard.IsNotNull(context);
         Guard.IsNotNull(templateIdentifierFactory);
 
-        var items = childModels.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
-        foreach (var item in items)
-        {
-            var identifier = templateIdentifierFactory(item.Model);
-            var result = await instance.Render(new RenderTemplateRequest(identifier, item.Model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(identifier, item.Model, item.Index, items.Length))), cancellationToken).ConfigureAwait(false);
-            if (!result.IsSuccessful())
-            {
-                return result;
-            }
-        }
+        var items = childModels
+            .OfType<object?>()
+            .Select((model, index) => new { Model = model, Index = index })
+            .ToArray();
 
-        return Result.Success();
+        return await items.PerformUntilFailure(x =>
+        {
+            var identifier = templateIdentifierFactory(x.Model);
+            return instance.Render(new RenderTemplateRequest(identifier, x.Model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(identifier, x.Model, x.Index, items.Length))), cancellationToken);
+        }).ConfigureAwait(false);
     }
 
     public static async Task<Result> RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, ITemplateContext context, Func<object?, object> templateFactory, CancellationToken cancellationToken)
@@ -90,17 +71,11 @@ public static class TemplateEngineExtensions
         Guard.IsNotNull(templateFactory);
 
         var items = childModels.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
-        foreach (var item in items)
+        return await items.PerformUntilFailure(x =>
         {
-            var template = templateFactory(item.Model);
-            var result = await instance.Render(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), item.Model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(new TemplateInstanceIdentifier(template), item, item.Index, items.Length))), cancellationToken).ConfigureAwait(false);
-            if (!result.IsSuccessful())
-            {
-                return result;
-            }
-        }
-
-        return Result.Success();
+            var template = templateFactory(x.Model);
+            return instance.Render(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), x.Model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(new TemplateInstanceIdentifier(template), x, x.Index, items.Length))), cancellationToken);
+        }).ConfigureAwait(false);
     }
 
     public static async Task<Result> RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, ITemplateContext context, ITemplateIdentifier identifier, CancellationToken cancellationToken)
@@ -110,16 +85,7 @@ public static class TemplateEngineExtensions
         Guard.IsNotNull(identifier);
 
         var items = childModels.OfType<object?>().Select((model, index) => new { Model = model, Index = index }).ToArray();
-        foreach (var item in items)
-        {
-            var result = await instance.Render(new RenderTemplateRequest(identifier, item.Model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(identifier, item.Model, item.Index, items.Length))), cancellationToken).ConfigureAwait(false);
-            if (!result.IsSuccessful())
-            {
-                return result;
-            }
-        }
-
-        return Result.Success();
+        return await items.PerformUntilFailure(x => instance.Render(new RenderTemplateRequest(identifier, x.Model, generationEnvironment, context.DefaultFilename, null, context.CreateChildContext(new ChildTemplateContext(identifier, x.Model, x.Index, items.Length))), cancellationToken)).ConfigureAwait(false);
     }
 
     public static async Task<Result> RenderChildTemplate(this ITemplateEngine instance, object? childModel, IGenerationEnvironment generationEnvironment, ITemplateIdentifier identifier, ITemplateContext context, CancellationToken cancellationToken)
