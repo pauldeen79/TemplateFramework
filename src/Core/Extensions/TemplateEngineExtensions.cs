@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace TemplateFramework.Core.Extensions;
+﻿namespace TemplateFramework.Core.Extensions;
 
 public static class TemplateEngineExtensions
 {

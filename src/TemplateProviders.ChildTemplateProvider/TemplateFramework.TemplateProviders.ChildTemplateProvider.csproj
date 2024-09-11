@@ -33,6 +33,7 @@
 
   <ItemGroup>
     <Using Include="CommunityToolkit.Diagnostics" />
+    <Using Include="CrossCutting.Common.Extensions" />
     <Using Include="CrossCutting.Common.Results" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
     <Using Include="System.Collections" />

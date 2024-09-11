@@ -47,6 +47,7 @@
     <Using Include="System.Text.RegularExpressions" />
     <Using Include="System.Xml" />
     <Using Include="CommunityToolkit.Diagnostics" />
+    <Using Include="CrossCutting.Common.Extensions" />
     <Using Include="CrossCutting.Common.Results" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
     <Using Include="TemplateFramework.Abstractions" />

@@ -179,7 +179,7 @@ public class RunTemplateCommand : CommandBase
                 (await _templateEngine.Render(request, args.cancellationToken).ConfigureAwait(false))
                 .Either(
                     async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false),
-                    () => success = true);
+                    _ => success = true);
             }
 
             if (success)
