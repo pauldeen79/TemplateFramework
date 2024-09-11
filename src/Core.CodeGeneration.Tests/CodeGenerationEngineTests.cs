@@ -145,6 +145,46 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             await templateProvider.Received().StartSession(CancellationToken.None);
         }
 
+        [Fact]
+        public async Task Returns_Success_When_Rendering_Is_Successful()
+        {
+            // Arrange
+            var counter = 0;
+            var provider = new MyPluginCodeGenerationProvider(_ => counter++);
+            var generationEnvironment = Fixture.Freeze<IGenerationEnvironment>();
+            var codeGenerationSettings = Fixture.Freeze<ICodeGenerationSettings>();
+            var templateEngine = Fixture.Freeze<ITemplateEngine>();
+            codeGenerationSettings.DryRun.Returns(true);
+            templateEngine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
+            var sut = CreateSut();
+
+            // Act
+            var result = await sut.Generate(provider, generationEnvironment, codeGenerationSettings);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public async Task Returns_Rendering_Result_When_Rendering_Is_Not_Successful()
+        {
+            // Arrange
+            var counter = 0;
+            var provider = new MyPluginCodeGenerationProvider(_ => counter++);
+            var generationEnvironment = Fixture.Freeze<IGenerationEnvironment>();
+            var codeGenerationSettings = Fixture.Freeze<ICodeGenerationSettings>();
+            var templateEngine = Fixture.Freeze<ITemplateEngine>();
+            codeGenerationSettings.DryRun.Returns(true);
+            templateEngine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Error());
+            var sut = CreateSut();
+
+            // Act
+            var result = await sut.Generate(provider, generationEnvironment, codeGenerationSettings);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+        }
+
         private sealed class MyPluginCodeGenerationProvider : ICodeGenerationProvider, ITemplateComponentRegistryPlugin
         {
             public string Path => string.Empty;

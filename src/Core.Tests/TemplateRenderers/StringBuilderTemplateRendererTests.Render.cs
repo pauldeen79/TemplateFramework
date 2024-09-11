@@ -70,5 +70,41 @@ public partial class StringBuilderTemplateRendererTests
             // Assert
             generationEnvironment.ToString().Should().Be("TemplateFramework.Core.Tests.TestData+Template");
         }
+
+        [Fact]
+        public async Task Returns_Success_When_A_TemplateRenderer_Supports_The_Template_And_Rendering_Succeeds()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var template = new TestData.Template(b => b.Append("Hello world!"));
+            var generationEnvironment = new StringBuilder();
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), generationEnvironment);
+            StringBuilderTemplateRendererMock.TryRender(Arg.Any<object>(), Arg.Any<StringBuilder>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
+
+            // Act
+            var result = await sut.Render(engineContext, CancellationToken.None);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public async Task Returns_Rendering_Result_When_A_TemplateRenderer_Supports_The_Template_And_Rendering_Does_Not_Succeed()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var template = new TestData.Template(b => b.Append("Hello world!"));
+            var generationEnvironment = new StringBuilder();
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), generationEnvironment);
+            StringBuilderTemplateRendererMock.TryRender(Arg.Any<object>(), Arg.Any<StringBuilder>(), Arg.Any<CancellationToken>()).Returns(Result.Error());
+            var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
+
+            // Act
+            var result = await sut.Render(engineContext, CancellationToken.None);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+        }
     }
 }
