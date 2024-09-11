@@ -27,15 +27,18 @@ public class ExpressionStringTemplate : IBuilderTemplate<StringBuilder>
         _parametersDictionary = new Dictionary<string, object?>();
     }
 
-    public Task Render(StringBuilder builder, CancellationToken cancellationToken)
+    public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
 
         var context = new TemplateFrameworkStringContext(_parametersDictionary, _componentRegistrationContext, false);
-        var result = _expressionStringParser.Parse(_expressionStringTemplateIdentifier.Template, _expressionStringTemplateIdentifier.FormatProvider, context, _formattableStringParser).GetValueOrThrow();
+        var result = _expressionStringParser.Parse(_expressionStringTemplateIdentifier.Template, _expressionStringTemplateIdentifier.FormatProvider, context, _formattableStringParser);
 
-        builder.Append(result);
+        if (result.IsSuccessful())
+        {
+            builder.Append(result.Value);
+        }
 
-        return Task.CompletedTask;
+        return Task.FromResult((Result)result);
     }
 }

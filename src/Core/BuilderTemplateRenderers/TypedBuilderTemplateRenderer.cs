@@ -6,8 +6,7 @@ public class TypedBuilderTemplateRenderer<TBuilder> : IBuilderTemplateRenderer<T
     {
         if (instance is IBuilderTemplate<TBuilder> typedTemplate)
         {
-            await typedTemplate.Render(builder, cancellationToken).ConfigureAwait(false);
-            return Result.Success();
+            return await typedTemplate.Render(builder, cancellationToken).ConfigureAwait(false);
         }
 
         return Result.Continue();

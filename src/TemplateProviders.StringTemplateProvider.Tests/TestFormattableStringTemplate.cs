@@ -31,15 +31,20 @@ public class TestFormattableStringTemplate : IParameterizedTemplate, IBuilderTem
     public ITemplateParameter[] GetParameters()
         => new FormattableStringTemplate(new FormattableStringTemplateIdentifier(Template, CultureInfo.CurrentCulture), _formattableStringParser, _componentRegistrationContext).GetParameters();
 
-    public Task Render(StringBuilder builder, CancellationToken cancellationToken)
+    public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
 
         var context = new TemplateFrameworkStringContext(_parameterValues, _componentRegistrationContext, false);
 
-        builder.Append(_formattableStringParser.Parse(Template, CultureInfo.CurrentCulture, context).GetValueOrThrow());
+        var result = _formattableStringParser.Parse(Template, CultureInfo.CurrentCulture, context);
+
+        if (result.IsSuccessful() && result.Value is not null)
+        {
+            builder.Append(result.Value);
+        }
         
-        return Task.CompletedTask;
+        return Task.FromResult((Result)result);
     }
 
     public void SetParameter(string name, object? value)

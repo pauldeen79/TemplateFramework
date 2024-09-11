@@ -43,7 +43,7 @@ internal static class TestData
 
         public Template(Action<StringBuilder> @delegate) => _delegate = @delegate;
 
-        public Task Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.CompletedTask; }
+        public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.FromResult(Result.Success()); }
     }
 
     internal sealed class TemplateWithModel<T> : IBuilderTemplate<StringBuilder>, IModelContainer<T>
@@ -54,7 +54,7 @@ internal static class TestData
 
         public TemplateWithModel(Action<StringBuilder> @delegate) => _delegate = @delegate;
 
-        public Task Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.CompletedTask; }
+        public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.FromResult(Result.Success()); }
     }
 
     internal sealed class TemplateWithDefaultFilename : IBuilderTemplate<StringBuilder>, IDefaultFilenameContainer
@@ -65,7 +65,7 @@ internal static class TestData
 
         public string DefaultFilename { get; set; } = "";
 
-        public Task Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.CompletedTask; }
+        public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.FromResult(Result.Success()); }
     }
 
     internal sealed class TemplateWithViewModel<T> : IBuilderTemplate<StringBuilder>, IParameterizedTemplate
@@ -76,7 +76,7 @@ internal static class TestData
 
         public TemplateWithViewModel(Action<StringBuilder> @delegate) => _delegate = @delegate;
 
-        public Task Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.CompletedTask; }
+        public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.FromResult(Result.Success()); }
 
         public void SetParameter(string name, object? value) // this is added in case of viewmodels which don't have a public parameterless constructor
         {

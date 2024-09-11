@@ -34,16 +34,19 @@ public class FormattableStringTemplate : IParameterizedTemplate, IBuilderTemplat
             .ToArray();
     }
 
-    public Task Render(StringBuilder builder, CancellationToken cancellationToken)
+    public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
 
         var context = new TemplateFrameworkStringContext(_parametersDictionary, _componentRegistrationContext, false);
-        var result = _formattableStringParser.Parse(_formattableStringTemplateIdentifier.Template, _formattableStringTemplateIdentifier.FormatProvider, context).GetValueOrThrow();
+        var result = _formattableStringParser.Parse(_formattableStringTemplateIdentifier.Template, _formattableStringTemplateIdentifier.FormatProvider, context);
 
-        builder.Append(result.ToString(_formattableStringTemplateIdentifier.FormatProvider));
+        if (result.IsSuccessful() && result.Value is not null)
+        {
+            builder.Append(result.Value.ToString(_formattableStringTemplateIdentifier.FormatProvider));
+        }
 
-        return Task.CompletedTask;
+        return Task.FromResult((Result)result);
     }
 
     public void SetParameter(string name, object? value) => _parametersDictionary[name] = value;

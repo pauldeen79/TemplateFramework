@@ -31,8 +31,7 @@ public class MultipleStringContentBuilderTemplateRenderer : ITemplateRenderer
         {
             // No need to convert string to MultipleContentBuilder, and then add it again..
             // We can simply pass the MultipleContentBuilder instance
-            await multipleContentBuilderTemplate.Render(multipleContentBuilder, cancellationToken).ConfigureAwait(false);
-            return Result.Success();
+            return await multipleContentBuilderTemplate.Render(multipleContentBuilder, cancellationToken).ConfigureAwait(false);
         }
 
         // Make a new request, because we are using a different generation environment.

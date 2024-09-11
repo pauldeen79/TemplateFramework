@@ -2,5 +2,5 @@
 
 public interface IBuilderTemplate<in T>
 {
-    Task Render(T builder, CancellationToken cancellationToken);
+    Task<Result> Render(T builder, CancellationToken cancellationToken);
 }
