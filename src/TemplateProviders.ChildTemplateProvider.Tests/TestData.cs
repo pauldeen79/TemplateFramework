@@ -325,24 +325,25 @@ internal static class TestData
                 var filename = $"{Model.Settings.FilenamePrefix}{Model.Data.Name}{Model.Settings.FilenameSuffix}.cs";
                 var contentBuilder = builder.AddContent(filename, Model.Settings.SkipWhenFileExists);
                 generationEnvironment = new StringBuilderEnvironment(contentBuilder.Builder);
-                result = await Context.Engine.RenderChildTemplate(
-                    Model.Settings,
-                    generationEnvironment,
-                    Context,
-                    new TemplateByNameIdentifier("CodeGenerationHeader"),
-                    cancellationToken
-                    ).ConfigureAwait(false);
-                if (!result.IsSuccessful())
+                var actions = new[]
                 {
-                    return result;
-                }
-                result = await Context.Engine.RenderChildTemplate(
-                    new CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>([Model.Data], Model.Settings),
-                    generationEnvironment,
-                    Context,
-                    new TemplateByNameIdentifier("DefaultUsings"),
-                    cancellationToken
-                    ).ConfigureAwait(false);
+                    Context.Engine.RenderChildTemplate(
+                        Model.Settings,
+                        generationEnvironment,
+                        Context,
+                        new TemplateByNameIdentifier("CodeGenerationHeader"),
+                        cancellationToken
+                        ),
+                    Context.Engine.RenderChildTemplate(
+                        new CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>([Model.Data], Model.Settings),
+                        generationEnvironment,
+                        Context,
+                        new TemplateByNameIdentifier("DefaultUsings"),
+                        cancellationToken
+                        )
+                };
+                var errors = Array.FindAll(await Task.WhenAll(actions).ConfigureAwait(false), x => !x.IsSuccessful());
+                result = Result.Aggregate(errors, Result.Success(), nonSuccesfulResults => Result.Error(nonSuccesfulResults, "One or more code generation engines returned a non-succesful result, see the inner results for more details"));
                 if (!result.IsSuccessful())
                 {
                     return result;
