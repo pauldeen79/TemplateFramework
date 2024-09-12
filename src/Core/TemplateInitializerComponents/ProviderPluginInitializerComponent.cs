@@ -11,18 +11,18 @@ public class ProviderPluginInitializerComponent : ITemplateInitializerComponent
         _factory = factory;
     }
 
-    public async Task Initialize(ITemplateEngineContext context, CancellationToken cancellationToken)
+    public async Task<Result> Initialize(ITemplateEngineContext context, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(context);
 
         if (context.Context is null)
         {
-            return;
+            return Result.Continue();
         }
         
         if (context.Template is ITemplateComponentRegistryPlugin registryPlugin)
         {
-            await registryPlugin.Initialize(context.Context.TemplateComponentRegistry, cancellationToken).ConfigureAwait(false);
+            return await registryPlugin.Initialize(context.Context.TemplateComponentRegistry, cancellationToken).ConfigureAwait(false);
         }
 
         if (context.Identifier is ITemplateComponentRegistryIdentifier pluginIdentifier
@@ -31,7 +31,9 @@ public class ProviderPluginInitializerComponent : ITemplateInitializerComponent
         {
             var identifierPlugin = _factory.Create(pluginIdentifier.PluginAssemblyName, pluginIdentifier.PluginClassName, pluginIdentifier.CurrentDirectory);
             
-            await identifierPlugin.Initialize(context.Context.TemplateComponentRegistry, cancellationToken).ConfigureAwait(false);
+            return await identifierPlugin.Initialize(context.Context.TemplateComponentRegistry, cancellationToken).ConfigureAwait(false);
         }
+
+        return Result.Continue();
     }
 }

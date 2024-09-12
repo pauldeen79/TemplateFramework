@@ -25,15 +25,21 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
 
         await _templateProvider.StartSession(cancellationToken).ConfigureAwait(false);
 
+        Result result;
+
         if (codeGenerationProvider is ITemplateComponentRegistryPlugin plugin)
         {
-            await plugin.Initialize(_templateProvider, cancellationToken).ConfigureAwait(false);
+            result = await plugin.Initialize(_templateProvider, cancellationToken).ConfigureAwait(false);
+            if (!result.IsSuccessful())
+            {
+                return result;
+            }
         }
 
         var model = await codeGenerationProvider.CreateModel().ConfigureAwait(false);
         var additionalParameters = await codeGenerationProvider.CreateAdditionalParameters().ConfigureAwait(false);
         
-        var result = await _templateEngine.Render(
+        result = await _templateEngine.Render(
             new RenderTemplateRequest
             (
                 identifier: new TemplateTypeIdentifier(codeGenerationProvider.GetGeneratorType(), _templateFactory),
@@ -54,6 +60,6 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
             return await generationEnvironment.SaveContents(codeGenerationProvider, settings.BasePath, settings.DefaultFilename, cancellationToken).ConfigureAwait(false);
         }
 
-        return Result.Success();
+        return result;
     }
 }

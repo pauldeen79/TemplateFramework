@@ -200,7 +200,7 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
 
             public MyPluginCodeGenerationProvider(Action<ITemplateComponentRegistry> action) => _action = action;
 
-            public Task Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken) { _action(registry); return Task.CompletedTask; }
+            public Task<Result> Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken) { _action(registry); return Task.FromResult(Result.Success()); }
         }
     }
 }

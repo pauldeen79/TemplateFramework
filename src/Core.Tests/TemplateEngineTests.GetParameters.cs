@@ -21,7 +21,7 @@ public partial class TemplateEngineTests
             // Arrange
             var sut = CreateSut();
             var template = new object();
-            var parameters = new[] { new TemplateParameter("name", typeof(string)) };
+            var parameters = Result.Success<ITemplateParameter[]>([new TemplateParameter("name", typeof(string))]);
             TemplateParameterExtractorMock.Extract(template).Returns(parameters);
 
             // Act
@@ -29,7 +29,7 @@ public partial class TemplateEngineTests
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(parameters);
+            result.Value.Should().BeEquivalentTo(parameters.Value);
         }
     }
 }

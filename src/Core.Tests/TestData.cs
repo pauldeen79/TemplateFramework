@@ -4,24 +4,27 @@ public sealed class PlainTemplateWithAdditionalParameters : IParameterizedTempla
 {
     public string AdditionalParameter { get; set; } = "";
 
-    public void SetParameter(string name, object? value)
+    public Result SetParameter(string name, object? value)
     {
         if (name == nameof(AdditionalParameter))
         {
             AdditionalParameter = value?.ToString() ?? string.Empty;
+            return Result.Success();
         }
+
+        return Result.Continue();
     }
 
-    public ITemplateParameter[] GetParameters() => [new TemplateParameter(nameof(AdditionalParameter), typeof(string))];
+    public Result<ITemplateParameter[]> GetParameters() => Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(AdditionalParameter), typeof(string))]);
 
     public override string ToString() => AdditionalParameter;
 }
 
 public sealed class TestTemplateComponentRegistryPlugin : ITemplateComponentRegistryPlugin
 {
-    public Task Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken)
+    public Task<Result> Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken)
     {
-        return Task.CompletedTask;
+        return Task.FromResult(Result.Success());
     }
 }
 
@@ -78,15 +81,18 @@ internal static class TestData
 
         public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.FromResult(Result.Success()); }
 
-        public void SetParameter(string name, object? value) // this is added in case of viewmodels which don't have a public parameterless constructor
+        public Result SetParameter(string name, object? value) // this is added in case of viewmodels which don't have a public parameterless constructor
         {
             if (name == nameof(ViewModel))
             {
                 ViewModel = (T?)value;
+                return Result.Success();
             }
+
+            return Result.Continue();
         }
 
-        public ITemplateParameter[] GetParameters() => [new TemplateParameter(nameof(ViewModel), typeof(T?))];
+        public Result<ITemplateParameter[]> GetParameters() => Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(ViewModel), typeof(T?))]);
     }
 
     internal sealed class MyViewModel<T> : IViewModel, IModelContainer<T>
@@ -105,15 +111,18 @@ internal static class TestData
 
         public string AdditionalParameter { get; set; } = "";
 
-        public void SetParameter(string name, object? value)
+        public Result SetParameter(string name, object? value)
         {
             if (name == nameof(AdditionalParameter))
             {
                 AdditionalParameter = value?.ToString() ?? string.Empty;
+                return Result.Success();
             }
+
+            return Result.Continue();
         }
 
-        public ITemplateParameter[] GetParameters() => [new TemplateParameter(nameof(AdditionalParameter), typeof(T?))];
+        public Result<ITemplateParameter[]> GetParameters() => Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(AdditionalParameter), typeof(T?))]);
 
         public override string ToString() => AdditionalParameter;
     }
@@ -150,15 +159,18 @@ internal static class TestData
 
         public string Property { get; set; }
 
-        public void SetParameter(string name, object? value)
+        public Result SetParameter(string name, object? value)
         {
             if (name == nameof(Property))
             {
                 Property = value?.ToString() ?? string.Empty;
+                return Result.Success();
             }
+
+            return Result.Continue();
         }
 
-        public ITemplateParameter[] GetParameters() => [new TemplateParameter(nameof(Property), typeof(string))];
+        public Result<ITemplateParameter[]> GetParameters() => Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(Property), typeof(string))]);
     }
 
     internal sealed class PocoParameterizedTemplate

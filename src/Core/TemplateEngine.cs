@@ -1,4 +1,6 @@
-﻿namespace TemplateFramework.Core;
+﻿using System.Xml.XPath;
+
+namespace TemplateFramework.Core;
 
 public sealed class TemplateEngine : ITemplateEngine
 {
@@ -28,7 +30,7 @@ public sealed class TemplateEngine : ITemplateEngine
     {
         Guard.IsNotNull(templateInstance);
 
-        return Task.FromResult(Result.Success(_parameterExtractor.Extract(templateInstance)));
+        return Task.FromResult(_parameterExtractor.Extract(templateInstance));
     }
 
     public async Task<Result> Render(IRenderTemplateRequest request, CancellationToken cancellationToken)
@@ -43,7 +45,11 @@ public sealed class TemplateEngine : ITemplateEngine
 
         var engineContext = new TemplateEngineContext(request, this, _provider, template);
         
-        await _initializer.Initialize(engineContext, cancellationToken).ConfigureAwait(false);
+        var result = await _initializer.Initialize(engineContext, cancellationToken).ConfigureAwait(false);
+        if (!result.IsSuccessful())
+        {
+            return result;
+        }
 
         var renderer = _renderers.FirstOrDefault(x => x.Supports(request.GenerationEnvironment));
         if (renderer is null)

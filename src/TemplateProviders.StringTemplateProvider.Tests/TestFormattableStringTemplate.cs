@@ -28,7 +28,7 @@ public class TestFormattableStringTemplate : IParameterizedTemplate, IBuilderTem
             //TODO
         }}";
 
-    public ITemplateParameter[] GetParameters()
+    public Result<ITemplateParameter[]> GetParameters()
         => new FormattableStringTemplate(new FormattableStringTemplateIdentifier(Template, CultureInfo.CurrentCulture), _formattableStringParser, _componentRegistrationContext).GetParameters();
 
     public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
@@ -47,13 +47,9 @@ public class TestFormattableStringTemplate : IParameterizedTemplate, IBuilderTem
         return Task.FromResult((Result)result);
     }
 
-    public void SetParameter(string name, object? value)
+    public Result SetParameter(string name, object? value)
     {
-        switch (name)
-        {
-            default:
-                _parameterValues.Add(name, value);
-                break;
-        }
+        _parameterValues.Add(name, value);
+        return Result.Success();
     }
 }

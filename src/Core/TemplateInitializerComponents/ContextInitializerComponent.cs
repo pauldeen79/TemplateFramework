@@ -2,13 +2,13 @@
 
 public class ContextInitializerComponent : ITemplateInitializerComponent
 {
-    public Task Initialize(ITemplateEngineContext context, CancellationToken cancellationToken)
+    public Task<Result> Initialize(ITemplateEngineContext context, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(context);
 
         if (context.Template is not ITemplateContextContainer templateContextContainer)
         {
-            return Task.CompletedTask;
+            return Task.FromResult(Result.Continue());
         }
 
         var templateContext = context.Context
@@ -16,6 +16,6 @@ public class ContextInitializerComponent : ITemplateInitializerComponent
 
         templateContextContainer.Context = templateContext;
 
-        return Task.CompletedTask;
+        return Task.FromResult(Result.Success());
     }
 }

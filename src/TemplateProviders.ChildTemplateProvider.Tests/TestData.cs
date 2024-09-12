@@ -343,7 +343,7 @@ internal static class TestData
                         )
                 };
                 var errors = Array.FindAll(await Task.WhenAll(actions).ConfigureAwait(false), x => !x.IsSuccessful());
-                result = Result.Aggregate(errors, Result.Success(), nonSuccesfulResults => Result.Error(nonSuccesfulResults, "One or more code generation engines returned a non-succesful result, see the inner results for more details"));
+                result = Result.Aggregate(errors, Result.Success(), nonSuccesfulResults => Result.Error(nonSuccesfulResults, "One or more child templates returned a non-succesful result, see the inner results for more details"));
                 if (!result.IsSuccessful())
                 {
                     return result;
@@ -448,7 +448,7 @@ public sealed class CsharpClassGeneratorCodeGenerationProvider : ICodeGeneration
         return Task.FromResult<object?>(viewModel);
     }
 
-    public Task Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken)
+    public Task<Result> Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(registry);
 
@@ -460,7 +460,7 @@ public sealed class CsharpClassGeneratorCodeGenerationProvider : ICodeGeneration
         };
 
         registry.RegisterComponent(new ProviderComponent(registrations));
-        return Task.CompletedTask;
+        return Task.FromResult(Result.Success());
     }
 }
 

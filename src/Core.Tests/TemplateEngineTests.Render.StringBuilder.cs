@@ -30,6 +30,7 @@ public partial class TemplateEngineTests
             var additionalParameters = new { AdditionalParameter = "Some value" };
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), additionalParameters, builder);
             TemplateProviderMock.Create(Arg.Any<TemplateInstanceIdentifier>()).Returns(template);
+            TemplateInitializerMock.Initialize(Arg.Any<ITemplateEngineContext>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
 
             // Act
             await sut.Render(request, CancellationToken.None);
@@ -49,6 +50,7 @@ public partial class TemplateEngineTests
             TemplateRendererMock.Supports(Arg.Any<IGenerationEnvironment>()).Returns(true);
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), additionalParameters, generationEnvironment);
             TemplateProviderMock.Create(Arg.Any<TemplateInstanceIdentifier>()).Returns(template);
+            TemplateInitializerMock.Initialize(Arg.Any<ITemplateEngineContext>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
 
             // Act
             await sut.Render(request, CancellationToken.None);

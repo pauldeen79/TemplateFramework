@@ -39,7 +39,8 @@ public class FormattableStringTemplateTests
             var result = sut.GetParameters();
 
             // Assert
-            result.Select(x => x.Name).Should().BeEquivalentTo("Name");
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.GetValueOrThrow().Select(x => x.Name).Should().BeEquivalentTo("Name");
         }
     }
 
@@ -107,10 +108,11 @@ public class FormattableStringTemplateTests
                 });
 
             // Act
-            sut.SetParameter("Name", "Value");
+            var result = sut.SetParameter("Name", "Value");
 
             // Assert
-            await sut.Render(new StringBuilder(), CancellationToken.None);
+            result.Status.Should().Be(ResultStatus.Ok);
+            (await sut.Render(new StringBuilder(), CancellationToken.None)).ThrowIfInvalid();
             dictionary.Should().NotBeNull();
             dictionary!.First().Key.Should().Be("Name");
             dictionary!.First().Value.Should().Be("Value");

@@ -2,5 +2,5 @@
 
 public interface ITemplateParameterExtractor
 {
-    ITemplateParameter[] Extract(object templateInstance);
+    Result<ITemplateParameter[]> Extract(object templateInstance);
 }

@@ -23,15 +23,15 @@ public class FormattableStringTemplate : IParameterizedTemplate, IBuilderTemplat
         _parametersDictionary = new Dictionary<string, object?>();
     }
 
-    public ITemplateParameter[] GetParameters()
+    public Result<ITemplateParameter[]> GetParameters()
     {
         var context = new TemplateFrameworkStringContext(_parametersDictionary, _componentRegistrationContext, true);
         
         _ = _formattableStringParser.Parse(_formattableStringTemplateIdentifier.Template, _formattableStringTemplateIdentifier.FormatProvider, context);
         
-        return context.ParameterNamesList
+        return Result.Success<ITemplateParameter[]>(context.ParameterNamesList
             .Select(x => new TemplateParameter(x, typeof(string)))
-            .ToArray();
+            .ToArray());
     }
 
     public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
@@ -49,5 +49,9 @@ public class FormattableStringTemplate : IParameterizedTemplate, IBuilderTemplat
         return Task.FromResult((Result)result);
     }
 
-    public void SetParameter(string name, object? value) => _parametersDictionary[name] = value;
+    public Result SetParameter(string name, object? value)
+    {
+        _parametersDictionary[name] = value;
+        return Result.Success();
+    }
 }

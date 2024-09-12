@@ -11,14 +11,14 @@ public class TemplateParameterExtractor : ITemplateParameterExtractor
         _components = components;
     }
 
-    public ITemplateParameter[] Extract(object templateInstance)
+    public Result<ITemplateParameter[]> Extract(object templateInstance)
     {
         Guard.IsNotNull(templateInstance);
 
         var component = _components.FirstOrDefault(x => x.Supports(templateInstance));
         if (component is null)
         {
-            return Array.Empty<ITemplateParameter>();
+            return Result.Continue(Array.Empty<ITemplateParameter>());
         }
 
         return component.Extract(templateInstance);

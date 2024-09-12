@@ -30,7 +30,7 @@ public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
             .SelectAsync(x => _codeGenerationEngine.Generate(x, generationEnvironment, settings, cancellationToken))
             .ConfigureAwait(false);
 
-        return Result.Aggregate(result.Where(x => x.IsSuccessful()), Result.Success(), nonSuccesfulResults => Result.Error(nonSuccesfulResults, "One or more code generation engines returned a non-succesful result, see the inner results for more details"));
+        return Result.Aggregate(result, Result.Success(), nonSuccesfulResults => Result.Error(nonSuccesfulResults, "One or more code generation engines returned a non-succesful result, see the inner results for more details"));
     }
 
     private IEnumerable<ICodeGenerationProvider> GetCodeGeneratorProviders(Assembly assembly, IEnumerable<string> classNameFilter)

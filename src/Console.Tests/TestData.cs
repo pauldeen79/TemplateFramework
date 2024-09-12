@@ -17,15 +17,18 @@ internal static class TestData
 
         public string AdditionalParameter { get; set; } = "";
 
-        public void SetParameter(string name, object? value)
+        public Result SetParameter(string name, object? value)
         {
             if (name == nameof(AdditionalParameter))
             {
                 AdditionalParameter = value?.ToString() ?? string.Empty;
+                return Result.Success();
             }
+
+            return Result.Continue();
         }
 
-        public ITemplateParameter[] GetParameters() => [new TemplateParameter(nameof(AdditionalParameter), typeof(T?))];
+        public Result<ITemplateParameter[]> GetParameters() => Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(AdditionalParameter), typeof(T?))]);
 
         public override string ToString() => AdditionalParameter;
     }
