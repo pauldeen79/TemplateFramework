@@ -115,9 +115,33 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var sut = CreateSut();
 
             // Act
-            await sut.Generate(provider, generationEnvironment, codeGenerationSettings);
+            var result = await sut.Generate(provider, generationEnvironment, codeGenerationSettings);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            counter.Should().Be(1);
+        }
+
+        [Fact]
+        public async Task Returns_Non_Successful_Result_From_Initialization_When_Applicable()
+        {
+            // Arrange
+            var counter = 0;
+            var provider = new MyPluginCodeGenerationProvider(_ => counter++, ResultStatus.Error);
+            var generationEnvironment = Fixture.Freeze<IGenerationEnvironment>();
+            var codeGenerationSettings = Fixture.Freeze<ICodeGenerationSettings>();
+            var templateEngine = Fixture.Freeze<ITemplateEngine>();
+            codeGenerationSettings.DryRun.Returns(false);
+            codeGenerationSettings.BasePath.Returns(TestData.BasePath);
+            codeGenerationSettings.DefaultFilename.Returns("Filename.txt");
+            templateEngine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
+            var sut = CreateSut();
+
+            // Act
+            var result = await sut.Generate(provider, generationEnvironment, codeGenerationSettings);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
             counter.Should().Be(1);
         }
 
@@ -197,10 +221,15 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             public Task<object?> CreateModel() => Task.FromResult(default(object?));
 
             private readonly Action<ITemplateComponentRegistry> _action;
+            private readonly ResultStatus _status;
 
-            public MyPluginCodeGenerationProvider(Action<ITemplateComponentRegistry> action) => _action = action;
+            public MyPluginCodeGenerationProvider(Action<ITemplateComponentRegistry> action, ResultStatus status = ResultStatus.Ok)
+            {
+                _action = action;
+                _status = status;
+            }
 
-            public Task<Result> Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken) { _action(registry); return Task.FromResult(Result.Success()); }
+            public Task<Result> Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken) { _action(registry); return Task.FromResult(_status == ResultStatus.Ok ? Result.Success() : Result.Error() ); }
         }
     }
 }
