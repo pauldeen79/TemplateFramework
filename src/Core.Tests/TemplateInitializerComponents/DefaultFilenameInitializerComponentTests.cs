@@ -1,8 +1,8 @@
 ﻿namespace TemplateFramework.Core.Tests.TemplateInitializerComponents;
 
-public class DefaultFilenameInitializerTests
+public class DefaultFilenameInitializerComponentTests
 {
-    public class Initialize : DefaultFilenameInitializerTests
+    public class Initialize : DefaultFilenameInitializerComponentTests
     {
         private const string DefaultFilename = "DefaultFilename.txt";
 

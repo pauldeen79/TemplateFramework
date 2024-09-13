@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Core.Tests.TemplateInitializerComponents;
 
-public class ParameterInitializerTests
+public class ParameterInitializerComponentTests
 {
     public class Constructor
     {

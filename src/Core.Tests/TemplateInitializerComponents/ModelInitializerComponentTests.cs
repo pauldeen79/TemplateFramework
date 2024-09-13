@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Core.Tests.TemplateInitializerComponents;
 
-public class ModelInitializerTests
+public class ModelInitializerComponentTests
 {
     public class Constructor
     {
@@ -11,7 +11,7 @@ public class ModelInitializerTests
         }
     }
 
-    public class Initialize : ModelInitializerTests
+    public class Initialize : ModelInitializerComponentTests
     {
         private const string DefaultFilename = "DefaultFilename.txt";
 

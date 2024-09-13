@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Core.Tests.TemplateInitializerComponents;
 
-public class ContextInitializerTests
+public class ContextInitializerComponentTests
 {
     public class Initialize
     {
