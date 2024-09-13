@@ -40,7 +40,7 @@ public partial class TemplateEngineTests
         }
 
         [Fact]
-        public async  Task Renders_Template_Correctly()
+        public async Task Renders_Template_Correctly()
         {
             // Arrange
             var sut = CreateSut();
