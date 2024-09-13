@@ -1,6 +1,4 @@
-﻿using System.Xml.XPath;
-
-namespace TemplateFramework.Core;
+﻿namespace TemplateFramework.Core;
 
 public sealed class TemplateEngine : ITemplateEngine
 {
