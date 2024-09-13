@@ -14,17 +14,14 @@ public class ParameterInitializerComponent : ITemplateInitializerComponent
     public async Task<Result> Initialize(ITemplateEngineContext context, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(context);
+        Guard.IsNotNull(context.Template);
 
         if (context.Template is IParameterizedTemplate parameterizedTemplate)
         {
             return SetTyped(context, parameterizedTemplate);
         }
-        else if (context.Template is not null)
-        {
-            return await TrySetProperties(context).ConfigureAwait(false);
-        }
 
-        return Result.Continue();
+        return await TrySetProperties(context).ConfigureAwait(false);
     }
 
     private Result SetTyped(ITemplateEngineContext context, IParameterizedTemplate parameterizedTemplate)
