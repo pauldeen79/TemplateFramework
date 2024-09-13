@@ -112,6 +112,7 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             codeGenerationSettings.BasePath.Returns(TestData.BasePath);
             codeGenerationSettings.DefaultFilename.Returns("Filename.txt");
             templateEngine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
+            generationEnvironment.SaveContents(Arg.Any<ICodeGenerationProvider>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
             var sut = CreateSut();
 
             // Act
