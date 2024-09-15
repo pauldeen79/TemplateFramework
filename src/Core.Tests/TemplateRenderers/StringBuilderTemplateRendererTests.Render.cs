@@ -22,7 +22,7 @@ public partial class StringBuilderTemplateRendererTests
         }
 
         [Fact]
-        public async Task Throws_When_GenerationEnvironment_Is_Not_StringBuilder()
+        public async Task Returns_NotSupported_When_GenerationEnvironment_Is_Not_StringBuilder()
         {
             // Arrange
             var sut = CreateSut();
@@ -30,9 +30,11 @@ public partial class StringBuilderTemplateRendererTests
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), Substitute.For<IMultipleContentBuilder<StringBuilder>>());
             var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
 
-            // Act & Assert
-            await sut.Awaiting(x => x.Render(engineContext, CancellationToken.None))
-                     .Should().ThrowAsync<NotSupportedException>();
+            // Act
+            var result = await sut.Render(engineContext, CancellationToken.None);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.NotSupported);
         }
 
         [Fact]

@@ -1,6 +1,4 @@
-﻿using System.Threading;
-
-namespace TemplateFramework.TemplateProviders.StringTemplateProvider.Tests;
+﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider.Tests;
 
 public class ExpressionStringTemplateTests
 {
@@ -36,7 +34,7 @@ public class ExpressionStringTemplateTests
         }
 
         [Fact]
-        public async Task Throws_On_NonSuccesful_Result_From_FormattableStringParser()
+        public async Task Return_Result_On_NonSuccesful_Result_From_FormattableStringParser()
         {
             // Arrange
             ExpressionStringParserMock.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<TemplateFrameworkStringContext>(), Arg.Any<IFormattableStringParser>())
@@ -44,9 +42,12 @@ public class ExpressionStringTemplateTests
             var sut = CreateSut();
             var builder = new StringBuilder();
 
-            // Act & Assert
-            await sut.Awaiting(x => x.Render(builder, CancellationToken.None))
-                     .Should().ThrowAsync<InvalidOperationException>().WithMessage("Result: Error, ErrorMessage: Kaboom!");
+            // Act
+            var result = await sut.Render(builder, CancellationToken.None);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom!");
         }
 
         [Fact]

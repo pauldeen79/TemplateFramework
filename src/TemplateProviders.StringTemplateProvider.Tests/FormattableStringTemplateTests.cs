@@ -58,7 +58,7 @@ public class FormattableStringTemplateTests
         }
 
         [Fact]
-        public async Task Throws_On_NonSuccesful_Result_From_FormattableStringParser()
+        public async Task Returns_Reuslt_On_NonSuccesful_Result_From_FormattableStringParser()
         {
             // Arrange
             FormattableStringParserMock
@@ -67,9 +67,12 @@ public class FormattableStringTemplateTests
             var sut = CreateSut();
             var builder = new StringBuilder();
 
-            // Act & Assert
-            await sut.Awaiting(x => x.Render(builder, CancellationToken.None))
-                     .Should().ThrowAsync<InvalidOperationException>().WithMessage("Result: Error, ErrorMessage: Kaboom!");
+            // Act
+            var result = await sut.Render(builder, CancellationToken.None);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom!");
         }
 
         [Fact]

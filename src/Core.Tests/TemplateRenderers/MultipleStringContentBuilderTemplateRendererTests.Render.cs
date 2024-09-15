@@ -18,7 +18,7 @@ public partial class MultipleStringContentBuilderTemplateRendererTests
         }
 
         [Fact]
-        public async Task Throws_When_GenerationEnvironemnt_Is_Not_Supported()
+        public async Task Returns_NotSupported_When_GenerationEnvironemnt_Is_Not_Supported()
         {
             // Arrange
             var sut = CreateSut();
@@ -26,9 +26,11 @@ public partial class MultipleStringContentBuilderTemplateRendererTests
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), DefaultFilename, new StringBuilder());
             var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
 
-            // Act & Assert
-            await sut.Awaiting(x => x.Render(engineContext, CancellationToken.None))
-                     .Should().ThrowAsync<NotSupportedException>();
+            // Act
+            var result = await sut.Render(engineContext, CancellationToken.None);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.NotSupported);
         }
 
         [Fact]
