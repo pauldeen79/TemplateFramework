@@ -24,38 +24,38 @@ public class CommandBaseTests : TestBase<CommandBaseTests.CommandBaseTest>
         }
 
         [Fact]
-        public void Throws_On_Null_App()
+        public async Task Throws_On_Null_App()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.WatchPublic(app: null!, false, Filename, () => Task.CompletedTask))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("app");
+            await sut.Awaiting(x => x.WatchPublic(app: null!, false, Filename, () => Task.CompletedTask))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("app");
         }
 
         [Fact]
-        public void Throws_On_Null_Filename()
+        public async Task Throws_On_Null_Filename()
         {
             // Arrange
             using var app = new CommandLineApplication();
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.WatchPublic(app, false, filename: null!, () => Task.CompletedTask))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("filename");
+            await sut.Awaiting(x => x.WatchPublic(app, false, filename: null!, () => Task.CompletedTask))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("filename");
         }
 
         [Fact]
-        public void Throws_On_Null_Action()
+        public async Task Throws_On_Null_Action()
         {
             // Arrange
             using var app = new CommandLineApplication();
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.WatchPublic(app, false, Filename, action: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("action");
+            await sut.Awaiting(x => x.WatchPublic(app, false, Filename, action: null!))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("action");
         }
 
         [Fact]
@@ -338,25 +338,25 @@ Contents from file2
     public class WriteOutputToHost : CommandBaseTests
     {
         [Fact]
-        public void Throws_On_Null_App()
+        public async Task Throws_On_Null_App()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => CommandLineCommandHelper.ExecuteCommand(_ => x.WriteOutputToHostPublic(app: null!, "TemplateOutput", true)))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("app");
+            await sut.Awaiting(x => CommandLineCommandHelper.ExecuteCommand(_ => x.WriteOutputToHostPublic(app: null!, "TemplateOutput", true)))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("app");
         }
 
         [Fact]
-        public void Throws_On_Null_TemplateOutput()
+        public async Task Throws_On_Null_TemplateOutput()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => CommandLineCommandHelper.ExecuteCommand(app => x.WriteOutputToHostPublic(app, templateOutput: null!, true)))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("templateOutput");
+            await sut.Invoking(x => CommandLineCommandHelper.ExecuteCommand(app => x.WriteOutputToHostPublic(app, templateOutput: null!, true)))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("templateOutput");
         }
 
         [Fact]

@@ -25,18 +25,18 @@ public class ExpressionStringTemplateTests
     public class Render : ExpressionStringTemplateTests
     {
         [Fact]
-        public void Throws_On_Null_Builder()
+        public async Task Throws_On_Null_Builder()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.Render(builder: null!, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("builder");
+            await sut.Awaiting(x => x.Render(builder: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("builder");
         }
 
         [Fact]
-        public void Throws_On_NonSuccesful_Result_From_FormattableStringParser()
+        public async Task Throws_On_NonSuccesful_Result_From_FormattableStringParser()
         {
             // Arrange
             ExpressionStringParserMock.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<TemplateFrameworkStringContext>(), Arg.Any<IFormattableStringParser>())
@@ -45,8 +45,8 @@ public class ExpressionStringTemplateTests
             var builder = new StringBuilder();
 
             // Act & Assert
-            sut.Awaiting(x => x.Render(builder, CancellationToken.None))
-               .Should().ThrowAsync<InvalidOperationException>().WithMessage("Result: Error, ErrorMessage: Kaboom!");
+            await sut.Awaiting(x => x.Render(builder, CancellationToken.None))
+                     .Should().ThrowAsync<InvalidOperationException>().WithMessage("Result: Error, ErrorMessage: Kaboom!");
         }
 
         [Fact]

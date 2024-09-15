@@ -124,7 +124,7 @@ public class IntegrationTests : TestBase
     }
 
     [Fact]
-    public void Rendering_Unknown_Template_By_Name_Gives_Clear_ErrorMessage_What_Is_Wrong()
+    public async Task Rendering_Unknown_Template_By_Name_Gives_Clear_ErrorMessage_What_Is_Wrong()
     {
         // Arrange
         var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
@@ -139,12 +139,12 @@ public class IntegrationTests : TestBase
         var generationEnvironment = new MultipleContentBuilder();
 
         // Act & Assert
-        engine.Awaiting(x => x.Render(new RenderTemplateRequest(new TemplateByNameIdentifier("Unknown"), generationEnvironment), CancellationToken.None))
-              .Should().ThrowAsync<NotSupportedException>().WithMessage("Template with name Unknown is not supported");
+        await engine.Awaiting(x => x.Render(new RenderTemplateRequest(new TemplateByNameIdentifier("Unknown"), generationEnvironment), CancellationToken.None))
+                    .Should().ThrowAsync<NotSupportedException>().WithMessage("Template with name Unknown is not supported");
     }
 
     [Fact]
-    public void Rendering_Unknown_Template_By_Model_Gives_Clear_ErrorMessage_What_Is_Wrong()
+    public async Task Rendering_Unknown_Template_By_Model_Gives_Clear_ErrorMessage_What_Is_Wrong()
     {
         // Arrange
         var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
@@ -159,7 +159,7 @@ public class IntegrationTests : TestBase
         var generationEnvironment = new MultipleContentBuilder();
 
         // Act & Assert
-        engine.Awaiting(x => x.Render(new RenderTemplateRequest(new TemplateByModelIdentifier("Unknown"), generationEnvironment), CancellationToken.None))
-              .Should().ThrowAsync<NotSupportedException>().WithMessage("Model of type System.String is not supported");
+        await engine.Awaiting(x => x.Render(new RenderTemplateRequest(new TemplateByModelIdentifier("Unknown"), generationEnvironment), CancellationToken.None))
+                    .Should().ThrowAsync<NotSupportedException>().WithMessage("Model of type System.String is not supported");
     }
 }

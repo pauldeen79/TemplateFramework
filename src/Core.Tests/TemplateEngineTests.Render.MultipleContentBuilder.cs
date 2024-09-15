@@ -10,14 +10,14 @@ public partial class TemplateEngineTests
         }
 
         [Fact]
-        public void Throws_On_Null_Request()
+        public async Task Throws_On_Null_Request()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.Render(request: null!, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("request");
+            await sut.Awaiting(x => x.Render(request: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("request");
         }
 
         [Fact]

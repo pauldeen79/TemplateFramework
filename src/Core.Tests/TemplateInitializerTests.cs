@@ -14,11 +14,11 @@ public class TemplateInitializerTests
     public class Initialize : TemplateInitializerTests
     {
         [Theory, AutoMockData]
-        public void Throws_On_Null_Context(TemplateInitializer sut)
+        public async Task Throws_On_Null_Context(TemplateInitializer sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.Initialize(context: null!, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.Initialize(context: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Theory, AutoMockData]

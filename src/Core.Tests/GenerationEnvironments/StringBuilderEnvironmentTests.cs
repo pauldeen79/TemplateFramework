@@ -31,36 +31,36 @@ public class StringBuilderEnvironmentTests
     public class SaveContents : StringBuilderEnvironmentTests
     {
         [Fact]
-        public void Throws_On_Null_Provider()
+        public async Task Throws_On_Null_Provider()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.SaveContents(provider: null!, TestData.BasePath, "Filename.txt", CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("provider");
+            await sut.Awaiting(x => x.SaveContents(provider: null!, TestData.BasePath, "Filename.txt", CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("provider");
         }
 
         [Fact]
-        public void Throws_On_Empty_DefaultFilename()
+        public async Task Throws_On_Empty_DefaultFilename()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.SaveContents(CodeGenerationProviderMock, TestData.BasePath, defaultFilename: null!, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentException>().WithParameterName("defaultFilename");
+            await sut.Awaiting(x => x.SaveContents(CodeGenerationProviderMock, TestData.BasePath, defaultFilename: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentException>().WithParameterName("defaultFilename");
         }
 
         [Fact]
-        public void Throws_On_Null_DefaultFilename()
+        public async Task Throws_On_Null_DefaultFilename()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.SaveContents(CodeGenerationProviderMock, TestData.BasePath, defaultFilename: string.Empty, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentException>().WithParameterName("defaultFilename");
+            await sut.Awaiting(x => x.SaveContents(CodeGenerationProviderMock, TestData.BasePath, defaultFilename: string.Empty, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentException>().WithParameterName("defaultFilename");
         }
 
         [Fact]

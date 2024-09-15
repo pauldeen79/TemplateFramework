@@ -14,7 +14,7 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
     public class Generate : CodeGenerationEngineTests
     {
         [Fact]
-        public void Throws_On_Null_CodeGenerationProvider()
+        public async Task Throws_On_Null_CodeGenerationProvider()
         {
             // Arrange
             var generationEnvironment = Fixture.Freeze<IGenerationEnvironment>();
@@ -22,12 +22,12 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var sut = CreateSut();
 
             // Act
-            sut.Awaiting(x => x.Generate(codeGenerationProvider: null!, generationEnvironment, codeGenerationSettings))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("codeGenerationProvider");
+            await sut.Awaiting(x => x.Generate(codeGenerationProvider: null!, generationEnvironment, codeGenerationSettings))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("codeGenerationProvider");
         }
 
         [Fact]
-        public void Throws_On_Null_GenerationEnvironment()
+        public async Task Throws_On_Null_GenerationEnvironment()
         {
             // Arrange
             var codeGenerationProvider = Fixture.Freeze<ICodeGenerationProvider>();
@@ -35,12 +35,12 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var sut = CreateSut();
 
             // Act
-            sut.Awaiting(x => x.Generate(codeGenerationProvider, generationEnvironment: null!, codeGenerationSettings))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("generationEnvironment");
+            await sut.Awaiting(x => x.Generate(codeGenerationProvider, generationEnvironment: null!, codeGenerationSettings))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("generationEnvironment");
         }
 
         [Fact]
-        public void Throws_On_Null_CodeGenerationSettings()
+        public async Task Throws_On_Null_CodeGenerationSettings()
         {
             // Arrange
             var codeGenerationProvider = Fixture.Freeze<ICodeGenerationProvider>();
@@ -48,8 +48,8 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var sut = CreateSut();
 
             // Act
-            sut.Awaiting(x => x.Generate(codeGenerationProvider, generationEnvironment, settings: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("settings");
+            await sut.Awaiting(x => x.Generate(codeGenerationProvider, generationEnvironment, settings: null!))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("settings");
         }
 
         [Fact]

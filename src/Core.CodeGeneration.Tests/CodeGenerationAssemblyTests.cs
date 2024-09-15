@@ -14,27 +14,27 @@ public class CodeGenerationAssemblyTests : TestBase<CodeGenerationAssembly>
     public class Generate : CodeGenerationAssemblyTests
     {
         [Fact]
-        public void Throws_On_Null_Settings() 
+        public async Task Throws_On_Null_Settings() 
         {
             // Arrange
             var generationEnvironment = Fixture.Freeze<IGenerationEnvironment>();
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.Generate(settings: null!, generationEnvironment, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("settings");
+            await sut.Awaiting(x => x.Generate(settings: null!, generationEnvironment, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("settings");
         }
 
         [Fact]
-        public void Throws_On_Null_GenerationEnvironment()
+        public async Task Throws_On_Null_GenerationEnvironment()
         {
             // Arrange
             var settings = new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), currentDirectory: TestData.BasePath);
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.Generate(settings, generationEnvironment: null!, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("generationEnvironment");
+            await sut.Awaiting(x => x.Generate(settings, generationEnvironment: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("generationEnvironment");
         }
 
         [Fact]

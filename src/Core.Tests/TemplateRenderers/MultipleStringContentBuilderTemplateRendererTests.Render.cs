@@ -7,18 +7,18 @@ public partial class MultipleStringContentBuilderTemplateRendererTests
     public class Render : MultipleStringContentBuilderTemplateRendererTests
     {
         [Fact]
-        public void Throws_When_Context_Is_Null()
+        public async Task Throws_When_Context_Is_Null()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.Render(context: null!, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentException>().WithParameterName("context");
+            await sut.Awaiting(x => x.Render(context: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentException>().WithParameterName("context");
         }
 
         [Fact]
-        public void Throws_When_GenerationEnvironemnt_Is_Not_Supported()
+        public async Task Throws_When_GenerationEnvironemnt_Is_Not_Supported()
         {
             // Arrange
             var sut = CreateSut();
@@ -27,8 +27,8 @@ public partial class MultipleStringContentBuilderTemplateRendererTests
             var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
 
             // Act & Assert
-            sut.Awaiting(x => x.Render(engineContext, CancellationToken.None))
-               .Should().ThrowAsync<NotSupportedException>();
+            await sut.Awaiting(x => x.Render(engineContext, CancellationToken.None))
+                     .Should().ThrowAsync<NotSupportedException>();
         }
 
         [Fact]

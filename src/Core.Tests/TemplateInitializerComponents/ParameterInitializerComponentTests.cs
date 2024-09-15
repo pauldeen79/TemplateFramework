@@ -16,11 +16,11 @@ public class ParameterInitializerComponentTests
         private const string DefaultFilename = "DefaultFilename.txt";
 
         [Theory, AutoMockData]
-        public void Throws_On_Null_Context(ParameterInitializerComponent sut)
+        public async Task Throws_On_Null_Context(ParameterInitializerComponent sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.Initialize(context: null!, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.Initialize(context: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Theory, AutoMockData]
@@ -68,7 +68,7 @@ public class ParameterInitializerComponentTests
         }
 
         [Theory, AutoMockData]
-        public void Does_Not_Throw_On_Non_Existing_AdditionalParameters(
+        public async Task Does_Not_Throw_On_Non_Existing_AdditionalParameters(
             [Frozen] ITemplateEngine templateEngine,
             [Frozen] ITemplateProvider templateProvider,
             ParameterInitializerComponent sut)
@@ -80,8 +80,8 @@ public class ParameterInitializerComponentTests
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
 
             // Act & Assert
-            sut.Awaiting(x => x.Initialize(engineContext, CancellationToken.None))
-               .Should().NotThrowAsync();
+            await sut.Awaiting(x => x.Initialize(engineContext, CancellationToken.None))
+                     .Should().NotThrowAsync();
         }
 
         [Theory, AutoMockData]
@@ -151,7 +151,7 @@ public class ParameterInitializerComponentTests
         }
 
         [Theory, AutoMockData]
-        public void Skips_AdditionalParameters_When_Template_Does_Not_Implement_IParameterizedTemplate_And_Property_Is_Missing(
+        public async Task Skips_AdditionalParameters_When_Template_Does_Not_Implement_IParameterizedTemplate_And_Property_Is_Missing(
             [Frozen] ITemplateEngine templateEngine,
             [Frozen] ITemplateProvider templateProvider,
             [Frozen] IValueConverter valueConverter,
@@ -166,8 +166,8 @@ public class ParameterInitializerComponentTests
             templateEngine.GetParameters(Arg.Any<object>()).Returns(Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(TestData.PocoParameterizedTemplate.Parameter), typeof(string))]));
 
             // Act & Assert
-            sut.Awaiting(x => x.Initialize(engineContext, CancellationToken.None))
-               .Should().NotThrowAsync();
+            await sut.Awaiting(x => x.Initialize(engineContext, CancellationToken.None))
+                     .Should().NotThrowAsync();
         }
     }
 }

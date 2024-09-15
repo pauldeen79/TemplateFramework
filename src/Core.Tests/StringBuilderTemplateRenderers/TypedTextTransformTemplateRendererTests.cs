@@ -65,7 +65,7 @@ public class TypedTextTransformTemplateRendererTests
         }
 
         [Theory, AutoMockData]
-        public void Throws_On_Null_GenerationEnvironment(
+        public async Task Throws_On_Null_GenerationEnvironment(
             [Frozen] ITextTransformTemplate textTransformTemplate,
             TypedTextTransformTemplateRenderer sut)
         {
@@ -73,8 +73,8 @@ public class TypedTextTransformTemplateRendererTests
             textTransformTemplate.TransformText(Arg.Any<CancellationToken>()).Returns("Hello world!");
 
             // Act & Assert
-            sut.Awaiting(x => x.TryRender(textTransformTemplate, builder: null!, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("builder");
+            await sut.Awaiting(x => x.TryRender(textTransformTemplate, builder: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("builder");
         }
     }
 }
