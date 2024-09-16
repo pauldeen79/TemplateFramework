@@ -4,18 +4,22 @@ public sealed class PlainTemplateWithAdditionalParameters : IParameterizedTempla
 {
     public string AdditionalParameter { get; set; } = "";
 
+    public Result SetParameterReturnValue { get; set; } = Result.Success();
+    public Result<ITemplateParameter[]>? GetParametersReturnValue { get; set; }
+
+
     public Result SetParameter(string name, object? value)
     {
         if (name == nameof(AdditionalParameter))
         {
             AdditionalParameter = value?.ToString() ?? string.Empty;
-            return Result.Success();
+            return SetParameterReturnValue;
         }
 
         return Result.Continue();
     }
 
-    public Result<ITemplateParameter[]> GetParameters() => Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(AdditionalParameter), typeof(string))]);
+    public Result<ITemplateParameter[]> GetParameters() => GetParametersReturnValue ?? Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(AdditionalParameter), typeof(string))]);
 
     public override string ToString() => AdditionalParameter;
 }

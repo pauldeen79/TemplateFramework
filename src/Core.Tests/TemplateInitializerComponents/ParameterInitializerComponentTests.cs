@@ -45,6 +45,56 @@ public class ParameterInitializerComponentTests
         }
 
         [Theory, AutoMockData]
+        public async Task Returns_Result_When_Template_Implements_IParameterizedTemplate_And_Result_Is_Not_Successful_On_SetParameter(
+            [Frozen] ITemplateEngine templateEngine,
+            [Frozen] ITemplateProvider templateProvider,
+            [Frozen] IValueConverter valueConverter,
+            ParameterInitializerComponent sut)
+        {
+            // Arrange
+            var additionalParameters = new { AdditionalParameter = "Hello world!" };
+            var template = new PlainTemplateWithAdditionalParameters
+            {
+                SetParameterReturnValue = Result.Error("Kaboom!")
+            };
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
+            var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
+            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
+
+            // Act
+            var result = await sut.Initialize(engineContext, CancellationToken.None);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom!");
+        }
+
+        [Theory, AutoMockData]
+        public async Task Returns_Result_When_Template_Implements_IParameterizedTemplate_And_Result_Is_Not_Successful_On_GetParameters(
+            [Frozen] ITemplateEngine templateEngine,
+            [Frozen] ITemplateProvider templateProvider,
+            [Frozen] IValueConverter valueConverter,
+            ParameterInitializerComponent sut)
+        {
+            // Arrange
+            var additionalParameters = new { AdditionalParameter = "Hello world!" };
+            var template = new PlainTemplateWithAdditionalParameters
+            {
+                GetParametersReturnValue = Result.Error<ITemplateParameter[]>("Kaboom!")
+            };
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
+            var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
+            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
+
+            // Act
+            var result = await sut.Initialize(engineContext, CancellationToken.None);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom!");
+        }
+
+        [Theory, AutoMockData]
         public async Task Converts_AdditionalParameter_When_Converter_Is_Available(
             [Frozen] ITemplateEngine templateEngine,
             [Frozen] ITemplateProvider templateProvider,
@@ -148,6 +198,29 @@ public class ParameterInitializerComponentTests
 
             // Assert
             template.Parameter.Should().Be(additionalParameters.Parameter);
+        }
+
+        [Theory, AutoMockData]
+        public async Task Returns_Result_When_Template_Has_Public_Readable_And_Writable_Properties_And_GetParameters_Returns_Non_Successful_Result(
+            [Frozen] ITemplateEngine templateEngine,
+            [Frozen] ITemplateProvider templateProvider,
+            [Frozen] IValueConverter valueConverter,
+            ParameterInitializerComponent sut)
+        {
+            // Arrange
+            var additionalParameters = new { Parameter = "Hello world!" };
+            var template = new TestData.PocoParameterizedTemplate();
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
+            var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
+            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
+            templateEngine.GetParameters(Arg.Any<object>()).Returns(Result.Error<ITemplateParameter[]>("Kaboom!"));
+
+            // Act
+            var result = await sut.Initialize(engineContext, CancellationToken.None);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom!");
         }
 
         [Theory, AutoMockData]
