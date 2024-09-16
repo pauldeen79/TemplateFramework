@@ -1,31 +1,36 @@
 ﻿namespace TemplateFramework.Core;
 
-public sealed class MultipleContentBuilder : IMultipleContentBuilder
+public class MultipleContentBuilder : MultipleContentBuilder<StringBuilder>
 {
-    private readonly List<IContentBuilder> _contentList;
-
-    public MultipleContentBuilder()
-    {
-        _contentList = new List<IContentBuilder>();
-    }
-
-    public IContentBuilder AddContent(string filename, bool skipWhenFileExists, StringBuilder? builder)
+    public override IContentBuilder<StringBuilder> AddContent(string filename, bool skipWhenFileExists, StringBuilder? builder)
     {
         Guard.IsNotNull(filename);
 
         var content = builder is null
-            ? new ContentBuilder()
-            : new ContentBuilder(builder);
+            ? new ContentBuilderOfStringBuilder()
+            : new ContentBuilderOfStringBuilder(builder);
 
         content.Filename = filename;
         content.SkipWhenFileExists = skipWhenFileExists;
 
-        _contentList.Add(content);
+        ContentList.Add(content);
 
         return content;
     }
+}
 
-    public IEnumerable<IContentBuilder> Contents => _contentList.AsReadOnly();
+public abstract class MultipleContentBuilder<T> : IMultipleContentBuilder<T> where T : class, new()
+{
+    protected Collection<IContentBuilder<T>> ContentList { get; }
+
+    protected MultipleContentBuilder()
+    {
+        ContentList = new Collection<IContentBuilder<T>>();
+    }
+
+    public abstract IContentBuilder<T> AddContent(string filename, bool skipWhenFileExists, T? builder);
+
+    public IEnumerable<IContentBuilder<T>> Contents => ContentList.AsReadOnly();
 
     public IMultipleContent Build() => new MultipleContent(Contents.Select(x => x.Build()));
 }

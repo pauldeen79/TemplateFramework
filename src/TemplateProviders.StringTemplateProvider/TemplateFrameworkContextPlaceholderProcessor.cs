@@ -18,7 +18,7 @@ public sealed class TemplateFrameworkContextPlaceholderProcessor : IPlaceholderP
         foreach (var placholderProcessor in templateFrameworkFormattableStringContext.Context.PlaceholderProcessors.OrderBy(x => Order))
         {
             var result = placholderProcessor.Process(value, formatProvider, context, formattableStringParser);
-            if (result.IsSuccessful() && result.Status != ResultStatus.Continue)
+            if (result.Status != ResultStatus.Continue)
             {
                 return result;
             }

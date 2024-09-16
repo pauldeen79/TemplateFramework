@@ -128,7 +128,7 @@ public class RenderTemplateRequestTests
         }
 
         [Theory, AutoMockData]
-        public void Constructs_Using_MultipleContentBuilder_1([Frozen] IMultipleContentBuilder multipleContentBuilder)
+        public void Constructs_Using_MultipleContentBuilder_1([Frozen] IMultipleContentBuilder<StringBuilder> multipleContentBuilder)
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: multipleContentBuilder, defaultFilename: DefaultFilename, additionalParameters: null, context: null))
@@ -136,7 +136,7 @@ public class RenderTemplateRequestTests
         }
 
         [Theory, AutoMockData]
-        public void Constructs_Using_MultipleContentBuilder_2([Frozen] IMultipleContentBuilder multipleContentBuilder)
+        public void Constructs_Using_MultipleContentBuilder_2([Frozen] IMultipleContentBuilder<StringBuilder> multipleContentBuilder)
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: multipleContentBuilder))
@@ -144,7 +144,7 @@ public class RenderTemplateRequestTests
         }
 
         [Theory, AutoMockData]
-        public void Constructs_Using_MultipleContentBuilder_3([Frozen] IMultipleContentBuilder multipleContentBuilder)
+        public void Constructs_Using_MultipleContentBuilder_3([Frozen] IMultipleContentBuilder<StringBuilder> multipleContentBuilder)
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: multipleContentBuilder, defaultFilename: DefaultFilename))
@@ -152,7 +152,7 @@ public class RenderTemplateRequestTests
         }
 
         [Theory, AutoMockData]
-        public void Constructs_Using_MultipleContentBuilder_4([Frozen] IMultipleContentBuilder multipleContentBuilder)
+        public void Constructs_Using_MultipleContentBuilder_4([Frozen] IMultipleContentBuilder<StringBuilder> multipleContentBuilder)
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: multipleContentBuilder, defaultFilename: DefaultFilename, additionalParameters: null))
@@ -160,7 +160,7 @@ public class RenderTemplateRequestTests
         }
 
         [Theory, AutoMockData]
-        public void Constructs_Using_MultipleContentBuilder_5([Frozen] IMultipleContentBuilder multipleContentBuilder)
+        public void Constructs_Using_MultipleContentBuilder_5([Frozen] IMultipleContentBuilder<StringBuilder> multipleContentBuilder)
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: multipleContentBuilder, additionalParameters: null))
@@ -168,7 +168,7 @@ public class RenderTemplateRequestTests
         }
 
         [Theory, AutoMockData]
-        public void Constructs_Using_MultipleContentBuilder_6([Frozen] IMultipleContentBuilder multipleContentBuilder)
+        public void Constructs_Using_MultipleContentBuilder_6([Frozen] IMultipleContentBuilder<StringBuilder> multipleContentBuilder)
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: multipleContentBuilder, defaultFilename: DefaultFilename, context: null))
@@ -176,7 +176,7 @@ public class RenderTemplateRequestTests
         }
 
         [Theory, AutoMockData]
-        public void Constructs_Using_MultipleContentBuilder_7([Frozen] IMultipleContentBuilder multipleContentBuilder)
+        public void Constructs_Using_MultipleContentBuilder_7([Frozen] IMultipleContentBuilder<StringBuilder> multipleContentBuilder)
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: multipleContentBuilder, context: null))
@@ -184,7 +184,7 @@ public class RenderTemplateRequestTests
         }
 
         [Theory, AutoMockData]
-        public void Constructs_Using_MultipleContentBuilder_8([Frozen] IMultipleContentBuilder multipleContentBuilder)
+        public void Constructs_Using_MultipleContentBuilder_8([Frozen] IMultipleContentBuilder<StringBuilder> multipleContentBuilder)
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: multipleContentBuilder, defaultFilename: DefaultFilename, additionalParameters: null, context: null))
@@ -192,7 +192,7 @@ public class RenderTemplateRequestTests
         }
 
         [Theory, AutoMockData]
-        public void Constructs_Using_MultipleContentBuilder_9([Frozen] IMultipleContentBuilder multipleContentBuilder)
+        public void Constructs_Using_MultipleContentBuilder_9([Frozen] IMultipleContentBuilder<StringBuilder> multipleContentBuilder)
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: multipleContentBuilder))
@@ -200,7 +200,7 @@ public class RenderTemplateRequestTests
         }
 
         [Theory, AutoMockData]
-        public void Constructs_Using_MultipleContentBuilder_10([Frozen] IMultipleContentBuilder multipleContentBuilder)
+        public void Constructs_Using_MultipleContentBuilder_10([Frozen] IMultipleContentBuilder<StringBuilder> multipleContentBuilder)
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: multipleContentBuilder, defaultFilename: DefaultFilename))
@@ -208,7 +208,7 @@ public class RenderTemplateRequestTests
         }
 
         [Theory, AutoMockData]
-        public void Constructs_Using_MultipleContentBuilder_11([Frozen] IMultipleContentBuilder multipleContentBuilder)
+        public void Constructs_Using_MultipleContentBuilder_11([Frozen] IMultipleContentBuilder<StringBuilder> multipleContentBuilder)
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: multipleContentBuilder, defaultFilename: DefaultFilename, additionalParameters: null))
@@ -216,7 +216,7 @@ public class RenderTemplateRequestTests
         }
 
         [Theory, AutoMockData]
-        public void Constructs_Using_MultipleContentBuilder_12([Frozen] IMultipleContentBuilder multipleContentBuilder)
+        public void Constructs_Using_MultipleContentBuilder_12([Frozen] IMultipleContentBuilder<StringBuilder> multipleContentBuilder)
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: multipleContentBuilder, additionalParameters: null))
@@ -224,7 +224,7 @@ public class RenderTemplateRequestTests
         }
 
         [Theory, AutoMockData]
-        public void Constructs_Using_MultipleContentBuilder_13([Frozen] IMultipleContentBuilder multipleContentBuilder)
+        public void Constructs_Using_MultipleContentBuilder_13([Frozen] IMultipleContentBuilder<StringBuilder> multipleContentBuilder)
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: multipleContentBuilder, defaultFilename: DefaultFilename, context: null))
@@ -232,7 +232,7 @@ public class RenderTemplateRequestTests
         }
 
         [Theory, AutoMockData]
-        public void Constructs_Using_MultipleContentBuilder_14([Frozen] IMultipleContentBuilder multipleContentBuilder)
+        public void Constructs_Using_MultipleContentBuilder_14([Frozen] IMultipleContentBuilder<StringBuilder> multipleContentBuilder)
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: multipleContentBuilder, context: null))

@@ -39,25 +39,26 @@ public class FormattableStringTemplateTests
             var result = sut.GetParameters();
 
             // Assert
-            result.Select(x => x.Name).Should().BeEquivalentTo("Name");
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.GetValueOrThrow().Select(x => x.Name).Should().BeEquivalentTo("Name");
         }
     }
 
     public class Render : FormattableStringTemplateTests
     {
         [Fact]
-        public void Throws_On_Null_Builder()
+        public async Task Throws_On_Null_Builder()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.Render(builder: null!, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("builder");
+            await sut.Awaiting(x => x.Render(builder: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("builder");
         }
 
         [Fact]
-        public void Throws_On_NonSuccesful_Result_From_FormattableStringParser()
+        public async Task Returns_Reuslt_On_NonSuccesful_Result_From_FormattableStringParser()
         {
             // Arrange
             FormattableStringParserMock
@@ -66,9 +67,12 @@ public class FormattableStringTemplateTests
             var sut = CreateSut();
             var builder = new StringBuilder();
 
-            // Act & Assert
-            sut.Awaiting(x => x.Render(builder, CancellationToken.None))
-               .Should().ThrowAsync<InvalidOperationException>().WithMessage("Result: Error, ErrorMessage: Kaboom!");
+            // Act
+            var result = await sut.Render(builder, CancellationToken.None);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom!");
         }
 
         [Fact]
@@ -107,10 +111,11 @@ public class FormattableStringTemplateTests
                 });
 
             // Act
-            sut.SetParameter("Name", "Value");
+            var result = sut.SetParameter("Name", "Value");
 
             // Assert
-            await sut.Render(new StringBuilder(), CancellationToken.None);
+            result.Status.Should().Be(ResultStatus.Ok);
+            (await sut.Render(new StringBuilder(), CancellationToken.None)).ThrowIfInvalid();
             dictionary.Should().NotBeNull();
             dictionary!.First().Key.Should().Be("Name");
             dictionary!.First().Value.Should().Be("Value");

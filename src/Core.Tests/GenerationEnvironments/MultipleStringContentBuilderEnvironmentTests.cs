@@ -1,17 +1,17 @@
 ﻿namespace TemplateFramework.Core.Tests.GenerationEnvironments;
 
-public class MultipleContentBuilderEnvironmentTests
+public class MultipleStringContentBuilderEnvironmentTests
 {
     protected IFileSystem FileSystemMock { get; } = Substitute.For<IFileSystem>();
     protected ICodeGenerationProvider CodeGenerationProviderMock { get; } = Substitute.For<ICodeGenerationProvider>();
-    protected IMultipleContentBuilder MultipleContentBuilderMock { get; } = Substitute.For<IMultipleContentBuilder>();
+    protected IMultipleContentBuilder<StringBuilder> MultipleContentBuilderMock { get; } = Substitute.For<IMultipleContentBuilder<StringBuilder>>();
     protected IMultipleContent MultipleContentMock { get; } = Substitute.For<IMultipleContent>();
     protected IContent ContentMock { get; } = Substitute.For<IContent>();
     protected IRetryMechanism RetryMechanism { get; } = new FastRetryMechanism();
 
-    protected MultipleContentBuilderEnvironment CreateSut() => new(FileSystemMock, RetryMechanism, MultipleContentBuilderMock);
+    protected MultipleContentBuilderEnvironment<StringBuilder> CreateSut() => new(FileSystemMock, RetryMechanism, MultipleContentBuilderMock);
 
-    protected IEnumerable<IContent> CreateContents(bool skipWhenFileExists = false)
+    protected static IEnumerable<IContent> CreateContents(bool skipWhenFileExists = false)
     {
         var builder = new MultipleContentBuilder();
         var c1 = builder.AddContent("File1.txt", skipWhenFileExists: skipWhenFileExists);
@@ -26,12 +26,12 @@ public class MultipleContentBuilderEnvironmentTests
         protected override int WaitTimeInMs => 1;
     }
 
-    public class Constructor : MultipleContentBuilderEnvironmentTests
+    public class Constructor : MultipleStringContentBuilderEnvironmentTests
     {
         [Fact]
         public void Throws_On_Null_Arguments()
         {
-            typeof(MultipleContentBuilderEnvironment).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
+            typeof(MultipleContentBuilderEnvironment<StringBuilder>).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
         }
 
         [Fact]
@@ -48,14 +48,14 @@ public class MultipleContentBuilderEnvironmentTests
         public void Creates_Instance_Correctly_Without_Arguments()
         {
             // Act
-            var instance = new MultipleContentBuilderEnvironment();
+            var instance = new MultipleStringContentBuilderEnvironment();
 
             // Assert
             instance.Builder.Should().NotBeNull();
         }
     }
 
-    public class DeleteLastGeneratedFiles : MultipleContentBuilderEnvironmentTests
+    public class DeleteLastGeneratedFiles : MultipleStringContentBuilderEnvironmentTests
     {
         [Fact]
         public void Throws_On_Null_LastGeneratedFilesPath()
@@ -176,7 +176,7 @@ public class MultipleContentBuilderEnvironmentTests
             // Arrange
             var sut = CreateSut();
             FileSystemMock.DirectoryExists(TestData.BasePath).Returns(true);
-            FileSystemMock.GetFiles(TestData.BasePath, "*.generated.cs", false).Returns(new[] { Path.Combine(TestData.BasePath, "File1.txt") });
+            FileSystemMock.GetFiles(TestData.BasePath, "*.generated.cs", false).Returns([Path.Combine(TestData.BasePath, "File1.txt")]);
 
             // Act
             sut.DeleteLastGeneratedFiles(FileSystemMock, TestData.BasePath, Encoding.Latin1, "*.generated.cs", false);
@@ -192,11 +192,11 @@ public class MultipleContentBuilderEnvironmentTests
             // Arrange
             var sut = CreateSut();
             FileSystemMock.DirectoryExists(TestData.BasePath).Returns(true);
-            FileSystemMock.GetFiles(TestData.BasePath, "*.generated.cs", true).Returns(new[]
-            {
+            FileSystemMock.GetFiles(TestData.BasePath, "*.generated.cs", true).Returns(
+            [
                 Path.Combine(TestData.BasePath, "File1.txt"),
                 Path.Combine(TestData.BasePath, "Subdirectory", "File2.txt")
-            });
+            ]);
 
             // Act
             sut.DeleteLastGeneratedFiles(FileSystemMock, TestData.BasePath, Encoding.Latin1, "*.generated.cs", true);
@@ -228,11 +228,11 @@ public class MultipleContentBuilderEnvironmentTests
             var sut = CreateSut();
             FileSystemMock.FileExists(Arg.Any<string>())
                           .Returns(x => x.ArgAt<string>(0) == "LastGeneratedFiles.txt" || x.ArgAt<string>(0) == "File1.txt");
-            FileSystemMock.ReadAllLines("LastGeneratedFiles.txt", Arg.Any<Encoding>()).Returns(new[]
-            {
+            FileSystemMock.ReadAllLines("LastGeneratedFiles.txt", Arg.Any<Encoding>()).Returns(
+            [
                 "File1.txt",
                 "File2.txt"
-            });
+            ]);
 
             // Act
             sut.DeleteLastGeneratedFiles(FileSystemMock, string.Empty, Encoding.Latin1, "LastGeneratedFiles.txt", false);
@@ -248,11 +248,11 @@ public class MultipleContentBuilderEnvironmentTests
             // Arrange
             var sut = CreateSut();
             FileSystemMock.FileExists(Arg.Any<string>()).Returns(x => x.ArgAt<string>(0) == Path.Combine(TestData.BasePath, "LastGeneratedFiles.txt") || x.ArgAt<string>(0) == Path.Combine(TestData.BasePath, "File1.txt"));
-            FileSystemMock.ReadAllLines(Path.Combine(TestData.BasePath, "LastGeneratedFiles.txt"), Arg.Any<Encoding>()).Returns(new[]
-            {
+            FileSystemMock.ReadAllLines(Path.Combine(TestData.BasePath, "LastGeneratedFiles.txt"), Arg.Any<Encoding>()).Returns(
+            [
                 "File1.txt",
                 "File2.txt"
-            });
+            ]);
 
             // Act
             sut.DeleteLastGeneratedFiles(FileSystemMock, TestData.BasePath, Encoding.Latin1, "LastGeneratedFiles.txt", false);
@@ -263,7 +263,7 @@ public class MultipleContentBuilderEnvironmentTests
         }
     }
 
-    public class SaveAll : MultipleContentBuilderEnvironmentTests
+    public class SaveAll : MultipleStringContentBuilderEnvironmentTests
     {
         [Fact]
         public void Uses_Content_Filename_When_BasePath_Is_Empty()
@@ -400,7 +400,7 @@ public class MultipleContentBuilderEnvironmentTests
         }
     }
 
-    public class SaveContents : MultipleContentBuilderEnvironmentTests
+    public class SaveContents : MultipleStringContentBuilderEnvironmentTests
     {
         public SaveContents()
         {
@@ -469,7 +469,7 @@ public class MultipleContentBuilderEnvironmentTests
         }
     }
 
-    public class SaveLastGeneratedFiles : MultipleContentBuilderEnvironmentTests
+    public class SaveLastGeneratedFiles : MultipleStringContentBuilderEnvironmentTests
     {
         [Fact]
         public void Throws_On_Null_LastGeneratedFilesPath()

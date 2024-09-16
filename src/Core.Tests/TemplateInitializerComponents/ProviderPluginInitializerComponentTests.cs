@@ -14,15 +14,15 @@ public class ProviderPluginInitializerComponentTests
     public class Initialize
     {
         [Theory, AutoMockData]
-        public void Throws_On_Null_Context(ProviderPluginInitializerComponent sut)
+        public async Task Throws_On_Null_Context(ProviderPluginInitializerComponent sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.Initialize(context: null!, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.Initialize(context: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Theory, AutoMockData]
-        public void Does_Not_Initialize_Plugin_On_Template_When_Context_Context_Is_Null(
+        public async Task Does_Not_Initialize_Plugin_On_Template_When_Context_Context_Is_Null(
             [Frozen] ITemplateEngineContext templateEngine,
             [Frozen] ITemplateComponentRegistryPlugin templateComponentRegistryPlugin,
             ProviderPluginInitializerComponent sut)
@@ -31,12 +31,12 @@ public class ProviderPluginInitializerComponentTests
             templateEngine.Template.Returns(templateComponentRegistryPlugin);
 
             // Act & Assert
-            sut.Awaiting(x => x.Initialize(templateEngine, CancellationToken.None))
-               .Should().NotThrowAsync();
+            await sut.Awaiting(x => x.Initialize(templateEngine, CancellationToken.None))
+                     .Should().NotThrowAsync();
         }
 
         [Theory, AutoMockData]
-        public void Does_Not_Initialize_Plugin_On_Template_When_Context_Template_Is_Not_TemplateProviderPlugin(
+        public async Task Does_Not_Initialize_Plugin_On_Template_When_Context_Template_Is_Not_TemplateProviderPlugin(
             [Frozen] ITemplateEngineContext templateEngine,
             [Frozen] ITemplateContext templateContext,
             ProviderPluginInitializerComponent sut)
@@ -46,8 +46,8 @@ public class ProviderPluginInitializerComponentTests
             templateEngine.Template.Returns(new object());
 
             // Act & Assert
-            sut.Awaiting(x => x.Initialize(templateEngine, CancellationToken.None))
-               .Should().NotThrowAsync();
+            await sut.Awaiting(x => x.Initialize(templateEngine, CancellationToken.None))
+                     .Should().NotThrowAsync();
         }
 
         [Theory, AutoMockData]

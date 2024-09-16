@@ -25,9 +25,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentAssertions" Version="6.12.0" />
+    <PackageReference Include="FluentAssertions" Version="6.12.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
     <PackageReference Include="Objectivity.AutoFixture.XUnit2.AutoNSubstitute" Version="3.6.1" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
@@ -51,19 +51,21 @@
     <Using Include="AutoFixture" />
     <Using Include="AutoFixture.AutoNSubstitute" />
     <Using Include="AutoFixture.Xunit2" />
+    <Using Include="CrossCutting.Common.Results" />
     <Using Include="FluentAssertions" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
     <Using Include="NSubstitute" />
     <Using Include="Objectivity.AutoFixture.XUnit2.AutoNSubstitute.Attributes" />
+    <Using Include="System.Collections.ObjectModel" />
     <Using Include="System.Text" />
     <Using Include="TemplateFramework.Abstractions" />
     <Using Include="TemplateFramework.Abstractions.CodeGeneration" />
-    <Using Include="TemplateFramework.Abstractions.Domains" />
     <Using Include="TemplateFramework.Abstractions.Extensions" />
     <Using Include="TemplateFramework.Abstractions.Infrastructure" />
     <Using Include="TemplateFramework.Abstractions.Requests" />
     <Using Include="TemplateFramework.Abstractions.Templates" />
     <Using Include="TemplateFramework.Core.Abstractions" />
+    <Using Include="TemplateFramework.Core.BuilderTemplateRenderers" />
     <Using Include="TemplateFramework.Core.Extensions" />
     <Using Include="TemplateFramework.Core.GenerationEnvironments" />
     <Using Include="TemplateFramework.Core.MultipleContentBuilderTemplateCreators" />

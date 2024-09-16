@@ -42,7 +42,7 @@ public class CodeGenerationAssemblyCommand : CommandBase
 
                 await Watch(app, watchOption.HasValue(), assemblyName, async () =>
                 {
-                    var generationEnvironment = new MultipleContentBuilderEnvironment();
+                    var generationEnvironment = new MultipleStringContentBuilderEnvironment();
                     var classNameFilter = filterClassNameOption.Values.Where(x => x is not null).Select(x => x!);
                     var settings = new CodeGenerationAssemblySettings(basePath, GetDefaultFilename(defaultFilenameOption.Value()), assemblyName, dryRun, GetCurrentDirectory(currentDirectoryOption.Value(), assemblyName!), classNameFilter);
                     await _codeGenerationAssembly.Generate(settings, generationEnvironment, cancellationToken).ConfigureAwait(false);

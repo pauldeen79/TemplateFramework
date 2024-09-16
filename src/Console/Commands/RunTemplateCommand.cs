@@ -133,24 +133,13 @@ public class RunTemplateCommand : CommandBase
                                 CancellationToken cancellationToken) args)
         => await Watch(args.app, args.watch, args.assemblyName ?? args.formattableStringFilename ?? args.expressionStringFilename!, async () =>
         {
-            var generationEnvironment = new MultipleContentBuilderEnvironment();
-            ITemplateIdentifier templateIdentifier = null!;
-            if (!string.IsNullOrEmpty(args.className))
-            {
-                templateIdentifier = new CompiledTemplateIdentifier(args.assemblyName!, args.className!, args.currentDirectory);
-            }
-            else if (!string.IsNullOrEmpty(args.formattableStringFilename))
-            {
-                templateIdentifier = new FormattableStringTemplateIdentifier(FileSystem.ReadAllText(args.formattableStringFilename, Encoding.Default), CultureInfo.CurrentCulture, args.assemblyName, args.className, args.currentDirectory);
-            }
-            else if (!string.IsNullOrEmpty(args.expressionStringFilename))
-            {
-                templateIdentifier = new ExpressionStringTemplateIdentifier(FileSystem.ReadAllText(args.expressionStringFilename, Encoding.Default), CultureInfo.CurrentCulture, args.assemblyName, args.className, args.currentDirectory);
-            }
+            var generationEnvironment = new MultipleStringContentBuilderEnvironment();
+            var templateIdentifier = GetTemplateIdentifier(args);
 
             await _templateProvider.StartSession(args.cancellationToken).ConfigureAwait(false);
 
             var template = _templateProvider.Create(templateIdentifier);
+            var success = false;
 
             if (args.listParameters)
             {
@@ -160,22 +149,61 @@ public class RunTemplateCommand : CommandBase
                     return;
                 }
 
-                AppendParameters(generationEnvironment, args.defaultFilename, _templateEngine.GetParameters(template));
+                (await _templateEngine.GetParameters(template).ConfigureAwait(false))
+                .Either(
+                    async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false),
+                    x =>
+                    {
+                        AppendParameters(generationEnvironment, args.defaultFilename, x.Value!);
+                        success = true;
+                    });
             }
             else
             {
                 if (args.interactive)
                 {
-                    args.parameters = MergeParameters(args.parameters, GetInteractiveParameterValues(_templateEngine.GetParameters(template)));
+                    (await _templateEngine.GetParameters(template).ConfigureAwait(false))
+                    .Either(
+                        async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false),
+                        x =>
+                        {
+                            args.parameters = MergeParameters(args.parameters, GetInteractiveParameterValues(x.Value!));
+                            success = true;
+                        });
                 }
 
                 var context = new TemplateContext(_templateEngine, _templateProvider, args.defaultFilename, templateIdentifier, template);
                 var identifier = new TemplateInstanceIdentifierWithTemplateProvider(template, args.currentDirectory, args.assemblyName, args.templateProviderPluginClassName);
                 var request = new RenderTemplateRequest(identifier, null, generationEnvironment, args.defaultFilename, args.parameters, context);
-                
-                await _templateEngine.Render(request, args.cancellationToken).ConfigureAwait(false);
+
+                (await _templateEngine.Render(request, args.cancellationToken).ConfigureAwait(false))
+                .Either(
+                    async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false),
+                    _ => success = true);
             }
 
-            await WriteOutput(args.app, generationEnvironment, args.basePath, args.bare, args.clipboard, args.dryRun, args.cancellationToken).ConfigureAwait(false);
+            if (success)
+            {
+                await WriteOutput(args.app, generationEnvironment, args.basePath, args.bare, args.clipboard, args.dryRun, args.cancellationToken).ConfigureAwait(false);
+            }
         }, args.cancellationToken).ConfigureAwait(false);
+
+    private ITemplateIdentifier GetTemplateIdentifier((CommandLineApplication app, bool watch, bool interactive, bool listParameters, bool bare, bool clipboard, string? assemblyName, string? className, string? formattableStringFilename, string? expressionStringFilename, string? currentDirectory, string? templateProviderPluginClassName, string basePath, string defaultFilename, bool dryRun, KeyValuePair<string, object?>[] parameters, CancellationToken cancellationToken) args)
+    {
+        ITemplateIdentifier templateIdentifier = null!;
+        if (!string.IsNullOrEmpty(args.className))
+        {
+            templateIdentifier = new CompiledTemplateIdentifier(args.assemblyName!, args.className!, args.currentDirectory);
+        }
+        else if (!string.IsNullOrEmpty(args.formattableStringFilename))
+        {
+            templateIdentifier = new FormattableStringTemplateIdentifier(FileSystem.ReadAllText(args.formattableStringFilename, Encoding.Default), CultureInfo.CurrentCulture, args.assemblyName, args.className, args.currentDirectory);
+        }
+        else if (!string.IsNullOrEmpty(args.expressionStringFilename))
+        {
+            templateIdentifier = new ExpressionStringTemplateIdentifier(FileSystem.ReadAllText(args.expressionStringFilename, Encoding.Default), CultureInfo.CurrentCulture, args.assemblyName, args.className, args.currentDirectory);
+        }
+
+        return templateIdentifier;
+    }
 }

@@ -11,14 +11,14 @@ public class TemplateEngineExtensionsTests
     public class RenderChildTemplate : TemplateEngineExtensionsTests
     {
         [Theory, AutoMockData]
-        public void RenderChildTemplate_Throws_On_Null_Context_1(
+        public async Task RenderChildTemplate_Throws_On_Null_Context_1(
             [Frozen] IGenerationEnvironment generationEnvironment,
             [Frozen] ITemplateIdentifier identifier,
             ITemplateEngine sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.RenderChildTemplate(Model, generationEnvironment, identifier, context: null!, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.RenderChildTemplate(Model, generationEnvironment, identifier, context: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Theory, AutoMockData]
@@ -32,7 +32,7 @@ public class TemplateEngineExtensionsTests
             templateContext.CreateChildContext(Arg.Any<IChildTemplateContext>()).Returns(templateContext);
 
             // Act
-            await sut.RenderChildTemplate(Model, generationEnvironment, identifier, templateContext, CancellationToken.None);
+            _ = await sut.RenderChildTemplate(Model, generationEnvironment, identifier, templateContext, CancellationToken.None);
 
             // Assert
             await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -46,25 +46,25 @@ public class TemplateEngineExtensionsTests
         }
 
         [Theory, AutoMockData]
-        public void RenderChildTemplate_Throws_On_Null_Context_2(
+        public async Task RenderChildTemplate_Throws_On_Null_Context_2(
             [Frozen] IGenerationEnvironment generationEnvironment,
             [Frozen] ITemplateIdentifier identifier,
             ITemplateEngine sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.RenderChildTemplate(Model, generationEnvironment, _ => identifier, context: null!, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.RenderChildTemplate(Model, generationEnvironment, _ => identifier, context: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Theory, AutoMockData]
-        public void RenderChildTemplate_Throws_On_Null_IdentifierFactory_2(
+        public async Task RenderChildTemplate_Throws_On_Null_IdentifierFactory_2(
             [Frozen] ITemplateContext templateContext,
             [Frozen] IGenerationEnvironment generationEnvironment,
             ITemplateEngine sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.RenderChildTemplate(Model, generationEnvironment, identifierFactory: null!, templateContext, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("identifierFactory");
+            await sut.Awaiting(x => x.RenderChildTemplate(Model, generationEnvironment, identifierFactory: null!, templateContext, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("identifierFactory");
         }
 
         [Theory, AutoMockData]
@@ -78,7 +78,7 @@ public class TemplateEngineExtensionsTests
             templateContext.CreateChildContext(Arg.Any<IChildTemplateContext>()).Returns(templateContext);
 
             // Act
-            await sut.RenderChildTemplate(Model, generationEnvironment, _ => identifier, templateContext, CancellationToken.None);
+            _ = await sut.RenderChildTemplate(Model, generationEnvironment, _ => identifier, templateContext, CancellationToken.None);
 
             // Assert
             await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -92,14 +92,14 @@ public class TemplateEngineExtensionsTests
         }
 
         [Theory, AutoMockData]
-        public void RenderChildTemplate_Throws_On_Null_Context_3(
+        public async Task RenderChildTemplate_Throws_On_Null_Context_3(
             [Frozen] IGenerationEnvironment generationEnvironment,
             [Frozen] ITemplateIdentifier identifier,
             ITemplateEngine sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.RenderChildTemplate(generationEnvironment, identifier, context: null!, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.RenderChildTemplate(generationEnvironment, identifier, context: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Theory, AutoMockData]
@@ -113,7 +113,7 @@ public class TemplateEngineExtensionsTests
             templateContext.CreateChildContext(Arg.Any<IChildTemplateContext>()).Returns(templateContext);
 
             // Act
-            await sut.RenderChildTemplate(generationEnvironment, identifier, templateContext, CancellationToken.None);
+            _ = await sut.RenderChildTemplate(generationEnvironment, identifier, templateContext, CancellationToken.None);
 
             // Assert
             await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -127,25 +127,25 @@ public class TemplateEngineExtensionsTests
         }
 
         [Theory, AutoMockData]
-        public void RenderChildTemplate_Throws_On_Null_Context_4(
+        public async Task RenderChildTemplate_Throws_On_Null_Context_4(
             [Frozen] IGenerationEnvironment generationEnvironment,
             [Frozen] ITemplateIdentifier identifier,
             ITemplateEngine sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.RenderChildTemplate(generationEnvironment, () => identifier, context: null!, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.RenderChildTemplate(generationEnvironment, () => identifier, context: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Theory, AutoMockData]
-        public void RenderChildTemplate_Throws_On_Null_IdentifierFactory_4(
+        public async Task RenderChildTemplate_Throws_On_Null_IdentifierFactory_4(
             [Frozen] ITemplateContext templateContext,
             [Frozen] IGenerationEnvironment generationEnvironment,
             ITemplateEngine sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.RenderChildTemplate(generationEnvironment, identifierFactory: null!, templateContext, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("identifierFactory");
+            await sut.Awaiting(x => x.RenderChildTemplate(generationEnvironment, identifierFactory: null!, templateContext, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("identifierFactory");
         }
 
         [Theory, AutoMockData]
@@ -159,7 +159,7 @@ public class TemplateEngineExtensionsTests
             templateContext.CreateChildContext(Arg.Any<IChildTemplateContext>()).Returns(templateContext);
 
             // Act
-            await sut.RenderChildTemplate(generationEnvironment, () => identifier, templateContext, CancellationToken.None);
+            _ = await sut.RenderChildTemplate(generationEnvironment, () => identifier, templateContext, CancellationToken.None);
 
             // Assert
             await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -179,7 +179,7 @@ public class TemplateEngineExtensionsTests
             ITemplateEngine sut)
         {
             // Act
-            await sut.RenderChildTemplate(Model, generationEnvironment, identifier, CancellationToken.None);
+            _ = await sut.RenderChildTemplate(Model, generationEnvironment, identifier, CancellationToken.None);
 
             // Assert
             await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -192,13 +192,13 @@ public class TemplateEngineExtensionsTests
         }
 
         [Theory, AutoMockData]
-        public void RenderChildTemplate_Throws_On_Null_IdentifierFactory_6(
+        public async Task RenderChildTemplate_Throws_On_Null_IdentifierFactory_6(
             [Frozen] IGenerationEnvironment generationEnvironment,
             ITemplateEngine sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.RenderChildTemplate(Model, generationEnvironment, identifierFactory: null!, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("identifierFactory");
+            await sut.Awaiting(x => x.RenderChildTemplate(Model, generationEnvironment, identifierFactory: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("identifierFactory");
         }
 
         [Theory, AutoMockData]
@@ -208,7 +208,7 @@ public class TemplateEngineExtensionsTests
             ITemplateEngine sut)
         {
             // Act
-            await sut.RenderChildTemplate(Model, generationEnvironment, _ => identifier, CancellationToken.None);
+            _ = await sut.RenderChildTemplate(Model, generationEnvironment, _ => identifier, CancellationToken.None);
 
             // Assert
             await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -227,7 +227,7 @@ public class TemplateEngineExtensionsTests
             ITemplateEngine sut)
         {
             // Act
-            await sut.RenderChildTemplate(generationEnvironment, identifier, CancellationToken.None);
+            _ = await sut.RenderChildTemplate(generationEnvironment, identifier, CancellationToken.None);
 
             // Assert
             await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -240,13 +240,13 @@ public class TemplateEngineExtensionsTests
         }
 
         [Theory, AutoMockData]
-        public void RenderChildTemplate_Throws_On_Null_IdentifierFactory_8(
+        public async Task RenderChildTemplate_Throws_On_Null_IdentifierFactory_8(
             [Frozen] IGenerationEnvironment generationEnvironment,
             ITemplateEngine sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.RenderChildTemplate(generationEnvironment, identifierFactory: null!, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("identifierFactory");
+            await sut.Awaiting(x => x.RenderChildTemplate(generationEnvironment, identifierFactory: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("identifierFactory");
         }
 
         [Theory, AutoMockData]
@@ -256,7 +256,7 @@ public class TemplateEngineExtensionsTests
             ITemplateEngine sut)
         {
             // Act
-            await sut.RenderChildTemplate(generationEnvironment, () => identifier, CancellationToken.None);
+            _ = await sut.RenderChildTemplate(generationEnvironment, () => identifier, CancellationToken.None);
 
             // Assert
             await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -269,25 +269,25 @@ public class TemplateEngineExtensionsTests
         }
 
         [Theory, AutoMockData]
-        public void RenderChildTemplate_Throws_On_Null_Context_9(
+        public async Task RenderChildTemplate_Throws_On_Null_Context_9(
             [Frozen] IGenerationEnvironment generationEnvironment,
             [Frozen] ITemplateIdentifier identifier,
             ITemplateEngine sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.RenderChildTemplate(Model, generationEnvironment, context: null!, identifier, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.RenderChildTemplate(Model, generationEnvironment, context: null!, identifier, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Theory, AutoMockData]
-        public void RenderChildTemplate_Throws_On_Null_Identifier_9(
+        public async Task RenderChildTemplate_Throws_On_Null_Identifier_9(
             [Frozen] ITemplateContext templateContext,
             [Frozen] IGenerationEnvironment generationEnvironment,
             ITemplateEngine sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.RenderChildTemplate(Model, generationEnvironment, templateContext, identifier: null!, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("identifier");
+            await sut.Awaiting(x => x.RenderChildTemplate(Model, generationEnvironment, templateContext, identifier: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("identifier");
         }
 
         [Theory, AutoMockData]
@@ -306,7 +306,7 @@ public class TemplateEngineExtensionsTests
             templateProvider.Create(Arg.Any<ITemplateIdentifier>()).Returns(Template);
 
             // Act
-            await sut.RenderChildTemplate(Model, generationEnvironment, templateContext, identifier, CancellationToken.None);
+            _ = await sut.RenderChildTemplate(Model, generationEnvironment, templateContext, identifier, CancellationToken.None);
 
             // Assert
             await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -319,25 +319,25 @@ public class TemplateEngineExtensionsTests
         }
 
         [Theory, AutoMockData]
-        public void RenderChildTemplate_Throws_On_Null_Context_10(
+        public async Task RenderChildTemplate_Throws_On_Null_Context_10(
             [Frozen] IGenerationEnvironment generationEnvironment,
             [Frozen] ITemplateIdentifier identifier,
             ITemplateEngine sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.RenderChildTemplate(generationEnvironment, context: null!, identifier, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.RenderChildTemplate(generationEnvironment, context: null!, identifier, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Theory, AutoMockData]
-        public void RenderChildTemplate_Throws_On_Null_Identifier_10(
+        public async Task RenderChildTemplate_Throws_On_Null_Identifier_10(
             [Frozen] ITemplateContext templateContext,
             [Frozen] IGenerationEnvironment generationEnvironment,
             ITemplateEngine sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.RenderChildTemplate(generationEnvironment, templateContext, identifier: null!, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("identifier");
+            await sut.Awaiting(x => x.RenderChildTemplate(generationEnvironment, templateContext, identifier: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("identifier");
         }
 
         [Theory, AutoMockData]
@@ -356,7 +356,7 @@ public class TemplateEngineExtensionsTests
             templateProvider.Create(Arg.Any<ITemplateIdentifier>()).Returns(Template);
 
             // Act
-            await sut.RenderChildTemplate(generationEnvironment, templateContext, identifier, CancellationToken.None);
+            _ = await sut.RenderChildTemplate(generationEnvironment, templateContext, identifier, CancellationToken.None);
 
             // Assert
             await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -372,26 +372,26 @@ public class TemplateEngineExtensionsTests
     public class RenderChildTemplates : TemplateEngineExtensionsTests
     {
         [Theory, AutoMockData]
-        public void Throws_On_Null_ChildModels_1(
+        public async Task Throws_On_Null_ChildModels_1(
             [Frozen] ITemplateContext templateContext,
             [Frozen] IGenerationEnvironment generationEnvironment,
             [Frozen] ITemplateIdentifier identifier,
             ITemplateEngine sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.RenderChildTemplates(childModels: null!, generationEnvironment, identifier, templateContext, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("childModels");
+            await sut.Awaiting(x => x.RenderChildTemplates(childModels: null!, generationEnvironment, identifier, templateContext, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("childModels");
         }
 
         [Theory, AutoMockData]
-        public void Throws_On_Null_Context_1(
+        public async Task Throws_On_Null_Context_1(
             [Frozen] IGenerationEnvironment generationEnvironment,
             [Frozen] ITemplateIdentifier identifier,
             ITemplateEngine sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.RenderChildTemplates(Models, generationEnvironment, identifier, context: null!, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.RenderChildTemplates(Models, generationEnvironment, identifier, context: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Theory, AutoMockData]
@@ -405,7 +405,7 @@ public class TemplateEngineExtensionsTests
             templateContext.CreateChildContext(Arg.Any<IChildTemplateContext>()).Returns(templateContext);
 
             // Act
-            await sut.RenderChildTemplates(Models, generationEnvironment, identifier, templateContext, CancellationToken.None);
+            _ = await sut.RenderChildTemplates(Models, generationEnvironment, identifier, templateContext, CancellationToken.None);
 
             // Assert
             await sut.Received(Models.Count()).Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -420,26 +420,26 @@ public class TemplateEngineExtensionsTests
         }
 
         [Theory, AutoMockData]
-        public void Throws_On_Null_ChildModels_2(
+        public async Task Throws_On_Null_ChildModels_2(
             [Frozen] ITemplateContext templateContext,
             [Frozen] IGenerationEnvironment generationEnvironment,
             [Frozen] ITemplateIdentifier identifier,
             ITemplateEngine sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.RenderChildTemplates(childModels: null!, generationEnvironment, _ => identifier, templateContext, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("childModels");
+            await sut.Awaiting(x => x.RenderChildTemplates(childModels: null!, generationEnvironment, _ => identifier, templateContext, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("childModels");
         }
 
         [Theory, AutoMockData]
-        public void Throws_On_Null_Context_2(
+        public async Task Throws_On_Null_Context_2(
             [Frozen] IGenerationEnvironment generationEnvironment,
             [Frozen] ITemplateIdentifier identifier,
             ITemplateEngine sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.RenderChildTemplates(Models, generationEnvironment, _ => identifier, context: null!, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.RenderChildTemplates(Models, generationEnvironment, _ => identifier, context: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Theory, AutoMockData]
@@ -453,7 +453,7 @@ public class TemplateEngineExtensionsTests
             templateContext.CreateChildContext(Arg.Any<IChildTemplateContext>()).Returns(templateContext);
 
             // Act
-            await sut.RenderChildTemplates(Models, generationEnvironment, _ => identifier, templateContext, CancellationToken.None);
+            _ = await sut.RenderChildTemplates(Models, generationEnvironment, _ => identifier, templateContext, CancellationToken.None);
 
             // Assert
             await sut.Received(Models.Count()).Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -468,14 +468,14 @@ public class TemplateEngineExtensionsTests
         }
 
         [Theory, AutoMockData]
-        public void Throws_On_Null_ChildModels_3(
+        public async Task Throws_On_Null_ChildModels_3(
             [Frozen] IGenerationEnvironment generationEnvironment,
             [Frozen] ITemplateIdentifier identifier,
             ITemplateEngine sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.RenderChildTemplates(childModels: null!, generationEnvironment, identifier, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("childModels");
+            await sut.Awaiting(x => x.RenderChildTemplates(childModels: null!, generationEnvironment, identifier, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("childModels");
         }
 
         [Theory, AutoMockData]
@@ -485,7 +485,7 @@ public class TemplateEngineExtensionsTests
             ITemplateEngine sut)
         {
             // Act
-            await sut.RenderChildTemplates(Models, generationEnvironment, identifier, CancellationToken.None);
+            _ = await sut.RenderChildTemplates(Models, generationEnvironment, identifier, CancellationToken.None);
 
             // Assert
             await sut.Received(Models.Count()).Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -498,14 +498,14 @@ public class TemplateEngineExtensionsTests
         }
 
         [Theory, AutoMockData]
-        public void Throws_On_Null_ChildModels_4(
+        public async Task Throws_On_Null_ChildModels_4(
             [Frozen] IGenerationEnvironment generationEnvironment,
             [Frozen] ITemplateIdentifier identifier,
             ITemplateEngine sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.RenderChildTemplates(childModels: null!, generationEnvironment, _ => identifier, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("childModels");
+            await sut.Awaiting(x => x.RenderChildTemplates(childModels: null!, generationEnvironment, _ => identifier, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("childModels");
         }
 
         [Theory, AutoMockData]
@@ -515,7 +515,7 @@ public class TemplateEngineExtensionsTests
             ITemplateEngine sut)
         {
             // Act
-            await sut.RenderChildTemplates(Models, generationEnvironment, _ => identifier, CancellationToken.None);
+            _ = await sut.RenderChildTemplates(Models, generationEnvironment, _ => identifier, CancellationToken.None);
 
             // Assert
             await sut.Received(Models.Count()).Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -529,37 +529,37 @@ public class TemplateEngineExtensionsTests
         }
 
         [Theory, AutoMockData]
-        public void Throws_On_Null_ChildModels_5(
+        public async Task Throws_On_Null_ChildModels_5(
             [Frozen] ITemplateContext templateContext,
             [Frozen] IGenerationEnvironment generationEnvironment,
             [Frozen] ITemplateIdentifier identifier,
             ITemplateEngine sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.RenderChildTemplates(childModels: null!, generationEnvironment, templateContext, _ => identifier, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("childModels");
+            await sut.Awaiting(x => x.RenderChildTemplates(childModels: null!, generationEnvironment, templateContext, _ => identifier, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("childModels");
         }
 
         [Theory, AutoMockData]
-        public void Throws_On_Null_Context_5(
+        public async Task Throws_On_Null_Context_5(
             [Frozen] IGenerationEnvironment generationEnvironment,
             [Frozen] ITemplateIdentifier identifier,
             ITemplateEngine sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.RenderChildTemplates(Models, generationEnvironment, context: null!, _ => identifier, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.RenderChildTemplates(Models, generationEnvironment, context: null!, _ => identifier, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Theory, AutoMockData]
-        public void Throws_On_Null_TemplateIdentifierFactory_5(
+        public async Task Throws_On_Null_TemplateIdentifierFactory_5(
             [Frozen] ITemplateContext templateContext,
             [Frozen] IGenerationEnvironment generationEnvironment,
             ITemplateEngine sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.RenderChildTemplates(Models, generationEnvironment, templateContext, templateIdentifierFactory: null!, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("templateIdentifierFactory");
+            await sut.Awaiting(x => x.RenderChildTemplates(Models, generationEnvironment, templateContext, templateIdentifierFactory: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("templateIdentifierFactory");
         }
 
         [Theory, AutoMockData]
@@ -577,7 +577,7 @@ public class TemplateEngineExtensionsTests
             templateProvider.Create(Arg.Any<ITemplateIdentifier>()).Returns(Template);
 
             // Act
-            await sut.RenderChildTemplates(Models, generationEnvironment, templateContext, _ => identifier, CancellationToken.None);
+            _ = await sut.RenderChildTemplates(Models, generationEnvironment, templateContext, _ => identifier, CancellationToken.None);
 
             // Assert
             await sut.Received(Models.Count()).Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -591,35 +591,35 @@ public class TemplateEngineExtensionsTests
         }
 
         [Theory, AutoMockData]
-        public void Throws_On_Null_ChildModels_6(
+        public async Task Throws_On_Null_ChildModels_6(
             [Frozen] ITemplateContext templateContext,
             [Frozen] IGenerationEnvironment generationEnvironment,
             ITemplateEngine sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.RenderChildTemplates(childModels: null!, generationEnvironment, templateContext, _ => Template, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("childModels");
+            await sut.Awaiting(x => x.RenderChildTemplates(childModels: null!, generationEnvironment, templateContext, _ => Template, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("childModels");
         }
 
         [Theory, AutoMockData]
-        public void Throws_On_Null_Context_6(
+        public async Task Throws_On_Null_Context_6(
             [Frozen] IGenerationEnvironment generationEnvironment,
             ITemplateEngine sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.RenderChildTemplates(Models, generationEnvironment, context: null!, _ => Template, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.RenderChildTemplates(Models, generationEnvironment, context: null!, _ => Template, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Theory, AutoMockData]
-        public void Throws_On_Null_TemplateIdentifierFactory_6(
+        public async Task Throws_On_Null_TemplateIdentifierFactory_6(
             [Frozen] ITemplateContext templateContext,
             [Frozen] IGenerationEnvironment generationEnvironment,
             ITemplateEngine sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.RenderChildTemplates(Models, generationEnvironment, templateContext, templateIdentifierFactory: null!, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("templateIdentifierFactory");
+            await sut.Awaiting(x => x.RenderChildTemplates(Models, generationEnvironment, templateContext, templateIdentifierFactory: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("templateIdentifierFactory");
         }
 
         [Theory, AutoMockData]
@@ -633,7 +633,7 @@ public class TemplateEngineExtensionsTests
             templateContext.DefaultFilename.Returns(DefaultFilename);
 
             // Act
-            await sut.RenderChildTemplates(Models, generationEnvironment, templateContext, _ => Template, CancellationToken.None);
+            _ = await sut.RenderChildTemplates(Models, generationEnvironment, templateContext, _ => Template, CancellationToken.None);
 
             // Assert
             await sut.Received(Models.Count()).Render(Arg.Is<IRenderTemplateRequest>(request =>
@@ -647,37 +647,37 @@ public class TemplateEngineExtensionsTests
         }
 
         [Theory, AutoMockData]
-        public void Throws_On_Null_ChildModels_7(
+        public async Task Throws_On_Null_ChildModels_7(
             [Frozen] ITemplateContext templateContext,
             [Frozen] IGenerationEnvironment generationEnvironment,
             [Frozen] ITemplateIdentifier identifier,
             ITemplateEngine sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.RenderChildTemplates(childModels: null!, generationEnvironment, templateContext, identifier, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("childModels");
+            await sut.Awaiting(x => x.RenderChildTemplates(childModels: null!, generationEnvironment, templateContext, identifier, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("childModels");
         }
 
         [Theory, AutoMockData]
-        public void Throws_On_Null_Context_7(
+        public async Task Throws_On_Null_Context_7(
             [Frozen] IGenerationEnvironment generationEnvironment,
             [Frozen] ITemplateIdentifier identifier,
             ITemplateEngine sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.RenderChildTemplates(Models, generationEnvironment, context: null!, identifier, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.RenderChildTemplates(Models, generationEnvironment, context: null!, identifier, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Theory, AutoMockData]
-        public void Throws_On_Null_Identifier_7(
+        public async Task Throws_On_Null_Identifier_7(
             [Frozen] ITemplateContext templateContext,
             [Frozen] IGenerationEnvironment generationEnvironment,
             ITemplateEngine sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.RenderChildTemplates(Models, generationEnvironment, templateContext, identifier: null!, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("identifier");
+            await sut.Awaiting(x => x.RenderChildTemplates(Models, generationEnvironment, templateContext, identifier: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("identifier");
         }
 
         [Theory, AutoMockData]
@@ -692,7 +692,7 @@ public class TemplateEngineExtensionsTests
             templateContext.DefaultFilename.Returns(DefaultFilename);
 
             // Act
-            await sut.RenderChildTemplates(Models, generationEnvironment, templateContext, identifier, CancellationToken.None);
+            _ = await sut.RenderChildTemplates(Models, generationEnvironment, templateContext, identifier, CancellationToken.None);
 
             // Assert
             await sut.Received(Models.Count()).Render(Arg.Is<IRenderTemplateRequest>(request =>

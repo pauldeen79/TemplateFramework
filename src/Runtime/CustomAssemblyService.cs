@@ -17,8 +17,18 @@ public class CustomAssemblyService : IAssemblyService
         Guard.IsNotNull(assemblyName);
         Guard.IsNotNull(currentDirectory);
 
-        var context = new CustomAssemblyLoadContext("TemplateFramework.Core.CodeGeneration", true, _assemblyInfoContextService, () => new[] { currentDirectory });
-        return LoadAssembly(context, assemblyName, currentDirectory);
+        return LoadAssembly
+        (
+            new CustomAssemblyLoadContext
+            (
+                "TemplateFramework.Core.CodeGeneration",
+                true,
+                _assemblyInfoContextService,
+                () => [currentDirectory]
+            ),
+            assemblyName,
+            currentDirectory
+        );
     }
 
     private static Assembly LoadAssembly(AssemblyLoadContext context, string assemblyName, string currentDirectory)

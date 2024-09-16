@@ -19,22 +19,45 @@ internal static class TestData
         public PlainTemplateWithTemplateContext(Func<ITemplateContext, string> @delegate) => _delegate = @delegate;
 
         public ITemplateContext Context { get; set; } = default!;
-
         public override string ToString() => _delegate(Context);
+    }
+
+    internal sealed class TemplateWithViewModel<T> : IBuilderTemplate<StringBuilder>, IModelContainer<T>
+    {
+        public T? Model { get; set; }
+
+        private readonly Action<StringBuilder, T> _delegate;
+
+        public TemplateWithViewModel(Action<StringBuilder, T> @delegate) => _delegate = @delegate;
+
+        public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder, Model!); return Task.FromResult(Result.Success()); }
+    }
+
+    // False positive, it gets created through DI container
+#pragma warning disable CA1812 // Avoid uninstantiated internal classes
+    internal sealed class ViewModel<TModel> : IModelContainer<TModel>, IViewModel
+    {
+        public TModel? Model { get; set; }
+    }
+#pragma warning restore CA1812 // Avoid uninstantiated internal classes
+
+    internal sealed class Model
+    {
+        public string? Contents { get; set; }
     }
 
     internal sealed class MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine : IMultipleContentBuilderTemplate, ITemplateContextContainer
     {
-        private readonly Action<IMultipleContentBuilder, ITemplateContext> _delegate;
+        private readonly Action<IMultipleContentBuilder<StringBuilder>, ITemplateContext> _delegate;
 
-        public MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine(Action<IMultipleContentBuilder, ITemplateContext> @delegate)
+        public MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine(Action<IMultipleContentBuilder<StringBuilder>, ITemplateContext> @delegate)
         {
             _delegate = @delegate;
         }
 
         public ITemplateContext Context { get; set; } = default!;
 
-        public Task Render(IMultipleContentBuilder builder, CancellationToken cancellationToken) { _delegate(builder, Context); return Task.CompletedTask; }
+        public Task<Result> Render(IMultipleContentBuilder<StringBuilder> builder, CancellationToken cancellationToken) { _delegate(builder, Context); return Task.FromResult(Result.Success()); }
     }
 
     internal sealed class CsharpClassGeneratorViewModel<TModel>
@@ -96,29 +119,33 @@ internal static class TestData
 
     // False positive, it gets created through DI container
 #pragma warning disable CA1812 // Avoid uninstantiated internal classes
-    internal sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>>, IMultipleContentBuilderTemplate, IStringBuilderTemplate
+    internal sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>>, IMultipleContentBuilderTemplate, IBuilderTemplate<StringBuilder>
     {
-        public async Task Render(IMultipleContentBuilder builder, CancellationToken cancellationToken)
+        public async Task<Result> Render(IMultipleContentBuilder<StringBuilder> builder, CancellationToken cancellationToken)
         {
             Guard.IsNotNull(builder);
             Guard.IsNotNull(Model);
             Guard.IsNotNull(Context);
 
             StringBuilder? singleStringBuilder = null;
-            IGenerationEnvironment generationEnvironment = new MultipleContentBuilderEnvironment(builder);
+            IGenerationEnvironment generationEnvironment = new MultipleStringContentBuilderEnvironment(builder);
 
             if (!Model.Settings.GenerateMultipleFiles)
             {
                 // Generate a single generation environment, so we create only a single file in the multiple content builder environment.
                 singleStringBuilder = builder.AddContent(Context.DefaultFilename, Model.Settings.SkipWhenFileExists).Builder;
                 generationEnvironment = new StringBuilderEnvironment(singleStringBuilder);
-                await RenderHeader(generationEnvironment, cancellationToken).ConfigureAwait(false);
+                var result = await RenderHeader(generationEnvironment, cancellationToken).ConfigureAwait(false);
+                if (!result.IsSuccessful())
+                {
+                    return result;
+                }
             }
 
-            await RenderNamespaceHierarchy(generationEnvironment, singleStringBuilder, cancellationToken).ConfigureAwait(false);
+            return await RenderNamespaceHierarchy(generationEnvironment, singleStringBuilder, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task Render(StringBuilder builder, CancellationToken cancellationToken)
+        public async Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
         {
             Guard.IsNotNull(builder);
             Guard.IsNotNull(Model);
@@ -129,22 +156,31 @@ internal static class TestData
             }
 
             var generationEnvironment = new StringBuilderEnvironment(builder);
-            await RenderHeader(generationEnvironment, cancellationToken).ConfigureAwait(false);
-            await RenderNamespaceHierarchy(generationEnvironment, builder, cancellationToken).ConfigureAwait(false);
+            var result= await RenderHeader(generationEnvironment, cancellationToken).ConfigureAwait(false);
+            if (!result.IsSuccessful())
+            {
+                return result;
+            }
+            return await RenderNamespaceHierarchy(generationEnvironment, builder, cancellationToken).ConfigureAwait(false);
         }
 
-        private async Task RenderHeader(IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
+        private async Task<Result> RenderHeader(IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
         {
-            await Context.Engine.RenderChildTemplate(
+            var result = await Context.Engine.RenderChildTemplate(
                 Model!.Settings,
                 generationEnvironment,
                 Context,
                 new TemplateByNameIdentifier("CodeGenerationHeader"),
                 cancellationToken).ConfigureAwait(false);
 
+            if (!result.IsSuccessful())
+            {
+                return result;
+            }
+
             if (Context.IsRootContext)
             {
-                await Context.Engine.RenderChildTemplate(
+                result = await Context.Engine.RenderChildTemplate(
                     Model,
                     generationEnvironment,
                     Context,
@@ -152,10 +188,13 @@ internal static class TestData
                     cancellationToken
                     ).ConfigureAwait(false);
             }
+
+            return result;
         }
 
-        private async Task RenderNamespaceHierarchy(IGenerationEnvironment generationEnvironment, StringBuilder? singleStringBuilder, CancellationToken cancellationToken)
+        private async Task<Result> RenderNamespaceHierarchy(IGenerationEnvironment generationEnvironment, StringBuilder? singleStringBuilder, CancellationToken cancellationToken)
         {
+            var result = Result.Success();
             foreach (var ns in Model!.Data.GroupBy(x => x.Namespace).OrderBy(x => x.Key))
             {
                 if (Context.IsRootContext && singleStringBuilder is not null)
@@ -168,37 +207,44 @@ internal static class TestData
                     .OrderBy(typeBase => typeBase.Name)
                     .Select(typeBase => new CsharpClassGeneratorViewModel<TypeBase>(typeBase, Model.Settings));
 
-                await Context.Engine.RenderChildTemplates(
+                result = await Context.Engine.RenderChildTemplates(
                     typeBaseItems,
                     generationEnvironment,
                     Context,
                     typeBase => new TemplateByModelIdentifier(((CsharpClassGeneratorViewModel<TypeBase>)typeBase!).Data),
                     cancellationToken
                     ).ConfigureAwait(false);
+                if (!result.IsSuccessful())
+                {
+                    return result;
+                }
 
                 if (Context.IsRootContext && singleStringBuilder is not null)
                 {
                     singleStringBuilder.AppendLine("}"); // close namespace
                 }
+
             }
+
+            return result;
         }
     }
 
-    public sealed class CodeGenerationHeaderTemplate : CsharpClassGeneratorBase<CsharpClassGeneratorSettings>, IStringBuilderTemplate
+    public sealed class CodeGenerationHeaderTemplate : CsharpClassGeneratorBase<CsharpClassGeneratorSettings>, IBuilderTemplate<StringBuilder>
     {
         public string Version
             => !string.IsNullOrEmpty(Model?.EnvironmentVersion)
                 ? Model.EnvironmentVersion
                 : Environment.Version.ToString();
 
-        public Task Render(StringBuilder builder, CancellationToken cancellationToken)
+        public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
         {
             Guard.IsNotNull(builder);
             Guard.IsNotNull(Model);
 
             if (!Model.CreateCodeGenerationHeader)
             {
-                return Task.CompletedTask;
+                return Task.FromResult(Result.NoContent());
             }
 
             builder.AppendLine(Model.CultureInfo, $$"""
@@ -213,13 +259,13 @@ internal static class TestData
 // ------------------------------------------------------------------------------
 """);
 
-            return Task.CompletedTask;
+            return Task.FromResult(Result.Success());
         }
     }
 
-    public sealed class DefaultUsingsTemplate : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>>, IStringBuilderTemplate
+    public sealed class DefaultUsingsTemplate : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>>, IBuilderTemplate<StringBuilder>
     {
-        public Task Render(StringBuilder builder, CancellationToken cancellationToken)
+        public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
         {
             Guard.IsNotNull(builder);
             Guard.IsNotNull(Model);
@@ -236,7 +282,7 @@ internal static class TestData
                 builder.AppendLine();
             }
 
-            return Task.CompletedTask;
+            return Task.FromResult(Result.Success());
         }
 
         private static readonly string[] DefaultUsings =
@@ -256,13 +302,14 @@ internal static class TestData
 
     public sealed class ClassTemplate : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel<TypeBase>>, IMultipleContentBuilderTemplate
     {
-        public async Task Render(IMultipleContentBuilder builder, CancellationToken cancellationToken)
+        public async Task<Result> Render(IMultipleContentBuilder<StringBuilder> builder, CancellationToken cancellationToken)
         {
             Guard.IsNotNull(builder);
             Guard.IsNotNull(Model);
             Guard.IsNotNull(Context);
 
             StringBuilderEnvironment generationEnvironment;
+            Result result = Result.Success();
 
             if (!Model.Settings.GenerateMultipleFiles)
             {
@@ -278,20 +325,29 @@ internal static class TestData
                 var filename = $"{Model.Settings.FilenamePrefix}{Model.Data.Name}{Model.Settings.FilenameSuffix}.cs";
                 var contentBuilder = builder.AddContent(filename, Model.Settings.SkipWhenFileExists);
                 generationEnvironment = new StringBuilderEnvironment(contentBuilder.Builder);
-                await Context.Engine.RenderChildTemplate(
-                    Model.Settings,
-                    generationEnvironment,
-                    Context,
-                    new TemplateByNameIdentifier("CodeGenerationHeader"),
-                    cancellationToken
-                    ).ConfigureAwait(false);
-                await Context.Engine.RenderChildTemplate(
-                    new CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>([Model.Data], Model.Settings),
-                    generationEnvironment,
-                    Context,
-                    new TemplateByNameIdentifier("DefaultUsings"),
-                    cancellationToken
-                    ).ConfigureAwait(false);
+                var actions = new[]
+                {
+                    Context.Engine.RenderChildTemplate(
+                        Model.Settings,
+                        generationEnvironment,
+                        Context,
+                        new TemplateByNameIdentifier("CodeGenerationHeader"),
+                        cancellationToken
+                        ),
+                    Context.Engine.RenderChildTemplate(
+                        new CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>([Model.Data], Model.Settings),
+                        generationEnvironment,
+                        Context,
+                        new TemplateByNameIdentifier("DefaultUsings"),
+                        cancellationToken
+                        )
+                };
+                var errors = Array.FindAll(await Task.WhenAll(actions).ConfigureAwait(false), x => !x.IsSuccessful());
+                result = Result.Aggregate(errors, Result.Success(), nonSuccesfulResults => Result.Error(nonSuccesfulResults, "One or more child templates returned a non-succesful result, see the inner results for more details"));
+                if (!result.IsSuccessful())
+                {
+                    return result;
+                }
                 contentBuilder.Builder.AppendLine(Model.Settings.CultureInfo, $"namespace {Model.Data.Namespace}");
                 contentBuilder.Builder.AppendLine("{"); // start namespace
             }
@@ -314,13 +370,18 @@ internal static class TestData
             //TODO: Render child items
             if (Model.Data.SubClasses is not null && Model.Data.SubClasses.Length > 0)
             {
-                await Context.Engine.RenderChildTemplates(
+                result = await Context.Engine.RenderChildTemplates(
                     Model.Data.SubClasses.Select(typeBase => new CsharpClassGeneratorViewModel<TypeBase>(typeBase, Model.Settings.ForSubclasses())),
-                    new MultipleContentBuilderEnvironment(builder),
+                    new MultipleStringContentBuilderEnvironment(builder),
                     Context,
                     model => new TemplateByModelIdentifier(model!.GetType().GetProperty(nameof(CsharpClassGeneratorViewModel<TypeBase>.Data))!.GetValue(model)),
                     cancellationToken
                     ).ConfigureAwait(false);
+
+                if (!result.IsSuccessful())
+                {
+                    return result;
+                }
             }
 
             indentedBuilder.AppendLine("}"); // end class
@@ -334,6 +395,8 @@ internal static class TestData
             {
                 generationEnvironment.Builder.AppendLine("}"); // end namespace
             }
+
+            return result;
         }
     }
 #pragma warning restore CA1812 // Avoid uninstantiated internal classes
@@ -385,7 +448,7 @@ public sealed class CsharpClassGeneratorCodeGenerationProvider : ICodeGeneration
         return Task.FromResult<object?>(viewModel);
     }
 
-    public Task Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken)
+    public Task<Result> Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(registry);
 
@@ -397,7 +460,98 @@ public sealed class CsharpClassGeneratorCodeGenerationProvider : ICodeGeneration
         };
 
         registry.RegisterComponent(new ProviderComponent(registrations));
-
-        return Task.CompletedTask;
+        return Task.FromResult(Result.Success());
     }
+}
+
+public class XDocumentTemplate : IBuilderTemplate<XDocumentBuilder>, ITemplateContextContainer, IModelContainer<XDocumentTestModel>
+{
+    public ITemplateContext Context { get; set; } = default!;
+    public XDocumentTestModel? Model { get; set; }
+
+    public async Task<Result> Render(XDocumentBuilder builder, CancellationToken cancellationToken)
+    {
+        Guard.IsNotNull(builder);
+        Guard.IsNotNull(Context);
+        Guard.IsNotNull(Model);
+
+        builder.CurrentElement.Add(new XAttribute("processed", true));
+
+        // POC to add an XElement with a collection.
+        // Note that currently, you have to update the current element, so the child template knows where content should be added to.
+        builder.CurrentElement.Add(new XElement("subItems"));
+        builder.CurrentElement = builder.CurrentElement.Element("subItems")!;
+        // Because this is just a POC, we are using a collection of strings, and a named template.
+        // If you are using a (View)Model, then you can omit the name and resolve the template by model type.
+        return await Context.Engine.RenderChildTemplates(Model.SubItems, new XDocumentGenerationEnvironment(builder), new TemplateByNameIdentifier("SubItem"), Context, cancellationToken).ConfigureAwait(false);
+    }
+}
+
+public class SubItemTemplate : IBuilderTemplate<XDocumentBuilder>, IModelContainer<string>
+{
+    public string? Model { get; set; }
+
+    public Task<Result> Render(XDocumentBuilder builder, CancellationToken cancellationToken)
+    {
+        Guard.IsNotNull(builder);
+        Guard.IsNotNull(Model);
+
+        builder.CurrentElement.Add(new XElement("item", Model));
+
+        return Task.FromResult(Result.Success());
+    }
+}
+
+public class XDocumentTestModel
+{
+    public XDocumentTestModel(params string[] subItems)
+    {
+        SubItems = subItems;
+    }
+
+    public IReadOnlyCollection<string> SubItems { get; }
+}
+
+public class XDocumentBuilder
+{
+    public XDocumentBuilder(XElement rootElement)
+    {
+        Guard.IsNotNull(rootElement);
+
+        Document = new XDocument(rootElement);
+        CurrentElement = Document.Root!;
+    }
+
+    public XDocument Document { get; }
+    public XElement CurrentElement { get; set; }
+}
+
+public class XDocumentGenerationEnvironment : GenerationEnvironmentBase<XDocumentBuilder>
+{
+    public XDocumentGenerationEnvironment(XElement rootElement)
+        : base(new XDocumentBuilder(rootElement))
+    {
+    }
+
+    public XDocumentGenerationEnvironment(XDocumentBuilder builder)
+        : base(builder)
+    {
+    }
+
+    internal XDocumentGenerationEnvironment(IFileSystem fileSystem, IRetryMechanism retryMechanism, XDocumentBuilder builder)
+        : base(fileSystem, retryMechanism, builder)
+    {
+    }
+
+    protected override string Build() => Builder.Document.ToString();
+}
+
+public class XDocumentBuilderTemplateRenderer : BuilderTemplateRendererBase<XDocumentGenerationEnvironment, XDocumentBuilder>
+{
+    public XDocumentBuilderTemplateRenderer(IEnumerable<IBuilderTemplateRenderer<XDocumentBuilder>> renderers) : base(renderers)
+    {
+    }
+
+    protected override Task<Result> DefaultImplementation(object templateInstance, XDocumentBuilder builder)
+        => Task.FromResult(Result.NotSupported($"Type of Template ({templateInstance.GetType().FullName}) is not supported"));
 }

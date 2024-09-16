@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Core.Tests.TemplateInitializerComponents;
 
-public class ModelInitializerTests
+public class ModelInitializerComponentTests
 {
     public class Constructor
     {
@@ -11,16 +11,16 @@ public class ModelInitializerTests
         }
     }
 
-    public class Initialize : ModelInitializerTests
+    public class Initialize : ModelInitializerComponentTests
     {
         private const string DefaultFilename = "DefaultFilename.txt";
 
         [Theory, AutoMockData]
-        public void Throws_On_Null_Context(ModelInitializerComponent sut)
+        public async Task Throws_On_Null_Context(ModelInitializerComponent sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.Initialize(context: null!, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.Initialize(context: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Theory, AutoMockData]

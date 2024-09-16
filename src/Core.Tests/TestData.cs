@@ -4,24 +4,31 @@ public sealed class PlainTemplateWithAdditionalParameters : IParameterizedTempla
 {
     public string AdditionalParameter { get; set; } = "";
 
-    public void SetParameter(string name, object? value)
+    public Result SetParameterReturnValue { get; set; } = Result.Success();
+    public Result<ITemplateParameter[]>? GetParametersReturnValue { get; set; }
+
+
+    public Result SetParameter(string name, object? value)
     {
         if (name == nameof(AdditionalParameter))
         {
             AdditionalParameter = value?.ToString() ?? string.Empty;
+            return SetParameterReturnValue;
         }
+
+        return Result.Continue();
     }
 
-    public ITemplateParameter[] GetParameters() => new[] { new TemplateParameter(nameof(AdditionalParameter), typeof(string)) };
+    public Result<ITemplateParameter[]> GetParameters() => GetParametersReturnValue ?? Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(AdditionalParameter), typeof(string))]);
 
     public override string ToString() => AdditionalParameter;
 }
 
 public sealed class TestTemplateComponentRegistryPlugin : ITemplateComponentRegistryPlugin
 {
-    public Task Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken)
+    public Task<Result> Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken)
     {
-        return Task.CompletedTask;
+        return Task.FromResult(Result.Success());
     }
 }
 
@@ -37,16 +44,16 @@ internal static class TestData
     internal const string BasePath = "Unknown basepath, only Windows, Linux and OSX are supported";
 #endif
 
-    internal sealed class Template : IStringBuilderTemplate
+    internal sealed class Template : IBuilderTemplate<StringBuilder>
     {
         private readonly Action<StringBuilder> _delegate;
 
         public Template(Action<StringBuilder> @delegate) => _delegate = @delegate;
 
-        public Task Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.CompletedTask; }
+        public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.FromResult(Result.Success()); }
     }
 
-    internal sealed class TemplateWithModel<T> : IStringBuilderTemplate, IModelContainer<T>
+    internal sealed class TemplateWithModel<T> : IBuilderTemplate<StringBuilder>, IModelContainer<T>
     {
         public T? Model { get; set; } = default!;
 
@@ -54,10 +61,10 @@ internal static class TestData
 
         public TemplateWithModel(Action<StringBuilder> @delegate) => _delegate = @delegate;
 
-        public Task Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.CompletedTask; }
+        public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.FromResult(Result.Success()); }
     }
 
-    internal sealed class TemplateWithDefaultFilename : IStringBuilderTemplate, IDefaultFilenameContainer
+    internal sealed class TemplateWithDefaultFilename : IBuilderTemplate<StringBuilder>, IDefaultFilenameContainer
     {
         private readonly Action<StringBuilder> _delegate;
 
@@ -65,10 +72,10 @@ internal static class TestData
 
         public string DefaultFilename { get; set; } = "";
 
-        public Task Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.CompletedTask; }
+        public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.FromResult(Result.Success()); }
     }
 
-    internal sealed class TemplateWithViewModel<T> : IStringBuilderTemplate, IParameterizedTemplate
+    internal sealed class TemplateWithViewModel<T> : IBuilderTemplate<StringBuilder>, IParameterizedTemplate
     {
         public T? ViewModel { get; set; } = default!;
 
@@ -76,17 +83,30 @@ internal static class TestData
 
         public TemplateWithViewModel(Action<StringBuilder> @delegate) => _delegate = @delegate;
 
-        public Task Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.CompletedTask; }
+        public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.FromResult(Result.Success()); }
 
-        public void SetParameter(string name, object? value) // this is added in case of viewmodels which don't have a public parameterless constructor
+        public Result SetParameter(string name, object? value) // this is added in case of viewmodels which don't have a public parameterless constructor
         {
             if (name == nameof(ViewModel))
             {
                 ViewModel = (T?)value;
+                return Result.Success();
             }
+
+            return Result.Continue();
         }
 
-        public ITemplateParameter[] GetParameters() => new[] { new TemplateParameter(nameof(ViewModel), typeof(T?)) };
+        public Result<ITemplateParameter[]> GetParameters() => Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(ViewModel), typeof(T?))]);
+    }
+
+    internal sealed class MyViewModel<T> : IViewModel, IModelContainer<T>
+    {
+        public T? Model { get; set; }
+    }
+
+    internal sealed class MyModel<T> : IModelContainer<T>
+    {
+        public T? Model { get; set; }
     }
 
     internal sealed class PlainTemplateWithModelAndAdditionalParameters<T> : IModelContainer<T>, IParameterizedTemplate
@@ -95,15 +115,18 @@ internal static class TestData
 
         public string AdditionalParameter { get; set; } = "";
 
-        public void SetParameter(string name, object? value)
+        public Result SetParameter(string name, object? value)
         {
             if (name == nameof(AdditionalParameter))
             {
                 AdditionalParameter = value?.ToString() ?? string.Empty;
+                return Result.Success();
             }
+
+            return Result.Continue();
         }
 
-        public ITemplateParameter[] GetParameters() => new[] { new TemplateParameter(nameof(AdditionalParameter), typeof(T?)) };
+        public Result<ITemplateParameter[]> GetParameters() => Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(AdditionalParameter), typeof(T?))]);
 
         public override string ToString() => AdditionalParameter;
     }
@@ -140,15 +163,18 @@ internal static class TestData
 
         public string Property { get; set; }
 
-        public void SetParameter(string name, object? value)
+        public Result SetParameter(string name, object? value)
         {
             if (name == nameof(Property))
             {
                 Property = value?.ToString() ?? string.Empty;
+                return Result.Success();
             }
+
+            return Result.Continue();
         }
 
-        public ITemplateParameter[] GetParameters() => new[] { new TemplateParameter(nameof(Property), typeof(string)) };
+        public Result<ITemplateParameter[]> GetParameters() => Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(Property), typeof(string))]);
     }
 
     internal sealed class PocoParameterizedTemplate

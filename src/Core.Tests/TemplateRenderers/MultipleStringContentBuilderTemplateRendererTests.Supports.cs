@@ -1,19 +1,18 @@
-namespace TemplateFramework.Core.Tests.TemplateRenderers;
+﻿namespace TemplateFramework.Core.Tests.TemplateRenderers;
 
-public partial class MultipleContentTemplateRendererTests
+public partial class MultipleStringContentBuilderTemplateRendererTests
 {
-    public class Supports : MultipleContentTemplateRendererTests
+    public class Supports : MultipleStringContentBuilderTemplateRendererTests
     {
         [Fact]
         public void Returns_False_When_GenerationEnvironment_Is_StringBuilder()
         {
             // Arrange
             var sut = CreateSut();
-            var environmentMock = Substitute.For<IGenerationEnvironment>();
-            environmentMock.Type.Returns(GenerationEnvironmentType.StringBuilder);
+            var environment = new StringBuilderEnvironment();
 
             // Act
-            var result = sut.Supports(environmentMock);
+            var result = sut.Supports(environment);
 
             // Assert
             result.Should().BeFalse();
@@ -37,10 +36,10 @@ public partial class MultipleContentTemplateRendererTests
         {
             // Arrange
             var sut = CreateSut();
-            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(this), DefaultFilename, Substitute.For<IMultipleContentBuilder>());
+            var environment = new MultipleStringContentBuilderEnvironment();
 
             // Act
-            var result = sut.Supports(request.GenerationEnvironment);
+            var result = sut.Supports(environment);
 
             // Assert
             result.Should().BeTrue();

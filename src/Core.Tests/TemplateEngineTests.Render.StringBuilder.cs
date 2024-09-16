@@ -10,14 +10,14 @@ public partial class TemplateEngineTests
         }
 
         [Fact]
-        public void Throws_On_Null_Request()
+        public async Task Throws_On_Null_Request()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.Render(request: null!, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("request");
+            await sut.Awaiting(x => x.Render(request: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("request");
         }
 
         [Fact]
@@ -30,6 +30,7 @@ public partial class TemplateEngineTests
             var additionalParameters = new { AdditionalParameter = "Some value" };
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), additionalParameters, builder);
             TemplateProviderMock.Create(Arg.Any<TemplateInstanceIdentifier>()).Returns(template);
+            TemplateInitializerMock.Initialize(Arg.Any<ITemplateEngineContext>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
 
             // Act
             await sut.Render(request, CancellationToken.None);
@@ -39,7 +40,7 @@ public partial class TemplateEngineTests
         }
 
         [Fact]
-        public async  Task Renders_Template_Correctly()
+        public async Task Renders_Template_Correctly()
         {
             // Arrange
             var sut = CreateSut();
@@ -49,6 +50,7 @@ public partial class TemplateEngineTests
             TemplateRendererMock.Supports(Arg.Any<IGenerationEnvironment>()).Returns(true);
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), additionalParameters, generationEnvironment);
             TemplateProviderMock.Create(Arg.Any<TemplateInstanceIdentifier>()).Returns(template);
+            TemplateInitializerMock.Initialize(Arg.Any<ITemplateEngineContext>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
 
             // Act
             await sut.Render(request, CancellationToken.None);
@@ -56,7 +58,7 @@ public partial class TemplateEngineTests
             // Assert
             await TemplateRendererMock.Received().Render(Arg.Is<ITemplateEngineContext>(req =>
                 req.Template == template
-                && req.GenerationEnvironment.Type == GenerationEnvironmentType.StringBuilder
+                && req.GenerationEnvironment is StringBuilderEnvironment
                 && req.DefaultFilename == string.Empty), Arg.Any<CancellationToken>());
         }
     }

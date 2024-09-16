@@ -32,25 +32,27 @@ public class TemplateParameterExtractorTests
             var result = sut.Extract(templateInstance: new object());
 
             // Assert
-            result.Should().BeEmpty();
+            result.Status.Should().Be(ResultStatus.Continue);
+            result.Value.Should().BeEmpty();
         }
 
-        [Theory, AutoMockData]
-        public void Returns_Result_From_Component_On_Supported_Type(
-            [Frozen] ITemplateParameterExtractorComponent templateParameterExtractorComponent,
-            TemplateParameterExtractor sut)
+        [Fact]
+        public void Returns_Result_From_Component_On_Supported_Type()
         {
             // Arrange
             var template = new object();
-            var parameters = new[] { new TemplateParameter("name", typeof(string)) };
+            var templateParameterExtractorComponent = Substitute.For<ITemplateParameterExtractorComponent>();
+            var parametersResult = Result.Success<ITemplateParameter[]>([new TemplateParameter("name", typeof(string))]);
             templateParameterExtractorComponent.Supports(template).Returns(true);
-            templateParameterExtractorComponent.Extract(template).Returns(parameters);
+            templateParameterExtractorComponent.Extract(template).Returns(parametersResult);
+            var sut = new TemplateParameterExtractor([templateParameterExtractorComponent]);
 
             // Act
             var result = sut.Extract(template);
 
             // Assert
-            result.Should().BeEquivalentTo(parameters);
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().BeEquivalentTo(parametersResult.Value);
         }
     }
 }

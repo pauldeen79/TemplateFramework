@@ -14,7 +14,7 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
     public class Generate : CodeGenerationEngineTests
     {
         [Fact]
-        public void Throws_On_Null_CodeGenerationProvider()
+        public async Task Throws_On_Null_CodeGenerationProvider()
         {
             // Arrange
             var generationEnvironment = Fixture.Freeze<IGenerationEnvironment>();
@@ -22,12 +22,12 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var sut = CreateSut();
 
             // Act
-            sut.Awaiting(x => x.Generate(codeGenerationProvider: null!, generationEnvironment, codeGenerationSettings))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("codeGenerationProvider");
+            await sut.Awaiting(x => x.Generate(codeGenerationProvider: null!, generationEnvironment, codeGenerationSettings))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("codeGenerationProvider");
         }
 
         [Fact]
-        public void Throws_On_Null_GenerationEnvironment()
+        public async Task Throws_On_Null_GenerationEnvironment()
         {
             // Arrange
             var codeGenerationProvider = Fixture.Freeze<ICodeGenerationProvider>();
@@ -35,12 +35,12 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var sut = CreateSut();
 
             // Act
-            sut.Awaiting(x => x.Generate(codeGenerationProvider, generationEnvironment: null!, codeGenerationSettings))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("generationEnvironment");
+            await sut.Awaiting(x => x.Generate(codeGenerationProvider, generationEnvironment: null!, codeGenerationSettings))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("generationEnvironment");
         }
 
         [Fact]
-        public void Throws_On_Null_CodeGenerationSettings()
+        public async Task Throws_On_Null_CodeGenerationSettings()
         {
             // Arrange
             var codeGenerationProvider = Fixture.Freeze<ICodeGenerationProvider>();
@@ -48,8 +48,8 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var sut = CreateSut();
 
             // Act
-            sut.Awaiting(x => x.Generate(codeGenerationProvider, generationEnvironment, settings: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("settings");
+            await sut.Awaiting(x => x.Generate(codeGenerationProvider, generationEnvironment, settings: null!))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("settings");
         }
 
         [Fact]
@@ -59,12 +59,14 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var codeGenerationProvider = Fixture.Freeze<ICodeGenerationProvider>();
             var generationEnvironment = Fixture.Freeze<IGenerationEnvironment>();
             var codeGenerationSettings = Fixture.Freeze<ICodeGenerationSettings>();
+            var templateEngine = Fixture.Freeze<ITemplateEngine>();
             codeGenerationProvider.Encoding.Returns(Encoding.Latin1);
             codeGenerationProvider.Path.Returns(TestData.BasePath);
             codeGenerationProvider.GetGeneratorType().Returns(GetType());
             codeGenerationSettings.DryRun.Returns(false);
             codeGenerationSettings.BasePath.Returns(TestData.BasePath);
             codeGenerationSettings.DefaultFilename.Returns("Filename.txt");
+            templateEngine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
             var sut = CreateSut();
 
             // Act
@@ -75,17 +77,19 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
         }
 
         [Fact]
-        public async Task Does_Not_Save_Generatd_Content_When_BasePath_Is_Filled_But_DryRun_Is_True()
+        public async Task Does_Not_Save_Generated_Content_When_BasePath_Is_Filled_But_DryRun_Is_True()
         {
             // Arrange
             var codeGenerationProvider = Fixture.Freeze<ICodeGenerationProvider>();
             var generationEnvironment = Fixture.Freeze<IGenerationEnvironment>();
             var codeGenerationSettings = Fixture.Freeze<ICodeGenerationSettings>();
+            var templateEngine = Fixture.Freeze<ITemplateEngine>();
             codeGenerationProvider.Encoding.Returns(Encoding.Latin1);
             codeGenerationProvider.Path.Returns(TestData.BasePath);
             codeGenerationProvider.GetGeneratorType().Returns(GetType());
             codeGenerationSettings.DryRun.Returns(true);
             codeGenerationSettings.DefaultFilename.Returns("Filename.txt");
+            templateEngine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
             var sut = CreateSut();
 
             // Act
@@ -103,15 +107,42 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var provider = new MyPluginCodeGenerationProvider(_ => counter++);
             var generationEnvironment = Fixture.Freeze<IGenerationEnvironment>();
             var codeGenerationSettings = Fixture.Freeze<ICodeGenerationSettings>();
+            var templateEngine = Fixture.Freeze<ITemplateEngine>();
             codeGenerationSettings.DryRun.Returns(false);
             codeGenerationSettings.BasePath.Returns(TestData.BasePath);
             codeGenerationSettings.DefaultFilename.Returns("Filename.txt");
+            templateEngine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
+            generationEnvironment.SaveContents(Arg.Any<ICodeGenerationProvider>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
             var sut = CreateSut();
 
             // Act
-            await sut.Generate(provider, generationEnvironment, codeGenerationSettings);
+            var result = await sut.Generate(provider, generationEnvironment, codeGenerationSettings);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            counter.Should().Be(1);
+        }
+
+        [Fact]
+        public async Task Returns_Non_Successful_Result_From_Initialization_When_Applicable()
+        {
+            // Arrange
+            var counter = 0;
+            var provider = new MyPluginCodeGenerationProvider(_ => counter++, ResultStatus.Error);
+            var generationEnvironment = Fixture.Freeze<IGenerationEnvironment>();
+            var codeGenerationSettings = Fixture.Freeze<ICodeGenerationSettings>();
+            var templateEngine = Fixture.Freeze<ITemplateEngine>();
+            codeGenerationSettings.DryRun.Returns(false);
+            codeGenerationSettings.BasePath.Returns(TestData.BasePath);
+            codeGenerationSettings.DefaultFilename.Returns("Filename.txt");
+            templateEngine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
+            var sut = CreateSut();
+
+            // Act
+            var result = await sut.Generate(provider, generationEnvironment, codeGenerationSettings);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
             counter.Should().Be(1);
         }
 
@@ -123,18 +154,60 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var generationEnvironment = Fixture.Freeze<IGenerationEnvironment>();
             var codeGenerationSettings = Fixture.Freeze<ICodeGenerationSettings>();
             var templateProvider = Fixture.Freeze<ITemplateProvider>();
+            var templateEngine = Fixture.Freeze<ITemplateEngine>();
             codeGenerationProvider.Encoding.Returns(Encoding.Latin1);
             codeGenerationProvider.Path.Returns(TestData.BasePath);
             codeGenerationProvider.GetGeneratorType().Returns(GetType());
             codeGenerationSettings.DryRun.Returns(true);
             codeGenerationSettings.DefaultFilename.Returns("Filename.txt");
             var sut = CreateSut();
+            templateEngine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
 
             // Act
             await sut.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
             // Assert
             await templateProvider.Received().StartSession(CancellationToken.None);
+        }
+
+        [Fact]
+        public async Task Returns_Success_When_Rendering_Is_Successful()
+        {
+            // Arrange
+            var counter = 0;
+            var provider = new MyPluginCodeGenerationProvider(_ => counter++);
+            var generationEnvironment = Fixture.Freeze<IGenerationEnvironment>();
+            var codeGenerationSettings = Fixture.Freeze<ICodeGenerationSettings>();
+            var templateEngine = Fixture.Freeze<ITemplateEngine>();
+            codeGenerationSettings.DryRun.Returns(true);
+            templateEngine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
+            var sut = CreateSut();
+
+            // Act
+            var result = await sut.Generate(provider, generationEnvironment, codeGenerationSettings);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public async Task Returns_Rendering_Result_When_Rendering_Is_Not_Successful()
+        {
+            // Arrange
+            var counter = 0;
+            var provider = new MyPluginCodeGenerationProvider(_ => counter++);
+            var generationEnvironment = Fixture.Freeze<IGenerationEnvironment>();
+            var codeGenerationSettings = Fixture.Freeze<ICodeGenerationSettings>();
+            var templateEngine = Fixture.Freeze<ITemplateEngine>();
+            codeGenerationSettings.DryRun.Returns(true);
+            templateEngine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Error());
+            var sut = CreateSut();
+
+            // Act
+            var result = await sut.Generate(provider, generationEnvironment, codeGenerationSettings);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
         }
 
         private sealed class MyPluginCodeGenerationProvider : ICodeGenerationProvider, ITemplateComponentRegistryPlugin
@@ -149,10 +222,15 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             public Task<object?> CreateModel() => Task.FromResult(default(object?));
 
             private readonly Action<ITemplateComponentRegistry> _action;
+            private readonly ResultStatus _status;
 
-            public MyPluginCodeGenerationProvider(Action<ITemplateComponentRegistry> action) => _action = action;
+            public MyPluginCodeGenerationProvider(Action<ITemplateComponentRegistry> action, ResultStatus status = ResultStatus.Ok)
+            {
+                _action = action;
+                _status = status;
+            }
 
-            public Task Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken) { _action(registry); return Task.CompletedTask; }
+            public Task<Result> Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken) { _action(registry); return Task.FromResult(_status == ResultStatus.Ok ? Result.Success() : Result.Error() ); }
         }
     }
 }

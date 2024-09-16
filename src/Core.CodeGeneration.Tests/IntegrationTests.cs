@@ -20,7 +20,7 @@ public class IntegrationTests : TestBase
         var sut = scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = new IntegrationProvider();
         var builder = new MultipleContentBuilder();
-        var generationEnvironment = new MultipleContentBuilderEnvironment(
+        var generationEnvironment = new MultipleContentBuilderEnvironment<StringBuilder>(
             scope.ServiceProvider.GetRequiredService<IFileSystem>(),
             scope.ServiceProvider.GetRequiredService<IRetryMechanism>(),
             builder);
@@ -49,12 +49,12 @@ public class IntegrationTests : TestBase
     {
         public string? Model { get; set; }
 
-        public Task Render(IMultipleContentBuilder builder, CancellationToken cancellationToken)
+        public Task<Result> Render(IMultipleContentBuilder<StringBuilder> builder, CancellationToken cancellationToken)
         {
             var content = builder.AddContent("Filename.txt");
             content.Builder.Append(CultureInfo.InvariantCulture, $"Model is: {Model}");
 
-            return Task.CompletedTask;
+            return Task.FromResult(Result.Success());
         }
     }
 }

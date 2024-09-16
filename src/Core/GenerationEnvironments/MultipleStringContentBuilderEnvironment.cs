@@ -1,18 +1,24 @@
 ﻿namespace TemplateFramework.Core.GenerationEnvironments;
 
-public sealed class MultipleContentBuilderEnvironment : IGenerationEnvironment
+public class MultipleStringContentBuilderEnvironment : MultipleContentBuilderEnvironment<StringBuilder>
 {
-    public MultipleContentBuilderEnvironment()
-        : this(new FileSystem(), new RetryMechanism(), new MultipleContentBuilder())
+    public MultipleStringContentBuilderEnvironment() : base(new MultipleContentBuilder())
     {
     }
 
-    public MultipleContentBuilderEnvironment(IMultipleContentBuilder builder)
+    public MultipleStringContentBuilderEnvironment(IMultipleContentBuilder<StringBuilder> builder) : base(builder)
+    {
+    }
+}
+
+public class MultipleContentBuilderEnvironment<T> : IGenerationEnvironment where T : class, new()
+{
+    public MultipleContentBuilderEnvironment(IMultipleContentBuilder<T> builder)
         : this(new FileSystem(), new RetryMechanism(), builder)
     {
     }
 
-    internal MultipleContentBuilderEnvironment(IFileSystem fileSystem, IRetryMechanism retryMechanism, IMultipleContentBuilder builder)
+    internal MultipleContentBuilderEnvironment(IFileSystem fileSystem, IRetryMechanism retryMechanism, IMultipleContentBuilder<T> builder)
     {
         Guard.IsNotNull(builder);
 
@@ -24,11 +30,9 @@ public sealed class MultipleContentBuilderEnvironment : IGenerationEnvironment
     private readonly IFileSystem _fileSystem;
     private readonly IRetryMechanism _retryMechanism;
 
-    public IMultipleContentBuilder Builder { get; }
+    public IMultipleContentBuilder<T> Builder { get; }
 
-    public GenerationEnvironmentType Type => GenerationEnvironmentType.MultipleContentBuilder;
-
-    public Task SaveContents(ICodeGenerationProvider provider, string basePath, string defaultFilename, CancellationToken cancellationToken)
+    public Task<Result> SaveContents(ICodeGenerationProvider provider, string basePath, string defaultFilename, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(provider);
 
@@ -42,7 +46,7 @@ public sealed class MultipleContentBuilderEnvironment : IGenerationEnvironment
 
         SaveAll(_fileSystem, basePath, provider.Encoding, multipleContent.Contents);
 
-        return Task.CompletedTask;
+        return Task.FromResult(Result.Success());
     }
 
     internal void SaveAll(IFileSystem fileSystem, string basePath, Encoding encoding, IEnumerable<IContent> contents)
@@ -126,7 +130,7 @@ public sealed class MultipleContentBuilderEnvironment : IGenerationEnvironment
         }
     }
 
-    private void DeleteFilesFromLastGeneratedFilesContents(IFileSystem fileSystem, string basePath, string fullPath, Encoding encoding)
+    private static void DeleteFilesFromLastGeneratedFilesContents(IFileSystem fileSystem, string basePath, string fullPath, Encoding encoding)
     {
         foreach (var filename in fileSystem.ReadAllLines(fullPath, encoding))
         {
@@ -141,7 +145,7 @@ public sealed class MultipleContentBuilderEnvironment : IGenerationEnvironment
         }
     }
 
-    private void DeleteFilesUsingPattern(IFileSystem fileSystem, string lastGeneratedFilesPath, bool recurse, string basePath)
+    private static void DeleteFilesUsingPattern(IFileSystem fileSystem, string lastGeneratedFilesPath, bool recurse, string basePath)
     {
         foreach (var filename in GetFiles(fileSystem, basePath, lastGeneratedFilesPath, recurse))
         {
@@ -149,7 +153,7 @@ public sealed class MultipleContentBuilderEnvironment : IGenerationEnvironment
         }
     }
 
-    private string[] GetFiles(IFileSystem fileSystem, string basePath, string lastGeneratedFilesPath, bool recurse)
+    private static string[] GetFiles(IFileSystem fileSystem, string basePath, string lastGeneratedFilesPath, bool recurse)
         => fileSystem.GetFiles(basePath, lastGeneratedFilesPath, recurse);
 
     private static string GetFullPath(string basePath, string lastGeneratedFilesPath)

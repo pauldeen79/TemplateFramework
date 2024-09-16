@@ -17,12 +17,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.3.0" />
+    <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.3.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Abstractions\TemplateFramework.Abstractions.csproj" />
+    <ProjectReference Include="..\Core\TemplateFramework.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,8 +33,14 @@
 
   <ItemGroup>
     <Using Include="CommunityToolkit.Diagnostics" />
+    <Using Include="CrossCutting.Common.Extensions" />
+    <Using Include="CrossCutting.Common.Results" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="System.Collections" />
     <Using Include="TemplateFramework.Abstractions" />
+    <Using Include="TemplateFramework.Abstractions.Extensions" />
+    <Using Include="TemplateFramework.Core" />
+    <Using Include="TemplateFramework.Core.Requests" />
     <Using Include="TemplateFramework.TemplateProviders.ChildTemplateProvider.Abstractions" />
     <Using Include="TemplateFramework.TemplateProviders.ChildTemplateProvider.TemplateIdentifiers" />
   </ItemGroup>

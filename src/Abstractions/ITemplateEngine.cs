@@ -2,6 +2,6 @@
 
 public interface ITemplateEngine
 {
-    Task Render(IRenderTemplateRequest request, CancellationToken cancellationToken);
-    ITemplateParameter[] GetParameters(object templateInstance);
+    Task<Result> Render(IRenderTemplateRequest request, CancellationToken cancellationToken);
+    Task<Result<ITemplateParameter[]>> GetParameters(object templateInstance);
 }

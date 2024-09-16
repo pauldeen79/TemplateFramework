@@ -7,11 +7,11 @@ public static class ServiceCollectionExtensions
             .AddScoped<IFileSystem, FileSystem>()
             .AddScoped<ITemplateEngine, TemplateEngine>()
             .AddScoped<ITemplateInitializer, TemplateInitializer>()
-            .AddScoped<ITemplateRenderer, MultipleContentTemplateRenderer>()
+            .AddScoped<ITemplateRenderer, MultipleStringContentBuilderTemplateRenderer>()
             .AddScoped<ITemplateRenderer, StringBuilderTemplateRenderer>()
-            .AddScoped<IMultipleContentBuilderTemplateCreator, TypedMultipleCreator>()
-            .AddScoped<IStringBuilderTemplateRenderer, TypedStringBuilderTemplateRenderer>()
-            .AddScoped<IStringBuilderTemplateRenderer, TypedTextTransformTemplateRenderer>()
+            .AddScoped<IMultipleContentBuilderTemplateCreator<StringBuilder>, TypedMultipleCreator<StringBuilder>>()
+            .AddScoped<IBuilderTemplateRenderer<StringBuilder>, TypedBuilderTemplateRenderer<StringBuilder>>()
+            .AddScoped<IBuilderTemplateRenderer<StringBuilder>, TypedTextTransformTemplateRenderer>()
             .AddScoped<ITemplateInitializerComponent, ModelInitializerComponent>()
             .AddScoped<ITemplateInitializerComponent, ParameterInitializerComponent>()
             .AddScoped<ITemplateInitializerComponent, ContextInitializerComponent>()
@@ -26,5 +26,6 @@ public static class ServiceCollectionExtensions
             .AddScoped<IRetryMechanism, RetryMechanism>()
             .AddScoped<ITemplateParameterExtractor, TemplateParameterExtractor>()
             .AddScoped<ISingleContentTemplateRenderer, StringBuilderTemplateRenderer>() // also register using its own type, so we can render a single template from  multiple content template renderer
+            .AddSingleton<ITemplateParameterConverter>(x => new ViewModelTemplateParameterConverter(() => x.GetServices<IViewModel>())) // Add support for ViewModels
             ;
 }

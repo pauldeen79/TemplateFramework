@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.Core.Tests.TemplateInitializerComponents;
 
-public class ParameterInitializerTests
+public class ParameterInitializerComponentTests
 {
     public class Constructor
     {
@@ -16,11 +16,11 @@ public class ParameterInitializerTests
         private const string DefaultFilename = "DefaultFilename.txt";
 
         [Theory, AutoMockData]
-        public void Throws_On_Null_Context(ParameterInitializerComponent sut)
+        public async Task Throws_On_Null_Context(ParameterInitializerComponent sut)
         {
             // Act & Assert
-            sut.Awaiting(x => x.Initialize(context: null!, CancellationToken.None))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.Initialize(context: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Theory, AutoMockData]
@@ -42,6 +42,56 @@ public class ParameterInitializerTests
 
             // Assert
             template.AdditionalParameter.Should().Be(additionalParameters.AdditionalParameter);
+        }
+
+        [Theory, AutoMockData]
+        public async Task Returns_Result_When_Template_Implements_IParameterizedTemplate_And_Result_Is_Not_Successful_On_SetParameter(
+            [Frozen] ITemplateEngine templateEngine,
+            [Frozen] ITemplateProvider templateProvider,
+            [Frozen] IValueConverter valueConverter,
+            ParameterInitializerComponent sut)
+        {
+            // Arrange
+            var additionalParameters = new { AdditionalParameter = "Hello world!" };
+            var template = new PlainTemplateWithAdditionalParameters
+            {
+                SetParameterReturnValue = Result.Error("Kaboom!")
+            };
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
+            var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
+            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
+
+            // Act
+            var result = await sut.Initialize(engineContext, CancellationToken.None);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom!");
+        }
+
+        [Theory, AutoMockData]
+        public async Task Returns_Result_When_Template_Implements_IParameterizedTemplate_And_Result_Is_Not_Successful_On_GetParameters(
+            [Frozen] ITemplateEngine templateEngine,
+            [Frozen] ITemplateProvider templateProvider,
+            [Frozen] IValueConverter valueConverter,
+            ParameterInitializerComponent sut)
+        {
+            // Arrange
+            var additionalParameters = new { AdditionalParameter = "Hello world!" };
+            var template = new PlainTemplateWithAdditionalParameters
+            {
+                GetParametersReturnValue = Result.Error<ITemplateParameter[]>("Kaboom!")
+            };
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
+            var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
+            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
+
+            // Act
+            var result = await sut.Initialize(engineContext, CancellationToken.None);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom!");
         }
 
         [Theory, AutoMockData]
@@ -68,7 +118,7 @@ public class ParameterInitializerTests
         }
 
         [Theory, AutoMockData]
-        public void Does_Not_Throw_On_Non_Existing_AdditionalParameters(
+        public async Task Does_Not_Throw_On_Non_Existing_AdditionalParameters(
             [Frozen] ITemplateEngine templateEngine,
             [Frozen] ITemplateProvider templateProvider,
             ParameterInitializerComponent sut)
@@ -80,8 +130,8 @@ public class ParameterInitializerTests
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
 
             // Act & Assert
-            sut.Awaiting(x => x.Initialize(engineContext, CancellationToken.None))
-               .Should().NotThrowAsync();
+            await sut.Awaiting(x => x.Initialize(engineContext, CancellationToken.None))
+                     .Should().NotThrowAsync();
         }
 
         [Theory, AutoMockData]
@@ -141,7 +191,7 @@ public class ParameterInitializerTests
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
             valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
-            templateEngine.GetParameters(Arg.Any<object>()).Returns(new[] { new TemplateParameter(nameof(TestData.PocoParameterizedTemplate.Parameter), typeof(string)) });
+            templateEngine.GetParameters(Arg.Any<object>()).Returns(Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(TestData.PocoParameterizedTemplate.Parameter), typeof(string))]));
 
             // Act
             await sut.Initialize(engineContext, CancellationToken.None);
@@ -151,7 +201,30 @@ public class ParameterInitializerTests
         }
 
         [Theory, AutoMockData]
-        public void Skips_AdditionalParameters_When_Template_Does_Not_Implement_IParameterizedTemplate_And_Property_Is_Missing(
+        public async Task Returns_Result_When_Template_Has_Public_Readable_And_Writable_Properties_And_GetParameters_Returns_Non_Successful_Result(
+            [Frozen] ITemplateEngine templateEngine,
+            [Frozen] ITemplateProvider templateProvider,
+            [Frozen] IValueConverter valueConverter,
+            ParameterInitializerComponent sut)
+        {
+            // Arrange
+            var additionalParameters = new { Parameter = "Hello world!" };
+            var template = new TestData.PocoParameterizedTemplate();
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
+            var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
+            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
+            templateEngine.GetParameters(Arg.Any<object>()).Returns(Result.Error<ITemplateParameter[]>("Kaboom!"));
+
+            // Act
+            var result = await sut.Initialize(engineContext, CancellationToken.None);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom!");
+        }
+
+        [Theory, AutoMockData]
+        public async Task Skips_AdditionalParameters_When_Template_Does_Not_Implement_IParameterizedTemplate_And_Property_Is_Missing(
             [Frozen] ITemplateEngine templateEngine,
             [Frozen] ITemplateProvider templateProvider,
             [Frozen] IValueConverter valueConverter,
@@ -163,11 +236,11 @@ public class ParameterInitializerTests
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
             valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
-            templateEngine.GetParameters(Arg.Any<object>()).Returns(new[] { new TemplateParameter(nameof(TestData.PocoParameterizedTemplate.Parameter), typeof(string)) });
+            templateEngine.GetParameters(Arg.Any<object>()).Returns(Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(TestData.PocoParameterizedTemplate.Parameter), typeof(string))]));
 
             // Act & Assert
-            sut.Awaiting(x => x.Initialize(engineContext, CancellationToken.None))
-               .Should().NotThrowAsync();
+            await sut.Awaiting(x => x.Initialize(engineContext, CancellationToken.None))
+                     .Should().NotThrowAsync();
         }
     }
 }

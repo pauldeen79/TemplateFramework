@@ -26,9 +26,9 @@
 
   <ItemGroup>
     <PackageReference Include="AutoFixture.AutoNSubstitute" Version="4.18.1" />
-    <PackageReference Include="FluentAssertions" Version="6.12.0" />
+    <PackageReference Include="FluentAssertions" Version="6.12.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
     <PackageReference Include="NSubstitute" Version="5.1.0" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
@@ -54,20 +54,28 @@
     <Using Include="AutoFixture" />
     <Using Include="AutoFixture.AutoNSubstitute" />
     <Using Include="CommunityToolkit.Diagnostics" />
+    <Using Include="CrossCutting.Common.Results" />
     <Using Include="FluentAssertions" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
     <Using Include="NSubstitute" />
+    <Using Include="System.Collections" />
     <Using Include="System.Globalization" />
     <Using Include="System.Text" />
+    <Using Include="System.Xml.Linq;" />
     <Using Include="TemplateFramework.Abstractions" />
     <Using Include="TemplateFramework.Abstractions.CodeGeneration" />
     <Using Include="TemplateFramework.Abstractions.Extensions" />
+    <Using Include="TemplateFramework.Abstractions.Infrastructure;" />
+    <Using Include="TemplateFramework.Abstractions.Requests" />
     <Using Include="TemplateFramework.Abstractions.Templates" />
     <Using Include="TemplateFramework.Core" />
+    <Using Include="TemplateFramework.Core.Abstractions;" />
     <Using Include="TemplateFramework.Core.Extensions" />
     <Using Include="TemplateFramework.Core.GenerationEnvironments" />
+    <Using Include="TemplateFramework.Core.Infrastructure;" />
     <Using Include="TemplateFramework.Core.Requests" />
     <Using Include="TemplateFramework.Core.TemplateIdentifiers" />
+    <Using Include="TemplateFramework.Core.TemplateRenderers" />
     <Using Include="TemplateFramework.Core.CodeGeneration" />
     <Using Include="TemplateFramework.Core.CodeGeneration.Extensions" />
     <Using Include="TemplateFramework.TemplateProviders.ChildTemplateProvider.Abstractions" />

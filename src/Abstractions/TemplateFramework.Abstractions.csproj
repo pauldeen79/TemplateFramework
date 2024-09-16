@@ -17,9 +17,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Using Include="System.Collections" />
     <Using Include="System.Text" />
+    <Using Include="CrossCutting.Common" />
+    <Using Include="CrossCutting.Common.Extensions" />
+    <Using Include="CrossCutting.Common.Results" />
     <Using Include="TemplateFramework.Abstractions.CodeGeneration" />
-    <Using Include="TemplateFramework.Abstractions.Domains" />
     <Using Include="TemplateFramework.Abstractions.Requests" />
     <Using Include="TemplateFramework.Abstractions.Templates" />
   </ItemGroup>
@@ -27,6 +30,10 @@
   <ItemGroup>
     <None Include="..\..\Readme.md" Pack="true" PackagePath="\" />
     <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="pauldeen79.CrossCutting.Common" Version="3.11.0" />
   </ItemGroup>
 
 </Project>

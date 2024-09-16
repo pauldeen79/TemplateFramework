@@ -1,8 +1,8 @@
 ﻿namespace TemplateFramework.Core.StringBuilderTemplateRenderers;
 
-public class TypedTextTransformTemplateRenderer : IStringBuilderTemplateRenderer
+public class TypedTextTransformTemplateRenderer : IBuilderTemplateRenderer<StringBuilder>
 {
-    public async Task<bool> TryRender(object instance, StringBuilder builder, CancellationToken cancellationToken)
+    public async Task<Result> TryRender(object instance, StringBuilder builder, CancellationToken cancellationToken)
     {
         if (instance is ITextTransformTemplate textTransformTemplate)
         {
@@ -14,9 +14,9 @@ public class TypedTextTransformTemplateRenderer : IStringBuilderTemplateRenderer
                 builder.Append(output);
             }
 
-            return true;
+            return Result.Success();
         }
 
-        return false;
+        return Result.Continue();
     }
 }

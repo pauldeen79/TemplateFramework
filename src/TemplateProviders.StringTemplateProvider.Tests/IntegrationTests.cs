@@ -47,7 +47,8 @@ public class IntegrationTests : TestBase
         var result = template.GetParameters();
 
         // Assert
-        result.Select(x => x.Name).Should().BeEquivalentTo("Prefix", "Name");
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.GetValueOrThrow().Select(x => x.Name).Should().BeEquivalentTo("Prefix", "Name");
     }
 
     [Fact]

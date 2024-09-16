@@ -2,14 +2,14 @@
 
 public class PropertyExtractor : ITemplateParameterExtractorComponent
 {
-    public ITemplateParameter[] Extract(object templateInstance)
+    public Result<ITemplateParameter[]> Extract(object templateInstance)
     {
         Guard.IsNotNull(templateInstance);
 
-        return templateInstance.GetType().GetProperties()
+        return Result.Success<ITemplateParameter[]>(templateInstance.GetType().GetProperties()
             .Where(p => p.CanRead && p.CanWrite)
             .Select(p => new TemplateParameter(p.Name, p.PropertyType))
-            .ToArray();
+            .ToArray());
     }
 
     public bool Supports(object templateInstance) => templateInstance is not null;

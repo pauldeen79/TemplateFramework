@@ -24,14 +24,14 @@ public sealed class TemplateEngine : ITemplateEngine
         _renderers = renderers;
     }
 
-    public ITemplateParameter[] GetParameters(object templateInstance)
+    public Task<Result<ITemplateParameter[]>> GetParameters(object templateInstance)
     {
         Guard.IsNotNull(templateInstance);
 
-        return _parameterExtractor.Extract(templateInstance);
+        return Task.FromResult(_parameterExtractor.Extract(templateInstance));
     }
 
-    public async Task Render(IRenderTemplateRequest request, CancellationToken cancellationToken)
+    public async Task<Result> Render(IRenderTemplateRequest request, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(request);
 
@@ -39,15 +39,26 @@ public sealed class TemplateEngine : ITemplateEngine
         if (template is null || template is IIgnoreThis)
         {
             template = _provider.Create(request.Identifier);
+            if (template is null)
+            {
+                return Result.Error("TemplateProvider did not create a template instance");
+            }
         }
 
         var engineContext = new TemplateEngineContext(request, this, _provider, template);
         
-        await _initializer.Initialize(engineContext, cancellationToken).ConfigureAwait(false);
+        var result = await _initializer.Initialize(engineContext, cancellationToken).ConfigureAwait(false);
+        if (!result.IsSuccessful())
+        {
+            return result;
+        }
 
-        var renderer = _renderers.FirstOrDefault(x => x.Supports(request.GenerationEnvironment))
-            ?? throw new NotSupportedException($"Type of GenerationEnvironment ({request.GenerationEnvironment.GetType().FullName}) is not supported");
+        var renderer = _renderers.FirstOrDefault(x => x.Supports(request.GenerationEnvironment));
+        if (renderer is null)
+        {
+            return Result.NotSupported($"Type of GenerationEnvironment ({request.GenerationEnvironment.GetType().FullName}) is not supported");
+        }
 
-        await renderer.Render(engineContext, cancellationToken).ConfigureAwait(false);
+        return await renderer.Render(engineContext, cancellationToken).ConfigureAwait(false);
     }
 }

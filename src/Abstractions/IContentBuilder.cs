@@ -1,9 +1,9 @@
 ﻿namespace TemplateFramework.Abstractions;
 
-public interface IContentBuilder
+public interface IContentBuilder<out T>
 {
     string? Filename { get; set; }
     bool SkipWhenFileExists { get; set; }
-    StringBuilder Builder { get; }
+    T Builder { get; }
     IContent Build();
 }

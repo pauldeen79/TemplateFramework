@@ -1,8 +1,8 @@
 ﻿namespace TemplateFramework.Abstractions;
 
-public interface IMultipleContentBuilder
+public interface IMultipleContentBuilder<T> where T : class
 {
-    IEnumerable<IContentBuilder> Contents { get; }
-    IContentBuilder AddContent(string filename, bool skipWhenFileExists, StringBuilder? builder);
+    IEnumerable<IContentBuilder<T>> Contents { get; }
+    IContentBuilder<T> AddContent(string filename, bool skipWhenFileExists, T? builder);
     IMultipleContent Build();
 }

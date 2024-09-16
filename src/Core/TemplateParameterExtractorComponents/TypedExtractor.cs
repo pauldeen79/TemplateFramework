@@ -2,7 +2,7 @@
 
 public class TypedExtractor : ITemplateParameterExtractorComponent
 {
-    public ITemplateParameter[] Extract(object templateInstance)
+    public Result<ITemplateParameter[]> Extract(object templateInstance)
     {
         Guard.IsNotNull(templateInstance);
         Guard.IsAssignableToType<IParameterizedTemplate>(templateInstance);

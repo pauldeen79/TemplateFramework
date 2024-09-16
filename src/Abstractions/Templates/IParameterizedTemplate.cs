@@ -2,6 +2,6 @@
 
 public interface IParameterizedTemplate
 {
-    void SetParameter(string name, object? value);
-    ITemplateParameter[] GetParameters();
+    Result SetParameter(string name, object? value);
+    Result<ITemplateParameter[]> GetParameters();
 }

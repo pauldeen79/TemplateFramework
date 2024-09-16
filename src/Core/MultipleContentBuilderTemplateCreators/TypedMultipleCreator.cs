@@ -1,10 +1,10 @@
 ﻿namespace TemplateFramework.Core.MultipleContentBuilderTemplateCreators;
 
-public class TypedMultipleCreator : IMultipleContentBuilderTemplateCreator
+public class TypedMultipleCreator<T> : IMultipleContentBuilderTemplateCreator<T> where T : class
 {
-    public IMultipleContentBuilderTemplate? TryCreate(object instance)
+    public IMultipleContentBuilderTemplate<T>? TryCreate(object instance)
     {
-        if (instance is IMultipleContentBuilderTemplate multipleContentBuilderTemplate)
+        if (instance is IMultipleContentBuilderTemplate<T> multipleContentBuilderTemplate)
         {
             return multipleContentBuilderTemplate;
         }

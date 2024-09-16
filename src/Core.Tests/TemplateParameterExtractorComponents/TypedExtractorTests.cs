@@ -1,4 +1,6 @@
-﻿namespace TemplateFramework.Core.Tests.TemplateParameterExtractorComponents;
+﻿using TemplateFramework.Abstractions.Templates;
+
+namespace TemplateFramework.Core.Tests.TemplateParameterExtractorComponents;
 
 public class TypedExtractorTests
 {
@@ -20,20 +22,21 @@ public class TypedExtractorTests
                .Should().Throw<ArgumentException>().WithParameterName("templateInstance");
         }
 
-        [Theory, AutoMockData]
-        public void Returns_Result_From_TemplateInstance_When_It_Implements_IParameterizedTemplate(
-            [Frozen] IParameterizedTemplate parameterizedTemplate,
-            TypedExtractor sut)
+        [Fact]
+        public void Returns_Result_From_TemplateInstance_When_It_Implements_IParameterizedTemplate()
         {
             // Arrange
-            var parameters = new[] { new TemplateParameter("SomeName", typeof(string)) };
+            var parameterizedTemplate = Substitute.For<IParameterizedTemplate>();
+            var parameters = Result.Success<ITemplateParameter[]>([new TemplateParameter("SomeName", typeof(string))]);
             parameterizedTemplate.GetParameters().Returns(parameters);
+            var sut = new TypedExtractor();
 
             // Act
             var result = sut.Extract(parameterizedTemplate);
 
             // Assert
-            result.Should().BeEquivalentTo(parameters);
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().BeEquivalentTo(parameters.Value);
         }
     }
 

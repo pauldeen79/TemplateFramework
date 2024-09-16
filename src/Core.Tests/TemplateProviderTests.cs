@@ -110,7 +110,7 @@ public class TemplateProviderTests
         {
             // Arrange
             var sessionAwareTemplateProviderComponent = new SessionAwareTemplateProviderComponent();
-            var sut = new TemplateProvider(new[] { sessionAwareTemplateProviderComponent });
+            var sut = new TemplateProvider([sessionAwareTemplateProviderComponent]);
 
             // Act
             await sut.StartSession(CancellationToken.None);
