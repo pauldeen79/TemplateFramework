@@ -46,7 +46,7 @@ public class MultipleStringContentBuilderTemplateRenderer : ITemplateRenderer
 
         multipleContentBuilder.AddContent(context.DefaultFilename, false, new StringBuilder(stringBuilder.ToString()));
 
-        return Result.Success();
+        return result;
     }
 
     private IMultipleContentBuilderTemplate<StringBuilder>? TryGetMultipleContentBuilderTemplate(object template)

@@ -80,6 +80,6 @@ public class ParameterInitializerComponent : ITemplateInitializerComponent
             prop.SetValue(context.Template, _converter.Convert(item.Value, prop.PropertyType, context));
         }
 
-        return Result.Success();
+        return result;
     }
 }
