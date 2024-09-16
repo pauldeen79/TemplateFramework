@@ -27,7 +27,7 @@ public abstract class BuilderTemplateRendererBase<TEnvironment, TBuilder> : ISin
         foreach (var renderer in _renderers)
         {
             var result = await renderer.TryRender(context.Template, environment.Builder, cancellationToken).ConfigureAwait(false);
-            if (!result.IsSuccessful() || result.Status != ResultStatus.Continue)
+            if (result.Status != ResultStatus.Continue)
             {
                 return result;
             }
