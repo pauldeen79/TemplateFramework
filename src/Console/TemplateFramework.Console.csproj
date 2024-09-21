@@ -44,6 +44,7 @@
 
   <ItemGroup>
     <Using Include="CommunityToolkit.Diagnostics" />
+    <Using Include="CrossCutting.Common.Extensions" />
     <Using Include="CrossCutting.Common.Results" />
     <Using Include="CrossCutting.Utilities.Parsers.Extensions" />
     <Using Include="McMaster.Extensions.CommandLineUtils" />

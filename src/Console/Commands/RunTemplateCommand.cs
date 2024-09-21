@@ -150,8 +150,8 @@ public class RunTemplateCommand : CommandBase
                 }
 
                 (await _templateEngine.GetParameters(template).ConfigureAwait(false))
-                .Either(
-                    async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false),
+                .OnFailure(async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false))
+                .OnSuccess(
                     x =>
                     {
                         AppendParameters(generationEnvironment, args.defaultFilename, x.Value!);
@@ -163,8 +163,8 @@ public class RunTemplateCommand : CommandBase
                 if (args.interactive)
                 {
                     (await _templateEngine.GetParameters(template).ConfigureAwait(false))
-                    .Either(
-                        async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false),
+                    .OnFailure(async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false))
+                    .OnSuccess(
                         x =>
                         {
                             args.parameters = MergeParameters(args.parameters, GetInteractiveParameterValues(x.Value!));
@@ -177,9 +177,8 @@ public class RunTemplateCommand : CommandBase
                 var request = new RenderTemplateRequest(identifier, null, generationEnvironment, args.defaultFilename, args.parameters, context);
 
                 (await _templateEngine.Render(request, args.cancellationToken).ConfigureAwait(false))
-                .Either(
-                    async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false),
-                    _ => success = true);
+                .OnFailure(async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false))
+                .OnSuccess(_ => success = true);
             }
 
             if (success)
