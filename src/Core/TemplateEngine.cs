@@ -46,7 +46,7 @@ public sealed class TemplateEngine : ITemplateEngine
         }
 
         var engineContext = new TemplateEngineContext(request, this, _provider, template);
-        
+
         var result = await _initializer.Initialize(engineContext, cancellationToken).ConfigureAwait(false);
         if (!result.IsSuccessful())
         {

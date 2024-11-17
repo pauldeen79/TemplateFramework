@@ -12,7 +12,7 @@ public partial class ViewModelTemplateParameterConverterTests
 
     public ViewModelTemplateParameterConverterTests()
     {
-        ViewModels = new Collection<IViewModel>();
+        ViewModels = [];
         Factory = () => ViewModels;
         Context = Substitute.For<ITemplateEngineContext>();
         Type = typeof(object); // Actually, this parameter is not used, but it's part of the interface so we need to provide it

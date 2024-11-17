@@ -7,7 +7,7 @@ public class ExpressionStringTemplate : IBuilderTemplate<StringBuilder>
     private readonly IFormattableStringParser _formattableStringParser;
     private readonly ComponentRegistrationContext _componentRegistrationContext;
     private readonly IDictionary<string, object?> _parametersDictionary;
-    
+
     public ExpressionStringTemplate(
         ExpressionStringTemplateIdentifier expressionStringTemplateIdentifier,
         IExpressionStringParser expressionStringParser,

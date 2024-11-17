@@ -14,7 +14,7 @@ public class CodeGenerationAssemblyTests : TestBase<CodeGenerationAssembly>
     public class Generate : CodeGenerationAssemblyTests
     {
         [Fact]
-        public async Task Throws_On_Null_Settings() 
+        public async Task Throws_On_Null_Settings()
         {
             // Arrange
             var generationEnvironment = Fixture.Freeze<IGenerationEnvironment>();

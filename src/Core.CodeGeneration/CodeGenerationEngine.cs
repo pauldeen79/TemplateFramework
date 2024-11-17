@@ -38,7 +38,7 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
 
         var model = await codeGenerationProvider.CreateModel().ConfigureAwait(false);
         var additionalParameters = await codeGenerationProvider.CreateAdditionalParameters().ConfigureAwait(false);
-        
+
         result = await _templateEngine.Render(
             new RenderTemplateRequest
             (

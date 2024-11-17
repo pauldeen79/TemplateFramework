@@ -20,7 +20,7 @@ public class ServiceProviderTemplateComponentRegistryPluginFactory : ITemplateCo
         Guard.IsNotNull(assemblyName);
         Guard.IsNotNull(className);
         Guard.IsNotNull(currentDirectory);
-    
+
         var assembly = _assemblyService?.GetAssembly(assemblyName, currentDirectory);
         var type = assembly?.GetType(className) ?? throw new NotSupportedException($"Could not instanciate class name [{className}] from assembly [{assemblyName}]");
 

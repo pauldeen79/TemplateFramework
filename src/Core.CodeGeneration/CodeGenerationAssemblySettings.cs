@@ -54,7 +54,7 @@ public sealed class CodeGenerationAssemblySettings : ICodeGenerationAssemblySett
     public string BasePath { get; }
     public string DefaultFilename { get; }
     public bool DryRun { get; }
-    
+
     public string AssemblyName { get; }
     public string CurrentDirectory { get; }
     public IEnumerable<string> ClassNameFilter { get; }

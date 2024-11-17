@@ -96,7 +96,7 @@ public class ProviderComponentTests
             sut.Invoking(x => x.Create(identifier: Substitute.For<ITemplateIdentifier>()))
                .Should().Throw<NotSupportedException>();
         }
-        
+
         [Fact]
         public void Returns_ExpressionStringTemplate_On_Identifier_Of_Correct_Type()
         {

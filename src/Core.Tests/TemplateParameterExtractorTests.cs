@@ -22,7 +22,7 @@ public class TemplateParameterExtractorTests
 
         [Theory, AutoMockData]
         public void Returns_Empty_Result_On_Unsupported_Type(
-            [Frozen] ITemplateParameterExtractorComponent templateParameterExtractorComponent, 
+            [Frozen] ITemplateParameterExtractorComponent templateParameterExtractorComponent,
             TemplateParameterExtractor sut)
         {
             // Arrange

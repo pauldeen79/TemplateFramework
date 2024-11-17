@@ -30,7 +30,7 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
             // Arrange
             var identifier = Fixture.Create<ITemplateIdentifier>();
             var sut = CreateSut();
-            
+
             // Act & Assert
             sut.Invoking(x => x.Create(identifier))
                .Should().Throw<NotSupportedException>();

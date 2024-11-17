@@ -218,7 +218,7 @@ Error: Could not find file [MyFile.txt]. Could not watch file for changes.
     public class GenerateSingleOutput : CommandBaseTests
     {
         private IMultipleContentBuilder<StringBuilder> multipleContentBuilder { get; }
-        
+
         public GenerateSingleOutput()
         {
             multipleContentBuilder = Fixture.Freeze<IMultipleContentBuilder<StringBuilder>>();

@@ -9,7 +9,7 @@ public class ExpressionStringTemplateIdentifierTests
         {
             typeof(ExpressionStringTemplateIdentifier).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments(p => !new[] { "pluginAssemblyName", "pluginClassName", "currentDirectory" }.Contains(p.Name));
         }
-       
+
         [Fact]
         public void Sets_Properties_Correctly_On_Empty_CurrentDirectory()
         {

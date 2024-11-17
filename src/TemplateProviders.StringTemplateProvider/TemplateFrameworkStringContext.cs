@@ -9,7 +9,7 @@ public sealed class TemplateFrameworkStringContext
 
         ParametersDictionary = parametersDictionary;
         Context = context;
-        ParameterNamesList = new List<string>();
+        ParameterNamesList = [];
         GetParametersOnly = getParametersOnly;
     }
 
