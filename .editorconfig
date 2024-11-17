@@ -118,9 +118,16 @@ csharp_preserve_single_line_statements = true
 csharp_preserve_single_line_blocks = true
 # Default Severity for all .NET Code Style rules below
 dotnet_analyzer_diagnostic.severity = warning
-
 # Default severity for analyzer diagnostics with category 'Style'
 dotnet_analyzer_diagnostic.category-Style.severity = silent
+# Use expression body for methods
+dotnet_diagnostic.IDE0022.severity = silent
+# Expression value is never used
+dotnet_diagnostic.IDE0058.severity = silent
+# use 'var' instead of explicit type
+# dotnet_diagnostic.IDE0007.severity = silent
+# If statement can be simplified
+dotnet_diagnostic.IDE0046.severity = silent
 
 # Specific exclusions
 # Method 'x' passes a literal string as parameter 'y' of a call to 'z'. Retrieve the following string(s) from a resource table instead: "a".
