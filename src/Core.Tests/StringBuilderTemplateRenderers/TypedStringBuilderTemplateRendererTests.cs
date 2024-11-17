@@ -38,7 +38,7 @@ public class TypedStringBuilderTemplateRendererTests
 
         [Theory, AutoMockData]
         public async Task Renders_Template_On_IStringBuilderTemplate_Instance(
-            [Frozen] IBuilderTemplate<StringBuilder> stringBuilderTemplate, 
+            [Frozen] IBuilderTemplate<StringBuilder> stringBuilderTemplate,
             TypedBuilderTemplateRenderer<StringBuilder> sut)
         {
             // Arrange

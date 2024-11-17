@@ -2,6 +2,6 @@
 
 public sealed class ComponentRegistrationContext
 {
-    public IList<IPlaceholderProcessor> PlaceholderProcessors { get; } = new List<IPlaceholderProcessor>();
-    public IList<IFunctionResultParser> FunctionResultParsers { get; } = new List<IFunctionResultParser>();
+    public IList<IPlaceholderProcessor> PlaceholderProcessors { get; } = [];
+    public IList<IFunctionResultParser> FunctionResultParsers { get; } = [];
 }

@@ -5,8 +5,8 @@ public class FormattableStringTemplate : IParameterizedTemplate, IBuilderTemplat
     private readonly FormattableStringTemplateIdentifier _formattableStringTemplateIdentifier;
     private readonly IFormattableStringParser _formattableStringParser;
     private readonly ComponentRegistrationContext _componentRegistrationContext;
-    private readonly IDictionary<string, object?> _parametersDictionary;
-    
+    private readonly Dictionary<string, object?> _parametersDictionary;
+
     public FormattableStringTemplate(
         FormattableStringTemplateIdentifier formattableStringTemplateIdentifier,
         IFormattableStringParser formattableStringParser,
@@ -20,15 +20,15 @@ public class FormattableStringTemplate : IParameterizedTemplate, IBuilderTemplat
         _formattableStringParser = formattableStringParser;
         _componentRegistrationContext = componentRegistrationContext;
 
-        _parametersDictionary = new Dictionary<string, object?>();
+        _parametersDictionary = [];
     }
 
     public Result<ITemplateParameter[]> GetParameters()
     {
         var context = new TemplateFrameworkStringContext(_parametersDictionary, _componentRegistrationContext, true);
-        
+
         _ = _formattableStringParser.Parse(_formattableStringTemplateIdentifier.Template, _formattableStringTemplateIdentifier.FormatProvider, context);
-        
+
         return Result.Success<ITemplateParameter[]>(context.ParameterNamesList
             .Select(x => new TemplateParameter(x, typeof(string)))
             .ToArray());

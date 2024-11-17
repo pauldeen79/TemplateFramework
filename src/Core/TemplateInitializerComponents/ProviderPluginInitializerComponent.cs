@@ -19,7 +19,7 @@ public class ProviderPluginInitializerComponent : ITemplateInitializerComponent
         {
             return Result.Continue();
         }
-        
+
         if (context.Template is ITemplateComponentRegistryPlugin registryPlugin)
         {
             return await registryPlugin.Initialize(context.Context.TemplateComponentRegistry, cancellationToken).ConfigureAwait(false);
@@ -30,7 +30,7 @@ public class ProviderPluginInitializerComponent : ITemplateInitializerComponent
             && pluginIdentifier.PluginClassName is not null)
         {
             var identifierPlugin = _factory.Create(pluginIdentifier.PluginAssemblyName, pluginIdentifier.PluginClassName, pluginIdentifier.CurrentDirectory);
-            
+
             return await identifierPlugin.Initialize(context.Context.TemplateComponentRegistry, cancellationToken).ConfigureAwait(false);
         }
 

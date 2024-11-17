@@ -43,7 +43,7 @@ public class ObjectExtensionsTests
             {
                 Item1 = 1,
                 Item2 = "some value",
-                Item3 = (object?) null,
+                Item3 = (object?)null,
             };
 
             // Act

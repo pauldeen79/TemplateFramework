@@ -25,7 +25,7 @@ public abstract class MultipleContentBuilder<T> : IMultipleContentBuilder<T> whe
 
     protected MultipleContentBuilder()
     {
-        ContentList = new Collection<IContentBuilder<T>>();
+        ContentList = [];
     }
 
     public abstract IContentBuilder<T> AddContent(string filename, bool skipWhenFileExists, T? builder);

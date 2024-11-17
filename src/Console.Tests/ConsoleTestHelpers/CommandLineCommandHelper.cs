@@ -35,7 +35,7 @@ internal static class CommandLineCommandHelper
 
         // Act
         await appDelegate(app).ConfigureAwait(false);
-        
+
         await writer.FlushAsync().ConfigureAwait(false);
         return Encoding.UTF8.GetString(stream.ToArray());
     }

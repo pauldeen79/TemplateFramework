@@ -6,7 +6,7 @@ public class StringBuilderEnvironmentTests
     protected IRetryMechanism RetryMechanism { get; } = new FastRetryMechanism();
     protected ICodeGenerationProvider CodeGenerationProviderMock { get; } = Substitute.For<ICodeGenerationProvider>();
     protected StringBuilder Builder { get; } = new();
-    
+
     protected StringBuilderEnvironment CreateSut() => new(FileSystemMock, RetryMechanism, Builder);
 
     public class Constructor : StringBuilderEnvironmentTests

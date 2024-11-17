@@ -4,7 +4,7 @@ public class RunTemplateCommand : CommandBase
 {
     private readonly ITemplateProvider _templateProvider;
     private readonly ITemplateEngine _templateEngine;
-    
+
     public RunTemplateCommand(IClipboard clipboard, IFileSystem fileSystem, IUserInput userInput, ITemplateProvider templateProvider, ITemplateEngine templateEngine) : base(clipboard, fileSystem, userInput)
     {
         Guard.IsNotNull(templateProvider);
@@ -87,7 +87,7 @@ public class RunTemplateCommand : CommandBase
             {
                 return Result.Error("Error: Class name is required.");
             }
-            
+
             return Result.Success();
         }
 

@@ -143,7 +143,7 @@ public abstract class CommandBase : ICommandLineCommand
             await app.Out.WriteLineAsync("Copied code generation output to clipboard").ConfigureAwait(false);
         }
     }
-    
+
     protected KeyValuePair<string, object?>[] GetInteractiveParameterValues(ITemplateParameter[] templateParameters)
     {
         Guard.IsNotNull(templateParameters);

@@ -11,7 +11,7 @@ internal static class TestData
 #else
     internal const string BasePath = "Unknown basepath, only Windows, Linux and OSX are supported";
 #endif
-    
+
     internal static string GetAssemblyName() => typeof(TestData).Assembly.FullName!;
 }
 
@@ -23,7 +23,7 @@ public sealed class MyGeneratorProvider : ICodeGenerationProvider
 
     public string LastGeneratedFilesFilename { get; } = "";
 
-    public Encoding Encoding => Encoding.UTF8; 
+    public Encoding Encoding => Encoding.UTF8;
 
     public Task<object?> CreateAdditionalParameters() => Task.FromResult(default(object?));
 

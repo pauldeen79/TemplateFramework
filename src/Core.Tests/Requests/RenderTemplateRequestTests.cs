@@ -241,8 +241,8 @@ public class RenderTemplateRequestTests
 
         [Theory, AutoMockData]
         public void Fills_All_Properties_Correclty_When_Instanciating_Using_GenerationEnvironment(
-            [Frozen]IGenerationEnvironment generationEnvironment,
-            [Frozen]ITemplateContext templateContext)
+            [Frozen] IGenerationEnvironment generationEnvironment,
+            [Frozen] ITemplateContext templateContext)
         {
             // Act
             var instance = new RenderTemplateRequest(new TemplateInstanceIdentifier(this), "Hello world", generationEnvironment, DefaultFilename, AdditionalParameters, templateContext);

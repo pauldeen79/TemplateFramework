@@ -2,7 +2,7 @@
 
 public class TestFormattableStringTemplate : IParameterizedTemplate, IBuilderTemplate<StringBuilder>
 {
-    private readonly Dictionary<string, object?> _parameterValues = new();
+    private readonly Dictionary<string, object?> _parameterValues = [];
     private readonly IFormattableStringParser _formattableStringParser;
     private readonly ComponentRegistrationContext _componentRegistrationContext;
 
@@ -43,7 +43,7 @@ public class TestFormattableStringTemplate : IParameterizedTemplate, IBuilderTem
         {
             builder.Append(result.Value);
         }
-        
+
         return Task.FromResult((Result)result);
     }
 

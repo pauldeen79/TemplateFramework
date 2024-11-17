@@ -130,7 +130,7 @@ public class CodeGenerationAssemblyCommandTests : TestBase<CodeGenerationAssembl
             // Arrange
             var codeGenerationAssembly = Fixture.Freeze<ICodeGenerationAssembly>();
             var sut = CreateSut();
-            
+
             // Act
             _ = await CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--default MyFile.txt");
 
@@ -221,7 +221,7 @@ public class CodeGenerationAssemblyCommandTests : TestBase<CodeGenerationAssembl
         }
 
         [Fact]
-        public async Task  Does_Not_Report_Output_Directory_When_DryRun_Is_Not_Specified_And_BareOption_Is_Specified()
+        public async Task Does_Not_Report_Output_Directory_When_DryRun_Is_Not_Specified_And_BareOption_Is_Specified()
         {
             // Arrange
             var sut = CreateSut();

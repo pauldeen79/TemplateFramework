@@ -3,7 +3,7 @@
 public class IntegrationTests
 {
     [Theory, AutoMockData]
-    public async Task Can_Render_Template([Frozen]ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
+    public async Task Can_Render_Template([Frozen] ITemplateComponentRegistryPluginFactory templateComponentRegistryPluginFactory)
     {
         // Arrange
         using var provider = new ServiceCollection()
