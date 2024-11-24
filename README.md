@@ -3,7 +3,7 @@ Template and code generation framework for C#
 
 If you want to create templates in any .NET language (C#, VB.Net, F#) and run them using a dotnet global tool, this framework is for you!
 
-We currently target .NET 8.0, but the code can easily be ported back to older .NET versions.
+We currently target .NET 9.0, but the code can easily be ported back to older .NET versions.
 
 # Difference between a template and code generation provider
 A code generation provider is a class that provides a template instance, along with optional model and additional parameters.
@@ -97,10 +97,10 @@ Note that the following assemblies will be loaded from the host (Console) comman
 - TemplateFramework.TemplateProviders.ChildTemplateProvider
 - TemplateFramework.TemplateProviders.CompiledTemplateProvider
 - TemplateFramework.TemplateProviders.StringTemplateProvider
-- CrossCutting.Common (3.12.0)
-- CrossCutting.Utilities.Parsers (5.3.3)
-- Microsoft.Extensions.DependencyInjection (8.0.1)
-- Microsoft.Extensions.DependencyInjection.Abstractions (8.0.2)
+- CrossCutting.Common (3.13.0)
+- CrossCutting.Utilities.Parsers (5.4.1)
+- Microsoft.Extensions.DependencyInjection (9.0.0)
+- Microsoft.Extensions.DependencyInjection.Abstractions (9.0.0)
 
 Right now, the all TemplateFramework assemblies are built in one build pipeline within one GitHub repository, so all version numbers of the TemplateFramework assemblies are the same.
 This means, that if you install version x.y of TemplateFramework.Console, then your template assemblies should also use version x.y of TemplateFramework package references. (most likely TemplateFramework.Abstractions)
