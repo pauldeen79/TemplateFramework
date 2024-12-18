@@ -26,7 +26,7 @@ public class FormattableStringTemplateTests
         {
             // Arrange
             var sut = CreateSut();
-            FormattableStringParserMock.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<TemplateFrameworkStringContext>())
+            FormattableStringParserMock.Parse(Arg.Any<string>(), Arg.Any<FormattableStringParserSettings>(), Arg.Any<TemplateFrameworkStringContext>())
                 .Returns(x =>
                 {
                     // Note that in this unit test, we have to mock the behavior of FormattableStringParser :)
@@ -62,7 +62,7 @@ public class FormattableStringTemplateTests
         {
             // Arrange
             FormattableStringParserMock
-                .Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<TemplateFrameworkStringContext>())
+                .Parse(Arg.Any<string>(), Arg.Any<FormattableStringParserSettings>(), Arg.Any<TemplateFrameworkStringContext>())
                 .Returns(Result.Error<FormattableStringParserResult>("Kaboom!"));
             var sut = CreateSut();
             var builder = new StringBuilder();
@@ -80,7 +80,7 @@ public class FormattableStringTemplateTests
         {
             // Arrange
             FormattableStringParserMock
-                .Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<TemplateFrameworkStringContext>())
+                .Parse(Arg.Any<string>(), Arg.Any<FormattableStringParserSettings>(), Arg.Any<TemplateFrameworkStringContext>())
                 .Returns(Result.Success<FormattableStringParserResult>("Parse result"));
             var sut = CreateSut();
             var builder = new StringBuilder();
@@ -102,7 +102,7 @@ public class FormattableStringTemplateTests
             var sut = CreateSut();
             IDictionary<string, object?>? dictionary = null;
             FormattableStringParserMock
-                .Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<TemplateFrameworkStringContext>())
+                .Parse(Arg.Any<string>(), Arg.Any<FormattableStringParserSettings>(), Arg.Any<TemplateFrameworkStringContext>())
                 .Returns(x =>
                 {
                     dictionary = x.ArgAt<TemplateFrameworkStringContext>(2).ParametersDictionary;
