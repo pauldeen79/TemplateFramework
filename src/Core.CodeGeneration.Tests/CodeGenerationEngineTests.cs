@@ -63,7 +63,8 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             codeGenerationProvider.Encoding.Returns(Encoding.Latin1);
             codeGenerationProvider.Path.Returns(TestData.BasePath);
             codeGenerationProvider.GetGeneratorType().Returns(GetType());
-            codeGenerationSettings.DryRun.Returns(false);
+            codeGenerationProvider.CreateModel().Returns(Task.FromResult(Result.Continue<object?>()));
+            codeGenerationProvider.CreateAdditionalParameters().Returns(Task.FromResult(Result.Continue<object?>())); codeGenerationSettings.DryRun.Returns(false);
             codeGenerationSettings.BasePath.Returns(TestData.BasePath);
             codeGenerationSettings.DefaultFilename.Returns("Filename.txt");
             templateEngine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
@@ -87,7 +88,8 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             codeGenerationProvider.Encoding.Returns(Encoding.Latin1);
             codeGenerationProvider.Path.Returns(TestData.BasePath);
             codeGenerationProvider.GetGeneratorType().Returns(GetType());
-            codeGenerationSettings.DryRun.Returns(true);
+            codeGenerationProvider.CreateModel().Returns(Task.FromResult(Result.Continue<object?>()));
+            codeGenerationProvider.CreateAdditionalParameters().Returns(Task.FromResult(Result.Continue<object?>())); codeGenerationSettings.DryRun.Returns(true);
             codeGenerationSettings.DefaultFilename.Returns("Filename.txt");
             templateEngine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
             var sut = CreateSut();
@@ -158,6 +160,8 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             codeGenerationProvider.Encoding.Returns(Encoding.Latin1);
             codeGenerationProvider.Path.Returns(TestData.BasePath);
             codeGenerationProvider.GetGeneratorType().Returns(GetType());
+            codeGenerationProvider.CreateModel().Returns(Task.FromResult(Result.Continue<object?>()));
+            codeGenerationProvider.CreateAdditionalParameters().Returns(Task.FromResult(Result.Continue<object?>()));
             codeGenerationSettings.DryRun.Returns(true);
             codeGenerationSettings.DefaultFilename.Returns("Filename.txt");
             var sut = CreateSut();
@@ -217,9 +221,9 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             public string LastGeneratedFilesFilename => string.Empty;
             public Encoding Encoding => Encoding.UTF8;
 
-            public Task<object?> CreateAdditionalParameters() => Task.FromResult(default(object?));
+            public Task<Result<object?>> CreateAdditionalParameters() => Task.FromResult(Result.Success<object?>(default));
             public Type GetGeneratorType() => typeof(object);
-            public Task<object?> CreateModel() => Task.FromResult(default(object?));
+            public Task<Result<object?>> CreateModel() => Task.FromResult(Result.Success<object?>(default));
 
             private readonly Action<ITemplateComponentRegistry> _action;
             private readonly ResultStatus _status;
