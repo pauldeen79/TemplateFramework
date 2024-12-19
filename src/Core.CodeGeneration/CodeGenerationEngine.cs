@@ -36,16 +36,25 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
             }
         }
 
-        var model = await codeGenerationProvider.CreateModel().ConfigureAwait(false);
-        var additionalParameters = await codeGenerationProvider.CreateAdditionalParameters().ConfigureAwait(false);
+        var modelResult = await codeGenerationProvider.CreateModel().ConfigureAwait(false);
+        if (!modelResult.IsSuccessful())
+        {
+            return modelResult;
+        }
+
+        var additionalParametersResult = await codeGenerationProvider.CreateAdditionalParameters().ConfigureAwait(false);
+        if (!additionalParametersResult.IsSuccessful())
+        {
+            return additionalParametersResult;
+        }
 
         result = await _templateEngine.Render(
             new RenderTemplateRequest
             (
                 identifier: new TemplateTypeIdentifier(codeGenerationProvider.GetGeneratorType(), _templateFactory),
-                model: model,
+                model: modelResult.Value,
                 generationEnvironment: generationEnvironment,
-                additionalParameters: additionalParameters,
+                additionalParameters: additionalParametersResult.Value,
                 defaultFilename: settings.DefaultFilename,
                 context: null
             ), cancellationToken).ConfigureAwait(false);
