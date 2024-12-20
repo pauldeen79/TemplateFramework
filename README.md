@@ -197,23 +197,24 @@ There is also an example in launchSettings.json of the TemplateFramework.Console
 In version 2.0, there are three breaking changes:
 
 ```C#
-ICodeGenerationProvider:
+//ICodeGenerationProvider:
 Task<object?> CreateAdditionalParameters();
 Task<object?> CreateModel();
 
-ISessionAwareComponent:
+//ISessionAwareComponent:
 Task StartSession(CancellationToken cancellationToken);
 ```
 
 has changed to
 
 ```C#
-ICodeGenerationProvider:
+//ICodeGenerationProvider:
 Task<Result<object?>> CreateAdditionalParameters(CancellationToken cancellationToken);
 Task<Result<object?>> CreateModel(CancellationToken cancellationToken);
 
-ISessionAwareComponent:
+//ISessionAwareComponent:
 Task<Result> StartSession(CancellationToken cancellationToken);
 ```
 
 This enables you to return error messages from model creation, instead of throwing exceptions.
+And while we are already breaking compatibility, the CancellationToken argument is also added to CreateAdditionalParameters and CreateModel.
