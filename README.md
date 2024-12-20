@@ -209,8 +209,8 @@ has changed to
 
 ```C#
 ICodeGenerationProvider:
-Task<Result<object?>> CreateAdditionalParameters();
-Task<Result<object?>> CreateModel();
+Task<Result<object?>> CreateAdditionalParameters(CancellationToken cancellationToken);
+Task<Result<object?>> CreateModel(CancellationToken cancellationToken);
 
 ISessionAwareComponent:
 Task<Result> StartSession(CancellationToken cancellationToken);
