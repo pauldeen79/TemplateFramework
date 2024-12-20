@@ -64,7 +64,8 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             codeGenerationProvider.Path.Returns(TestData.BasePath);
             codeGenerationProvider.GetGeneratorType().Returns(GetType());
             codeGenerationProvider.CreateModel().Returns(Task.FromResult(Result.Continue<object?>()));
-            codeGenerationProvider.CreateAdditionalParameters().Returns(Task.FromResult(Result.Continue<object?>())); codeGenerationSettings.DryRun.Returns(false);
+            codeGenerationProvider.CreateAdditionalParameters().Returns(Task.FromResult(Result.Continue<object?>()));
+            codeGenerationSettings.DryRun.Returns(false);
             codeGenerationSettings.BasePath.Returns(TestData.BasePath);
             codeGenerationSettings.DefaultFilename.Returns("Filename.txt");
             templateEngine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
@@ -89,7 +90,8 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             codeGenerationProvider.Path.Returns(TestData.BasePath);
             codeGenerationProvider.GetGeneratorType().Returns(GetType());
             codeGenerationProvider.CreateModel().Returns(Task.FromResult(Result.Continue<object?>()));
-            codeGenerationProvider.CreateAdditionalParameters().Returns(Task.FromResult(Result.Continue<object?>())); codeGenerationSettings.DryRun.Returns(true);
+            codeGenerationProvider.CreateAdditionalParameters().Returns(Task.FromResult(Result.Continue<object?>()));
+            codeGenerationSettings.DryRun.Returns(true);
             codeGenerationSettings.DefaultFilename.Returns("Filename.txt");
             templateEngine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
             var sut = CreateSut();
@@ -146,6 +148,51 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
             counter.Should().Be(1);
+        }
+
+        [Fact]
+        public async Task Returns_Non_Successful_Result_From_Model_Creation()
+        {
+            // Arrange
+            var codeGenerationProvider = Fixture.Freeze<ICodeGenerationProvider>();
+            var generationEnvironment = Fixture.Freeze<IGenerationEnvironment>();
+            var codeGenerationSettings = Fixture.Freeze<ICodeGenerationSettings>();
+            var templateEngine = Fixture.Freeze<ITemplateEngine>();
+            codeGenerationProvider.Encoding.Returns(Encoding.Latin1);
+            codeGenerationProvider.Path.Returns(TestData.BasePath);
+            codeGenerationProvider.GetGeneratorType().Returns(GetType());
+            codeGenerationProvider.CreateModel().Returns(Task.FromResult(Result.Error<object?>("Kaboom")));
+            var sut = CreateSut();
+
+            // Act
+            var result = await sut.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom");
+        }
+
+        [Fact]
+        public async Task Returns_Non_Successful_Result_From_Additional_Parameter_Creation()
+        {
+            // Arrange
+            var codeGenerationProvider = Fixture.Freeze<ICodeGenerationProvider>();
+            var generationEnvironment = Fixture.Freeze<IGenerationEnvironment>();
+            var codeGenerationSettings = Fixture.Freeze<ICodeGenerationSettings>();
+            var templateEngine = Fixture.Freeze<ITemplateEngine>();
+            codeGenerationProvider.Encoding.Returns(Encoding.Latin1);
+            codeGenerationProvider.Path.Returns(TestData.BasePath);
+            codeGenerationProvider.GetGeneratorType().Returns(GetType());
+            codeGenerationProvider.CreateModel().Returns(Task.FromResult(Result.Continue<object?>()));
+            codeGenerationProvider.CreateAdditionalParameters().Returns(Task.FromResult(Result.Error<object?>("Kaboom")));
+            var sut = CreateSut();
+
+            // Act
+            var result = await sut.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom");
         }
 
         [Fact]
