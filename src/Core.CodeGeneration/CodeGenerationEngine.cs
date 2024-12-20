@@ -23,36 +23,28 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
         Guard.IsNotNull(generationEnvironment);
         Guard.IsNotNull(settings);
 
-        Result result;
-
-        result = await _templateProvider.StartSession(cancellationToken).ConfigureAwait(false);
-        if (!result.IsSuccessful())
-        {
-            return result;
-        }
-
+        var resultSetBuilder = new NamedResultSetBuilder();
+        resultSetBuilder.Add(nameof(ITemplateProvider.StartSession), _templateProvider.StartSession(cancellationToken));
         if (codeGenerationProvider is ITemplateComponentRegistryPlugin plugin)
         {
-            result = await plugin.Initialize(_templateProvider, cancellationToken).ConfigureAwait(false);
-            if (!result.IsSuccessful())
-            {
-                return result;
-            }
+            resultSetBuilder.Add(nameof(ITemplateComponentRegistryPlugin.Initialize), plugin.Initialize(_templateProvider, cancellationToken));
         }
+        resultSetBuilder.Add(nameof(ICodeGenerationProvider.CreateModel), codeGenerationProvider.CreateModel());
+        resultSetBuilder.Add(nameof(ICodeGenerationProvider.CreateAdditionalParameters), codeGenerationProvider.CreateAdditionalParameters());
 
-        var modelResult = await codeGenerationProvider.CreateModel().ConfigureAwait(false);
-        if (!modelResult.IsSuccessful())
+        var results = await resultSetBuilder.Build().ConfigureAwait(false);
+
+        var error = Array.Find(results, x => !x.Result.IsSuccessful());
+        if (error is not null)
         {
-            return modelResult;
+            // Error in initialization
+            return error.Result;
         }
 
-        var additionalParametersResult = await codeGenerationProvider.CreateAdditionalParameters().ConfigureAwait(false);
-        if (!additionalParametersResult.IsSuccessful())
-        {
-            return additionalParametersResult;
-        }
+        var modelResult = results.First(x => x.Name == nameof(ICodeGenerationProvider.CreateModel)).Result;
+        var additionalParametersResult = results.First(x => x.Name == nameof(ICodeGenerationProvider.CreateAdditionalParameters)).Result;
 
-        result = await _templateEngine.Render(
+        var result = await _templateEngine.Render(
             new RenderTemplateRequest
             (
                 identifier: new TemplateTypeIdentifier(codeGenerationProvider.GetGeneratorType(), _templateFactory),

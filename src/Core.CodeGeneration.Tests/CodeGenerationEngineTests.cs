@@ -153,7 +153,7 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
-            counter.Should().Be(0); // start session fails, so the callback of the mock is not reached
+            counter.Should().Be(1); // start session fails, so the callback of the mock is not reached
         }
 
         [Fact]
@@ -193,6 +193,7 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             codeGenerationProvider.Path.Returns(TestData.BasePath);
             codeGenerationProvider.GetGeneratorType().Returns(GetType());
             codeGenerationProvider.CreateModel().Returns(Task.FromResult(Result.Error<object?>("Kaboom")));
+            codeGenerationProvider.CreateAdditionalParameters().Returns(Task.FromResult(Result.Continue<object?>()));
             templateProvider.StartSession(Arg.Any<CancellationToken>()).Returns(Result.Continue());
             var sut = CreateSut();
 
