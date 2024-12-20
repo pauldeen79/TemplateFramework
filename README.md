@@ -194,18 +194,26 @@ tf template --formattablestring template.txt --dryrun --default myfile.txt --int
 There is also an example in launchSettings.json of the TemplateFramework.Console project, that uses a template provider plug-in of a unit test project.
 
 # Upgrading from 1.x to 2.0
-In version 2.0, there is one breaking change:
+In version 2.0, there are three breaking changes:
 
 ```C#
+ICodeGenerationProvider:
 Task<object?> CreateAdditionalParameters();
 Task<object?> CreateModel();
+
+ISessionAwareComponent:
+Task StartSession(CancellationToken cancellationToken);
 ```
 
 has changed to
 
 ```C#
+ICodeGenerationProvider:
 Task<Result<object?>> CreateAdditionalParameters();
 Task<Result<object?>> CreateModel();
+
+ISessionAwareComponent:
+Task<Result> StartSession(CancellationToken cancellationToken);
 ```
 
 This enables you to return error messages from model creation, instead of throwing exceptions.
