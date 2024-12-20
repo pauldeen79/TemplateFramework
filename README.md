@@ -98,7 +98,7 @@ Note that the following assemblies will be loaded from the host (Console) comman
 - TemplateFramework.TemplateProviders.CompiledTemplateProvider
 - TemplateFramework.TemplateProviders.StringTemplateProvider
 - CrossCutting.Common (3.13.0)
-- CrossCutting.Utilities.Parsers (5.4.1)
+- CrossCutting.Utilities.Parsers (6.2.0)
 - Microsoft.Extensions.DependencyInjection (9.0.0)
 - Microsoft.Extensions.DependencyInjection.Abstractions (9.0.0)
 
@@ -192,3 +192,29 @@ tf template --formattablestring template.txt --dryrun --default myfile.txt --int
 ```
 
 There is also an example in launchSettings.json of the TemplateFramework.Console project, that uses a template provider plug-in of a unit test project.
+
+# Upgrading from 1.x to 2.0
+In version 2.0, there are three breaking changes:
+
+```C#
+//ICodeGenerationProvider:
+Task<object?> CreateAdditionalParameters();
+Task<object?> CreateModel();
+
+//ISessionAwareComponent:
+Task StartSession(CancellationToken cancellationToken);
+```
+
+has changed to
+
+```C#
+//ICodeGenerationProvider:
+Task<Result<object?>> CreateAdditionalParameters(CancellationToken cancellationToken);
+Task<Result<object?>> CreateModel(CancellationToken cancellationToken);
+
+//ISessionAwareComponent:
+Task<Result> StartSession(CancellationToken cancellationToken);
+```
+
+This enables you to return error messages from model creation, instead of throwing exceptions.
+And while we are already breaking compatibility, the CancellationToken argument is also added to CreateAdditionalParameters and CreateModel.

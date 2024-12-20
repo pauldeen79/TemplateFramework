@@ -40,9 +40,9 @@ public class IntegrationTests : TestBase
         public string LastGeneratedFilesFilename => "*.generated.txt";
         public Encoding Encoding => Encoding.UTF8;
 
-        public Task<object?> CreateAdditionalParameters() => Task.FromResult(default(object?));
+        public Task<Result<object?>> CreateAdditionalParameters(CancellationToken cancellationToken) => Task.FromResult(Result.Success<object?>(default));
         public Type GetGeneratorType() => typeof(IntegrationTemplate);
-        public Task<object?> CreateModel() => Task.FromResult<object?>("Hello world!");
+        public Task<Result<object?>> CreateModel(CancellationToken cancellationToken) => Task.FromResult(Result.Success<object?>("Hello world!"));
     }
 
     public sealed class IntegrationTemplate : IMultipleContentBuilderTemplate, IModelContainer<string>

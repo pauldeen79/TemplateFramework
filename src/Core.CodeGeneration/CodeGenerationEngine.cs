@@ -23,29 +23,34 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
         Guard.IsNotNull(generationEnvironment);
         Guard.IsNotNull(settings);
 
-        await _templateProvider.StartSession(cancellationToken).ConfigureAwait(false);
-
-        Result result;
-
+        var resultSetBuilder = new NamedResultSetBuilder();
+        resultSetBuilder.Add(nameof(ITemplateProvider.StartSession), () => _templateProvider.StartSession(cancellationToken));
         if (codeGenerationProvider is ITemplateComponentRegistryPlugin plugin)
         {
-            result = await plugin.Initialize(_templateProvider, cancellationToken).ConfigureAwait(false);
-            if (!result.IsSuccessful())
-            {
-                return result;
-            }
+            resultSetBuilder.Add(nameof(ITemplateComponentRegistryPlugin.Initialize), () => plugin.Initialize(_templateProvider, cancellationToken));
+        }
+        resultSetBuilder.Add(nameof(ICodeGenerationProvider.CreateModel), () => codeGenerationProvider.CreateModel(cancellationToken));
+        resultSetBuilder.Add(nameof(ICodeGenerationProvider.CreateAdditionalParameters), () => codeGenerationProvider.CreateAdditionalParameters(cancellationToken));
+
+        var results = await resultSetBuilder.Build().ConfigureAwait(false);
+
+        var error = Array.Find(results, x => !x.Result.IsSuccessful());
+        if (error is not null)
+        {
+            // Error in initialization
+            return error.Result;
         }
 
-        var model = await codeGenerationProvider.CreateModel().ConfigureAwait(false);
-        var additionalParameters = await codeGenerationProvider.CreateAdditionalParameters().ConfigureAwait(false);
+        var modelResult = results.First(x => x.Name == nameof(ICodeGenerationProvider.CreateModel)).Result;
+        var additionalParametersResult = results.First(x => x.Name == nameof(ICodeGenerationProvider.CreateAdditionalParameters)).Result;
 
-        result = await _templateEngine.Render(
+        var result = await _templateEngine.Render(
             new RenderTemplateRequest
             (
                 identifier: new TemplateTypeIdentifier(codeGenerationProvider.GetGeneratorType(), _templateFactory),
-                model: model,
+                model: modelResult.GetValue(),
                 generationEnvironment: generationEnvironment,
-                additionalParameters: additionalParameters,
+                additionalParameters: additionalParametersResult.GetValue(),
                 defaultFilename: settings.DefaultFilename,
                 context: null
             ), cancellationToken).ConfigureAwait(false);

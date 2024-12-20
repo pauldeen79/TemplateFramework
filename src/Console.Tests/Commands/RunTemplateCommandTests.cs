@@ -75,6 +75,7 @@ public class RunTemplateCommandTests : TestBase<RunTemplateCommand>
             var templateProviderMock = Fixture.Freeze<ITemplateProvider>();
             var templateEngineMock = Fixture.Freeze<ITemplateEngine>();
             templateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(templateInstance);
+            templateProviderMock.StartSession(Arg.Any<CancellationToken>()).Returns(Result.Continue());
             templateEngineMock.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
             var sut = CreateSut();
 
@@ -94,6 +95,7 @@ public class RunTemplateCommandTests : TestBase<RunTemplateCommand>
             var fileSystemMock = Fixture.Freeze<IFileSystem>();
             var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
             templateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(templateInstance);
+            templateProviderMock.StartSession(Arg.Any<CancellationToken>()).Returns(Result.Continue());
             templateEngineMock.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
             fileSystemMock.FileExists("myfile.txt").Returns(true);
             fileSystemMock.ReadAllText("myfile.txt", Arg.Any<Encoding>()).Returns("template contents");
@@ -115,6 +117,7 @@ public class RunTemplateCommandTests : TestBase<RunTemplateCommand>
             var fileSystemMock = Fixture.Freeze<IFileSystem>();
             var templateInstance = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
             templateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(templateInstance);
+            templateProviderMock.StartSession(Arg.Any<CancellationToken>()).Returns(Result.Continue());
             templateEngineMock.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
             fileSystemMock.FileExists("myfile.txt").Returns(true);
             fileSystemMock.ReadAllText("myfile.txt", Arg.Any<Encoding>()).Returns("template contents");
@@ -135,6 +138,7 @@ public class RunTemplateCommandTests : TestBase<RunTemplateCommand>
             var templateProviderMock = Fixture.Freeze<ITemplateProvider>();
             var templateEngineMock = Fixture.Freeze<ITemplateEngine>();
             templateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(templateInstance);
+            templateProviderMock.StartSession(Arg.Any<CancellationToken>()).Returns(Result.Continue());
             templateEngineMock.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
             var sut = CreateSut();
 
@@ -158,6 +162,7 @@ public class RunTemplateCommandTests : TestBase<RunTemplateCommand>
             var templateEngineMock = Fixture.Freeze<ITemplateEngine>();
             var userInputMock = Fixture.Freeze<IUserInput>();
             templateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(templateInstance);
+            templateProviderMock.StartSession(Arg.Any<CancellationToken>()).Returns(Result.Continue());
             templateEngineMock.GetParameters(Arg.Any<object>()).Returns(Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string))]));
             templateEngineMock.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
             var sut = CreateSut();
@@ -177,6 +182,7 @@ public class RunTemplateCommandTests : TestBase<RunTemplateCommand>
             var templateProviderMock = Fixture.Freeze<ITemplateProvider>();
             var templateEngineMock = Fixture.Freeze<ITemplateEngine>();
             templateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(templateInstance);
+            templateProviderMock.StartSession(Arg.Any<CancellationToken>()).Returns(Result.Continue());
             templateEngineMock.GetParameters(Arg.Any<object>()).Returns(Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string))]));
             var sut = CreateSut();
 
@@ -199,6 +205,7 @@ AdditionalParameter (System.String)
             var templateProviderMock = Fixture.Freeze<ITemplateProvider>();
             var templateEngineMock = Fixture.Freeze<ITemplateEngine>();
             templateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(templateInstance);
+            templateProviderMock.StartSession(Arg.Any<CancellationToken>()).Returns(Result.Continue());
             templateEngineMock.GetParameters(Arg.Any<object>()).Returns(Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string))]));
             var sut = CreateSut();
 
@@ -219,6 +226,7 @@ AdditionalParameter (System.String)
             var templateEngineMock = Fixture.Freeze<ITemplateEngine>();
             var fileSystemMock = Fixture.Freeze<IFileSystem>();
             templateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(templateInstance);
+            templateProviderMock.StartSession(Arg.Any<CancellationToken>()).Returns(Result.Continue());
             templateEngineMock.GetParameters(Arg.Any<object>()).Returns(Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string))]));
             fileSystemMock.FileExists("myfile.txt").Returns(false);
             var sut = CreateSut();
@@ -240,6 +248,7 @@ AdditionalParameter (System.String)
             var templateEngineMock = Fixture.Freeze<ITemplateEngine>();
             var fileSystemMock = Fixture.Freeze<IFileSystem>();
             templateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(templateInstance);
+            templateProviderMock.StartSession(Arg.Any<CancellationToken>()).Returns(Result.Continue());
             templateEngineMock.GetParameters(Arg.Any<object>()).Returns(Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(TestData.PlainTemplateWithModelAndAdditionalParameters<string>.AdditionalParameter), typeof(string))]));
             fileSystemMock.FileExists("myfile.txt").Returns(false);
             var sut = CreateSut();

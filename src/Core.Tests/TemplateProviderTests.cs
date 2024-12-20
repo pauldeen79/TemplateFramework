@@ -119,19 +119,58 @@ public class TemplateProviderTests
             sessionAwareTemplateProviderComponent.Counter.Should().Be(1);
         }
 
+        [Fact]
+        public async Task Returns_Success_When_Initialization_Succeeds()
+        {
+            // Arrange
+            var sessionAwareTemplateProviderComponent = new SessionAwareTemplateProviderComponent();
+            var sut = new TemplateProvider([sessionAwareTemplateProviderComponent]);
+
+            // Act
+            var result = await sut.StartSession(CancellationToken.None);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public async Task Returns_Error_When_Initialization_Fails()
+        {
+            // Arrange
+            var sessionAwareTemplateProviderComponent = new SessionAwareTemplateProviderComponent(success: false);
+            var sut = new TemplateProvider([sessionAwareTemplateProviderComponent]);
+
+            // Act
+            var result = await sut.StartSession(CancellationToken.None);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("An error occured while starting the session. See the inner results for more details.");
+            result.InnerResults.Should().HaveCount(1);
+            result.InnerResults.First().ErrorMessage.Should().Be("Kaboom");
+        }
+
         private sealed class SessionAwareTemplateProviderComponent : ISessionAwareComponent, ITemplateProviderComponent
         {
             public int Counter { get; private set; }
+            public bool Success { get; }
+
+            public SessionAwareTemplateProviderComponent(bool success = true)
+            {
+                Success = success;
+            }
 
             public object Create(ITemplateIdentifier identifier)
             {
                 throw new NotImplementedException();
             }
 
-            public Task StartSession(CancellationToken cancellationToken)
+            public Task<Result> StartSession(CancellationToken cancellationToken)
             {
                 Counter++;
-                return Task.CompletedTask;
+                return Task.FromResult(Success
+                    ? Result.Success()
+                    : Result.Error("Kaboom"));
             }
 
             public bool Supports(ITemplateIdentifier identifier)
