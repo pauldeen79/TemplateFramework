@@ -23,9 +23,13 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
         Guard.IsNotNull(generationEnvironment);
         Guard.IsNotNull(settings);
 
-        await _templateProvider.StartSession(cancellationToken).ConfigureAwait(false);
-
         Result result;
+
+        result = await _templateProvider.StartSession(cancellationToken).ConfigureAwait(false);
+        if (!result.IsSuccessful())
+        {
+            return result;
+        }
 
         if (codeGenerationProvider is ITemplateComponentRegistryPlugin plugin)
         {

@@ -30,13 +30,20 @@ public class TemplateProvider : ITemplateProvider
         _components.Add(component);
     }
 
-    public async Task StartSession(CancellationToken cancellationToken)
+    public async Task<Result> StartSession(CancellationToken cancellationToken)
     {
         _components.Clear();
         _components.AddRange(_originalComponents);
 
-        await Task.WhenAll(_components.OfType<ISessionAwareComponent>()
+        var results = await Task.WhenAll(_components.OfType<ISessionAwareComponent>()
             .Select(x => x.StartSession(cancellationToken)))
             .ConfigureAwait(false);
+
+        return Result.Aggregate
+        (
+            results,
+            Result.Success(),
+            errors => Result.Error(errors, "An error occured while starting the session. See the inner results for more details.")
+        );
     }
 }

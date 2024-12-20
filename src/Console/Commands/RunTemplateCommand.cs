@@ -136,55 +136,58 @@ public class RunTemplateCommand : CommandBase
             var generationEnvironment = new MultipleStringContentBuilderEnvironment();
             var templateIdentifier = GetTemplateIdentifier(args);
 
-            await _templateProvider.StartSession(args.cancellationToken).ConfigureAwait(false);
-
-            var template = _templateProvider.Create(templateIdentifier);
-            var success = false;
-
-            if (args.listParameters)
+            (await _templateProvider.StartSession(args.cancellationToken).ConfigureAwait(false))
+            .OnFailure(async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false))
+            .OnSuccess(async () =>
             {
-                if (string.IsNullOrEmpty(args.defaultFilename))
-                {
-                    await args.app.Out.WriteLineAsync("Error: Default filename is required if you want to list parameters").ConfigureAwait(false);
-                    return;
-                }
+                var template = _templateProvider.Create(templateIdentifier);
+                var success = false;
 
-                (await _templateEngine.GetParameters(template).ConfigureAwait(false))
-                .OnFailure(async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false))
-                .OnSuccess(
-                    x =>
+                if (args.listParameters)
+                {
+                    if (string.IsNullOrEmpty(args.defaultFilename))
                     {
-                        AppendParameters(generationEnvironment, args.defaultFilename, x.Value!);
-                        success = true;
-                    });
-            }
-            else
-            {
-                if (args.interactive)
-                {
+                        await args.app.Out.WriteLineAsync("Error: Default filename is required if you want to list parameters").ConfigureAwait(false);
+                        return;
+                    }
+
                     (await _templateEngine.GetParameters(template).ConfigureAwait(false))
                     .OnFailure(async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false))
                     .OnSuccess(
                         x =>
                         {
-                            args.parameters = MergeParameters(args.parameters, GetInteractiveParameterValues(x.Value!));
+                            AppendParameters(generationEnvironment, args.defaultFilename, x.Value!);
                             success = true;
                         });
                 }
+                else
+                {
+                    if (args.interactive)
+                    {
+                        (await _templateEngine.GetParameters(template).ConfigureAwait(false))
+                        .OnFailure(async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false))
+                        .OnSuccess(
+                            x =>
+                            {
+                                args.parameters = MergeParameters(args.parameters, GetInteractiveParameterValues(x.Value!));
+                                success = true;
+                            });
+                    }
 
-                var context = new TemplateContext(_templateEngine, _templateProvider, args.defaultFilename, templateIdentifier, template);
-                var identifier = new TemplateInstanceIdentifierWithTemplateProvider(template, args.currentDirectory, args.assemblyName, args.templateProviderPluginClassName);
-                var request = new RenderTemplateRequest(identifier, null, generationEnvironment, args.defaultFilename, args.parameters, context);
+                    var context = new TemplateContext(_templateEngine, _templateProvider, args.defaultFilename, templateIdentifier, template);
+                    var identifier = new TemplateInstanceIdentifierWithTemplateProvider(template, args.currentDirectory, args.assemblyName, args.templateProviderPluginClassName);
+                    var request = new RenderTemplateRequest(identifier, null, generationEnvironment, args.defaultFilename, args.parameters, context);
 
-                (await _templateEngine.Render(request, args.cancellationToken).ConfigureAwait(false))
-                .OnFailure(async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false))
-                .OnSuccess(_ => success = true);
-            }
+                    (await _templateEngine.Render(request, args.cancellationToken).ConfigureAwait(false))
+                    .OnFailure(async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false))
+                    .OnSuccess(_ => success = true);
+                }
 
-            if (success)
-            {
-                await WriteOutput(args.app, generationEnvironment, args.basePath, args.bare, args.clipboard, args.dryRun, args.cancellationToken).ConfigureAwait(false);
-            }
+                if (success)
+                {
+                    await WriteOutput(args.app, generationEnvironment, args.basePath, args.bare, args.clipboard, args.dryRun, args.cancellationToken).ConfigureAwait(false);
+                }
+            });
         }, args.cancellationToken).ConfigureAwait(false);
 
     private ITemplateIdentifier GetTemplateIdentifier((CommandLineApplication app, bool watch, bool interactive, bool listParameters, bool bare, bool clipboard, string? assemblyName, string? className, string? formattableStringFilename, string? expressionStringFilename, string? currentDirectory, string? templateProviderPluginClassName, string basePath, string defaultFilename, bool dryRun, KeyValuePair<string, object?>[] parameters, CancellationToken cancellationToken) args)

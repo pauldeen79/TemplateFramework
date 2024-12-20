@@ -2,5 +2,5 @@
 
 public interface ISessionAwareComponent
 {
-    Task StartSession(CancellationToken cancellationToken);
+    Task<Result> StartSession(CancellationToken cancellationToken);
 }
