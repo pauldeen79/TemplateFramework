@@ -2,19 +2,25 @@
 
 internal class NamedResultSetBuilder
 {
-    private readonly List<NamedResult<Task<Result<object?>>>> _resultset = new();
+    private readonly List<NamedResult<Func<Task<Result>>>> _resultset = new();
 
-    public void Add(string name, Task<Result<object?>> value) => _resultset.Add(new(name, value));
-    public void Add(string name, Task<Result> value) => _resultset.Add(new(name, value.ContinueWith(x => Result.FromExistingResult<object?>(x.Result), TaskScheduler.Current)));
+    public void Add(string name, Func<Task<Result<object?>>> value) => _resultset.Add(new(name, () => value().ContinueWith(x => (Result)x.Result, TaskScheduler.Current)));
+    public void Add(string name, Func<Task<Result>> value) => _resultset.Add(new(name, value));
 
-    public async Task<NamedResult<Result<object?>>[]> Build()
+    public async Task<NamedResult<Result>[]> Build()
     {
-        var results = await _resultset
-            .SelectAsync(async x => new NamedResult<Result<object?>>(x.Name, await x.Result.ConfigureAwait(false)))
-            .ConfigureAwait(false);
+        var results = new List<NamedResult<Result>>();
 
-        return results
-            .TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful())
-            .ToArray();
+        foreach (var item in _resultset)
+        {
+            var result = await item.Result().ConfigureAwait(false);
+            results.Add(new NamedResult<Result>(item.Name, result));
+            if (!result.IsSuccessful())
+            {
+                break;
+            }
+        }
+
+        return results.ToArray();
     }
 }

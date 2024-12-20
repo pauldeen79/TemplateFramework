@@ -153,7 +153,7 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
-            counter.Should().Be(1); // start session fails, so the callback of the mock is not reached
+            counter.Should().Be(0); // start session fails, so the callback of the mock is not reached
         }
 
         [Fact]

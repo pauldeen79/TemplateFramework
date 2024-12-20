@@ -24,13 +24,13 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
         Guard.IsNotNull(settings);
 
         var resultSetBuilder = new NamedResultSetBuilder();
-        resultSetBuilder.Add(nameof(ITemplateProvider.StartSession), _templateProvider.StartSession(cancellationToken));
+        resultSetBuilder.Add(nameof(ITemplateProvider.StartSession), () => _templateProvider.StartSession(cancellationToken));
         if (codeGenerationProvider is ITemplateComponentRegistryPlugin plugin)
         {
-            resultSetBuilder.Add(nameof(ITemplateComponentRegistryPlugin.Initialize), plugin.Initialize(_templateProvider, cancellationToken));
+            resultSetBuilder.Add(nameof(ITemplateComponentRegistryPlugin.Initialize), () => plugin.Initialize(_templateProvider, cancellationToken));
         }
-        resultSetBuilder.Add(nameof(ICodeGenerationProvider.CreateModel), codeGenerationProvider.CreateModel());
-        resultSetBuilder.Add(nameof(ICodeGenerationProvider.CreateAdditionalParameters), codeGenerationProvider.CreateAdditionalParameters());
+        resultSetBuilder.Add(nameof(ICodeGenerationProvider.CreateModel), codeGenerationProvider.CreateModel);
+        resultSetBuilder.Add(nameof(ICodeGenerationProvider.CreateAdditionalParameters), codeGenerationProvider.CreateAdditionalParameters);
 
         var results = await resultSetBuilder.Build().ConfigureAwait(false);
 
@@ -48,9 +48,9 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
             new RenderTemplateRequest
             (
                 identifier: new TemplateTypeIdentifier(codeGenerationProvider.GetGeneratorType(), _templateFactory),
-                model: modelResult.Value,
+                model: modelResult.GetValue(),
                 generationEnvironment: generationEnvironment,
-                additionalParameters: additionalParametersResult.Value,
+                additionalParameters: additionalParametersResult.GetValue(),
                 defaultFilename: settings.DefaultFilename,
                 context: null
             ), cancellationToken).ConfigureAwait(false);
