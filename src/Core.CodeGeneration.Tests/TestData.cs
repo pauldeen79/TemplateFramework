@@ -25,11 +25,11 @@ public sealed class MyGeneratorProvider : ICodeGenerationProvider
 
     public Encoding Encoding => Encoding.UTF8;
 
-    public Task<Result<object?>> CreateAdditionalParameters() => Task.FromResult(Result.Success<object?>(default));
+    public Task<Result<object?>> CreateAdditionalParameters(CancellationToken cancellationToken) => Task.FromResult(Result.Success<object?>(default));
 
     public Type GetGeneratorType() => typeof(MyGenerator);
 
-    public Task<Result<object?>> CreateModel() => Task.FromResult(Result.Success<object?>(default));
+    public Task<Result<object?>> CreateModel(CancellationToken cancellationToken) => Task.FromResult(Result.Success<object?>(default));
 }
 
 public sealed class MyGenerator

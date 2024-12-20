@@ -417,11 +417,11 @@ public sealed class CsharpClassGeneratorCodeGenerationProvider : ICodeGeneration
     public string LastGeneratedFilesFilename => string.Empty;
     public Encoding Encoding => Encoding.UTF8;
 
-    public Task<Result<object?>> CreateAdditionalParameters() => Task.FromResult(Result.Success<object?>(default));
+    public Task<Result<object?>> CreateAdditionalParameters(CancellationToken cancellationToken) => Task.FromResult(Result.Success<object?>(default));
 
     public Type GetGeneratorType() => typeof(TestData.CsharpClassGenerator);
 
-    public Task<Result<object?>> CreateModel()
+    public Task<Result<object?>> CreateModel(CancellationToken cancellationToken)
     {
         var settings = new TestData.CsharpClassGeneratorSettings
         (

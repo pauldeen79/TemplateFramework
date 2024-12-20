@@ -29,8 +29,8 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
         {
             resultSetBuilder.Add(nameof(ITemplateComponentRegistryPlugin.Initialize), () => plugin.Initialize(_templateProvider, cancellationToken));
         }
-        resultSetBuilder.Add(nameof(ICodeGenerationProvider.CreateModel), codeGenerationProvider.CreateModel);
-        resultSetBuilder.Add(nameof(ICodeGenerationProvider.CreateAdditionalParameters), codeGenerationProvider.CreateAdditionalParameters);
+        resultSetBuilder.Add(nameof(ICodeGenerationProvider.CreateModel), () => codeGenerationProvider.CreateModel(cancellationToken));
+        resultSetBuilder.Add(nameof(ICodeGenerationProvider.CreateAdditionalParameters), () => codeGenerationProvider.CreateAdditionalParameters(cancellationToken));
 
         var results = await resultSetBuilder.Build().ConfigureAwait(false);
 
