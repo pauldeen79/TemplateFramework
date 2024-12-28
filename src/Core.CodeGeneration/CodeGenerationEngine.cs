@@ -23,7 +23,7 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
         Guard.IsNotNull(generationEnvironment);
         Guard.IsNotNull(settings);
 
-        var resultSetBuilder = new NamedResultSetBuilder();
+        var resultSetBuilder = new ResultDictionaryBuilder();
         resultSetBuilder.Add(nameof(ITemplateProvider.StartSession), () => _templateProvider.StartSession(cancellationToken));
         if (codeGenerationProvider is ITemplateComponentRegistryPlugin plugin)
         {
@@ -34,15 +34,17 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
 
         var results = await resultSetBuilder.Build().ConfigureAwait(false);
 
-        var error = Array.Find(results, x => !x.Result.IsSuccessful());
+        var error = results
+            .Select(x => new { x.Key, Result = x.Value })
+            .FirstOrDefault(x => !x.Result.IsSuccessful());
         if (error is not null)
         {
             // Error in initialization
             return error.Result;
         }
 
-        var modelResult = results.First(x => x.Name == nameof(ICodeGenerationProvider.CreateModel)).Result;
-        var additionalParametersResult = results.First(x => x.Name == nameof(ICodeGenerationProvider.CreateAdditionalParameters)).Result;
+        var modelResult = results[nameof(ICodeGenerationProvider.CreateModel)];
+        var additionalParametersResult = results[nameof(ICodeGenerationProvider.CreateAdditionalParameters)];
 
         var result = await _templateEngine.Render(
             new RenderTemplateRequest
