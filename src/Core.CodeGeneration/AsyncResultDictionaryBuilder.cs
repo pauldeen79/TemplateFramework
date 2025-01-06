@@ -1,11 +1,20 @@
 ﻿namespace TemplateFramework.Core.CodeGeneration;
 
-internal class ResultDictionaryBuilder
+internal class AsyncResultDictionaryBuilder
 {
     private readonly Dictionary<string, Func<Task<Result>>> _resultset = new();
 
-    public void Add(string name, Func<Task<Result<object?>>> value) => _resultset.Add(name, () => value().ContinueWith(x => (Result)x.Result, TaskScheduler.Current));
-    public void Add(string name, Func<Task<Result>> value) => _resultset.Add(name, value);
+    public AsyncResultDictionaryBuilder Add<T>(string name, Func<Task<Result<T>>> value)
+    {
+        _resultset.Add(name, () => value().ContinueWith(x => (Result)x.Result, TaskScheduler.Current));
+        return this;
+    }
+
+    public AsyncResultDictionaryBuilder Add(string name, Func<Task<Result>> value)
+    {
+        _resultset.Add(name, value);
+        return this;
+    }
 
     public async Task<Dictionary<string, Result>> Build()
     {

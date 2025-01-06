@@ -23,14 +23,15 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
         Guard.IsNotNull(generationEnvironment);
         Guard.IsNotNull(settings);
 
-        var resultSetBuilder = new ResultDictionaryBuilder();
-        resultSetBuilder.Add(nameof(ITemplateProvider.StartSession), () => _templateProvider.StartSession(cancellationToken));
+        var resultSetBuilder = new AsyncResultDictionaryBuilder()
+            .Add(nameof(ITemplateProvider.StartSession), () => _templateProvider.StartSession(cancellationToken));
         if (codeGenerationProvider is ITemplateComponentRegistryPlugin plugin)
         {
             resultSetBuilder.Add(nameof(ITemplateComponentRegistryPlugin.Initialize), () => plugin.Initialize(_templateProvider, cancellationToken));
         }
-        resultSetBuilder.Add(nameof(ICodeGenerationProvider.CreateModel), () => codeGenerationProvider.CreateModel(cancellationToken));
-        resultSetBuilder.Add(nameof(ICodeGenerationProvider.CreateAdditionalParameters), () => codeGenerationProvider.CreateAdditionalParameters(cancellationToken));
+        resultSetBuilder
+            .Add(nameof(ICodeGenerationProvider.CreateModel), () => codeGenerationProvider.CreateModel(cancellationToken))
+            .Add(nameof(ICodeGenerationProvider.CreateAdditionalParameters), () => codeGenerationProvider.CreateAdditionalParameters(cancellationToken));
 
         var results = await resultSetBuilder.Build().ConfigureAwait(false);
 
