@@ -23,18 +23,15 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
         Guard.IsNotNull(generationEnvironment);
         Guard.IsNotNull(settings);
 
-        var resultSetBuilder = new AsyncResultDictionaryBuilder()
-            .Add(nameof(ITemplateProvider.StartSession), () => _templateProvider.StartSession(cancellationToken));
-        if (codeGenerationProvider is ITemplateComponentRegistryPlugin plugin)
-        {
-            resultSetBuilder.Add(nameof(ITemplateComponentRegistryPlugin.Initialize), () => plugin.Initialize(_templateProvider, cancellationToken));
-        }
-        resultSetBuilder
+        var results = await new AsyncResultDictionaryBuilder()
+            .Add(nameof(ITemplateProvider.StartSession), () => _templateProvider.StartSession(cancellationToken))
+            .Add(nameof(ITemplateComponentRegistryPlugin.Initialize), () => (codeGenerationProvider as ITemplateComponentRegistryPlugin)?.Initialize(_templateProvider, cancellationToken) ?? Task.FromResult(Result.Continue()))
             .Add(nameof(ICodeGenerationProvider.CreateModel), () => codeGenerationProvider.CreateModel(cancellationToken))
-            .Add(nameof(ICodeGenerationProvider.CreateAdditionalParameters), () => codeGenerationProvider.CreateAdditionalParameters(cancellationToken));
+            .Add(nameof(ICodeGenerationProvider.CreateAdditionalParameters), () => codeGenerationProvider.CreateAdditionalParameters(cancellationToken))
+            .Build()
+            .ConfigureAwait(false);
 
-        var results = await resultSetBuilder.Build().ConfigureAwait(false);
-
+        // Note that there will be an extension method on Dictionary<string, Result> to get the error in the near future
         var error = results
             .Select(x => new { x.Key, Result = x.Value })
             .FirstOrDefault(x => !x.Result.IsSuccessful());
