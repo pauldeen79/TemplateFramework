@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider.Tests;
 
-public class TestFormattableStringTemplate : IParameterizedTemplate, IBuilderTemplate<StringBuilder>
+public class TestFormattableStringTemplate : IParameterizedTemplate, IBuilderTemplate<StringBuilder>, ISessionAwareComponent
 {
     private readonly Dictionary<string, object?> _parameterValues = [];
     private readonly IFormattableStringParser _formattableStringParser;
@@ -49,7 +49,16 @@ public class TestFormattableStringTemplate : IParameterizedTemplate, IBuilderTem
 
     public Result SetParameter(string name, object? value)
     {
-        _parameterValues.Add(name, value);
+        //TODO: Find out why this is called twice when running the console app
+        _parameterValues[name] = value;
+        //_parameterValues.Add(name, value);
         return Result.Success();
+    }
+
+    public Task<Result> StartSession(CancellationToken cancellationToken)
+    {
+        _parameterValues.Clear();
+
+        return Task.FromResult(Result.Success());
     }
 }
