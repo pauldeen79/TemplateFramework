@@ -3,6 +3,7 @@
 public class ComponentRegistrationContextFunction : IDynamicDescriptorsFunction
 {
     private readonly List<IFunction> _functions = new();
+    private readonly FunctionDescriptorProvider _functionDescriptorProvider = new FunctionDescriptorProvider([]);
 
     public void AddFunction(IFunction function)
     {
@@ -20,7 +21,7 @@ public class ComponentRegistrationContextFunction : IDynamicDescriptorsFunction
     {
         Guard.IsNotNull(context);
 
-        foreach (var function in _functions.Where(x => CustomFunctionDescriptorProvider.CreateFunction(x, x.GetType()).Any(y => y.Name.Equals(context.FunctionCall.Name, StringComparison.OrdinalIgnoreCase))))
+        foreach (var function in _functions.Where(x => _functionDescriptorProvider.CreateFunction(x, x.GetType()).Any(y => y.Name.Equals(context.FunctionCall.Name, StringComparison.OrdinalIgnoreCase))))
         {
             var result = function.Evaluate(context);
             if (result.Status != ResultStatus.Continue)
@@ -34,7 +35,7 @@ public class ComponentRegistrationContextFunction : IDynamicDescriptorsFunction
 
     public IEnumerable<FunctionDescriptor> GetDescriptors()
     {
-        return _functions.SelectMany(x => CustomFunctionDescriptorProvider.CreateFunction(x, GetType())).ToArray();
+        return _functions.SelectMany(x => _functionDescriptorProvider.CreateFunction(x, GetType())).ToArray();
     }
 
     public Result Validate(FunctionCallContext context)

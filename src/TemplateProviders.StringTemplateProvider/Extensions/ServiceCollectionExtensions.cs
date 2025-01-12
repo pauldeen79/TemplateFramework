@@ -8,6 +8,5 @@ public static class ServiceCollectionExtensions
             .AddScoped<IPlaceholder, TemplateFrameworkContextPlaceholderProcessor>()
             .AddScoped<IFunction, TemplateFrameworkContextFunction>()
             .AddScoped<IFunction, ComponentRegistrationContextFunction>()
-            .AddScoped<IFunctionDescriptorProvider, CustomFunctionDescriptorProvider>()
             .AddScoped<ComponentRegistrationContext>();
 }
