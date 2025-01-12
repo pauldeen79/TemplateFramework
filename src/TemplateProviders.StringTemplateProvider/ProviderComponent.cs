@@ -43,7 +43,7 @@ public class ProviderComponent : ITemplateProviderComponent, ISessionAwareCompon
     public Task<Result> StartSession(CancellationToken cancellationToken)
     {
         _componentRegistrationContext.Placeholders.Clear();
-        _componentRegistrationContext.Functions.Clear();
+        _componentRegistrationContext.ClearFunctions();
 
         return Task.FromResult(Result.Success());
     }

@@ -4,7 +4,7 @@ public class ProviderComponentTests
 {
     protected IExpressionStringEvaluator ExpressionStringEvaluatorMock { get; } = Substitute.For<IExpressionStringEvaluator>();
     protected IFormattableStringParser FormattableStringParserMock { get; } = Substitute.For<IFormattableStringParser>();
-    protected ComponentRegistrationContext ComponentRegistrationContext { get; } = new();
+    protected ComponentRegistrationContext ComponentRegistrationContext { get; } = new([new ComponentRegistrationContextFunction()]);
 
     protected ProviderComponent CreateSut() => new(ExpressionStringEvaluatorMock, FormattableStringParserMock, ComponentRegistrationContext);
 

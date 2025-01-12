@@ -13,7 +13,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
 
     public class Evaluate : TemplateFrameworkContextPlaceholderProcessorTests
     {
-        private ComponentRegistrationContext ComponentRegistrationContext { get; } = new();
+        private ComponentRegistrationContext ComponentRegistrationContext { get; } = new([]);
         public IFormattableStringParser FormattableStringParser { get; }
 
         public Evaluate()

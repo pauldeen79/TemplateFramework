@@ -20,21 +20,25 @@ public sealed class TestTemplateComponentRegistryPlugin : ITemplateComponentRegi
                 ? Result.Success<GenericFormattableString>("Hello world!")
                 : Result.Continue<GenericFormattableString>());
 
-        var functionResultParserMock = Substitute.For<IFunction>();
-        functionResultParserMock.Evaluate(Arg.Any<FunctionCallContext>())
-            .Returns(args =>
-            {
-                if (args.ArgAt<FunctionCallContext>(0).FunctionCall.Name == "MyFunction")
-                {
-                    return Result.Success<object?>("Hello world!");
-                }
-
-                return Result.Continue<object?>();
-            });
+        var functionMock = new FunctionMock();
 
         ComponentRegistrationContext.Placeholders.Add(processorProcessorMock);
-        ComponentRegistrationContext.Functions.Add(functionResultParserMock);
+        ComponentRegistrationContext.AddFunction(functionMock);
 
         return Task.FromResult(Result.Success());
+    }
+
+    [FunctionName("MyFunction")]
+    private sealed class FunctionMock : IFunction
+    {
+        public Result<object?> Evaluate(FunctionCallContext context)
+        {
+            return Result.Success<object?>("Hello world!");
+        }
+
+        public Result Validate(FunctionCallContext context)
+        {
+            return Result.Success();
+        }
     }
 }

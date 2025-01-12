@@ -5,7 +5,7 @@ public class FormattableStringTemplateTests
     protected const string Template = "Hello {Name}!";
     protected IFormattableStringParser FormattableStringParserMock { get; } = Substitute.For<IFormattableStringParser>();
     protected FormattableStringTemplateIdentifier Identifier { get; } = new FormattableStringTemplateIdentifier(Template, CultureInfo.CurrentCulture);
-    protected ComponentRegistrationContext ComponentRegistrationContext { get; } = new();
+    protected ComponentRegistrationContext ComponentRegistrationContext { get; } = new([]);
 
     protected FormattableStringTemplate CreateSut() => new(Identifier, FormattableStringParserMock, ComponentRegistrationContext);
 
