@@ -1,10 +1,10 @@
 ﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider;
 
-public sealed class TemplateFrameworkContextPlaceholderProcessor : IPlaceholderProcessor
+public sealed class TemplateFrameworkContextPlaceholderProcessor : IPlaceholder
 {
     public int Order => 100;
 
-    public Result<FormattableStringParserResult> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+    public Result<GenericFormattableString> Evaluate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
     {
         Guard.IsNotNull(value);
         Guard.IsNotNull(formatProvider);
@@ -12,12 +12,12 @@ public sealed class TemplateFrameworkContextPlaceholderProcessor : IPlaceholderP
 
         if (context is not TemplateFrameworkStringContext templateFrameworkFormattableStringContext)
         {
-            return Result.Continue<FormattableStringParserResult>();
+            return Result.Continue<GenericFormattableString>();
         }
 
-        foreach (var placholderProcessor in templateFrameworkFormattableStringContext.Context.PlaceholderProcessors.OrderBy(x => Order))
+        foreach (var placholderProcessor in templateFrameworkFormattableStringContext.Context.Placeholders.OrderBy(x => Order))
         {
-            var result = placholderProcessor.Process(value, formatProvider, context, formattableStringParser);
+            var result = placholderProcessor.Evaluate(value, formatProvider, context, formattableStringParser);
             if (result.Status != ResultStatus.Continue)
             {
                 return result;
@@ -26,7 +26,7 @@ public sealed class TemplateFrameworkContextPlaceholderProcessor : IPlaceholderP
 
         if (templateFrameworkFormattableStringContext.ParametersDictionary.TryGetValue(value, out var parameterValue))
         {
-            return Result.Success<FormattableStringParserResult>(parameterValue?.ToString() ?? string.Empty);
+            return Result.Success<GenericFormattableString>(parameterValue?.ToString() ?? string.Empty);
         }
 
         // Also return the parameter name, so GetParameters works.
@@ -39,9 +39,14 @@ public sealed class TemplateFrameworkContextPlaceholderProcessor : IPlaceholderP
         if (templateFrameworkFormattableStringContext.GetParametersOnly)
         {
             // When getting parameters, always return success, so the process always continues to get next parameters.
-            return Result.Success<FormattableStringParserResult>(string.Empty);
+            return Result.Success<GenericFormattableString>(string.Empty);
         }
 
-        return Result.Continue<FormattableStringParserResult>();
+        return Result.Continue<GenericFormattableString>();
+    }
+
+    public Result Validate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+    {
+        return Result.Success();
     }
 }

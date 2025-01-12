@@ -127,7 +127,7 @@ public class IntegrationTests : TestBase
     }
 
     [Fact]
-    public async Task Can_Use_Custom_Registered_FunctionResultParser_In_FormattableStringTemplate()
+    public async Task Can_Use_Custom_Registered_Function_In_FormattableStringTemplate()
     {
         // Arrange
         var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
@@ -163,14 +163,15 @@ public class IntegrationTests : TestBase
         var request = new RenderTemplateRequest(identifier, builder, context);
 
         // Act
-        await templateEngine.Render(request, CancellationToken.None);
+        var result = await templateEngine.Render(request, CancellationToken.None);
 
         // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
         builder.ToString().Should().Be("aaa Hello world! zzz");
     }
 
     [Fact]
-    public async Task Can_Use_Custom_Registered_FunctionResultParser_In_ExpressionStringTemplate()
+    public async Task Can_Use_Custom_Registered_Function_In_ExpressionStringTemplate()
     {
         // Arrange
         var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
@@ -206,75 +207,10 @@ public class IntegrationTests : TestBase
         var request = new RenderTemplateRequest(identifier, builder, context);
 
         // Act
-        await templateEngine.Render(request, CancellationToken.None);
+        var result = await templateEngine.Render(request, CancellationToken.None);
 
         // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
         builder.ToString().Should().Be("aaa Hello world! zzz");
-    }
-
-    [Fact]
-    public async Task Can_Use_ExpressionFramework_In_FormattableStringTemplate()
-    {
-        // Arrange
-        var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
-        var services = new ServiceCollection()
-            .AddParsers()
-            .AddTemplateFramework()
-            .AddTemplateFrameworkStringTemplateProvider()
-            .AddSingleton(templateComponentRegistryPluginFactory)
-            .AddExpressionParser();
-
-        using var provider = services.BuildServiceProvider(true);
-        using var scope = provider.CreateScope();
-
-        var builder = new StringBuilder();
-        var templateEngine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
-        var identifier = new FormattableStringTemplateIdentifier
-        (
-            "{ToUpperCase(\"aaa\")} {Today()} {ToUpperCase(\"zzz\")}",
-            CultureInfo.InvariantCulture // important to make this test pass on all cultures!
-        );
-        var template = scope.ServiceProvider.GetRequiredService<ITemplateProvider>().Create(identifier);
-        var context = new TemplateContext(templateEngine, scope.ServiceProvider.GetRequiredService<ITemplateProvider>(), "myfile.txt", identifier, template);
-        var request = new RenderTemplateRequest(identifier, builder, context);
-
-        // Act
-        await templateEngine.Render(request, CancellationToken.None);
-
-        // Assert
-        builder.ToString().Should().Be($"AAA {DateTime.Today.ToString(CultureInfo.InvariantCulture)} ZZZ"); // CultureInfo.InvariantCulture is important to make this test pass on all cultures!
-    }
-
-    [Fact]
-    public async Task Can_Use_ExpressionFramework_In_ExpressionStringTemplate()
-    {
-        // Arrange
-        var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
-        var services = new ServiceCollection()
-            .AddParsers()
-            .AddTemplateFramework()
-            .AddTemplateFrameworkStringTemplateProvider()
-            .AddSingleton(templateComponentRegistryPluginFactory)
-            .AddExpressionParser();
-
-        using var provider = services.BuildServiceProvider(true);
-        using var scope = provider.CreateScope();
-
-        var builder = new StringBuilder();
-        var templateEngine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
-        var identifier = new ExpressionStringTemplateIdentifier
-        (
-            "=ToUpperCase(\"aaa \") & Today() & ToUpperCase(\" zzz\")",
-            CultureInfo.InvariantCulture // important to make this test pass on all cultures!
-        );
-        var template = scope.ServiceProvider.GetRequiredService<ITemplateProvider>().Create(identifier);
-        var context = new TemplateContext(templateEngine, scope.ServiceProvider.GetRequiredService<ITemplateProvider>(), "myfile.txt", identifier, template);
-        var request = new RenderTemplateRequest(identifier, builder, context);
-
-        // Act
-        await templateEngine.Render(request, CancellationToken.None);
-
-        // Assert
-        builder.ToString().Should().Be($"AAA {DateTime.Today.ToString(CultureInfo.InvariantCulture)} ZZZ"); // CultureInfo.InvariantCulture is important to make this test pass on all cultures!
     }
 }

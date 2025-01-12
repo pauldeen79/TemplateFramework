@@ -11,12 +11,12 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
         }
     }
 
-    public class Process : TemplateFrameworkContextPlaceholderProcessorTests
+    public class Evaluate : TemplateFrameworkContextPlaceholderProcessorTests
     {
         private ComponentRegistrationContext ComponentRegistrationContext { get; } = new();
         public IFormattableStringParser FormattableStringParser { get; }
 
-        public Process()
+        public Evaluate()
         {
             FormattableStringParser = Fixture.Freeze<IFormattableStringParser>();
         }
@@ -29,7 +29,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
             var sut = CreateSut();
 
             // Act
-            var result = sut.Process("some template", CultureInfo.CurrentCulture, context, FormattableStringParser);
+            var result = sut.Evaluate("some template", CultureInfo.CurrentCulture, context, FormattableStringParser);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Continue);
@@ -47,7 +47,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
             var sut = CreateSut();
 
             // Act
-            var result = sut.Process("Name", CultureInfo.CurrentCulture, context, FormattableStringParser);
+            var result = sut.Evaluate("Name", CultureInfo.CurrentCulture, context, FormattableStringParser);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -66,7 +66,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
             var sut = CreateSut();
 
             // Act
-            var result = sut.Process("Name", CultureInfo.CurrentCulture, context, FormattableStringParser);
+            var result = sut.Evaluate("Name", CultureInfo.CurrentCulture, context, FormattableStringParser);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -82,7 +82,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
             var sut = CreateSut();
 
             // Act
-            var result = sut.Process("Name", CultureInfo.CurrentCulture, context, FormattableStringParser);
+            var result = sut.Evaluate("Name", CultureInfo.CurrentCulture, context, FormattableStringParser);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Continue);
@@ -97,7 +97,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
             var sut = CreateSut();
 
             // Act
-            _ = sut.Process("Name", CultureInfo.CurrentCulture, context, FormattableStringParser);
+            _ = sut.Evaluate("Name", CultureInfo.CurrentCulture, context, FormattableStringParser);
 
             // Assert
             context.ParameterNamesList.Should().BeEquivalentTo("Name");
@@ -112,7 +112,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
             var sut = CreateSut();
 
             // Act
-            _ = sut.Process("__Name", CultureInfo.CurrentCulture, context, FormattableStringParser);
+            _ = sut.Evaluate("__Name", CultureInfo.CurrentCulture, context, FormattableStringParser);
 
             // Assert
             context.ParameterNamesList.Should().BeEmpty();

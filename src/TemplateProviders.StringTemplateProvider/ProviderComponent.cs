@@ -2,20 +2,20 @@
 
 public class ProviderComponent : ITemplateProviderComponent, ISessionAwareComponent
 {
-    private readonly IExpressionStringParser _expressionStringParser;
+    private readonly IExpressionStringEvaluator _expressionStringEvaluator;
     private readonly IFormattableStringParser _formattableStringParser;
     private readonly ComponentRegistrationContext _componentRegistrationContext;
 
     public ProviderComponent(
-        IExpressionStringParser expressionStringParser,
+        IExpressionStringEvaluator expressionStringEvaluator,
         IFormattableStringParser formattableStringParser,
         ComponentRegistrationContext componentRegistrationContext)
     {
-        Guard.IsNotNull(expressionStringParser);
+        Guard.IsNotNull(expressionStringEvaluator);
         Guard.IsNotNull(formattableStringParser);
         Guard.IsNotNull(componentRegistrationContext);
 
-        _expressionStringParser = expressionStringParser;
+        _expressionStringEvaluator = expressionStringEvaluator;
         _formattableStringParser = formattableStringParser;
         _componentRegistrationContext = componentRegistrationContext;
     }
@@ -28,7 +28,7 @@ public class ProviderComponent : ITemplateProviderComponent, ISessionAwareCompon
 
         if (identifier is ExpressionStringTemplateIdentifier expressionStringTemplateIdentifier)
         {
-            return new ExpressionStringTemplate(expressionStringTemplateIdentifier, _expressionStringParser, _formattableStringParser, _componentRegistrationContext);
+            return new ExpressionStringTemplate(expressionStringTemplateIdentifier, _expressionStringEvaluator, _formattableStringParser, _componentRegistrationContext);
         }
         else if (identifier is FormattableStringTemplateIdentifier formattableStringTemplateIdentifier)
         {
@@ -42,8 +42,8 @@ public class ProviderComponent : ITemplateProviderComponent, ISessionAwareCompon
 
     public Task<Result> StartSession(CancellationToken cancellationToken)
     {
-        _componentRegistrationContext.PlaceholderProcessors.Clear();
-        _componentRegistrationContext.FunctionResultParsers.Clear();
+        _componentRegistrationContext.Placeholders.Clear();
+        _componentRegistrationContext.Functions.Clear();
 
         return Task.FromResult(Result.Success());
     }

@@ -13,18 +13,18 @@ public sealed class TestTemplateComponentRegistryPlugin : ITemplateComponentRegi
 
     public Task<Result> Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken)
     {
-        var processorProcessorMock = Substitute.For<IPlaceholderProcessor>();
+        var processorProcessorMock = Substitute.For<IPlaceholder>();
         processorProcessorMock
-            .Process(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>())
+            .Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>())
             .Returns(args => args.ArgAt<string>(0) == "__test"
-                ? Result.Success<FormattableStringParserResult>("Hello world!")
-                : Result.Continue<FormattableStringParserResult>());
+                ? Result.Success<GenericFormattableString>("Hello world!")
+                : Result.Continue<GenericFormattableString>());
 
-        var functionResultParserMock = Substitute.For<IFunctionResultParser>();
-        functionResultParserMock.Parse(Arg.Any<FunctionParseResult>(), Arg.Any<object?>(), Arg.Any<IFunctionParseResultEvaluator>(), Arg.Any<IExpressionParser>())
+        var functionResultParserMock = Substitute.For<IFunction>();
+        functionResultParserMock.Evaluate(Arg.Any<FunctionCallContext>())
             .Returns(args =>
             {
-                if (args.ArgAt<FunctionParseResult>(0).FunctionName == "MyFunction")
+                if (args.ArgAt<FunctionCallContext>(0).FunctionCall.Name == "MyFunction")
                 {
                     return Result.Success<object?>("Hello world!");
                 }
@@ -32,8 +32,8 @@ public sealed class TestTemplateComponentRegistryPlugin : ITemplateComponentRegi
                 return Result.Continue<object?>();
             });
 
-        ComponentRegistrationContext.PlaceholderProcessors.Add(processorProcessorMock);
-        ComponentRegistrationContext.FunctionResultParsers.Add(functionResultParserMock);
+        ComponentRegistrationContext.Placeholders.Add(processorProcessorMock);
+        ComponentRegistrationContext.Functions.Add(functionResultParserMock);
 
         return Task.FromResult(Result.Success());
     }

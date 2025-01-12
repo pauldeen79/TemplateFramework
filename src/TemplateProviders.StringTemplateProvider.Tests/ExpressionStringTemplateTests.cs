@@ -3,12 +3,12 @@
 public class ExpressionStringTemplateTests
 {
     protected const string Template = "Hello {Name}!";
-    protected IExpressionStringParser ExpressionStringParserMock { get; } = Substitute.For<IExpressionStringParser>();
+    protected IExpressionStringEvaluator ExpressionStringEvaluatorMock { get; } = Substitute.For<IExpressionStringEvaluator>();
     protected IFormattableStringParser FormattableStringParserMock { get; } = Substitute.For<IFormattableStringParser>();
     protected ExpressionStringTemplateIdentifier Identifier { get; } = new ExpressionStringTemplateIdentifier(Template, CultureInfo.CurrentCulture);
     protected ComponentRegistrationContext ComponentRegistrationContext { get; } = new();
 
-    protected ExpressionStringTemplate CreateSut() => new(Identifier, ExpressionStringParserMock, FormattableStringParserMock, ComponentRegistrationContext);
+    protected ExpressionStringTemplate CreateSut() => new(Identifier, ExpressionStringEvaluatorMock, FormattableStringParserMock, ComponentRegistrationContext);
 
     public class Constructor : ExpressionStringTemplateTests
     {
@@ -37,7 +37,7 @@ public class ExpressionStringTemplateTests
         public async Task Return_Result_On_NonSuccesful_Result_From_FormattableStringParser()
         {
             // Arrange
-            ExpressionStringParserMock.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<TemplateFrameworkStringContext>(), Arg.Any<IFormattableStringParser>())
+            ExpressionStringEvaluatorMock.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<TemplateFrameworkStringContext>(), Arg.Any<IFormattableStringParser>())
                 .Returns(Result.Error<object?>("Kaboom!"));
             var sut = CreateSut();
             var builder = new StringBuilder();
@@ -54,7 +54,7 @@ public class ExpressionStringTemplateTests
         public async Task Appends_Result_From_ExpressionStringParser_To_Builder_On_Succesful_Result()
         {
             // Arrange
-            ExpressionStringParserMock.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<TemplateFrameworkStringContext>(), Arg.Any<IFormattableStringParser>())
+            ExpressionStringEvaluatorMock.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<TemplateFrameworkStringContext>(), Arg.Any<IFormattableStringParser>())
                 .Returns(Result.Success<object?>("Parse result"));
             var sut = CreateSut();
             var builder = new StringBuilder();

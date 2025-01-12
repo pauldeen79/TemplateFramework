@@ -5,7 +5,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddTemplateFrameworkStringTemplateProvider(this IServiceCollection services)
         => services
             .AddScoped<ITemplateProviderComponent, ProviderComponent>()
-            .AddScoped<IPlaceholderProcessor, TemplateFrameworkContextPlaceholderProcessor>()
-            .AddScoped<IFunctionResultParser, TemplateFrameworkContextFunctionResultParser>()
+            .AddScoped<IPlaceholder, TemplateFrameworkContextPlaceholderProcessor>()
+            .AddScoped<IFunction, TemplateFrameworkContextFunction>()
+            .AddScoped<IFunctionDescriptorProvider, CustomFunctionDescriptorProvider>()
             .AddScoped<ComponentRegistrationContext>();
 }

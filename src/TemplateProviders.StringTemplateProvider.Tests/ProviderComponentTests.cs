@@ -2,11 +2,11 @@
 
 public class ProviderComponentTests
 {
-    protected IExpressionStringParser ExpressionStringParserMock { get; } = Substitute.For<IExpressionStringParser>();
+    protected IExpressionStringEvaluator ExpressionStringEvaluatorMock { get; } = Substitute.For<IExpressionStringEvaluator>();
     protected IFormattableStringParser FormattableStringParserMock { get; } = Substitute.For<IFormattableStringParser>();
     protected ComponentRegistrationContext ComponentRegistrationContext { get; } = new();
 
-    protected ProviderComponent CreateSut() => new(ExpressionStringParserMock, FormattableStringParserMock, ComponentRegistrationContext);
+    protected ProviderComponent CreateSut() => new(ExpressionStringEvaluatorMock, FormattableStringParserMock, ComponentRegistrationContext);
 
     public class Constructor : ProviderComponentTests
     {
@@ -132,28 +132,28 @@ public class ProviderComponentTests
         public async Task Clears_PlaceholderProcessors()
         {
             // Arrange
-            ComponentRegistrationContext.PlaceholderProcessors.Add(Substitute.For<IPlaceholderProcessor>());
+            ComponentRegistrationContext.Placeholders.Add(Substitute.For<IPlaceholder>());
             var sut = CreateSut();
 
             // Act
             await sut.StartSession(CancellationToken.None);
 
             // Assert
-            ComponentRegistrationContext.PlaceholderProcessors.Should().BeEmpty();
+            ComponentRegistrationContext.Placeholders.Should().BeEmpty();
         }
 
         [Fact]
         public async Task Clears_FunctionResultParsers()
         {
             // Arrange
-            ComponentRegistrationContext.FunctionResultParsers.Add(Substitute.For<IFunctionResultParser>());
+            ComponentRegistrationContext.Functions.Add(Substitute.For<IFunction>());
             var sut = CreateSut();
 
             // Act
             await sut.StartSession(CancellationToken.None);
 
             // Assert
-            ComponentRegistrationContext.FunctionResultParsers.Should().BeEmpty();
+            ComponentRegistrationContext.Functions.Should().BeEmpty();
         }
     }
 }

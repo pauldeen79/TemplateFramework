@@ -31,7 +31,7 @@ If you want to use the template abstraction level, then you have to make sure th
 - TemplateFramework.TemplateProviders.StringTemplateProvider: Adds support for text-based templates with formattable strings or expression strings
 
 # How to create a template
-You have to write a class in a .NET 8.0 project (class library project is good enough), and compile this project.
+You have to write a class in a .NET 9.0 project (class library project is good enough), and compile this project.
 Then you can either use the command line tool 'tf' (Template Framework) or write your own host and reference the Core and TemplateProviders.CompiledTemplateProvider packages.
 
 There are multiple types of templates supported out of the box:
@@ -97,8 +97,8 @@ Note that the following assemblies will be loaded from the host (Console) comman
 - TemplateFramework.TemplateProviders.ChildTemplateProvider
 - TemplateFramework.TemplateProviders.CompiledTemplateProvider
 - TemplateFramework.TemplateProviders.StringTemplateProvider
-- CrossCutting.Common (3.13.0)
-- CrossCutting.Utilities.Parsers (6.2.0)
+- CrossCutting.Common (3.14.0)
+- CrossCutting.Utilities.Parsers (7.0.1)
 - Microsoft.Extensions.DependencyInjection (9.0.0)
 - Microsoft.Extensions.DependencyInjection.Abstractions (9.0.0)
 

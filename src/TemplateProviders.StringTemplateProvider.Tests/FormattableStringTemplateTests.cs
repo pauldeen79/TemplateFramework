@@ -32,7 +32,7 @@ public class FormattableStringTemplateTests
                     // Note that in this unit test, we have to mock the behavior of FormattableStringParser :)
                     // There is also an Integration test to prove it works in real life ;-)
                     x.ArgAt<TemplateFrameworkStringContext>(2).ParameterNamesList.Add("Name");
-                    return Result.Success<FormattableStringParserResult>(string.Empty);
+                    return Result.Success<GenericFormattableString>(string.Empty);
                 });
 
             // Act
@@ -63,7 +63,7 @@ public class FormattableStringTemplateTests
             // Arrange
             FormattableStringParserMock
                 .Parse(Arg.Any<string>(), Arg.Any<FormattableStringParserSettings>(), Arg.Any<TemplateFrameworkStringContext>())
-                .Returns(Result.Error<FormattableStringParserResult>("Kaboom!"));
+                .Returns(Result.Error<GenericFormattableString>("Kaboom!"));
             var sut = CreateSut();
             var builder = new StringBuilder();
 
@@ -81,7 +81,7 @@ public class FormattableStringTemplateTests
             // Arrange
             FormattableStringParserMock
                 .Parse(Arg.Any<string>(), Arg.Any<FormattableStringParserSettings>(), Arg.Any<TemplateFrameworkStringContext>())
-                .Returns(Result.Success<FormattableStringParserResult>("Parse result"));
+                .Returns(Result.Success<GenericFormattableString>("Parse result"));
             var sut = CreateSut();
             var builder = new StringBuilder();
 
@@ -107,7 +107,7 @@ public class FormattableStringTemplateTests
                 {
                     dictionary = x.ArgAt<TemplateFrameworkStringContext>(2).ParametersDictionary;
 
-                    return Result.Success<FormattableStringParserResult>(string.Empty);
+                    return Result.Success<GenericFormattableString>(string.Empty);
                 });
 
             // Act
