@@ -3,24 +3,24 @@
 public class ExpressionStringTemplate : IBuilderTemplate<StringBuilder>
 {
     private readonly ExpressionStringTemplateIdentifier _expressionStringTemplateIdentifier;
-    private readonly IExpressionStringParser _expressionStringParser;
+    private readonly IExpressionStringEvaluator _expressionStringEvaluator;
     private readonly IFormattableStringParser _formattableStringParser;
     private readonly ComponentRegistrationContext _componentRegistrationContext;
     private readonly IDictionary<string, object?> _parametersDictionary;
 
     public ExpressionStringTemplate(
         ExpressionStringTemplateIdentifier expressionStringTemplateIdentifier,
-        IExpressionStringParser expressionStringParser,
+        IExpressionStringEvaluator expressionStringEvaluator,
         IFormattableStringParser formattableStringParser,
         ComponentRegistrationContext componentRegistrationContext)
     {
         Guard.IsNotNull(expressionStringTemplateIdentifier);
-        Guard.IsNotNull(expressionStringParser);
+        Guard.IsNotNull(expressionStringEvaluator);
         Guard.IsNotNull(formattableStringParser);
         Guard.IsNotNull(componentRegistrationContext);
 
         _expressionStringTemplateIdentifier = expressionStringTemplateIdentifier;
-        _expressionStringParser = expressionStringParser;
+        _expressionStringEvaluator = expressionStringEvaluator;
         _formattableStringParser = formattableStringParser;
         _componentRegistrationContext = componentRegistrationContext;
 
@@ -32,7 +32,7 @@ public class ExpressionStringTemplate : IBuilderTemplate<StringBuilder>
         Guard.IsNotNull(builder);
 
         var context = new TemplateFrameworkStringContext(_parametersDictionary, _componentRegistrationContext, false);
-        var result = _expressionStringParser.Parse(_expressionStringTemplateIdentifier.Template, _expressionStringTemplateIdentifier.FormatProvider, context, _formattableStringParser);
+        var result = _expressionStringEvaluator.Evaluate(_expressionStringTemplateIdentifier.Template, _expressionStringTemplateIdentifier.FormatProvider, context, _formattableStringParser);
 
         if (result.IsSuccessful())
         {

@@ -32,13 +32,11 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
             .ConfigureAwait(false);
 
         // Note that there will be an extension method on Dictionary<string, Result> to get the error in the near future
-        var error = results
-            .Select(x => new { x.Key, Result = x.Value })
-            .FirstOrDefault(x => !x.Result.IsSuccessful());
+        var error = results.GetError();
         if (error is not null)
         {
             // Error in initialization
-            return error.Result;
+            return error;
         }
 
         var modelResult = results[nameof(ICodeGenerationProvider.CreateModel)];

@@ -13,28 +13,32 @@ public sealed class TestTemplateComponentRegistryPlugin : ITemplateComponentRegi
 
     public Task<Result> Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken)
     {
-        var processorProcessorMock = Substitute.For<IPlaceholderProcessor>();
+        var processorProcessorMock = Substitute.For<IPlaceholder>();
         processorProcessorMock
-            .Process(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>())
+            .Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>())
             .Returns(args => args.ArgAt<string>(0) == "__test"
-                ? Result.Success<FormattableStringParserResult>("Hello world!")
-                : Result.Continue<FormattableStringParserResult>());
+                ? Result.Success<GenericFormattableString>("Hello world!")
+                : Result.Continue<GenericFormattableString>());
 
-        var functionResultParserMock = Substitute.For<IFunctionResultParser>();
-        functionResultParserMock.Parse(Arg.Any<FunctionParseResult>(), Arg.Any<object?>(), Arg.Any<IFunctionParseResultEvaluator>(), Arg.Any<IExpressionParser>())
-            .Returns(args =>
-            {
-                if (args.ArgAt<FunctionParseResult>(0).FunctionName == "MyFunction")
-                {
-                    return Result.Success<object?>("Hello world!");
-                }
+        var functionMock = new FunctionMock();
 
-                return Result.Continue<object?>();
-            });
-
-        ComponentRegistrationContext.PlaceholderProcessors.Add(processorProcessorMock);
-        ComponentRegistrationContext.FunctionResultParsers.Add(functionResultParserMock);
+        ComponentRegistrationContext.Placeholders.Add(processorProcessorMock);
+        ComponentRegistrationContext.AddFunction(functionMock);
 
         return Task.FromResult(Result.Success());
+    }
+
+    [FunctionName("MyFunction")]
+    private sealed class FunctionMock : IFunction
+    {
+        public Result<object?> Evaluate(FunctionCallContext context)
+        {
+            return Result.Success<object?>("Hello world!");
+        }
+
+        public Result Validate(FunctionCallContext context)
+        {
+            return Result.Success();
+        }
     }
 }
