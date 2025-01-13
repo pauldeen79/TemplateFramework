@@ -6,7 +6,7 @@ public class ExpressionStringTemplateTests
     protected IExpressionStringEvaluator ExpressionStringEvaluatorMock { get; } = Substitute.For<IExpressionStringEvaluator>();
     protected IFormattableStringParser FormattableStringParserMock { get; } = Substitute.For<IFormattableStringParser>();
     protected ExpressionStringTemplateIdentifier Identifier { get; } = new ExpressionStringTemplateIdentifier(Template, CultureInfo.CurrentCulture);
-    protected ComponentRegistrationContext ComponentRegistrationContext { get; } = new([new ComponentRegistrationContextFunction()]);
+    protected ComponentRegistrationContext ComponentRegistrationContext { get; } = new([new ComponentRegistrationContextFunction(Substitute.For<IFunctionDescriptorMapper>())]);
 
     protected ExpressionStringTemplate CreateSut() => new(Identifier, ExpressionStringEvaluatorMock, FormattableStringParserMock, ComponentRegistrationContext);
 
