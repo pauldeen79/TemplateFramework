@@ -30,9 +30,4 @@ public class TemplateFrameworkContextFunction : IFunction
         // No custom FunctionResultParsers registered, the parent should continue to try other FunctionResultParsers statically injected into the ServiceCollection on application startup.
         return Result.Continue<object?>();
     }
-
-    public Result Validate(FunctionCallContext context)
-    {
-        return Result.Success();
-    }
 }

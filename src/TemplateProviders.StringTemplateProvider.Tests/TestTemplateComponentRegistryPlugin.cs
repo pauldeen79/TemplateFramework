@@ -35,10 +35,5 @@ public sealed class TestTemplateComponentRegistryPlugin : ITemplateComponentRegi
         {
             return Result.Success<object?>("Hello world!");
         }
-
-        public Result Validate(FunctionCallContext context)
-        {
-            return Result.Success();
-        }
     }
 }

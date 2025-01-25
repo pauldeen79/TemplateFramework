@@ -132,9 +132,9 @@ public class IntegrationTests : TestBase
         // Arrange
         var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
         var services = new ServiceCollection()
+            .AddTemplateFrameworkStringTemplateProvider() // important to register this first, to get the functions registered correctly
             .AddParsers()
             .AddTemplateFramework()
-            .AddTemplateFrameworkStringTemplateProvider()
             .AddSingleton(templateComponentRegistryPluginFactory)
             .AddScoped<ITemplateComponentRegistryPlugin, TestTemplateComponentRegistryPlugin>();
 

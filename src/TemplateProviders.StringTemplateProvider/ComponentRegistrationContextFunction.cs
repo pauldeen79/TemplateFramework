@@ -44,9 +44,4 @@ public class ComponentRegistrationContextFunction : IDynamicDescriptorsFunction
     {
         return _functions.SelectMany(x => _functionDescriptorMapper.Map(x, GetType())).ToArray();
     }
-
-    public Result Validate(FunctionCallContext context)
-    {
-        return Result.Success();
-    }
 }
