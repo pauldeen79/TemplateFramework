@@ -15,7 +15,7 @@ public sealed class TestTemplateComponentRegistryPlugin : ITemplateComponentRegi
     {
         var processorProcessorMock = Substitute.For<IPlaceholder>();
         processorProcessorMock
-            .Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>())
+            .Evaluate(Arg.Any<string>(), Arg.Any<PlaceholderSettings>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>())
             .Returns(args => args.ArgAt<string>(0) == "__test"
                 ? Result.Success<GenericFormattableString>("Hello world!")
                 : Result.Continue<GenericFormattableString>());

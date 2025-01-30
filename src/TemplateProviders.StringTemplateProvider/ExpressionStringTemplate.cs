@@ -32,7 +32,7 @@ public class ExpressionStringTemplate : IBuilderTemplate<StringBuilder>
         Guard.IsNotNull(builder);
 
         var context = new TemplateFrameworkStringContext(_parametersDictionary, _componentRegistrationContext, false);
-        var result = _expressionStringEvaluator.Evaluate(_expressionStringTemplateIdentifier.Template, _expressionStringTemplateIdentifier.FormatProvider, context, _formattableStringParser);
+        var result = _expressionStringEvaluator.Evaluate(_expressionStringTemplateIdentifier.Template, new ExpressionStringEvaluatorSettingsBuilder().WithFormatProvider(_expressionStringTemplateIdentifier.FormatProvider), context, _formattableStringParser);
 
         if (result.IsSuccessful())
         {

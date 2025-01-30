@@ -2,10 +2,10 @@
 
 public sealed class TemplateFrameworkContextPlaceholderProcessor : IPlaceholder
 {
-    public Result<GenericFormattableString> Evaluate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+    public Result<GenericFormattableString> Evaluate(string value, PlaceholderSettings settings, object? context, IFormattableStringParser formattableStringParser)
     {
         Guard.IsNotNull(value);
-        Guard.IsNotNull(formatProvider);
+        Guard.IsNotNull(settings);
         Guard.IsNotNull(formattableStringParser);
 
         if (context is not TemplateFrameworkStringContext templateFrameworkFormattableStringContext)
@@ -15,7 +15,7 @@ public sealed class TemplateFrameworkContextPlaceholderProcessor : IPlaceholder
 
         foreach (var placholderProcessor in templateFrameworkFormattableStringContext.Context.Placeholders)
         {
-            var result = placholderProcessor.Evaluate(value, formatProvider, context, formattableStringParser);
+            var result = placholderProcessor.Evaluate(value, settings, context, formattableStringParser);
             if (result.Status != ResultStatus.Continue)
             {
                 return result;
@@ -43,7 +43,7 @@ public sealed class TemplateFrameworkContextPlaceholderProcessor : IPlaceholder
         return Result.Continue<GenericFormattableString>();
     }
 
-    public Result Validate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+    public Result Validate(string value, PlaceholderSettings settings, object? context, IFormattableStringParser formattableStringParser)
     {
         return Result.Success();
     }
