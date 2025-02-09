@@ -33,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="pauldeen79.CrossCutting.Common" Version="3.17.0" />
+    <PackageReference Include="pauldeen79.CrossCutting.Common" Version="3.18.0" />
   </ItemGroup>
 
 </Project>
