@@ -11,8 +11,8 @@ public class TypedCreatorTests : TestBase<TypedCreator>
             var sut = CreateSut();
 
             // Act
-            sut.Invoking(x => x.TryCreateInstance(type: null!))
-               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("type");
+            Action a = () => sut.TryCreateInstance(type: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("type");
         }
 
         [Fact]

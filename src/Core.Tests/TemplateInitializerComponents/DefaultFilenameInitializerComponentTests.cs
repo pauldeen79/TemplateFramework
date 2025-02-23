@@ -11,7 +11,7 @@ public class DefaultFilenameInitializerComponentTests
         {
             // Act & Assert
             Task t = sut.Initialize(context: null!, CancellationToken.None))
-                     .Should().ThrowAsync<ArgumentNullException>().ParamName.ShouldBe("context");
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("context");
         }
 
         [Theory, AutoMockData]

@@ -20,8 +20,8 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Create(identifier: null!))
-               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("identifier");
+            Action a = () => sut.Create(identifier: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("identifier");
         }
 
         [Fact]
@@ -32,8 +32,8 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Create(identifier))
-               .ShouldThrow<NotSupportedException>();
+            Action a = () => sut.Create(identifier);
+            a.ShouldThrow<NotSupportedException>();
         }
     }
 
@@ -49,8 +49,8 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Create(new TemplateByModelIdentifier(null)))
-               .ShouldNotThrow();
+            Action a = () => sut.Create(new TemplateByModelIdentifier(null));
+            a.ShouldNotThrow();
         }
 
         [Fact]
@@ -62,8 +62,8 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Create(new TemplateByModelIdentifier(1)))
-               .ShouldThrow<NotSupportedException>().WithMessage("Model of type System.Int32 is not supported");
+            Action a = () => sut.Create(new TemplateByModelIdentifier(1));
+            a.ShouldThrow<NotSupportedException>().Message.ShouldBe("Model of type System.Int32 is not supported");
         }
 
         [Fact]
@@ -75,8 +75,8 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Create(new TemplateByModelIdentifier(null)))
-               .ShouldThrow<NotSupportedException>().WithMessage("Model of type  is not supported");
+            Action a = () => sut.Create(new TemplateByModelIdentifier(null));
+            a.ShouldThrow<NotSupportedException>().Message.ShouldBe("Model of type  is not supported");
         }
 
         [Fact]
@@ -89,8 +89,8 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Create(new TemplateByModelIdentifier(null!)))
-               .ShouldThrow<InvalidOperationException>().WithMessage("Child template creator returned a null instance");
+            Action a = () => sut.Create(new TemplateByModelIdentifier(null!));
+            a.ShouldThrow<InvalidOperationException>().Message.ShouldBe("Child template creator returned a null instance");
         }
 
         [Fact]
@@ -119,8 +119,8 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
             // Arrange
             var sut = CreateSut();
             // Act & Assert
-            sut.Invoking(x => x.Create(new TemplateByNameIdentifier(name: null!)))
-               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("name");
+            Action a = () => sut.Create(new TemplateByNameIdentifier(name: null!));
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("name");
         }
 
         [Fact]
@@ -132,8 +132,8 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Create(new TemplateByNameIdentifier("test")))
-               .ShouldThrow<NotSupportedException>().WithMessage("Template with name test is not supported");
+            Action a = () => sut.Create(new TemplateByNameIdentifier("test"));
+            a.ShouldThrow<NotSupportedException>().Message.ShouldBe("Template with name test is not supported");
         }
 
         [Fact]
@@ -146,8 +146,8 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Create(new TemplateByNameIdentifier("test")))
-               .ShouldThrow<InvalidOperationException>().WithMessage("Child template creator returned a null instance");
+            Action a = () => sut.Create(new TemplateByNameIdentifier("test"));
+            a.ShouldThrow<InvalidOperationException>().Message.ShouldBe("Child template creator returned a null instance");
         }
 
         [Fact]

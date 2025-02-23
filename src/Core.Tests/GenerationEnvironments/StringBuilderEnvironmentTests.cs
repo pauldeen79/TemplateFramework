@@ -37,8 +37,8 @@ public class StringBuilderEnvironmentTests
             var sut = CreateSut();
 
             // Act & Assert
-            Task t = sut.SaveContents(provider: null!, TestData.BasePath, "Filename.txt", CancellationToken.None))
-                     .Should().ThrowAsync<ArgumentNullException>().ParamName.ShouldBe("provider");
+            Task t = sut.SaveContents(provider: null!, TestData.BasePath, "Filename.txt", CancellationToken.None);
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("provider");
         }
 
         [Fact]
@@ -48,8 +48,8 @@ public class StringBuilderEnvironmentTests
             var sut = CreateSut();
 
             // Act & Assert
-            Task t = sut.SaveContents(CodeGenerationProviderMock, TestData.BasePath, defaultFilename: null!, CancellationToken.None))
-                     .Should().ThrowAsync<ArgumentException>().ParamName.ShouldBe("defaultFilename");
+            Task t = sut.SaveContents(CodeGenerationProviderMock, TestData.BasePath, defaultFilename: null!, CancellationToken.None);
+            (await t.ShouldThrowAsync<ArgumentException>()).ParamName.ShouldBe("defaultFilename");
         }
 
         [Fact]
@@ -59,8 +59,8 @@ public class StringBuilderEnvironmentTests
             var sut = CreateSut();
 
             // Act & Assert
-            Task t = sut.SaveContents(CodeGenerationProviderMock, TestData.BasePath, defaultFilename: string.Empty, CancellationToken.None))
-                     .Should().ThrowAsync<ArgumentException>().ParamName.ShouldBe("defaultFilename");
+            Task t = sut.SaveContents(CodeGenerationProviderMock, TestData.BasePath, defaultFilename: string.Empty, CancellationToken.None);
+            (await t.ShouldThrowAsync<ArgumentException>()).ParamName.ShouldBe("defaultFilename");
         }
 
         [Fact]

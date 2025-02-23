@@ -29,8 +29,8 @@ public class ExpressionStringTemplateTests
             var sut = CreateSut();
 
             // Act & Assert
-            Task t = sut.Render(builder: null!, CancellationToken.None))
-                     .Should().ThrowAsync<ArgumentNullException>().ParamName.ShouldBe("builder");
+            Task t = sut.Render(builder: null!, CancellationToken.None);
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("builder");
         }
 
         [Fact]

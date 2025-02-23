@@ -21,8 +21,8 @@ public class MultipleContentBuilderTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.AddContent(filename: null!))
-               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("filename");
+            Action a = () => sut.AddContent(filename: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("filename");
         }
 
         [Fact]
@@ -106,8 +106,8 @@ public class MultipleContentBuilderTests
 
             // Assert
             instance.ShouldNotBeNull();
-            instance.Contents.Count().ShouldBe(2);
-            instance.Contents.Select(x => x.SkipWhenFileExists).Should().AllBeEquivalentTo(true);
+            instance.Contents.Count.ShouldBe(2);
+            instance.Contents.Select(x => x.SkipWhenFileExists).ShouldAllBe(x => x == true);
         }
 
         [Fact]
@@ -119,8 +119,8 @@ public class MultipleContentBuilderTests
             c1.Builder.AppendLine("Test1");
 
             // Act & Assert
-            sut.Invoking(x => x.Build())
-               .ShouldThrow<ArgumentException>().ParamName.ShouldBe("filename");
+            Action a = () => sut.Build();
+            a.ShouldThrow<ArgumentException>().ParamName.ShouldBe("filename");
         }
     }
 }

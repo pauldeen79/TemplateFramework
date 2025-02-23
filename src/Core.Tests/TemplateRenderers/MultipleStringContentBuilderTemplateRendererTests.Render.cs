@@ -15,7 +15,7 @@ public partial class MultipleStringContentBuilderTemplateRendererTests
 
             // Act & Assert
             Task t = sut.Render(context: null!, CancellationToken.None))
-                     .Should().ThrowAsync<ArgumentException>().ParamName.ShouldBe("context");
+            (await t.ShouldThrowAsync<ArgumentException>()).ParamName.ShouldBe("context");
         }
 
         [Fact]

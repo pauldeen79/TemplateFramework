@@ -17,8 +17,8 @@ public class TemplateProviderTests
         public void Throws_On_Null_Identifier(TemplateProvider sut)
         {
             // Act & Assert
-            sut.Invoking(x => x.Create(identifier: null!))
-               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("identifier");
+            Action a = () => sut.Create(identifier: null!))
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("identifier");
         }
 
         [Theory, AutoMockData]
@@ -31,8 +31,8 @@ public class TemplateProviderTests
             templateProviderComponent.Supports(identifier).Returns(false);
 
             // Act & Assert
-            sut.Invoking(x => x.Create(identifier: identifier))
-               .ShouldThrow<NotSupportedException>();
+            Action a = () => sut.Create(identifier: identifier))
+            a.ShouldThrow<NotSupportedException>();
         }
 
         [Theory, AutoMockData]
@@ -60,8 +60,8 @@ public class TemplateProviderTests
         public void Throws_On_Null_Component(TemplateProvider sut)
         {
             // Act & Assert
-            sut.Invoking(x => x.RegisterComponent(component: null!))
-               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("component");
+            Action a = () => sut.RegisterComponent(component: null!))
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("component");
         }
 
         [Theory, AutoMockData]
@@ -101,8 +101,8 @@ public class TemplateProviderTests
             await sut.StartSession(CancellationToken.None);
 
             // Assert
-            sut.Invoking(x => x.Create(identifier))
-               .ShouldThrow<NotSupportedException>();
+            Action a = () => sut.Create(identifier))
+            a.ShouldThrow<NotSupportedException>();
         }
 
         [Fact]

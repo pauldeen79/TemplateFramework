@@ -26,8 +26,8 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Create(identifier: null!))
-               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("identifier");
+            Action a = () => sut.Create(identifier: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("identifier");
         }
 
         [Fact]
@@ -38,8 +38,8 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Create(identifier: templateIdentifier))
-               .ShouldThrow<ArgumentException>().ParamName.ShouldBe("identifier");
+            Action a = () => sut.Create(identifier: templateIdentifier);
+            a.ShouldThrow<ArgumentException>().ParamName.ShouldBe("identifier");
         }
 
         [Fact]
@@ -71,8 +71,8 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Create(new CompiledTemplateIdentifier(GetType().Assembly.FullName!, "WrongName")))
-               .ShouldThrow<InvalidOperationException>();
+            Action a = () => sut.Create(new CompiledTemplateIdentifier(GetType().Assembly.FullName!, "WrongName"));
+            a.ShouldThrow<InvalidOperationException>();
         }
 
         [Fact]
@@ -86,8 +86,8 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Create(new CompiledTemplateIdentifier(GetType().Assembly.FullName!, GetType().FullName!)))
-               .ShouldThrow<InvalidOperationException>().WithMessage("Could not create instance of type TemplateFramework.TemplateProviders.CompiledTemplateProvider.Tests.ProviderComponentTests+Create");
+            Action a = () => sut.Create(new CompiledTemplateIdentifier(GetType().Assembly.FullName!, GetType().FullName!));
+            a.ShouldThrow<InvalidOperationException>().Message.ShouldBe("Could not create instance of type TemplateFramework.TemplateProviders.CompiledTemplateProvider.Tests.ProviderComponentTests+Create");
         }
     }
 

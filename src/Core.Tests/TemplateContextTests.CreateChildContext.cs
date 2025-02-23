@@ -11,8 +11,8 @@ public partial class TemplateContextTests
             var sut = CreateSut();
 
             // Act
-            sut.Invoking(x => x.CreateChildContext(childContext: null!))
-               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("childContext");
+            Action a = () => sut.CreateChildContext(childContext: null!))
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("childContext");
         }
 
         [Fact]

@@ -74,7 +74,7 @@ public class TypedTextTransformTemplateRendererTests
 
             // Act & Assert
             Task t = sut.TryRender(textTransformTemplate, builder: null!, CancellationToken.None))
-                     .Should().ThrowAsync<ArgumentNullException>().ParamName.ShouldBe("builder");
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("builder");
         }
     }
 }

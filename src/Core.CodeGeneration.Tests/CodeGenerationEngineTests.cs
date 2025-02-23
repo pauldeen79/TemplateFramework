@@ -22,8 +22,8 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var sut = CreateSut();
 
             // Act
-            Task t = sut.Generate(codeGenerationProvider: null!, generationEnvironment, codeGenerationSettings))
-                     .Should().ThrowAsync<ArgumentNullException>().ParamName.ShouldBe("codeGenerationProvider");
+            Task t = sut.Generate(codeGenerationProvider: null!, generationEnvironment, codeGenerationSettings);
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("codeGenerationProvider");
         }
 
         [Fact]
@@ -35,8 +35,8 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var sut = CreateSut();
 
             // Act
-            Task t = sut.Generate(codeGenerationProvider, generationEnvironment: null!, codeGenerationSettings))
-                     .Should().ThrowAsync<ArgumentNullException>().ParamName.ShouldBe("generationEnvironment");
+            Task t = sut.Generate(codeGenerationProvider, generationEnvironment: null!, codeGenerationSettings);
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("generationEnvironment");
         }
 
         [Fact]
@@ -48,8 +48,8 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var sut = CreateSut();
 
             // Act
-            Task t = sut.Generate(codeGenerationProvider, generationEnvironment, settings: null!))
-                     .Should().ThrowAsync<ArgumentNullException>().ParamName.ShouldBe("settings");
+            Task t = sut.Generate(codeGenerationProvider, generationEnvironment, settings: null!);
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("settings");
         }
 
         [Fact]

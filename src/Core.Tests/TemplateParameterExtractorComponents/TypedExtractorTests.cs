@@ -11,16 +11,16 @@ public class TypedExtractorTests
         public void Throws_On_Null_TemplateInstance(TypedExtractor sut)
         {
             // Act & Assert
-            sut.Invoking(x => x.Extract(templateInstance: null!))
-               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("templateInstance");
+            Action a = () => sut.Extract(templateInstance: null!))
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("templateInstance");
         }
 
         [Theory, AutoMockData]
         public void Throws_On_TemplateInstance_Of_Wrong_Type(TypedExtractor sut)
         {
             // Act & Assert
-            sut.Invoking(x => x.Extract(templateInstance: new object()))
-               .ShouldThrow<ArgumentException>().ParamName.ShouldBe("templateInstance");
+            Action a = () => sut.Extract(templateInstance: new object()))
+            a.ShouldThrow<ArgumentException>().ParamName.ShouldBe("templateInstance");
         }
 
         [Fact]

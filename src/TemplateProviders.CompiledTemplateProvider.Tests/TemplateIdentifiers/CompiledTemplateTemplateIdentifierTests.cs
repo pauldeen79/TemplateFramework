@@ -8,32 +8,32 @@ public class CompiledTemplateTemplateIdentifierTests
         public void Throws_On_Null_AssemblyName()
         {
             // Act & Assert
-            this.Invoking(_ => new CompiledTemplateIdentifier(assemblyName: null!, nameof(Constructor)))
-                .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("assemblyName");
+            Action a = () => _ = new CompiledTemplateIdentifier(assemblyName: null!, nameof(Constructor));
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("assemblyName");
         }
 
         [Fact]
         public void Throws_On_Empty_AssemblyName()
         {
             // Act & Assert
-            this.Invoking(_ => new CompiledTemplateIdentifier(assemblyName: string.Empty, nameof(Constructor)))
-                .ShouldThrow<ArgumentException>().ParamName.ShouldBe("assemblyName");
+            Action a = () => _ = new CompiledTemplateIdentifier(assemblyName: string.Empty, nameof(Constructor));
+            a.ShouldThrow<ArgumentException>().ParamName.ShouldBe("assemblyName");
         }
 
         [Fact]
         public void Throws_On_Null_ClassName()
         {
             // Act & Assert
-            this.Invoking(_ => new CompiledTemplateIdentifier(GetType().Assembly.FullName!, className: null!))
-                .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("className");
+            Action a = () => _ = new CompiledTemplateIdentifier(GetType().Assembly.FullName!, className: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("className");
         }
 
         [Fact]
         public void Throws_On_Empty_ClassName()
         {
             // Act & Assert
-            this.Invoking(_ => new CompiledTemplateIdentifier(GetType().Assembly.FullName!, className: string.Empty))
-                .ShouldThrow<ArgumentException>().ParamName.ShouldBe("className");
+            Action a = () => _ = new CompiledTemplateIdentifier(GetType().Assembly.FullName!, className: string.Empty);
+            a.ShouldThrow<ArgumentException>().ParamName.ShouldBe("className");
         }
 
         [Fact]
