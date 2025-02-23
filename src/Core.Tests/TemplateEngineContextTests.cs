@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests;
+namespace TemplateFramework.Core.Tests;
 
 public class TemplateEngineContextTests
 {
@@ -34,15 +34,15 @@ public class TemplateEngineContextTests
             var instance = new TemplateEngineContext(request, engine, componentRegistry, template);
 
             // Assert
-            instance.AdditionalParameters.Should().BeEquivalentTo(request.AdditionalParameters);
-            instance.ComponentRegistry.Should().BeSameAs(componentRegistry);
-            instance.Context.Should().BeSameAs(request.Context);
-            instance.DefaultFilename.Should().BeSameAs(request.DefaultFilename);
-            instance.Engine.Should().BeSameAs(engine);
-            instance.GenerationEnvironment.Should().BeSameAs(request.GenerationEnvironment);
-            instance.Identifier.Should().BeSameAs(request.Identifier);
-            instance.Model.Should().BeSameAs(request.Model);
-            instance.Template.Should().BeSameAs(template);
+            instance.AdditionalParameters.ShouldBeEquivalentTo(request.AdditionalParameters);
+            instance.ComponentRegistry.ShouldBeSameAs(componentRegistry);
+            instance.Context.ShouldBeSameAs(request.Context);
+            instance.DefaultFilename.ShouldBeSameAs(request.DefaultFilename);
+            instance.Engine.ShouldBeSameAs(engine);
+            instance.GenerationEnvironment.ShouldBeSameAs(request.GenerationEnvironment);
+            instance.Identifier.ShouldBeSameAs(request.Identifier);
+            instance.Model.ShouldBeSameAs(request.Model);
+            instance.Template.ShouldBeSameAs(template);
         }
     }
 }

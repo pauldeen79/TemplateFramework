@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests.TemplateIdentifiers;
+namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests.TemplateIdentifiers;
 
 public class TemplateByModelIdentifierTests
 {
@@ -8,7 +8,7 @@ public class TemplateByModelIdentifierTests
         public void Does_Not_Throw_On_Null_Argument()
         {
             this.Invoking(_ => new TemplateByModelIdentifier(null))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
     }
 }

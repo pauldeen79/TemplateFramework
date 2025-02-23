@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests;
+namespace TemplateFramework.Core.Tests;
 
 public class ChildTemplateContextTests
 {
@@ -21,7 +21,7 @@ public class ChildTemplateContextTests
             var sut = new ChildTemplateContext(templateIdentifier);
 
             // Assert
-            sut.Identifier.Should().BeSameAs(templateIdentifier);
+            sut.Identifier.ShouldBeSameAs(templateIdentifier);
         }
 
         [Theory, AutoMockData]
@@ -31,8 +31,8 @@ public class ChildTemplateContextTests
             var sut = new ChildTemplateContext(templateIdentifier, Model);
 
             // Assert
-            sut.Identifier.Should().BeSameAs(templateIdentifier);
-            sut.Model.Should().BeSameAs(Model);
+            sut.Identifier.ShouldBeSameAs(templateIdentifier);
+            sut.Model.ShouldBeSameAs(Model);
         }
 
         [Theory, AutoMockData]
@@ -42,10 +42,10 @@ public class ChildTemplateContextTests
             var sut = new ChildTemplateContext(templateIdentifier, Model, IterationNumber, IterationCount);
 
             // Assert
-            sut.Identifier.Should().BeSameAs(templateIdentifier);
-            sut.Model.Should().BeSameAs(Model);
-            sut.IterationNumber.Should().Be(IterationNumber);
-            sut.IterationCount.Should().Be(IterationCount);
+            sut.Identifier.ShouldBeSameAs(templateIdentifier);
+            sut.Model.ShouldBeSameAs(Model);
+            sut.IterationNumber.ShouldBe(IterationNumber);
+            sut.IterationCount.ShouldBe(IterationCount);
         }
     }
 }

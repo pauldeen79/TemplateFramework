@@ -39,8 +39,8 @@ public class FormattableStringTemplateTests
             var result = sut.GetParameters();
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.GetValueOrThrow().Select(x => x.Name).Should().BeEquivalentTo("Name");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.GetValueOrThrow().Select(x => x.Name).ShouldBeEquivalentTo("Name");
         }
     }
 
@@ -53,8 +53,8 @@ public class FormattableStringTemplateTests
             var sut = CreateSut();
 
             // Act & Assert
-            await sut.Awaiting(x => x.Render(builder: null!, CancellationToken.None))
-                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("builder");
+            Task t = sut.Render(builder: null!, CancellationToken.None);
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("builder");
         }
 
         [Fact]
@@ -71,8 +71,8 @@ public class FormattableStringTemplateTests
             var result = await sut.Render(builder, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom!");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom!");
         }
 
         [Fact]
@@ -89,7 +89,7 @@ public class FormattableStringTemplateTests
             await sut.Render(builder, CancellationToken.None);
 
             // Assert
-            builder.ToString().Should().Be("Parse result");
+            builder.ToString().ShouldBe("Parse result");
         }
     }
 
@@ -114,11 +114,11 @@ public class FormattableStringTemplateTests
             var result = sut.SetParameter("Name", "Value");
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
             (await sut.Render(new StringBuilder(), CancellationToken.None)).ThrowIfInvalid();
-            dictionary.Should().NotBeNull();
-            dictionary!.First().Key.Should().Be("Name");
-            dictionary!.First().Value.Should().Be("Value");
+            dictionary.ShouldNotBeNull();
+            dictionary!.First().Key.ShouldBe("Name");
+            dictionary!.First().Value.ShouldBe("Value");
         }
     }
 }

@@ -21,7 +21,7 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
 
             // Act & Assert
             sut.Invoking(x => x.Create(identifier: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("identifier");
+               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("identifier");
         }
 
         [Fact]
@@ -33,7 +33,7 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
 
             // Act & Assert
             sut.Invoking(x => x.Create(identifier))
-               .Should().Throw<NotSupportedException>();
+               .ShouldThrow<NotSupportedException>();
         }
     }
 
@@ -50,7 +50,7 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
 
             // Act & Assert
             sut.Invoking(x => x.Create(new TemplateByModelIdentifier(null)))
-               .Should().NotThrow();
+               .ShouldNotThrow();
         }
 
         [Fact]
@@ -63,7 +63,7 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
 
             // Act & Assert
             sut.Invoking(x => x.Create(new TemplateByModelIdentifier(1)))
-               .Should().Throw<NotSupportedException>().WithMessage("Model of type System.Int32 is not supported");
+               .ShouldThrow<NotSupportedException>().WithMessage("Model of type System.Int32 is not supported");
         }
 
         [Fact]
@@ -76,7 +76,7 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
 
             // Act & Assert
             sut.Invoking(x => x.Create(new TemplateByModelIdentifier(null)))
-               .Should().Throw<NotSupportedException>().WithMessage("Model of type  is not supported");
+               .ShouldThrow<NotSupportedException>().WithMessage("Model of type  is not supported");
         }
 
         [Fact]
@@ -90,7 +90,7 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
 
             // Act & Assert
             sut.Invoking(x => x.Create(new TemplateByModelIdentifier(null!)))
-               .Should().Throw<InvalidOperationException>().WithMessage("Child template creator returned a null instance");
+               .ShouldThrow<InvalidOperationException>().WithMessage("Child template creator returned a null instance");
         }
 
         [Fact]
@@ -107,7 +107,7 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
             var result = sut.Create(new TemplateByModelIdentifier(1));
 
             // Assert
-            result.Should().BeSameAs(template);
+            result.ShouldBeSameAs(template);
         }
     }
 
@@ -120,7 +120,7 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
             var sut = CreateSut();
             // Act & Assert
             sut.Invoking(x => x.Create(new TemplateByNameIdentifier(name: null!)))
-               .Should().Throw<ArgumentNullException>().WithParameterName("name");
+               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("name");
         }
 
         [Fact]
@@ -133,7 +133,7 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
 
             // Act & Assert
             sut.Invoking(x => x.Create(new TemplateByNameIdentifier("test")))
-               .Should().Throw<NotSupportedException>().WithMessage("Template with name test is not supported");
+               .ShouldThrow<NotSupportedException>().WithMessage("Template with name test is not supported");
         }
 
         [Fact]
@@ -147,7 +147,7 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
 
             // Act & Assert
             sut.Invoking(x => x.Create(new TemplateByNameIdentifier("test")))
-               .Should().Throw<InvalidOperationException>().WithMessage("Child template creator returned a null instance");
+               .ShouldThrow<InvalidOperationException>().WithMessage("Child template creator returned a null instance");
         }
 
         [Fact]
@@ -164,7 +164,7 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
             var result = sut.Create(new TemplateByNameIdentifier("test"));
 
             // Assert
-            result.Should().BeSameAs(template);
+            result.ShouldBeSameAs(template);
         }
     }
 
@@ -181,7 +181,7 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
             var result = sut.Supports(identifier);
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
 
         [Fact]
@@ -195,7 +195,7 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
             var result = sut.Supports(identifier);
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
 
         [Fact]
@@ -211,7 +211,7 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
             var result = sut.Supports(identifier);
 
             // Assert
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
 
         [Fact]
@@ -227,7 +227,7 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
             var result = sut.Supports(identifier);
 
             // Assert
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
     }
 }

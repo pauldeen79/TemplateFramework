@@ -29,8 +29,8 @@ public class ExpressionStringTemplateTests
             var sut = CreateSut();
 
             // Act & Assert
-            await sut.Awaiting(x => x.Render(builder: null!, CancellationToken.None))
-                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("builder");
+            Task t = sut.Render(builder: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().ParamName.ShouldBe("builder");
         }
 
         [Fact]
@@ -46,8 +46,8 @@ public class ExpressionStringTemplateTests
             var result = await sut.Render(builder, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom!");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom!");
         }
 
         [Fact]
@@ -63,7 +63,7 @@ public class ExpressionStringTemplateTests
             await sut.Render(builder, CancellationToken.None);
 
             // Assert
-            builder.ToString().Should().Be("Parse result");
+            builder.ToString().ShouldBe("Parse result");
         }
     }
 }

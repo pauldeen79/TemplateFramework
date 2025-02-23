@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests.TemplateRenderers;
+namespace TemplateFramework.Core.Tests.TemplateRenderers;
 
 public partial class StringBuilderTemplateRendererTests
 {
@@ -15,7 +15,7 @@ public partial class StringBuilderTemplateRendererTests
             var result = sut.Supports(environment);
 
             // Assert
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
 
         [Fact]
@@ -29,7 +29,7 @@ public partial class StringBuilderTemplateRendererTests
             var result = sut.Supports(environment);
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
 
         [Fact]
@@ -42,7 +42,7 @@ public partial class StringBuilderTemplateRendererTests
             var result = sut.Supports(null!);
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
     }
 }

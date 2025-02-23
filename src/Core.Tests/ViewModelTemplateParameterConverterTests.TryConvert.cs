@@ -12,7 +12,7 @@ public partial class ViewModelTemplateParameterConverterTests
 
             // Act & Assert
             sut.Invoking(x => x.TryConvert(null, Type, context: null!, out _))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -25,8 +25,8 @@ public partial class ViewModelTemplateParameterConverterTests
             var result = sut.TryConvert(null, Type, Context, out var convertedValue);
 
             // Assert
-            result.Should().BeFalse();
-            convertedValue.Should().BeNull();
+            result.ShouldBeFalse();
+            convertedValue.ShouldBeNull();
         }
 
         [Fact]
@@ -41,8 +41,8 @@ public partial class ViewModelTemplateParameterConverterTests
             var result = sut.TryConvert("some model of the wrong type", Type, Context, out var convertedValue);
 
             // Assert
-            result.Should().BeFalse();
-            convertedValue.Should().BeNull();
+            result.ShouldBeFalse();
+            convertedValue.ShouldBeNull();
         }
 
         [Fact]
@@ -58,11 +58,11 @@ public partial class ViewModelTemplateParameterConverterTests
             var result = sut.TryConvert(new TestData.MyModel<string> { Model = "Hello world!" }, Type, Context, out var convertedValue);
 
             // Assert
-            result.Should().BeTrue();
-            convertedValue.Should().BeOfType<TestData.MyViewModel<TestData.MyModel<string>>>();
+            result.ShouldBeTrue();
+            convertedValue.ShouldBeOfType<TestData.MyViewModel<TestData.MyModel<string>>>();
             var vm = (TestData.MyViewModel<TestData.MyModel<string>>)convertedValue!;
-            vm.Model.Should().NotBeNull();
-            vm.Model!.Model.Should().Be("Hello world!");
+            vm.Model.ShouldNotBeNull();
+            vm.Model!.Model.ShouldBe("Hello world!");
         }
     }
 }

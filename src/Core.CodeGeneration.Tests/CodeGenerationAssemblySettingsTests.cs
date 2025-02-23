@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.CodeGeneration.Tests;
+namespace TemplateFramework.Core.CodeGeneration.Tests;
 
 public class CodeGenerationAssemblySettingsTests
 {
@@ -25,9 +25,9 @@ public class CodeGenerationAssemblySettingsTests
             var instance = new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName());
 
             // Assert
-            instance.BasePath.Should().Be(TestData.BasePath);
-            instance.DefaultFilename.Should().Be("DefaultFilename.txt");
-            instance.AssemblyName.Should().Be(TestData.GetAssemblyName());
+            instance.BasePath.ShouldBe(TestData.BasePath);
+            instance.DefaultFilename.ShouldBe("DefaultFilename.txt");
+            instance.AssemblyName.ShouldBe(TestData.GetAssemblyName());
         }
 
         [Fact]
@@ -37,10 +37,10 @@ public class CodeGenerationAssemblySettingsTests
             var instance = new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), Path.Combine(TestData.BasePath, "SomeDirectory"));
 
             // Assert
-            instance.BasePath.Should().Be(TestData.BasePath);
-            instance.DefaultFilename.Should().Be("DefaultFilename.txt");
-            instance.AssemblyName.Should().Be(TestData.GetAssemblyName());
-            instance.CurrentDirectory.Should().Be(Path.Combine(TestData.BasePath, "SomeDirectory"));
+            instance.BasePath.ShouldBe(TestData.BasePath);
+            instance.DefaultFilename.ShouldBe("DefaultFilename.txt");
+            instance.AssemblyName.ShouldBe(TestData.GetAssemblyName());
+            instance.CurrentDirectory.ShouldBe(Path.Combine(TestData.BasePath, "SomeDirectory"));
         }
 
         [Fact]
@@ -50,10 +50,10 @@ public class CodeGenerationAssemblySettingsTests
             var instance = new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), dryRun: true);
 
             // Assert
-            instance.BasePath.Should().Be(TestData.BasePath);
-            instance.DefaultFilename.Should().Be("DefaultFilename.txt");
-            instance.AssemblyName.Should().Be(TestData.GetAssemblyName());
-            instance.DryRun.Should().BeTrue();
+            instance.BasePath.ShouldBe(TestData.BasePath);
+            instance.DefaultFilename.ShouldBe("DefaultFilename.txt");
+            instance.AssemblyName.ShouldBe(TestData.GetAssemblyName());
+            instance.DryRun.ShouldBeTrue();
         }
 
         [Fact]
@@ -63,11 +63,11 @@ public class CodeGenerationAssemblySettingsTests
             var instance = new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), Path.Combine(TestData.BasePath, "SomeDirectory"), classNameFilter: ["MyFilter"]);
 
             // Assert
-            instance.BasePath.Should().Be(TestData.BasePath);
-            instance.DefaultFilename.Should().Be("DefaultFilename.txt");
-            instance.AssemblyName.Should().Be(TestData.GetAssemblyName());
-            instance.CurrentDirectory.Should().Be(Path.Combine(TestData.BasePath, "SomeDirectory"));
-            instance.ClassNameFilter.Should().BeEquivalentTo("MyFilter");
+            instance.BasePath.ShouldBe(TestData.BasePath);
+            instance.DefaultFilename.ShouldBe("DefaultFilename.txt");
+            instance.AssemblyName.ShouldBe(TestData.GetAssemblyName());
+            instance.CurrentDirectory.ShouldBe(Path.Combine(TestData.BasePath, "SomeDirectory"));
+            instance.ClassNameFilter.ShouldBeEquivalentTo("MyFilter");
         }
 
         [Fact]
@@ -77,11 +77,11 @@ public class CodeGenerationAssemblySettingsTests
             var instance = new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), Path.Combine(TestData.BasePath, "SomeDirectory"), dryRun: true);
 
             // Assert
-            instance.BasePath.Should().Be(TestData.BasePath);
-            instance.DefaultFilename.Should().Be("DefaultFilename.txt");
-            instance.AssemblyName.Should().Be(TestData.GetAssemblyName());
-            instance.CurrentDirectory.Should().Be(Path.Combine(TestData.BasePath, "SomeDirectory"));
-            instance.DryRun.Should().BeTrue();
+            instance.BasePath.ShouldBe(TestData.BasePath);
+            instance.DefaultFilename.ShouldBe("DefaultFilename.txt");
+            instance.AssemblyName.ShouldBe(TestData.GetAssemblyName());
+            instance.CurrentDirectory.ShouldBe(Path.Combine(TestData.BasePath, "SomeDirectory"));
+            instance.DryRun.ShouldBeTrue();
         }
 
         [Fact]
@@ -91,12 +91,12 @@ public class CodeGenerationAssemblySettingsTests
             var instance = new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), true, null, ["Filter"]);
 
             // Assert
-            instance.BasePath.Should().Be(TestData.BasePath);
-            instance.DefaultFilename.Should().Be("DefaultFilename.txt");
-            instance.AssemblyName.Should().Be(TestData.GetAssemblyName());
-            instance.DryRun.Should().BeTrue();
-            instance.CurrentDirectory.Should().NotBeNull();
-            instance.ClassNameFilter.Should().BeEquivalentTo("Filter");
+            instance.BasePath.ShouldBe(TestData.BasePath);
+            instance.DefaultFilename.ShouldBe("DefaultFilename.txt");
+            instance.AssemblyName.ShouldBe(TestData.GetAssemblyName());
+            instance.DryRun.ShouldBeTrue();
+            instance.CurrentDirectory.ShouldNotBeNull();
+            instance.ClassNameFilter.ShouldBeEquivalentTo("Filter");
         }
     }
 }

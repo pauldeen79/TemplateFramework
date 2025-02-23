@@ -10,8 +10,8 @@ public class ContextInitializerComponentTests
         public async Task Throws_On_Null_Context(ContextInitializerComponent sut)
         {
             // Act & Assert
-            await sut.Awaiting(x => x.Initialize(context: null!, CancellationToken.None))
-                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Task t = sut.Initialize(context: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().ParamName.ShouldBe("context");
         }
 
         [Theory, AutoMockData]

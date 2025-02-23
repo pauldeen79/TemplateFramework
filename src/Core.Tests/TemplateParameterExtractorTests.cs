@@ -17,7 +17,7 @@ public class TemplateParameterExtractorTests
         {
             // Act & Assert
             sut.Invoking(x => x.Extract(templateInstance: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("templateInstance");
+               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("templateInstance");
         }
 
         [Theory, AutoMockData]
@@ -32,8 +32,8 @@ public class TemplateParameterExtractorTests
             var result = sut.Extract(templateInstance: new object());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
-            result.Value.Should().BeEmpty();
+            result.Status.ShouldBe(ResultStatus.Continue);
+            result.Value.ShouldBeEmpty();
         }
 
         [Fact]
@@ -51,8 +51,8 @@ public class TemplateParameterExtractorTests
             var result = sut.Extract(template);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(parametersResult.Value);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(parametersResult.Value);
         }
     }
 }

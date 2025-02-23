@@ -1,4 +1,5 @@
 ﻿using TemplateFramework.Abstractions.Templates;
+using Shouldly;
 
 namespace TemplateFramework.Core.Tests.TemplateParameterExtractorComponents;
 
@@ -11,7 +12,7 @@ public class TypedExtractorTests
         {
             // Act & Assert
             sut.Invoking(x => x.Extract(templateInstance: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("templateInstance");
+               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("templateInstance");
         }
 
         [Theory, AutoMockData]
@@ -19,7 +20,7 @@ public class TypedExtractorTests
         {
             // Act & Assert
             sut.Invoking(x => x.Extract(templateInstance: new object()))
-               .Should().Throw<ArgumentException>().WithParameterName("templateInstance");
+               .ShouldThrow<ArgumentException>().ParamName.ShouldBe("templateInstance");
         }
 
         [Fact]
@@ -35,8 +36,8 @@ public class TypedExtractorTests
             var result = sut.Extract(parameterizedTemplate);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(parameters.Value);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(parameters.Value);
         }
     }
 
@@ -51,7 +52,7 @@ public class TypedExtractorTests
             var result = sut.Supports(parameterizedTemplate);
 
             // Assert
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
 
         [Theory, AutoMockData]
@@ -61,7 +62,7 @@ public class TypedExtractorTests
             var result = sut.Supports(null!);
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
 
         [Theory, AutoMockData]
@@ -71,7 +72,7 @@ public class TypedExtractorTests
             var result = sut.Supports(new object());
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
     }
 }

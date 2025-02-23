@@ -12,7 +12,7 @@ public class TypedCreatorTests : TestBase<TypedCreator>
 
             // Act
             sut.Invoking(x => x.TryCreateInstance(type: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("type");
+               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("type");
         }
 
         [Fact]
@@ -26,7 +26,7 @@ public class TypedCreatorTests : TestBase<TypedCreator>
             var result = sut.TryCreateInstance(type);
 
             // Assert
-            result.Should().BeOfType<MyGeneratorProvider>();
+            result.ShouldBeOfType<MyGeneratorProvider>();
         }
 
         [Fact]
@@ -40,7 +40,7 @@ public class TypedCreatorTests : TestBase<TypedCreator>
             var result = sut.TryCreateInstance(type);
 
             // Assert
-            result.Should().BeNull();
+            result.ShouldBeNull();
         }
     }
 }

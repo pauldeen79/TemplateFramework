@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests;
+namespace TemplateFramework.Core.Tests;
 
 public class TemplateParameterTests
 {
@@ -17,9 +17,9 @@ public class TemplateParameterTests
             var instance = new TemplateParameter("Name", GetType());
 
             // Assert
-            instance.Should().NotBeNull();
-            instance.Name.Should().Be("Name");
-            instance.Type.Should().Be(GetType());
+            instance.ShouldNotBeNull();
+            instance.Name.ShouldBe("Name");
+            instance.Type.ShouldBe(GetType());
         }
     }
 }

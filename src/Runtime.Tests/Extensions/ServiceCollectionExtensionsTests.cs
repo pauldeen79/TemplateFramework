@@ -17,7 +17,7 @@ public class ServiceCollectionExtensionsTests : TestBase
                 .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
 
             // Assert
-            provider.Should().NotBeNull();
+            provider.ShouldNotBeNull();
         }
     }
 }

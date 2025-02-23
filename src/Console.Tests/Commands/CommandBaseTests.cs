@@ -1,4 +1,6 @@
-﻿namespace TemplateFramework.Console.Tests.Commands;
+﻿using System.Threading.Tasks;
+
+namespace TemplateFramework.Console.Tests.Commands;
 
 public class CommandBaseTests : TestBase<CommandBaseTests.CommandBaseTest>
 {
@@ -30,8 +32,8 @@ public class CommandBaseTests : TestBase<CommandBaseTests.CommandBaseTest>
             var sut = CreateSut();
 
             // Act & Assert
-            await sut.Awaiting(x => x.WatchPublic(app: null!, false, Filename, () => Task.CompletedTask))
-                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("app");
+            Task t = sut.WatchPublic(app: null!, false, Filename, () => Task.CompletedTask);
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("app");
         }
 
         [Fact]
@@ -42,8 +44,8 @@ public class CommandBaseTests : TestBase<CommandBaseTests.CommandBaseTest>
             var sut = CreateSut();
 
             // Act & Assert
-            await sut.Awaiting(x => x.WatchPublic(app, false, filename: null!, () => Task.CompletedTask))
-                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("filename");
+            Task t = sut.WatchPublic(app, false, filename: null!, () => Task.CompletedTask);
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("filename");
         }
 
         [Fact]
@@ -54,8 +56,8 @@ public class CommandBaseTests : TestBase<CommandBaseTests.CommandBaseTest>
             var sut = CreateSut();
 
             // Act & Assert
-            await sut.Awaiting(x => x.WatchPublic(app, false, Filename, action: null!))
-                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("action");
+            Task t = sut.WatchPublic(app, false, Filename, action: null!);
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("action");
         }
 
         [Fact]
@@ -70,7 +72,7 @@ public class CommandBaseTests : TestBase<CommandBaseTests.CommandBaseTest>
             await sut.WatchPublic(app, false, Filename, () => { counter++; return Task.CompletedTask; });
 
             // Assert
-            counter.Should().Be(1);
+            counter.ShouldBe(1);
         }
 
         [Fact]
@@ -84,7 +86,7 @@ public class CommandBaseTests : TestBase<CommandBaseTests.CommandBaseTest>
             var result = await CommandLineCommandHelper.ExecuteCommand(async app => await sut.WatchPublic(app, true, Filename, () => Task.CompletedTask).ConfigureAwait(false));
 
             // Assert
-            result.Should().Be("Error: Could not find file [MyFile.txt]. Could not watch file for changes." + Environment.NewLine);
+            result.ShouldBe("Error: Could not find file [MyFile.txt]. Could not watch file for changes." + Environment.NewLine);
         }
 
         [Fact]
@@ -101,7 +103,7 @@ public class CommandBaseTests : TestBase<CommandBaseTests.CommandBaseTest>
             await sut.WatchPublic(app, true, Filename, task);
 
             // Assert
-            counter.Should().Be(0);
+            counter.ShouldBe(0);
         }
 
         [Fact]
@@ -130,7 +132,7 @@ public class CommandBaseTests : TestBase<CommandBaseTests.CommandBaseTest>
             await sut.WatchPublic(app, true, Filename, () => { actionCallCounter++; return Task.CompletedTask; });
 
             // Assert
-            actionCallCounter.Should().Be(4);
+            actionCallCounter.ShouldBe(4);
         }
 
         [Fact]
@@ -154,7 +156,7 @@ public class CommandBaseTests : TestBase<CommandBaseTests.CommandBaseTest>
             var result = await CommandLineCommandHelper.ExecuteCommand(app => sut.WatchPublic(app, true, Filename, () => { actionCallCounter++; return Task.CompletedTask; }));
 
             // Assert
-            result.Should().Be(@"Watching file [MyFile.txt] for changes...
+            result.ShouldBe(@"Watching file [MyFile.txt] for changes..
 Error: Could not find file [MyFile.txt]. Could not watch file for changes.
 ");
         }
@@ -172,7 +174,7 @@ Error: Could not find file [MyFile.txt]. Could not watch file for changes.
             var result = sut.GetCurrentDirectoryPublic(string.Empty, assemblyName: null!);
 
             // Assert
-            result.Should().BeEmpty();
+            result.ShouldBeEmpty();
         }
 
         [Fact]
@@ -185,7 +187,7 @@ Error: Could not find file [MyFile.txt]. Could not watch file for changes.
             var result = sut.GetCurrentDirectoryPublic("CurrentDirectory", assemblyName: AssemblyName);
 
             // Assert
-            result.Should().Be("CurrentDirectory");
+            result.ShouldBe("CurrentDirectory");
         }
 
         [Fact]
@@ -198,7 +200,7 @@ Error: Could not find file [MyFile.txt]. Could not watch file for changes.
             var result = sut.GetCurrentDirectoryPublic(null, assemblyName: Path.Combine("Directory", "Assembly.dll"));
 
             // Assert
-            result.Should().Be("Directory");
+            result.ShouldBe("Directory");
         }
 
         [Fact]
@@ -211,7 +213,7 @@ Error: Could not find file [MyFile.txt]. Could not watch file for changes.
             var result = sut.GetCurrentDirectoryPublic(null, assemblyName: AssemblyName);
 
             // Assert
-            result.Should().BeEmpty();
+            result.ShouldBeEmpty();
         }
     }
 
@@ -247,8 +249,8 @@ Error: Could not find file [MyFile.txt]. Could not watch file for changes.
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.GenerateSingleOutputPublic(builder: null!, string.Empty))
-               .Should().Throw<ArgumentNullException>().WithParameterName("builder");
+            Action a = () => sut.GenerateSingleOutputPublic(builder: null!, string.Empty);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("builder");
         }
 
         [Fact]
@@ -258,8 +260,8 @@ Error: Could not find file [MyFile.txt]. Could not watch file for changes.
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.GenerateSingleOutputPublic(multipleContentBuilder, basePath: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("basePath");
+            Action a = () => sut.GenerateSingleOutputPublic(multipleContentBuilder, basePath: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("basePath");
         }
 
         [Fact]
@@ -273,7 +275,7 @@ Error: Could not find file [MyFile.txt]. Could not watch file for changes.
             var result = sut.GenerateSingleOutputPublic(multipleContentBuilder, string.Empty);
 
             // Assert
-            result.Should().Be(@"File1.txt:
+            result.ShouldBe(@"File1.txt:
 Contents from file1
 File2.txt:
 Contents from file2
@@ -291,7 +293,7 @@ Contents from file2
             var result = sut.GenerateSingleOutputPublic(multipleContentBuilder, "BasePath" + Path.DirectorySeparatorChar);
 
             // Assert
-            result.Should().Be($@"{Directory.GetCurrentDirectory()}{Path.DirectorySeparatorChar}File1.txt:
+            result.ShouldBe($@"{Directory.GetCurrentDirectory()}{Path.DirectorySeparatorChar}File1.txt:
 Contents from file1
 {Directory.GetCurrentDirectory()}{Path.DirectorySeparatorChar}File2.txt:
 Contents from file2
@@ -309,7 +311,7 @@ Contents from file2
             var result = sut.GenerateSingleOutputPublic(multipleContentBuilder, "BasePath" + Path.DirectorySeparatorChar);
 
             // Assert
-            result.Should().Be($@"BasePath{Path.DirectorySeparatorChar}File1.txt:
+            result.ShouldBe($@"BasePath{Path.DirectorySeparatorChar}File1.txt:
 Contents from file1
 BasePath{Path.DirectorySeparatorChar}File2.txt:
 Contents from file2
@@ -327,7 +329,7 @@ Contents from file2
             var result = sut.GenerateSingleOutputPublic(multipleContentBuilder, string.Empty);
 
             // Assert
-            result.Should().Be($@"File1.txt:
+            result.ShouldBe($@"File1.txt:;
 Contents from file1
 File2.txt:
 Contents from file2
@@ -344,8 +346,8 @@ Contents from file2
             var sut = CreateSut();
 
             // Act & Assert
-            await sut.Awaiting(x => CommandLineCommandHelper.ExecuteCommand(_ => x.WriteOutputToHostPublic(app: null!, "TemplateOutput", true)))
-                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("app");
+            Task t = CommandLineCommandHelper.ExecuteCommand(_ => sut.WriteOutputToHostPublic(app: null!, "TemplateOutput", true));
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("app");
         }
 
         [Fact]
@@ -355,8 +357,8 @@ Contents from file2
             var sut = CreateSut();
 
             // Act & Assert
-            await sut.Invoking(x => CommandLineCommandHelper.ExecuteCommand(app => x.WriteOutputToHostPublic(app, templateOutput: null!, true)))
-                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("templateOutput");
+            Task t = CommandLineCommandHelper.ExecuteCommand(app => sut.WriteOutputToHostPublic(app, templateOutput: null!, true));
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("templateOutput");
         }
 
         [Fact]
@@ -369,7 +371,7 @@ Contents from file2
             var result = await CommandLineCommandHelper.ExecuteCommand(app => sut.WriteOutputToHostPublic(app, "TemplateOutput", true));
 
             // Assert
-            result.Should().Be("TemplateOutput" + Environment.NewLine);
+            result.ShouldBe("TemplateOutput" + Environment.NewLine);
         }
 
         [Fact]
@@ -382,7 +384,7 @@ Contents from file2
             var result = await CommandLineCommandHelper.ExecuteCommand(app => sut.WriteOutputToHostPublic(app, "TemplateOutput", false));
 
             // Assert
-            result.Should().Be(@"Code generation output:
+            result.ShouldBe(@"Code generation output:
 TemplateOutput
 ");
         }
@@ -398,25 +400,25 @@ TemplateOutput
         }
 
         [Fact]
-        public void Throws_On_Null_App()
+        public async Task Throws_On_Null_App()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => CommandLineCommandHelper.ExecuteCommand(_ => x.WriteOutputToClipboardPublic(app: null!, "TemplateOutput", true)))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("app");
+            Task t = CommandLineCommandHelper.ExecuteCommand(_ => sut.WriteOutputToClipboardPublic(app: null!, "TemplateOutput", true));
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("app");
         }
 
         [Fact]
-        public void Throws_On_Null_TemplateOutput()
+        public async Task Throws_On_Null_TemplateOutput()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => CommandLineCommandHelper.ExecuteCommand(app => x.WriteOutputToClipboardPublic(app, templateOutput: null!, true)))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("templateOutput");
+            Task t = CommandLineCommandHelper.ExecuteCommand(app => sut.WriteOutputToClipboardPublic(app, templateOutput: null!, true));
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("templateOutput");
         }
 
         [Fact]
@@ -442,7 +444,7 @@ TemplateOutput
             var result = await CommandLineCommandHelper.ExecuteCommand(app => sut.WriteOutputToClipboardPublic(app, "TemplateOutput", false));
 
             // Assert
-            result.Should().Be("Copied code generation output to clipboard" + Environment.NewLine);
+            result.ShouldBe("Copied code generation output to clipboard" + Environment.NewLine);
         }
 
         [Fact]
@@ -455,7 +457,7 @@ TemplateOutput
             var result = await CommandLineCommandHelper.ExecuteCommand(app => sut.WriteOutputToClipboardPublic(app, "TemplateOutput", true));
 
             // Assert
-            result.Should().BeEmpty();
+            result.ShouldBeEmpty();
         }
     }
 
@@ -475,7 +477,7 @@ TemplateOutput
             var result = sut.GetDryRunPublic(dryRun, clipboard);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
     }
 
@@ -494,7 +496,7 @@ TemplateOutput
             var result = sut.GetDefaultFilenamePublic(defaultFilename);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
     }
 
@@ -513,7 +515,7 @@ TemplateOutput
             var result = sut.GetBasePathPublic(basePath);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
     }
 

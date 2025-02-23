@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests.Requests;
+namespace TemplateFramework.Core.Tests.Requests;
 
 public class RenderTemplateRequestTests
 {
@@ -20,7 +20,7 @@ public class RenderTemplateRequestTests
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: StringBuilder, defaultFilename: DefaultFilename, additionalParameters: null, context: null))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
 
         [Fact]
@@ -28,7 +28,7 @@ public class RenderTemplateRequestTests
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: StringBuilder))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
 
         [Fact]
@@ -36,7 +36,7 @@ public class RenderTemplateRequestTests
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: StringBuilder, defaultFilename: DefaultFilename))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
 
         [Fact]
@@ -44,7 +44,7 @@ public class RenderTemplateRequestTests
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: StringBuilder, defaultFilename: DefaultFilename, additionalParameters: null))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
 
         [Fact]
@@ -52,7 +52,7 @@ public class RenderTemplateRequestTests
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: StringBuilder, additionalParameters: null))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
 
         [Fact]
@@ -60,7 +60,7 @@ public class RenderTemplateRequestTests
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: StringBuilder, defaultFilename: DefaultFilename, context: null))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
 
         [Fact]
@@ -68,7 +68,7 @@ public class RenderTemplateRequestTests
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: StringBuilder, context: null))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
 
         [Fact]
@@ -76,7 +76,7 @@ public class RenderTemplateRequestTests
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: StringBuilder, defaultFilename: DefaultFilename, additionalParameters: null, context: null))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
 
         [Fact]
@@ -84,7 +84,7 @@ public class RenderTemplateRequestTests
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: StringBuilder))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
 
         [Fact]
@@ -92,7 +92,7 @@ public class RenderTemplateRequestTests
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: StringBuilder, defaultFilename: DefaultFilename))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
 
         [Fact]
@@ -100,7 +100,7 @@ public class RenderTemplateRequestTests
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: StringBuilder, defaultFilename: DefaultFilename, additionalParameters: null))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
 
         [Fact]
@@ -108,7 +108,7 @@ public class RenderTemplateRequestTests
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: StringBuilder, additionalParameters: null))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
 
         [Fact]
@@ -116,7 +116,7 @@ public class RenderTemplateRequestTests
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: StringBuilder, defaultFilename: DefaultFilename, context: null))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
 
         [Fact]
@@ -124,7 +124,7 @@ public class RenderTemplateRequestTests
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: StringBuilder, context: null))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
 
         [Theory, AutoMockData]
@@ -132,7 +132,7 @@ public class RenderTemplateRequestTests
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: multipleContentBuilder, defaultFilename: DefaultFilename, additionalParameters: null, context: null))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
 
         [Theory, AutoMockData]
@@ -140,7 +140,7 @@ public class RenderTemplateRequestTests
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: multipleContentBuilder))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
 
         [Theory, AutoMockData]
@@ -148,7 +148,7 @@ public class RenderTemplateRequestTests
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: multipleContentBuilder, defaultFilename: DefaultFilename))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
 
         [Theory, AutoMockData]
@@ -156,7 +156,7 @@ public class RenderTemplateRequestTests
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: multipleContentBuilder, defaultFilename: DefaultFilename, additionalParameters: null))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
 
         [Theory, AutoMockData]
@@ -164,7 +164,7 @@ public class RenderTemplateRequestTests
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: multipleContentBuilder, additionalParameters: null))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
 
         [Theory, AutoMockData]
@@ -172,7 +172,7 @@ public class RenderTemplateRequestTests
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: multipleContentBuilder, defaultFilename: DefaultFilename, context: null))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
 
         [Theory, AutoMockData]
@@ -180,7 +180,7 @@ public class RenderTemplateRequestTests
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), null, builder: multipleContentBuilder, context: null))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
 
         [Theory, AutoMockData]
@@ -188,7 +188,7 @@ public class RenderTemplateRequestTests
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: multipleContentBuilder, defaultFilename: DefaultFilename, additionalParameters: null, context: null))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
 
         [Theory, AutoMockData]
@@ -196,7 +196,7 @@ public class RenderTemplateRequestTests
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: multipleContentBuilder))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
 
         [Theory, AutoMockData]
@@ -204,7 +204,7 @@ public class RenderTemplateRequestTests
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: multipleContentBuilder, defaultFilename: DefaultFilename))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
 
         [Theory, AutoMockData]
@@ -212,7 +212,7 @@ public class RenderTemplateRequestTests
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: multipleContentBuilder, defaultFilename: DefaultFilename, additionalParameters: null))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
 
         [Theory, AutoMockData]
@@ -220,7 +220,7 @@ public class RenderTemplateRequestTests
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: multipleContentBuilder, additionalParameters: null))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
 
         [Theory, AutoMockData]
@@ -228,7 +228,7 @@ public class RenderTemplateRequestTests
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: multipleContentBuilder, defaultFilename: DefaultFilename, context: null))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
 
         [Theory, AutoMockData]
@@ -236,7 +236,7 @@ public class RenderTemplateRequestTests
         {
             // Act & Assert
             this.Invoking(_ => new RenderTemplateRequest(new TemplateInstanceIdentifier(this), builder: multipleContentBuilder, context: null))
-                .Should().NotThrow();
+                .ShouldNotThrow();
         }
 
         [Theory, AutoMockData]
@@ -248,13 +248,13 @@ public class RenderTemplateRequestTests
             var instance = new RenderTemplateRequest(new TemplateInstanceIdentifier(this), "Hello world", generationEnvironment, DefaultFilename, AdditionalParameters, templateContext);
 
             // Assert
-            instance.Should().NotBeNull();
-            instance.Identifier.Should().BeOfType<TemplateInstanceIdentifier>().And.Match<TemplateInstanceIdentifier>(x => x.Instance == this);
-            instance.Model.Should().Be("Hello world");
-            instance.GenerationEnvironment.Should().BeSameAs(generationEnvironment);
-            instance.DefaultFilename.Should().Be(DefaultFilename);
-            instance.AdditionalParameters.Should().BeSameAs(AdditionalParameters);
-            instance.Context.Should().BeSameAs(templateContext);
+            instance.ShouldNotBeNull();
+            instance.Identifier.ShouldBeOfType<TemplateInstanceIdentifier>().And.Match<TemplateInstanceIdentifier>(x => x.Instance == this);
+            instance.Model.ShouldBe("Hello world");
+            instance.GenerationEnvironment.ShouldBeSameAs(generationEnvironment);
+            instance.DefaultFilename.ShouldBe(DefaultFilename);
+            instance.AdditionalParameters.ShouldBeSameAs(AdditionalParameters);
+            instance.Context.ShouldBeSameAs(templateContext);
         }
     }
 }

@@ -73,8 +73,8 @@ public class TypedTextTransformTemplateRendererTests
             textTransformTemplate.TransformText(Arg.Any<CancellationToken>()).Returns("Hello world!");
 
             // Act & Assert
-            await sut.Awaiting(x => x.TryRender(textTransformTemplate, builder: null!, CancellationToken.None))
-                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("builder");
+            Task t = sut.TryRender(textTransformTemplate, builder: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().ParamName.ShouldBe("builder");
         }
     }
 }

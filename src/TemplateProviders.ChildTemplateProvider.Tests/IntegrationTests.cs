@@ -29,8 +29,8 @@ public class IntegrationTests : TestBase
         await engine.Render(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), generationEnvironment), CancellationToken.None);
 
         // Assert
-        generationEnvironment.Contents.Should().ContainSingle();
-        generationEnvironment.Contents.Single().Builder.ToString().Should().Be("Context IsRootContext: False");
+        generationEnvironment.Contents.Count().ShouldBe(1);
+        generationEnvironment.Contents.Single().Builder.ToString().ShouldBe("Context IsRootContext: False");
     }
 
     [Fact]
@@ -59,8 +59,8 @@ public class IntegrationTests : TestBase
         await engine.Render(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), generationEnvironment), CancellationToken.None);
 
         // Assert
-        generationEnvironment.Contents.Should().ContainSingle();
-        generationEnvironment.Contents.Single().Builder.ToString().Should().Be("Hello world!");
+        generationEnvironment.Contents.Count().ShouldBe(1);
+        generationEnvironment.Contents.Single().Builder.ToString().ShouldBe("Hello world!");
     }
 
     [Fact]
@@ -87,7 +87,7 @@ public class IntegrationTests : TestBase
         await engine.Generate(new CsharpClassGeneratorCodeGenerationProvider(), generationEnvironment, settings);
 
         // Assert
-        generationEnvironment.Builder.Contents.Should().HaveCount(4);
+        generationEnvironment.Builder.Contents.Count().ShouldBe(4);
     }
 
     [Fact]
@@ -114,7 +114,7 @@ public class IntegrationTests : TestBase
         await engine.Render(new RenderTemplateRequest(new TemplateByNameIdentifier("XDocumentTemplate"), model, generationEnvironment, string.Empty, null, null), CancellationToken.None);
 
         // Assert
-        generationEnvironment.Builder.Document.ToString().Should().Be(@"<MyRootElement processed=""true"">
+        generationEnvironment.Builder.Document.ToString().ShouldBe(@"<MyRootElement processed=""true"">
   <subItems>
     <item>Item1</item>
     <item>Item2</item>
@@ -139,8 +139,8 @@ public class IntegrationTests : TestBase
         var generationEnvironment = new MultipleContentBuilder();
 
         // Act & Assert
-        await engine.Awaiting(x => x.Render(new RenderTemplateRequest(new TemplateByNameIdentifier("Unknown"), generationEnvironment), CancellationToken.None))
-                    .Should().ThrowAsync<NotSupportedException>().WithMessage("Template with name Unknown is not supported");
+        Task t = engine.Render(new RenderTemplateRequest(new TemplateByNameIdentifier("Unknown"), generationEnvironment), CancellationToken.None);
+        (await t.ShouldThrowAsync<NotSupportedException>()).Message.ShouldBe("Template with name Unknown is not supported");
     }
 
     [Fact]
@@ -159,7 +159,7 @@ public class IntegrationTests : TestBase
         var generationEnvironment = new MultipleContentBuilder();
 
         // Act & Assert
-        await engine.Awaiting(x => x.Render(new RenderTemplateRequest(new TemplateByModelIdentifier("Unknown"), generationEnvironment), CancellationToken.None))
-                    .Should().ThrowAsync<NotSupportedException>().WithMessage("Model of type System.String is not supported");
+        Task t = engine.Render(new RenderTemplateRequest(new TemplateByModelIdentifier("Unknown"), generationEnvironment), CancellationToken.None);
+        (await t.ShouldThrowAsync<NotSupportedException>()).Message.ShouldBe("Model of type System.String is not supported");
     }
 }

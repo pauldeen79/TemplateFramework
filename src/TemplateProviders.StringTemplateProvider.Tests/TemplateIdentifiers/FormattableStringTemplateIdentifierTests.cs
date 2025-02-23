@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider.Tests.TemplateIdentifiers;
+namespace TemplateFramework.TemplateProviders.StringTemplateProvider.Tests.TemplateIdentifiers;
 
 public class FormattableStringTemplateIdentifierTests
 {
@@ -17,10 +17,10 @@ public class FormattableStringTemplateIdentifierTests
             var instance = new FormattableStringTemplateIdentifier("some template", CultureInfo.CurrentCulture, "AssemblyName", "ClassName", null);
 
             // Assert
-            instance.CurrentDirectory.Should().Be(Directory.GetCurrentDirectory());
-            instance.FormatProvider.Should().Be(CultureInfo.CurrentCulture);
-            instance.PluginAssemblyName.Should().Be("AssemblyName");
-            instance.PluginClassName.Should().Be("ClassName");
+            instance.CurrentDirectory.ShouldBe(Directory.GetCurrentDirectory());
+            instance.FormatProvider.ShouldBe(CultureInfo.CurrentCulture);
+            instance.PluginAssemblyName.ShouldBe("AssemblyName");
+            instance.PluginClassName.ShouldBe("ClassName");
         }
 
         [Fact]
@@ -30,10 +30,10 @@ public class FormattableStringTemplateIdentifierTests
             var instance = new FormattableStringTemplateIdentifier("some template", CultureInfo.CurrentCulture, "AssemblyName", "ClassName", "Dir");
 
             // Assert
-            instance.CurrentDirectory.Should().Be("Dir");
-            instance.FormatProvider.Should().Be(CultureInfo.CurrentCulture);
-            instance.PluginAssemblyName.Should().Be("AssemblyName");
-            instance.PluginClassName.Should().Be("ClassName");
+            instance.CurrentDirectory.ShouldBe("Dir");
+            instance.FormatProvider.ShouldBe(CultureInfo.CurrentCulture);
+            instance.PluginAssemblyName.ShouldBe("AssemblyName");
+            instance.PluginClassName.ShouldBe("ClassName");
         }
     }
 }

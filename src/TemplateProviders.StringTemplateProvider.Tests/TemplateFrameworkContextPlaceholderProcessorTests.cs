@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider.Tests;
+namespace TemplateFramework.TemplateProviders.StringTemplateProvider.Tests;
 
 public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<TemplateFrameworkContextPlaceholderProcessor>
 {
@@ -32,7 +32,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
             var result = sut.Evaluate("some template", new PlaceholderSettingsBuilder(), context, FormattableStringParser);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.Status.ShouldBe(ResultStatus.Continue);
         }
 
         [Fact]
@@ -50,8 +50,8 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
             var result = sut.Evaluate("Name", new PlaceholderSettingsBuilder(), context, FormattableStringParser);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value!.ToString(CultureInfo.InvariantCulture).Should().Be("Value");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value!.ToString(CultureInfo.InvariantCulture).ShouldBe("Value");
         }
 
         [Fact]
@@ -69,8 +69,8 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
             var result = sut.Evaluate("Name", new PlaceholderSettingsBuilder(), context, FormattableStringParser);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value!.ToString(CultureInfo.InvariantCulture).Should().BeEmpty();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value!.ToString(CultureInfo.InvariantCulture).ShouldBeEmpty();
         }
 
         [Fact]
@@ -85,7 +85,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
             var result = sut.Evaluate("Name", new PlaceholderSettingsBuilder(), context, FormattableStringParser);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.Status.ShouldBe(ResultStatus.Continue);
         }
 
         [Fact]
@@ -100,7 +100,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
             _ = sut.Evaluate("Name", new PlaceholderSettingsBuilder(), context, FormattableStringParser);
 
             // Assert
-            context.ParameterNamesList.Should().BeEquivalentTo("Name");
+            context.ParameterNamesList.ShouldBeEquivalentTo("Name");
         }
 
         [Fact]
@@ -115,7 +115,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
             _ = sut.Evaluate("__Name", new PlaceholderSettingsBuilder(), context, FormattableStringParser);
 
             // Assert
-            context.ParameterNamesList.Should().BeEmpty();
+            context.ParameterNamesList.ShouldBeEmpty();
         }
     }
 }

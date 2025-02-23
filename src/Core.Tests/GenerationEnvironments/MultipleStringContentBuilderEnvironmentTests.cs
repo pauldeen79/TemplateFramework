@@ -41,7 +41,7 @@ public class MultipleStringContentBuilderEnvironmentTests
             var instance = CreateSut();
 
             // Assert
-            instance.Builder.Should().BeSameAs(MultipleContentBuilderMock);
+            instance.Builder.ShouldBeSameAs(MultipleContentBuilderMock);
         }
 
         [Fact]
@@ -51,7 +51,7 @@ public class MultipleStringContentBuilderEnvironmentTests
             var instance = new MultipleStringContentBuilderEnvironment();
 
             // Assert
-            instance.Builder.Should().NotBeNull();
+            instance.Builder.ShouldNotBeNull();
         }
     }
 
@@ -65,7 +65,7 @@ public class MultipleStringContentBuilderEnvironmentTests
 
             // Act & Assert
             sut.Invoking(x => x.DeleteLastGeneratedFiles(FileSystemMock, TestData.BasePath, Encoding.Latin1, lastGeneratedFilesPath: null!, false))
-               .Should().Throw<ArgumentNullException>().WithParameterName("lastGeneratedFilesPath");
+               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("lastGeneratedFilesPath");
         }
 
         [Fact]
@@ -76,7 +76,7 @@ public class MultipleStringContentBuilderEnvironmentTests
 
             // Act & Assert
             sut.Invoking(x => x.DeleteLastGeneratedFiles(FileSystemMock, TestData.BasePath, Encoding.Latin1, lastGeneratedFilesPath: string.Empty, false))
-               .Should().Throw<ArgumentException>().WithParameterName("lastGeneratedFilesPath");
+               .ShouldThrow<ArgumentException>().ParamName.ShouldBe("lastGeneratedFilesPath");
         }
 
         [Fact]
@@ -87,7 +87,7 @@ public class MultipleStringContentBuilderEnvironmentTests
 
             // Act & Assert
             sut.Invoking(x => x.DeleteLastGeneratedFiles(FileSystemMock, TestData.BasePath, Encoding.Latin1, lastGeneratedFilesPath: " ", false))
-               .Should().Throw<ArgumentException>().WithParameterName("lastGeneratedFilesPath");
+               .ShouldThrow<ArgumentException>().ParamName.ShouldBe("lastGeneratedFilesPath");
         }
 
         [Fact]
@@ -98,7 +98,7 @@ public class MultipleStringContentBuilderEnvironmentTests
 
             // Act & Assert
             sut.Invoking(x => x.DeleteLastGeneratedFiles(FileSystemMock, TestData.BasePath, encoding: null!, "LastGeneratedFiles.txt", true))
-               .Should().Throw<ArgumentNullException>().WithParameterName("encoding");
+               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("encoding");
         }
 
         [Fact]
@@ -318,7 +318,7 @@ public class MultipleStringContentBuilderEnvironmentTests
 
             // Act & Assert
             sut.Invoking(x => x.SaveAll(FileSystemMock, TestData.BasePath, encoding: null!, CreateContents()))
-               .Should().Throw<ArgumentNullException>().WithParameterName("encoding");
+               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("encoding");
         }
 
         [Fact]
@@ -479,7 +479,7 @@ public class MultipleStringContentBuilderEnvironmentTests
 
             // Act & Assert
             sut.Invoking(x => x.SaveLastGeneratedFiles(FileSystemMock, TestData.BasePath, Encoding.Latin1, lastGeneratedFilesPath: null!, CreateContents()))
-               .Should().Throw<ArgumentNullException>().WithParameterName("lastGeneratedFilesPath");
+               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("lastGeneratedFilesPath");
         }
 
         [Fact]
@@ -490,7 +490,7 @@ public class MultipleStringContentBuilderEnvironmentTests
 
             // Act & Assert
             sut.Invoking(x => x.SaveLastGeneratedFiles(FileSystemMock, TestData.BasePath, Encoding.Latin1, lastGeneratedFilesPath: string.Empty, CreateContents()))
-               .Should().Throw<ArgumentException>().WithParameterName("lastGeneratedFilesPath");
+               .ShouldThrow<ArgumentException>().ParamName.ShouldBe("lastGeneratedFilesPath");
         }
 
         [Fact]
@@ -501,7 +501,7 @@ public class MultipleStringContentBuilderEnvironmentTests
 
             // Act & Assert
             sut.Invoking(x => x.SaveLastGeneratedFiles(FileSystemMock, TestData.BasePath, Encoding.Latin1, lastGeneratedFilesPath: " ", CreateContents()))
-               .Should().Throw<ArgumentException>().WithParameterName("lastGeneratedFilesPath");
+               .ShouldThrow<ArgumentException>().ParamName.ShouldBe("lastGeneratedFilesPath");
         }
 
         [Fact]
@@ -512,7 +512,7 @@ public class MultipleStringContentBuilderEnvironmentTests
 
             // Act & Assert
             sut.Invoking(x => x.SaveLastGeneratedFiles(FileSystemMock, TestData.BasePath, encoding: null!, "LastGeneratedFiles.txt", CreateContents()))
-               .Should().Throw<ArgumentNullException>().WithParameterName("encoding");
+               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("encoding");
         }
 
         [Fact]
@@ -523,7 +523,7 @@ public class MultipleStringContentBuilderEnvironmentTests
 
             // Act & Assert
             sut.Invoking(x => x.SaveLastGeneratedFiles(FileSystemMock, TestData.BasePath, Encoding.Latin1, "LastGeneratedFiles.txt", contents: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("contents");
+               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("contents");
         }
 
         [Fact]

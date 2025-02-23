@@ -18,7 +18,7 @@ public class TemplateProviderTests
         {
             // Act & Assert
             sut.Invoking(x => x.Create(identifier: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("identifier");
+               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("identifier");
         }
 
         [Theory, AutoMockData]
@@ -32,7 +32,7 @@ public class TemplateProviderTests
 
             // Act & Assert
             sut.Invoking(x => x.Create(identifier: identifier))
-               .Should().Throw<NotSupportedException>();
+               .ShouldThrow<NotSupportedException>();
         }
 
         [Theory, AutoMockData]
@@ -50,7 +50,7 @@ public class TemplateProviderTests
             var template = sut.Create(identifier);
 
             // Assert
-            template.Should().BeSameAs(expectedTemplate);
+            template.ShouldBeSameAs(expectedTemplate);
         }
     }
 
@@ -61,7 +61,7 @@ public class TemplateProviderTests
         {
             // Act & Assert
             sut.Invoking(x => x.RegisterComponent(component: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("component");
+               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("component");
         }
 
         [Theory, AutoMockData]
@@ -102,7 +102,7 @@ public class TemplateProviderTests
 
             // Assert
             sut.Invoking(x => x.Create(identifier))
-               .Should().Throw<NotSupportedException>();
+               .ShouldThrow<NotSupportedException>();
         }
 
         [Fact]
@@ -116,7 +116,7 @@ public class TemplateProviderTests
             await sut.StartSession(CancellationToken.None);
 
             // Assert
-            sessionAwareTemplateProviderComponent.Counter.Should().Be(1);
+            sessionAwareTemplateProviderComponent.Counter.ShouldBe(1);
         }
 
         [Fact]
@@ -130,7 +130,7 @@ public class TemplateProviderTests
             var result = await sut.StartSession(CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -144,10 +144,10 @@ public class TemplateProviderTests
             var result = await sut.StartSession(CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("An error occured while starting the session. See the inner results for more details.");
-            result.InnerResults.Should().HaveCount(1);
-            result.InnerResults.First().ErrorMessage.Should().Be("Kaboom");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("An error occured while starting the session. See the inner results for more details.");
+            result.InnerResults.Count().ShouldBe(1);
+            result.InnerResults.First().ErrorMessage.ShouldBe("Kaboom");
         }
 
         private sealed class SessionAwareTemplateProviderComponent : ISessionAwareComponent, ITemplateProviderComponent

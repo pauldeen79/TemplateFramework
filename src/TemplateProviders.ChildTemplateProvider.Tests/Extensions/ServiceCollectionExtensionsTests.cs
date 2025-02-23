@@ -17,7 +17,7 @@ public class ServiceCollectionExtensionsTests : TestBase
             using var scope = provider.CreateScope();
 
             // Assert
-            scope.ServiceProvider.GetRequiredService<ITemplateCreator>().CreateByModel("some string model").Should().NotBeNull();
+            scope.ServiceProvider.GetRequiredService<ITemplateCreator>().CreateByModel("some string model").ShouldNotBeNull();
         }
 
         [Fact]
@@ -33,7 +33,7 @@ public class ServiceCollectionExtensionsTests : TestBase
             using var scope = provider.CreateScope();
 
             // Assert
-            scope.ServiceProvider.GetRequiredService<ITemplateCreator>().CreateByModel("some string model").Should().NotBeNull();
+            scope.ServiceProvider.GetRequiredService<ITemplateCreator>().CreateByModel("some string model").ShouldNotBeNull();
         }
 
         [Fact]
@@ -49,7 +49,7 @@ public class ServiceCollectionExtensionsTests : TestBase
             using var scope = provider.CreateScope();
 
             // Assert
-            scope.ServiceProvider.GetRequiredService<ITemplateCreator>().CreateByName("Name").Should().NotBeNull();
+            scope.ServiceProvider.GetRequiredService<ITemplateCreator>().CreateByName("Name").ShouldNotBeNull();
         }
 
         [Fact]
@@ -65,7 +65,7 @@ public class ServiceCollectionExtensionsTests : TestBase
             using var scope = provider.CreateScope();
 
             // Assert
-            scope.ServiceProvider.GetRequiredService<ITemplateCreator>().CreateByName("Name").Should().NotBeNull();
+            scope.ServiceProvider.GetRequiredService<ITemplateCreator>().CreateByName("Name").ShouldNotBeNull();
         }
     }
 
@@ -85,7 +85,7 @@ public class ServiceCollectionExtensionsTests : TestBase
                 .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
 
             // Assert
-            provider.Should().NotBeNull();
+            provider.ShouldNotBeNull();
         }
     }
 }

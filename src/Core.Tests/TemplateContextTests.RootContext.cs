@@ -14,7 +14,7 @@ public partial class TemplateContextTests
             var result = sut.RootContext;
 
             // Assert
-            result.RootContext.Should().BeSameAs(sut);
+            result.RootContext.ShouldBeSameAs(sut);
         }
 
         [Fact]
@@ -28,7 +28,7 @@ public partial class TemplateContextTests
             var result = sut.RootContext;
 
             // Assert
-            result.RootContext.Should().BeSameAs(parentTemplateContext);
+            result.RootContext.ShouldBeSameAs(parentTemplateContext);
         }
 
         [Fact]
@@ -43,7 +43,7 @@ public partial class TemplateContextTests
             var result = sut.RootContext;
 
             // Assert
-            result.RootContext.Should().BeSameAs(rootTemplateContext);
+            result.RootContext.ShouldBeSameAs(rootTemplateContext);
         }
     }
 }

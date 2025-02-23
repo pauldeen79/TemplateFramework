@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests.TemplateIdentifiers;
+namespace TemplateFramework.Core.Tests.TemplateIdentifiers;
 
 public class TemplateInstanceIdentifierTests
 {
@@ -17,7 +17,7 @@ public class TemplateInstanceIdentifierTests
             var identifier = new TemplateInstanceIdentifier(this);
 
             // Assert
-            identifier.Instance.Should().BeSameAs(this);
+            identifier.Instance.ShouldBeSameAs(this);
         }
     }
 }

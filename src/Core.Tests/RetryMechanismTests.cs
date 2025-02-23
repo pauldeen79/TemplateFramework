@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests;
+namespace TemplateFramework.Core.Tests;
 
 public class RetryMechanismTests
 {
@@ -21,7 +21,7 @@ public class RetryMechanismTests
         });
 
         // Assert
-        counter.Should().Be(2);
+        counter.ShouldBe(2);
     }
 
     private sealed class FastRetryMechanism : RetryMechanism

@@ -22,8 +22,8 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var sut = CreateSut();
 
             // Act
-            await sut.Awaiting(x => x.Generate(codeGenerationProvider: null!, generationEnvironment, codeGenerationSettings))
-                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("codeGenerationProvider");
+            Task t = sut.Generate(codeGenerationProvider: null!, generationEnvironment, codeGenerationSettings))
+                     .Should().ThrowAsync<ArgumentNullException>().ParamName.ShouldBe("codeGenerationProvider");
         }
 
         [Fact]
@@ -35,8 +35,8 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var sut = CreateSut();
 
             // Act
-            await sut.Awaiting(x => x.Generate(codeGenerationProvider, generationEnvironment: null!, codeGenerationSettings))
-                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("generationEnvironment");
+            Task t = sut.Generate(codeGenerationProvider, generationEnvironment: null!, codeGenerationSettings))
+                     .Should().ThrowAsync<ArgumentNullException>().ParamName.ShouldBe("generationEnvironment");
         }
 
         [Fact]
@@ -48,8 +48,8 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var sut = CreateSut();
 
             // Act
-            await sut.Awaiting(x => x.Generate(codeGenerationProvider, generationEnvironment, settings: null!))
-                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("settings");
+            Task t = sut.Generate(codeGenerationProvider, generationEnvironment, settings: null!))
+                     .Should().ThrowAsync<ArgumentNullException>().ParamName.ShouldBe("settings");
         }
 
         [Fact]
@@ -129,8 +129,8 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var result = await sut.Generate(provider, generationEnvironment, codeGenerationSettings);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            counter.Should().Be(1);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            counter.ShouldBe(1);
         }
 
         [Fact]
@@ -152,8 +152,8 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var result = await sut.Generate(provider, generationEnvironment, codeGenerationSettings);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            counter.Should().Be(0); // start session fails, so the callback of the mock is not reached
+            result.Status.ShouldBe(ResultStatus.Error);
+            counter.ShouldBe(0); // start session fails, so the callback of the mock is not reached;
         }
 
         [Fact]
@@ -177,8 +177,8 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var result = await sut.Generate(provider, generationEnvironment, codeGenerationSettings);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            counter.Should().Be(1);
+            result.Status.ShouldBe(ResultStatus.Error);
+            counter.ShouldBe(1);
         }
 
         [Fact]
@@ -201,8 +201,8 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var result = await sut.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
 
         [Fact]
@@ -225,8 +225,8 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var result = await sut.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
 
         [Fact]
@@ -275,7 +275,7 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var result = await sut.Generate(provider, generationEnvironment, codeGenerationSettings);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -297,7 +297,7 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var result = await sut.Generate(provider, generationEnvironment, codeGenerationSettings);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
+            result.Status.ShouldBe(ResultStatus.Error);
         }
 
         private sealed class MyPluginCodeGenerationProvider : ICodeGenerationProvider, ITemplateComponentRegistryPlugin

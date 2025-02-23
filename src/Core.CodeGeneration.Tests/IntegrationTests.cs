@@ -29,8 +29,8 @@ public class IntegrationTests : TestBase
         await sut.Generate(codeGenerationProvider, generationEnvironment, new CodeGenerationSettings(TestData.BasePath, "DefaultFilename.txt", false));
 
         // Assert
-        builder.Contents.Should().ContainSingle();
-        builder.Contents.Single().Build().Contents.Should().Be("Model is: Hello world!");
+        builder.Contents.Count().ShouldBe(1);
+        builder.Contents.Single().Build().Contents.ShouldBe("Model is: Hello world!");
     }
 
     private sealed class IntegrationProvider : ICodeGenerationProvider

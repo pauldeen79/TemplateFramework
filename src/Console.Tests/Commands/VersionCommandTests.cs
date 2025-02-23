@@ -10,6 +10,7 @@ public class VersionCommandTests : TestBase<VersionCommand>
             typeof(VersionCommand).ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments();
         }
     }
+
     public class Initialize : VersionCommandTests
     {
         [Fact]
@@ -23,7 +24,7 @@ public class VersionCommandTests : TestBase<VersionCommand>
             sut.Initialize(app);
 
             // Assert
-            app.Commands.Should().BeEmpty(); // aparently, this does not add a command that is publicly visible...
+            app.Commands.ShouldBeEmpty(); /// aparently, this does not add a command that is publicly visible..
         }
 
         [Fact]
@@ -33,8 +34,8 @@ public class VersionCommandTests : TestBase<VersionCommand>
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Initialize(null!))
-               .Should().Throw<ArgumentNullException>();
+            Action a = () => sut.Initialize(null!);
+            a.ShouldThrow<ArgumentNullException>();
         }
     }
 }

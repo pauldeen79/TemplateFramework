@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests;
+namespace TemplateFramework.Core.Tests;
 
 public partial class TemplateContextTests
 {
@@ -17,7 +17,7 @@ public partial class TemplateContextTests
             var instance = new TemplateContext(EngineMock, ProviderMock, DefaultFilename, new TemplateInstanceIdentifier(this), this);
 
             // Assert
-            instance.Template.Should().BeSameAs(this);
+            instance.Template.ShouldBeSameAs(this);
         }
 
         [Fact]
@@ -27,7 +27,7 @@ public partial class TemplateContextTests
             var instance = new TemplateContext(EngineMock, ProviderMock, DefaultFilename, new TemplateInstanceIdentifier(this), this, model: "test");
 
             // Assert
-            instance.Model.Should().BeEquivalentTo("test");
+            instance.Model.ShouldBeEquivalentTo("test");
         }
 
         [Fact]
@@ -37,9 +37,9 @@ public partial class TemplateContextTests
             var instance = new TemplateContext(EngineMock, ProviderMock, DefaultFilename, new TemplateInstanceIdentifier(this), this, model: "current", parentContext: new TemplateContext(EngineMock, ProviderMock, DefaultFilename, new TemplateInstanceIdentifier(this), this, model: "parent"));
 
             // Assert
-            instance.Model.Should().BeEquivalentTo("current");
-            instance.ParentContext.Should().NotBeNull();
-            instance.ParentContext!.Model.Should().BeEquivalentTo("parent");
+            instance.Model.ShouldBeEquivalentTo("current");
+            instance.ParentContext.ShouldNotBeNull();
+            instance.ParentContext!.Model.ShouldBeEquivalentTo("parent");
         }
 
         [Fact]
@@ -49,8 +49,8 @@ public partial class TemplateContextTests
             var instance = new TemplateContext(EngineMock, ProviderMock, DefaultFilename, new TemplateInstanceIdentifier(this), this, model: "test", parentContext: new TemplateContext(EngineMock, ProviderMock, DefaultFilename, new TemplateInstanceIdentifier(this), this, model: "parent"), iterationNumber: 1, iterationCount: 2);
 
             // Assert
-            instance.IterationNumber.Should().Be(1);
-            instance.IterationCount.Should().Be(2);
+            instance.IterationNumber.ShouldBe(1);
+            instance.IterationCount.ShouldBe(2);
         }
     }
 }

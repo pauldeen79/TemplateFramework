@@ -1,4 +1,4 @@
-namespace TemplateFramework.Core.Tests;
+﻿namespace TemplateFramework.Core.Tests;
 
 public partial class TemplateContextTests
 {
@@ -12,7 +12,7 @@ public partial class TemplateContextTests
 
             // Act
             sut.Invoking(x => x.CreateChildContext(childContext: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("childContext");
+               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("childContext");
         }
 
         [Fact]
@@ -26,10 +26,10 @@ public partial class TemplateContextTests
             var childContext = sut.CreateChildContext(new TemplateContext(EngineMock, ProviderMock, DefaultFilename, new TemplateInstanceIdentifier(template), template: template));
 
             // Assert
-            childContext.Should().NotBeNull();
-            childContext.IsRootContext.Should().BeFalse();
-            childContext.Template.Should().BeOfType<IgnoreThis>();
-            childContext.ParentContext.Should().BeSameAs(sut);
+            childContext.ShouldNotBeNull();
+            childContext.IsRootContext.ShouldBeFalse();
+            childContext.Template.ShouldBeOfType<IgnoreThis>();
+            childContext.ParentContext.ShouldBeSameAs(sut);
         }
     }
 }

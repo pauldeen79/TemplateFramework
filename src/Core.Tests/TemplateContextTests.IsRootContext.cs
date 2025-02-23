@@ -14,7 +14,7 @@ public partial class TemplateContextTests
             var result = sut.IsRootContext;
 
             // Assert
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
 
         [Fact]
@@ -28,7 +28,7 @@ public partial class TemplateContextTests
             var result = sut.IsRootContext;
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
     }
 }

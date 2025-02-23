@@ -17,8 +17,8 @@ public partial class StringBuilderTemplateRendererTests
             var sut = CreateSut();
 
             // Act & Assert
-            await sut.Awaiting(x => x.Render(context: null!, CancellationToken.None))
-                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Task t = sut.Render(context: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -34,7 +34,7 @@ public partial class StringBuilderTemplateRendererTests
             var result = await sut.Render(engineContext, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NotSupported);
+            result.Status.ShouldBe(ResultStatus.NotSupported);
         }
 
         [Fact]
@@ -70,7 +70,7 @@ public partial class StringBuilderTemplateRendererTests
             await sut.Render(engineContext, CancellationToken.None);
 
             // Assert
-            generationEnvironment.ToString().Should().Be("TemplateFramework.Core.Tests.TestData+Template");
+            generationEnvironment.ToString().ShouldBe("TemplateFramework.Core.Tests.TestData+Template");
         }
 
         [Fact]
@@ -88,7 +88,7 @@ public partial class StringBuilderTemplateRendererTests
             var result = await sut.Render(engineContext, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -106,7 +106,7 @@ public partial class StringBuilderTemplateRendererTests
             var result = await sut.Render(engineContext, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
+            result.Status.ShouldBe(ResultStatus.Error);
         }
     }
 }
