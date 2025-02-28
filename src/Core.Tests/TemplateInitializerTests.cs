@@ -17,7 +17,7 @@ public class TemplateInitializerTests
         public async Task Throws_On_Null_Context(TemplateInitializer sut)
         {
             // Act & Assert
-            Task t = sut.Initialize(context: null!, CancellationToken.None))
+            Task t = sut.Initialize(context: null!, CancellationToken.None);
             (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("context");
         }
 

@@ -16,7 +16,7 @@ public partial class TemplateEngineTests
             var sut = CreateSut();
 
             // Act & Assert
-            Task t = sut.Render(request: null!, CancellationToken.None))
+            Task t = sut.Render(request: null!, CancellationToken.None);
             (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("request");
         }
 

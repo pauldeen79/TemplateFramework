@@ -40,21 +40,21 @@ public class FormattableStringTemplateTests
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.GetValueOrThrow().Select(x => x.Name).ShouldBeEquivalentTo("Name");
+            result.GetValueOrThrow().Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "Name" });
         }
     }
 
     public class Render : FormattableStringTemplateTests
     {
         [Fact]
-        public async Task Throws_On_Null_Builder()
+        public void Throws_On_Null_Builder()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            Task t = sut.Render(builder: null!, CancellationToken.None);
-            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("builder");
+            Action a = () => sut.Render(builder: null!, CancellationToken.None);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("builder");
         }
 
         [Fact]

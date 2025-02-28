@@ -1,4 +1,4 @@
-namespace TemplateFramework.Core.Tests.Extensions;
+﻿namespace TemplateFramework.Core.Tests.Extensions;
 
 public class ObjectExtensionsTests
 {
@@ -32,7 +32,7 @@ public class ObjectExtensionsTests
             var result = input.ToKeyValuePairs();
 
             // Assert
-            result.ShouldBeEquivalentTo(input);
+            result.ToArray().ShouldBeEquivalentTo(input);
         }
 
         [Fact]
@@ -50,7 +50,8 @@ public class ObjectExtensionsTests
             var result = input.ToKeyValuePairs()?.ToArray();
 
             // Assert
-            result.Count().ShouldBe(3);
+            result.ShouldNotBeNull();
+            result.Length.ShouldBe(3);
             result![0].Key.ShouldBe("Item1");
             result[0].Value.ShouldBe(1);
             result[1].Key.ShouldBe("Item2");

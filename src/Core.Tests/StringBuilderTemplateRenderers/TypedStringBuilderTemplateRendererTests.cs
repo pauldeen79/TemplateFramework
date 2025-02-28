@@ -11,7 +11,7 @@ public class TypedStringBuilderTemplateRendererTests
             var result = await sut.TryRender(instance: null!, new StringBuilder(), CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.Status.ShouldBe(ResultStatus.Continue);
         }
 
         [Theory, AutoMockData]
@@ -21,7 +21,7 @@ public class TypedStringBuilderTemplateRendererTests
             var result = await sut.TryRender(instance: this, new StringBuilder(), CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.Status.ShouldBe(ResultStatus.Continue);
         }
 
         [Theory, AutoMockData]
@@ -33,7 +33,7 @@ public class TypedStringBuilderTemplateRendererTests
             var result = await sut.TryRender(instance: stringBuilderTemplate, new StringBuilder(), CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Theory, AutoMockData]

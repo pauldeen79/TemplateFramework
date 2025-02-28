@@ -7,11 +7,11 @@ public class DefaultFilenameInitializerComponentTests
         private const string DefaultFilename = "DefaultFilename.txt";
 
         [Theory, AutoMockData]
-        public async Task Throws_On_Null_Context(DefaultFilenameInitializerComponent sut)
+        public void Throws_On_Null_Context(DefaultFilenameInitializerComponent sut)
         {
             // Act & Assert
-            Task t = sut.Initialize(context: null!, CancellationToken.None))
-            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("context");
+            Action a = () => sut.Initialize(context: null!, CancellationToken.None);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
         }
 
         [Theory, AutoMockData]
@@ -29,7 +29,7 @@ public class DefaultFilenameInitializerComponentTests
             await sut.Initialize(engineContext, CancellationToken.None);
 
             // Assert
-            template.DefaultFilename.Should().Be(DefaultFilename);
+            template.DefaultFilename.ShouldBe(DefaultFilename);
         }
     }
 }

@@ -1,4 +1,4 @@
-namespace TemplateFramework.TemplateProviders.StringTemplateProvider.Tests;
+﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider.Tests;
 
 public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<TemplateFrameworkContextPlaceholderProcessor>
 {
@@ -100,7 +100,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
             _ = sut.Evaluate("Name", new PlaceholderSettingsBuilder(), context, FormattableStringParser);
 
             // Assert
-            context.ParameterNamesList.ShouldBeEquivalentTo("Name");
+            context.ParameterNamesList.ToArray().ShouldBeEquivalentTo(new[] { "Name" });
         }
 
         [Fact]

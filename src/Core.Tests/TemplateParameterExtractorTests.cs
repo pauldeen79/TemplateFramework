@@ -16,7 +16,7 @@ public class TemplateParameterExtractorTests
         public void Throws_On_Null_TemplateInstance(TemplateParameterExtractor sut)
         {
             // Act & Assert
-            Action a = () => sut.Extract(templateInstance: null!))
+            Action a = () => sut.Extract(templateInstance: null!);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("templateInstance");
         }
 

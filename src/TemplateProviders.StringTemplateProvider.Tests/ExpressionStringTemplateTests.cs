@@ -23,14 +23,14 @@ public class ExpressionStringTemplateTests
     public class Render : ExpressionStringTemplateTests
     {
         [Fact]
-        public async Task Throws_On_Null_Builder()
+        public void Throws_On_Null_Builder()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            Task t = sut.Render(builder: null!, CancellationToken.None);
-            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("builder");
+            Action a = () => sut.Render(builder: null!, CancellationToken.None);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("builder");
         }
 
         [Fact]

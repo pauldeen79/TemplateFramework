@@ -48,7 +48,7 @@ public class IntegrationTests : TestBase
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        result.GetValueOrThrow().Select(x => x.Name).ShouldBeEquivalentTo("Prefix", "Name");
+        result.GetValueOrThrow().Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "Name", "Prefix" });
     }
 
     [Fact]

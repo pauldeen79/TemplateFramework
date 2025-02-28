@@ -17,7 +17,7 @@ public class ProviderPluginInitializerComponentTests
         public async Task Throws_On_Null_Context(ProviderPluginInitializerComponent sut)
         {
             // Act & Assert
-            Task t = sut.Initialize(context: null!, CancellationToken.None))
+            Task t = sut.Initialize(context: null!, CancellationToken.None);
             (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("context");
         }
 
@@ -31,8 +31,8 @@ public class ProviderPluginInitializerComponentTests
             templateEngine.Template.Returns(templateComponentRegistryPlugin);
 
             // Act & Assert
-            Task t = sut.Initialize(templateEngine, CancellationToken.None))
-                     .Should().NotThrowAsync();
+            Task t = sut.Initialize(templateEngine, CancellationToken.None);
+            await t.ShouldNotThrowAsync();
         }
 
         [Theory, AutoMockData]
@@ -46,8 +46,8 @@ public class ProviderPluginInitializerComponentTests
             templateEngine.Template.Returns(new object());
 
             // Act & Assert
-            Task t = sut.Initialize(templateEngine, CancellationToken.None))
-                     .Should().NotThrowAsync();
+            Task t = sut.Initialize(templateEngine, CancellationToken.None);
+            await t.ShouldNotThrowAsync();
         }
 
         [Theory, AutoMockData]

@@ -1,4 +1,4 @@
-namespace TemplateFramework.Core.CodeGeneration.Tests;
+﻿namespace TemplateFramework.Core.CodeGeneration.Tests;
 
 public class CodeGenerationAssemblySettingsTests
 {
@@ -67,7 +67,7 @@ public class CodeGenerationAssemblySettingsTests
             instance.DefaultFilename.ShouldBe("DefaultFilename.txt");
             instance.AssemblyName.ShouldBe(TestData.GetAssemblyName());
             instance.CurrentDirectory.ShouldBe(Path.Combine(TestData.BasePath, "SomeDirectory"));
-            instance.ClassNameFilter.ShouldBeEquivalentTo("MyFilter");
+            instance.ClassNameFilter.ToArray().ShouldBeEquivalentTo(new[] { "MyFilter" });
         }
 
         [Fact]
@@ -96,7 +96,7 @@ public class CodeGenerationAssemblySettingsTests
             instance.AssemblyName.ShouldBe(TestData.GetAssemblyName());
             instance.DryRun.ShouldBeTrue();
             instance.CurrentDirectory.ShouldNotBeNull();
-            instance.ClassNameFilter.ShouldBeEquivalentTo("Filter");
+            instance.ClassNameFilter.ToArray().ShouldBeEquivalentTo(new[] { "Filter" });
         }
     }
 }

@@ -11,8 +11,8 @@ public partial class TemplateEngineTests
             var sut = CreateSut();
 
             // Act & Assert
-            Action a = () => sut.GetParameters(templateInstance: null!))
-      (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("templateInstance");
+            Action a = () => sut.GetParameters(templateInstance: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("templateInstance");
         }
 
         [Fact]

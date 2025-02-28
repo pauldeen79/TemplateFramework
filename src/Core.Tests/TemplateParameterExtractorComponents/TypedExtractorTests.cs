@@ -11,7 +11,7 @@ public class TypedExtractorTests
         public void Throws_On_Null_TemplateInstance(TypedExtractor sut)
         {
             // Act & Assert
-            Action a = () => sut.Extract(templateInstance: null!))
+            Action a = () => sut.Extract(templateInstance: null!);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("templateInstance");
         }
 
@@ -19,7 +19,7 @@ public class TypedExtractorTests
         public void Throws_On_TemplateInstance_Of_Wrong_Type(TypedExtractor sut)
         {
             // Act & Assert
-            Action a = () => sut.Extract(templateInstance: new object()))
+            Action a = () => sut.Extract(templateInstance: new object());
             a.ShouldThrow<ArgumentException>().ParamName.ShouldBe("templateInstance");
         }
 

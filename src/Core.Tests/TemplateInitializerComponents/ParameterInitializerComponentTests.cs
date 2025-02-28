@@ -19,7 +19,7 @@ public class ParameterInitializerComponentTests
         public async Task Throws_On_Null_Context(ParameterInitializerComponent sut)
         {
             // Act & Assert
-            Task t = sut.Initialize(context: null!, CancellationToken.None))
+            Task t = sut.Initialize(context: null!, CancellationToken.None);
             (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("context");
         }
 
@@ -130,8 +130,8 @@ public class ParameterInitializerComponentTests
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
 
             // Act & Assert
-            Task t = sut.Initialize(engineContext, CancellationToken.None))
-                     .Should().NotThrowAsync();
+            Task t = sut.Initialize(engineContext, CancellationToken.None);
+            await t.ShouldNotThrowAsync();
         }
 
         [Theory, AutoMockData]
@@ -239,8 +239,8 @@ public class ParameterInitializerComponentTests
             templateEngine.GetParameters(Arg.Any<object>()).Returns(Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(TestData.PocoParameterizedTemplate.Parameter), typeof(string))]));
 
             // Act & Assert
-            Task t = sut.Initialize(engineContext, CancellationToken.None))
-                     .Should().NotThrowAsync();
+            Task t = sut.Initialize(engineContext, CancellationToken.None);
+            await t.ShouldNotThrowAsync();
         }
     }
 }

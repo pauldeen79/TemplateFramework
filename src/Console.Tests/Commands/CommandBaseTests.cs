@@ -156,7 +156,7 @@ public class CommandBaseTests : TestBase<CommandBaseTests.CommandBaseTest>
             var result = await CommandLineCommandHelper.ExecuteCommand(app => sut.WatchPublic(app, true, Filename, () => { actionCallCounter++; return Task.CompletedTask; }));
 
             // Assert
-            result.ShouldBe(@"Watching file [MyFile.txt] for changes..
+            result.ShouldBe(@"Watching file [MyFile.txt] for changes...
 Error: Could not find file [MyFile.txt]. Could not watch file for changes.
 ");
         }
@@ -329,7 +329,7 @@ Contents from file2
             var result = sut.GenerateSingleOutputPublic(multipleContentBuilder, string.Empty);
 
             // Assert
-            result.ShouldBe($@"File1.txt:;
+            result.ShouldBe($@"File1.txt:
 Contents from file1
 File2.txt:
 Contents from file2

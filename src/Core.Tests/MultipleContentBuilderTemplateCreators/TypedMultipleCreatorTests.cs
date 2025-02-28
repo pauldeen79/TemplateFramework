@@ -13,7 +13,7 @@ public class TypedMultipleCreatorTests
             var result = sut.TryCreate(multipleContentBuilderTemplate);
 
             // Assert
-            result.Should().BeSameAs(multipleContentBuilderTemplate);
+            result.ShouldBeSameAs(multipleContentBuilderTemplate);
         }
 
         [Theory, AutoMockData]
@@ -26,7 +26,7 @@ public class TypedMultipleCreatorTests
             var result = sut.TryCreate(template);
 
             // Assert
-            result.Should().BeNull();
+            result.ShouldBeNull();
         }
 
         [Theory, AutoMockData]
@@ -36,7 +36,7 @@ public class TypedMultipleCreatorTests
             var result = sut.TryCreate(instance: null!);
 
             // Assert
-            result.Should().BeNull();
+            result.ShouldBeNull();
         }
     }
 }

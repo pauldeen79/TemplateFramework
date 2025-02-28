@@ -1,4 +1,4 @@
-namespace TemplateFramework.Core.Tests;
+﻿namespace TemplateFramework.Core.Tests;
 
 public partial class TemplateEngineTests
 {
@@ -57,7 +57,8 @@ public partial class TemplateEngineTests
 
             // Assert
             result.Status.ShouldBe(ResultStatus.NotSupported);
-            result.ErrorMessage.ShouldStartWith("Type of GenerationEnvironment").And.EndWith("is not supported");
+            result.ErrorMessage.ShouldStartWith("Type of GenerationEnvironment");
+            result.ErrorMessage.ShouldEndWith("is not supported");
         }
     }
 }

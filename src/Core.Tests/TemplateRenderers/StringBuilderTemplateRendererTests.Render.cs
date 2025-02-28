@@ -17,7 +17,7 @@ public partial class StringBuilderTemplateRendererTests
             var sut = CreateSut();
 
             // Act & Assert
-            Task t = sut.Render(context: null!, CancellationToken.None))
+            Task t = sut.Render(context: null!, CancellationToken.None);
             (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("context");
         }
 

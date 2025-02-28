@@ -17,7 +17,7 @@ public class TemplateProviderTests
         public void Throws_On_Null_Identifier(TemplateProvider sut)
         {
             // Act & Assert
-            Action a = () => sut.Create(identifier: null!))
+            Action a = () => sut.Create(identifier: null!);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("identifier");
         }
 
@@ -31,7 +31,7 @@ public class TemplateProviderTests
             templateProviderComponent.Supports(identifier).Returns(false);
 
             // Act & Assert
-            Action a = () => sut.Create(identifier: identifier))
+            Action a = () => sut.Create(identifier: identifier);
             a.ShouldThrow<NotSupportedException>();
         }
 
@@ -60,7 +60,7 @@ public class TemplateProviderTests
         public void Throws_On_Null_Component(TemplateProvider sut)
         {
             // Act & Assert
-            Action a = () => sut.RegisterComponent(component: null!))
+            Action a = () => sut.RegisterComponent(component: null!);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("component");
         }
 
@@ -101,7 +101,7 @@ public class TemplateProviderTests
             await sut.StartSession(CancellationToken.None);
 
             // Assert
-            Action a = () => sut.Create(identifier))
+            Action a = () => sut.Create(identifier);
             a.ShouldThrow<NotSupportedException>();
         }
 
@@ -146,7 +146,7 @@ public class TemplateProviderTests
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
             result.ErrorMessage.ShouldBe("An error occured while starting the session. See the inner results for more details.");
-            result.InnerResults.Count().ShouldBe(1);
+            result.InnerResults.Count.ShouldBe(1);
             result.InnerResults.First().ErrorMessage.ShouldBe("Kaboom");
         }
 

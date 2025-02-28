@@ -11,7 +11,7 @@ public partial class ViewModelTemplateParameterConverterTests
             var sut = CreateSut();
 
             // Act & Assert
-            Action a = () => sut.TryConvert(null, Type, context: null!, out _))
+            Action a = () => sut.TryConvert(null, Type, context: null!, out _);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
         }
 

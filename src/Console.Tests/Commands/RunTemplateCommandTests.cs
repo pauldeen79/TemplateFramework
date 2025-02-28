@@ -190,7 +190,7 @@ public class RunTemplateCommandTests : TestBase<RunTemplateCommand>
             var output = await CommandLineCommandHelper.ExecuteCommand(sut, "--assembly MyAssembly", "--classname MyClass", "--list-parameters", "--default parameters.txt", "--dryrun", "--bare");
 
             // Assert
-            output.ShouldBe(@"parameters.txt:;
+            output.ShouldBe(@"parameters.txt:
 AdditionalParameter (System.String)
 
 
@@ -213,7 +213,7 @@ AdditionalParameter (System.String)
             var output = await CommandLineCommandHelper.ExecuteCommand(sut, "--assembly MyAssembly", "--classname MyClass", "--list-parameters");
 
             // Assert
-            output.ShouldBe(@"Error: Default filename is required if you want to list parameters;
+            output.ShouldBe(@"Error: Default filename is required if you want to list parameters
 ");
         }
 
@@ -235,7 +235,7 @@ AdditionalParameter (System.String)
             var output = await CommandLineCommandHelper.ExecuteCommand(sut, "--formattablestring myfile.txt", "--default parameters.txt", "--dryrun");
 
             // Assert
-            output.ShouldBe(@"Error: File 'myfile.txt' does not exist;
+            output.ShouldBe(@"Error: File 'myfile.txt' does not exist
 ");
         }
 
@@ -257,7 +257,7 @@ AdditionalParameter (System.String)
             var output = await CommandLineCommandHelper.ExecuteCommand(sut, "--expressionstring myfile.txt", "--default parameters.txt", "--dryrun");
 
             // Assert
-            output.ShouldBe(@"Error: File 'myfile.txt' does not exist;
+            output.ShouldBe(@"Error: File 'myfile.txt' does not exist
 ");
         }
     }
