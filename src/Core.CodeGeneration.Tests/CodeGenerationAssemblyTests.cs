@@ -21,8 +21,8 @@ public class CodeGenerationAssemblyTests : TestBase<CodeGenerationAssembly>
             var sut = CreateSut();
 
             // Act & Assert
-            await sut.Awaiting(x => x.Generate(settings: null!, generationEnvironment, CancellationToken.None))
-                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("settings");
+            Task t = sut.Generate(settings: null!, generationEnvironment, CancellationToken.None);
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("settings");
         }
 
         [Fact]
@@ -33,8 +33,8 @@ public class CodeGenerationAssemblyTests : TestBase<CodeGenerationAssembly>
             var sut = CreateSut();
 
             // Act & Assert
-            await sut.Awaiting(x => x.Generate(settings, generationEnvironment: null!, CancellationToken.None))
-                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("generationEnvironment");
+            Task t = sut.Generate(settings, generationEnvironment: null!, CancellationToken.None);
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("generationEnvironment");
         }
 
         [Fact]

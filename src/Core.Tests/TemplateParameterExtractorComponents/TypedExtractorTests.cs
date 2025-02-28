@@ -1,4 +1,5 @@
 ﻿using TemplateFramework.Abstractions.Templates;
+using Shouldly;
 
 namespace TemplateFramework.Core.Tests.TemplateParameterExtractorComponents;
 
@@ -10,16 +11,16 @@ public class TypedExtractorTests
         public void Throws_On_Null_TemplateInstance(TypedExtractor sut)
         {
             // Act & Assert
-            sut.Invoking(x => x.Extract(templateInstance: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("templateInstance");
+            Action a = () => sut.Extract(templateInstance: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("templateInstance");
         }
 
         [Theory, AutoMockData]
         public void Throws_On_TemplateInstance_Of_Wrong_Type(TypedExtractor sut)
         {
             // Act & Assert
-            sut.Invoking(x => x.Extract(templateInstance: new object()))
-               .Should().Throw<ArgumentException>().WithParameterName("templateInstance");
+            Action a = () => sut.Extract(templateInstance: new object());
+            a.ShouldThrow<ArgumentException>().ParamName.ShouldBe("templateInstance");
         }
 
         [Fact]
@@ -35,8 +36,8 @@ public class TypedExtractorTests
             var result = sut.Extract(parameterizedTemplate);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(parameters.Value);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(parameters.Value);
         }
     }
 
@@ -51,7 +52,7 @@ public class TypedExtractorTests
             var result = sut.Supports(parameterizedTemplate);
 
             // Assert
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
 
         [Theory, AutoMockData]
@@ -61,7 +62,7 @@ public class TypedExtractorTests
             var result = sut.Supports(null!);
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
 
         [Theory, AutoMockData]
@@ -71,7 +72,7 @@ public class TypedExtractorTests
             var result = sut.Supports(new object());
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using CrossCutting.Common.Results;
+using Shouldly;
 
 namespace TemplateFramework.Core.Tests.TemplateRenderers;
 
@@ -13,8 +14,8 @@ public partial class MultipleStringContentBuilderTemplateRendererTests
             var sut = CreateSut();
 
             // Act & Assert
-            await sut.Awaiting(x => x.Render(context: null!, CancellationToken.None))
-                     .Should().ThrowAsync<ArgumentException>().WithParameterName("context");
+            Task t = sut.Render(context: null!, CancellationToken.None);
+            (await t.ShouldThrowAsync<ArgumentException>()).ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -30,7 +31,7 @@ public partial class MultipleStringContentBuilderTemplateRendererTests
             var result = await sut.Render(engineContext, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NotSupported);
+            result.Status.ShouldBe(ResultStatus.NotSupported);
         }
 
         [Fact]
@@ -82,8 +83,8 @@ public partial class MultipleStringContentBuilderTemplateRendererTests
             await sut.Render(engineContext, CancellationToken.None);
 
             // Assert
-            contentBuilderMock.Builder.Should().NotBeNull();
-            contentBuilderMock.Builder.ToString().Should().Be("TemplateFramework.Core.Tests.TestData+TextTransformTemplate");
+            contentBuilderMock.Builder.ShouldNotBeNull();
+            contentBuilderMock.Builder.ToString().ShouldBe("TemplateFramework.Core.Tests.TestData+TextTransformTemplate");
         }
 
         [Fact]
@@ -117,7 +118,7 @@ public partial class MultipleStringContentBuilderTemplateRendererTests
             var result = await sut.Render(engineContext, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -151,7 +152,7 @@ public partial class MultipleStringContentBuilderTemplateRendererTests
             var result = await sut.Render(engineContext, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
+            result.Status.ShouldBe(ResultStatus.Error);
         }
     }
 }

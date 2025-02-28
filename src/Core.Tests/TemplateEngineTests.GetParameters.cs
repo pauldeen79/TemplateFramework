@@ -11,8 +11,8 @@ public partial class TemplateEngineTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.GetParameters(templateInstance: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("templateInstance");
+            Action a = () => sut.GetParameters(templateInstance: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("templateInstance");
         }
 
         [Fact]
@@ -28,8 +28,8 @@ public partial class TemplateEngineTests
             var result = await sut.GetParameters(template);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().BeEquivalentTo(parameters.Value);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(parameters.Value);
         }
     }
 }

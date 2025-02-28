@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests.TemplateIdentifiers;
+namespace TemplateFramework.Core.Tests.TemplateIdentifiers;
 
 public class TemplateInstanceIdentifierWithTemplateProviderTests
 {
@@ -17,10 +17,10 @@ public class TemplateInstanceIdentifierWithTemplateProviderTests
             var instance = new TemplateInstanceIdentifierWithTemplateProvider(this, null, "assembly", "class");
 
             // Assert
-            instance.CurrentDirectory.Should().Be(Directory.GetCurrentDirectory());
-            instance.Instance.Should().BeSameAs(this);
-            instance.PluginAssemblyName.Should().Be("assembly");
-            instance.PluginClassName.Should().Be("class");
+            instance.CurrentDirectory.ShouldBe(Directory.GetCurrentDirectory());
+            instance.Instance.ShouldBeSameAs(this);
+            instance.PluginAssemblyName.ShouldBe("assembly");
+            instance.PluginClassName.ShouldBe("class");
         }
 
         [Fact]
@@ -30,10 +30,10 @@ public class TemplateInstanceIdentifierWithTemplateProviderTests
             var instance = new TemplateInstanceIdentifierWithTemplateProvider(this, "Custom", "assembly", "class");
 
             // Assert
-            instance.CurrentDirectory.Should().Be("Custom");
-            instance.Instance.Should().BeSameAs(this);
-            instance.PluginAssemblyName.Should().Be("assembly");
-            instance.PluginClassName.Should().Be("class");
+            instance.CurrentDirectory.ShouldBe("Custom");
+            instance.Instance.ShouldBeSameAs(this);
+            instance.PluginAssemblyName.ShouldBe("assembly");
+            instance.PluginClassName.ShouldBe("class");
         }
     }
 }

@@ -7,11 +7,11 @@ public class ContextInitializerComponentTests
         private const string DefaultFilename = "DefaultFilename.txt";
 
         [Theory, AutoMockData]
-        public async Task Throws_On_Null_Context(ContextInitializerComponent sut)
+        public void Throws_On_Null_Context(ContextInitializerComponent sut)
         {
             // Act & Assert
-            await sut.Awaiting(x => x.Initialize(context: null!, CancellationToken.None))
-                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Action a = () => sut.Initialize(context: null!, CancellationToken.None);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
         }
 
         [Theory, AutoMockData]
@@ -30,7 +30,7 @@ public class ContextInitializerComponentTests
             await sut.Initialize(engineContext, CancellationToken.None);
 
             // Assert
-            template.Context.Should().BeSameAs(context);
+            template.Context.ShouldBeSameAs(context);
         }
 
         [Theory, AutoMockData]
@@ -48,11 +48,11 @@ public class ContextInitializerComponentTests
             await sut.Initialize(engineContext, CancellationToken.None);
 
             // Assert
-            template.Context.Should().NotBeNull();
-            template.Context.Template.Should().BeSameAs(template);
-            template.Context.Model.Should().BeNull();
-            template.Context.IsRootContext.Should().BeTrue();
-            template.Context.ParentContext.Should().BeNull();
+            template.Context.ShouldNotBeNull();
+            template.Context.Template.ShouldBeSameAs(template);
+            template.Context.Model.ShouldBeNull();
+            template.Context.IsRootContext.ShouldBeTrue();
+            template.Context.ParentContext.ShouldBeNull();
         }
 
         [Theory, AutoMockData]
@@ -71,11 +71,11 @@ public class ContextInitializerComponentTests
             await sut.Initialize(engineContext, CancellationToken.None);
 
             // Assert
-            template.Context.Should().NotBeNull();
-            template.Context.Template.Should().BeSameAs(template);
-            template.Context.Model.Should().Be(model);
-            template.Context.IsRootContext.Should().BeTrue();
-            template.Context.ParentContext.Should().BeNull();
+            template.Context.ShouldNotBeNull();
+            template.Context.Template.ShouldBeSameAs(template);
+            template.Context.Model.ShouldBe(model);
+            template.Context.IsRootContext.ShouldBeTrue();
+            template.Context.ParentContext.ShouldBeNull();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.CodeGeneration.Tests;
+namespace TemplateFramework.Core.CodeGeneration.Tests;
 
 public class CodeGenerationSettingsTests
 {
@@ -20,7 +20,7 @@ public class CodeGenerationSettingsTests
             var sut = new CodeGenerationSettings(TestData.BasePath);
 
             // Assert
-            sut.BasePath.Should().Be(TestData.BasePath);
+            sut.BasePath.ShouldBe(TestData.BasePath);
         }
 
         [Fact]
@@ -30,8 +30,8 @@ public class CodeGenerationSettingsTests
             var sut = new CodeGenerationSettings(TestData.BasePath, "DefaultFilename.txt");
 
             // Assert
-            sut.BasePath.Should().Be(TestData.BasePath);
-            sut.DefaultFilename.Should().Be("DefaultFilename.txt");
+            sut.BasePath.ShouldBe(TestData.BasePath);
+            sut.DefaultFilename.ShouldBe("DefaultFilename.txt");
         }
 
         [Fact]
@@ -41,9 +41,9 @@ public class CodeGenerationSettingsTests
             var sut = new CodeGenerationSettings(TestData.BasePath, "DefaultFilename.txt", DryRun);
 
             // Assert
-            sut.BasePath.Should().Be(TestData.BasePath);
-            sut.DefaultFilename.Should().Be("DefaultFilename.txt");
-            sut.DryRun.Should().Be(DryRun);
+            sut.BasePath.ShouldBe(TestData.BasePath);
+            sut.DefaultFilename.ShouldBe("DefaultFilename.txt");
+            sut.DryRun.ShouldBe(DryRun);
         }
     }
 }

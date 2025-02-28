@@ -8,32 +8,32 @@ public class TemplateCreatorTests
         public void Throws_On_Null_Factory()
         {
             // Act & Assert
-            this.Invoking(_ => new TemplateCreator<TemplateCreatorTests>(factory: null!, null, null))
-                .Should().Throw<ArgumentNullException>().WithParameterName("factory");
+            Action a = () => _ = new TemplateCreator<TemplateCreatorTests>(factory: null!, null, null);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("factory");
         }
 
         [Fact]
         public void Throws_When_Name_And_ModelType_Are_Both_Null()
         {
             // Act & Assert
-            this.Invoking(_ => new TemplateCreator<TemplateCreatorTests>(() => new(), null, null))
-                .Should().Throw<InvalidOperationException>().WithMessage("Either modelType or name is required");
+            Action a = () => _ = new TemplateCreator<TemplateCreatorTests>(() => new(), null, null);
+            a.ShouldThrow<InvalidOperationException>().Message.ShouldBe("Either modelType or name is required");
         }
 
         [Fact]
         public void Throws_On_Null_Name()
         {
             // Act & Assert
-            this.Invoking(_ => new TemplateCreator<TemplateCreatorTests>(name: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("name");
+            Action a = () => _ = new TemplateCreator<TemplateCreatorTests>(name: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("name");
         }
 
         [Fact]
         public void Throws_On_Null_ModelType()
         {
             // Act & Assert
-            this.Invoking(_ => new TemplateCreator<TemplateCreatorTests>(modelType: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("modelType");
+            Action a = () => _ = new TemplateCreator<TemplateCreatorTests>(modelType: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("modelType");
         }
     }
 
@@ -49,7 +49,7 @@ public class TemplateCreatorTests
             var result = sut.CreateByModel("string model");
 
             // Assert
-            result.Should().NotBeNull();
+            result.ShouldNotBeNull();
         }
 
         [Fact]
@@ -59,8 +59,8 @@ public class TemplateCreatorTests
             var sut = new TemplateCreator<TemplateCreatorTests>(() => new TemplateCreatorTests(), typeof(string), null);
 
             // Act & Assert
-            sut.Invoking(x => x.CreateByModel(1))
-               .Should().Throw<NotSupportedException>();
+            Action a = () => sut.CreateByModel(1);
+            a.ShouldThrow<NotSupportedException>();
         }
     }
 
@@ -76,7 +76,7 @@ public class TemplateCreatorTests
             var result = sut.CreateByName("Correct");
 
             // Assert
-            result.Should().NotBeNull();
+            result.ShouldNotBeNull();
         }
 
         [Fact]
@@ -86,8 +86,8 @@ public class TemplateCreatorTests
             var sut = new TemplateCreator<TemplateCreatorTests>(() => new TemplateCreatorTests(), null, "Correct");
 
             // Act & Assert
-            sut.Invoking(x => x.CreateByName("Incorrect"))
-               .Should().Throw<NotSupportedException>();
+            Action a = () => sut.CreateByName("Incorrect");
+            a.ShouldThrow<NotSupportedException>();
         }
     }
 
@@ -103,7 +103,7 @@ public class TemplateCreatorTests
             var result = sut.SupportsModel("string model");
 
             // Assert
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
 
         [Fact]
@@ -116,7 +116,7 @@ public class TemplateCreatorTests
             var result = sut.SupportsModel(1);
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
 
         [Fact]
@@ -129,7 +129,7 @@ public class TemplateCreatorTests
             var result = sut.SupportsModel("some model");
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
 
         [Fact]
@@ -142,7 +142,7 @@ public class TemplateCreatorTests
             var result = sut.SupportsModel(model: null);
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
     }
 
@@ -158,7 +158,7 @@ public class TemplateCreatorTests
             var result = sut.SupportsName("Correct");
 
             // Assert
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
 
         [Fact]
@@ -171,7 +171,7 @@ public class TemplateCreatorTests
             var result = sut.SupportsName("Incorrect");
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
     }
 }

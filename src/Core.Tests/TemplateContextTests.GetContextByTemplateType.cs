@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests;
+namespace TemplateFramework.Core.Tests;
 
 public partial class TemplateContextTests
 {
@@ -14,7 +14,7 @@ public partial class TemplateContextTests
             var result = sut.GetContextByTemplateType<StringBuilder>();
 
             // Assert
-            result.Should().BeNull();
+            result.ShouldBeNull();
         }
 
         [Fact]
@@ -27,7 +27,7 @@ public partial class TemplateContextTests
             var result = sut.GetContextByTemplateType<GetContextByTemplateType>();
 
             // Assert
-            result.Should().BeSameAs(this);
+            result.ShouldBeSameAs(this);
         }
 
         [Fact]
@@ -40,7 +40,7 @@ public partial class TemplateContextTests
             var result = sut.GetContextByTemplateType<GetContextByTemplateType>(_ => true);
 
             // Assert
-            result.Should().BeSameAs(this);
+            result.ShouldBeSameAs(this);
         }
 
         [Fact]
@@ -53,7 +53,7 @@ public partial class TemplateContextTests
             var result = sut.GetContextByTemplateType<GetContextByTemplateType>(_ => false);
 
             // Assert
-            result.Should().Be(default);
+            result.ShouldBe(default);
         }
     }
 }

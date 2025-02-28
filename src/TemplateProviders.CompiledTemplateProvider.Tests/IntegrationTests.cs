@@ -26,7 +26,7 @@ public class IntegrationTests : TestBase
         await templateEngine.Render(request, CancellationToken.None);
 
         // Assert
-        builder.ToString().Should().Be("Hello world!");
+        builder.ToString().ShouldBe("Hello world!");
     }
 }
 

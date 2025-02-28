@@ -20,7 +20,7 @@ public class IntegrationTests
         await sut.Render(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), builder), CancellationToken.None);
 
         // Assert
-        builder.Contents.Should().ContainSingle();
-        builder.Contents.Single().Builder.ToString().Should().Be("Hello world!");
+        builder.Contents.Count().ShouldBe(1);
+        builder.Contents.Single().Builder.ToString().ShouldBe("Hello world!");
     }
 }

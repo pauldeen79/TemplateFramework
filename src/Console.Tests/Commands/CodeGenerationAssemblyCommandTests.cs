@@ -24,7 +24,7 @@ public class CodeGenerationAssemblyCommandTests : TestBase<CodeGenerationAssembl
             sut.Initialize(app);
 
             // Assert
-            app.Commands.Should().ContainSingle();
+            app.Commands.Count.ShouldBe(1);
         }
 
         [Fact]
@@ -34,8 +34,8 @@ public class CodeGenerationAssemblyCommandTests : TestBase<CodeGenerationAssembl
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Initialize(app: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("app");
+            Action a = () => sut.Initialize(app: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("app");
         }
     }
 
@@ -51,7 +51,7 @@ public class CodeGenerationAssemblyCommandTests : TestBase<CodeGenerationAssembl
             var output = await CommandLineCommandHelper.ExecuteCommand(sut);
 
             // Assert
-            output.Should().Be("Error: Assembly name is required." + Environment.NewLine);
+            output.ShouldBe("Error: Assembly name is required." + Environment.NewLine);
         }
 
         [Fact]
@@ -204,7 +204,7 @@ public class CodeGenerationAssemblyCommandTests : TestBase<CodeGenerationAssembl
             var output = await CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", $"--path {TestData.BasePath}");
 
             // Assert
-            output.Should().Be("Written code generation output to path: " + TestData.BasePath + Environment.NewLine);
+            output.ShouldBe("Written code generation output to path: " + TestData.BasePath + Environment.NewLine);
         }
 
         [Fact]
@@ -217,7 +217,7 @@ public class CodeGenerationAssemblyCommandTests : TestBase<CodeGenerationAssembl
             var output = await CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}");
 
             // Assert
-            output.Should().Be("Written code generation output to path: " + Directory.GetCurrentDirectory() + Environment.NewLine);
+            output.ShouldBe("Written code generation output to path: " + Directory.GetCurrentDirectory() + Environment.NewLine);
         }
 
         [Fact]
@@ -230,7 +230,7 @@ public class CodeGenerationAssemblyCommandTests : TestBase<CodeGenerationAssembl
             var output = await CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--bare");
 
             // Assert
-            output.Should().BeEmpty();
+            output.ShouldBeEmpty();
         }
 
         [Fact]
@@ -267,7 +267,7 @@ Hello!
             var output = await CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--clipboard");
 
             // Assert
-            output.Should().Be("Copied code generation output to clipboard" + Environment.NewLine);
+            output.ShouldBe("Copied code generation output to clipboard" + Environment.NewLine);
         }
 
         [Fact]
@@ -280,7 +280,7 @@ Hello!
             var output = await CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--clipboard", "--bare");
 
             // Assert
-            output.Should().BeEmpty();
+            output.ShouldBeEmpty();
         }
 
         [Fact]
@@ -302,7 +302,7 @@ Hello!
             var output = await CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--dryrun");
 
             // Assert
-            output.Should().Be("Code generation output:" + Environment.NewLine + @"MyFile.txt:
+            output.ShouldBe("Code generation output:" + Environment.NewLine + @"MyFile.txt:
 Hello!
 " + Environment.NewLine);
         }
@@ -324,7 +324,7 @@ Hello!
             var output = await CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--dryrun", $"--path {TestData.BasePath}");
 
             // Assert
-            output.Should().Be("Code generation output:" + Environment.NewLine + @$"{Path.Combine(TestData.BasePath, "MyFile.txt")}:
+            output.ShouldBe("Code generation output:" + Environment.NewLine + @$"{Path.Combine(TestData.BasePath, "MyFile.txt")}:
 Hello!
 " + Environment.NewLine);
         }

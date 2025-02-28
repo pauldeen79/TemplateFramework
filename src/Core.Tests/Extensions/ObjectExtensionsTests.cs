@@ -14,7 +14,7 @@ public class ObjectExtensionsTests
             var result = input.ToKeyValuePairs();
 
             // Assert
-            result.Should().BeEmpty();
+            result.ShouldBeEmpty();
         }
 
         [Fact]
@@ -32,7 +32,7 @@ public class ObjectExtensionsTests
             var result = input.ToKeyValuePairs();
 
             // Assert
-            result.Should().BeEquivalentTo(input);
+            result.ToArray().ShouldBeEquivalentTo(input);
         }
 
         [Fact]
@@ -50,13 +50,14 @@ public class ObjectExtensionsTests
             var result = input.ToKeyValuePairs()?.ToArray();
 
             // Assert
-            result.Should().HaveCount(3);
-            result![0].Key.Should().Be("Item1");
-            result[0].Value.Should().Be(1);
-            result[1].Key.Should().Be("Item2");
-            result[1].Value.Should().Be("some value");
-            result[2].Key.Should().Be("Item3");
-            result[2].Value.Should().BeNull();
+            result.ShouldNotBeNull();
+            result.Length.ShouldBe(3);
+            result![0].Key.ShouldBe("Item1");
+            result[0].Value.ShouldBe(1);
+            result[1].Key.ShouldBe("Item2");
+            result[1].Value.ShouldBe("some value");
+            result[2].Key.ShouldBe("Item3");
+            result[2].Value.ShouldBeNull();
         }
     }
 }

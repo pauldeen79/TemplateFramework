@@ -17,7 +17,7 @@ public class IndentedStringBuilderTests
         var actual = sut.ToString();
 
         // Assert
-        actual.Should().Be(@"Hello world
+        actual.ShouldBe(@"Hello world
     Two
 Back to normal
 ");

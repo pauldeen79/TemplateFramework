@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests;
+namespace TemplateFramework.Core.Tests;
 
 public class ValueConverterTests
 {
@@ -27,7 +27,7 @@ public class ValueConverterTests
             var result = sut.Convert(value, value.GetType(), context);
 
             // Assert
-            result.Should().BeSameAs(value);
+            result.ShouldBeSameAs(value);
         }
 
         [Theory, AutoMockData]
@@ -48,7 +48,7 @@ public class ValueConverterTests
             var result = sut.Convert(value, value.GetType(), context);
 
             // Assert
-            result.Should().BeEquivalentTo(value.ToUpperInvariant());
+            result.ShouldBeEquivalentTo(value.ToUpperInvariant());
         }
     }
 }

@@ -21,8 +21,8 @@ public partial class TemplateEngineTests
             var result = await sut.Render(request, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("TemplateProvider did not create a template instance");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("TemplateProvider did not create a template instance");
         }
 
         [Fact]
@@ -38,8 +38,8 @@ public partial class TemplateEngineTests
             var result = await sut.Render(request, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
 
         [Fact]
@@ -56,8 +56,9 @@ public partial class TemplateEngineTests
             var result = await sut.Render(request, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NotSupported);
-            result.ErrorMessage.Should().StartWith("Type of GenerationEnvironment").And.EndWith("is not supported");
+            result.Status.ShouldBe(ResultStatus.NotSupported);
+            result.ErrorMessage.ShouldStartWith("Type of GenerationEnvironment");
+            result.ErrorMessage.ShouldEndWith("is not supported");
         }
     }
 }

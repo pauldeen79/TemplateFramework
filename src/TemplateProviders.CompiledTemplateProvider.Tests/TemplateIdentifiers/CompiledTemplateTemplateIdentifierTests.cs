@@ -8,32 +8,32 @@ public class CompiledTemplateTemplateIdentifierTests
         public void Throws_On_Null_AssemblyName()
         {
             // Act & Assert
-            this.Invoking(_ => new CompiledTemplateIdentifier(assemblyName: null!, nameof(Constructor)))
-                .Should().Throw<ArgumentNullException>().WithParameterName("assemblyName");
+            Action a = () => _ = new CompiledTemplateIdentifier(assemblyName: null!, nameof(Constructor));
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("assemblyName");
         }
 
         [Fact]
         public void Throws_On_Empty_AssemblyName()
         {
             // Act & Assert
-            this.Invoking(_ => new CompiledTemplateIdentifier(assemblyName: string.Empty, nameof(Constructor)))
-                .Should().Throw<ArgumentException>().WithParameterName("assemblyName");
+            Action a = () => _ = new CompiledTemplateIdentifier(assemblyName: string.Empty, nameof(Constructor));
+            a.ShouldThrow<ArgumentException>().ParamName.ShouldBe("assemblyName");
         }
 
         [Fact]
         public void Throws_On_Null_ClassName()
         {
             // Act & Assert
-            this.Invoking(_ => new CompiledTemplateIdentifier(GetType().Assembly.FullName!, className: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("className");
+            Action a = () => _ = new CompiledTemplateIdentifier(GetType().Assembly.FullName!, className: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("className");
         }
 
         [Fact]
         public void Throws_On_Empty_ClassName()
         {
             // Act & Assert
-            this.Invoking(_ => new CompiledTemplateIdentifier(GetType().Assembly.FullName!, className: string.Empty))
-                .Should().Throw<ArgumentException>().WithParameterName("className");
+            Action a = () => _ = new CompiledTemplateIdentifier(GetType().Assembly.FullName!, className: string.Empty);
+            a.ShouldThrow<ArgumentException>().ParamName.ShouldBe("className");
         }
 
         [Fact]
@@ -43,9 +43,9 @@ public class CompiledTemplateTemplateIdentifierTests
             var instance = new CompiledTemplateIdentifier(GetType().Assembly.FullName!, className: GetType().FullName!, Directory.GetCurrentDirectory());
 
             // Assert
-            instance.AssemblyName.Should().Be(GetType().Assembly.FullName);
-            instance.ClassName.Should().Be(GetType().FullName);
-            instance.CurrentDirectory.Should().Be(Directory.GetCurrentDirectory());
+            instance.AssemblyName.ShouldBe(GetType().Assembly.FullName);
+            instance.ClassName.ShouldBe(GetType().FullName);
+            instance.CurrentDirectory.ShouldBe(Directory.GetCurrentDirectory());
         }
 
         [Fact]
@@ -55,9 +55,9 @@ public class CompiledTemplateTemplateIdentifierTests
             var instance = new CompiledTemplateIdentifier(GetType().Assembly.FullName!, className: GetType().FullName!);
 
             // Assert
-            instance.AssemblyName.Should().Be(GetType().Assembly.FullName);
-            instance.ClassName.Should().Be(GetType().FullName);
-            instance.CurrentDirectory.Should().NotBeEmpty();
+            instance.AssemblyName.ShouldBe(GetType().Assembly.FullName);
+            instance.ClassName.ShouldBe(GetType().FullName);
+            instance.CurrentDirectory.ShouldNotBeEmpty();
         }
     }
 }

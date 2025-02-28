@@ -1,4 +1,4 @@
-namespace TemplateFramework.Core.Tests;
+﻿namespace TemplateFramework.Core.Tests;
 
 public partial class TemplateContextTests
 {
@@ -19,7 +19,7 @@ public partial class TemplateContextTests
             var result = sut.IsFirstIteration;
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
     }
 }

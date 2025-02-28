@@ -19,8 +19,8 @@ public class ParameterInitializerComponentTests
         public async Task Throws_On_Null_Context(ParameterInitializerComponent sut)
         {
             // Act & Assert
-            await sut.Awaiting(x => x.Initialize(context: null!, CancellationToken.None))
-                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Task t = sut.Initialize(context: null!, CancellationToken.None);
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("context");
         }
 
         [Theory, AutoMockData]
@@ -41,7 +41,7 @@ public class ParameterInitializerComponentTests
             await sut.Initialize(engineContext, CancellationToken.None);
 
             // Assert
-            template.AdditionalParameter.Should().Be(additionalParameters.AdditionalParameter);
+            template.AdditionalParameter.ShouldBe(additionalParameters.AdditionalParameter);
         }
 
         [Theory, AutoMockData]
@@ -65,8 +65,8 @@ public class ParameterInitializerComponentTests
             var result = await sut.Initialize(engineContext, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom!");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom!");
         }
 
         [Theory, AutoMockData]
@@ -90,8 +90,8 @@ public class ParameterInitializerComponentTests
             var result = await sut.Initialize(engineContext, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom!");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom!");
         }
 
         [Theory, AutoMockData]
@@ -114,7 +114,7 @@ public class ParameterInitializerComponentTests
             await sut.Initialize(engineContext, CancellationToken.None);
 
             // Assert
-            template.AdditionalParameter.Should().BeEquivalentTo(convertedValue.ToString());
+            template.AdditionalParameter.ShouldBeEquivalentTo(convertedValue.ToString());
         }
 
         [Theory, AutoMockData]
@@ -130,8 +130,8 @@ public class ParameterInitializerComponentTests
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
 
             // Act & Assert
-            await sut.Awaiting(x => x.Initialize(engineContext, CancellationToken.None))
-                     .Should().NotThrowAsync();
+            Task t = sut.Initialize(engineContext, CancellationToken.None);
+            await t.ShouldNotThrowAsync();
         }
 
         [Theory, AutoMockData]
@@ -153,8 +153,8 @@ public class ParameterInitializerComponentTests
             await sut.Initialize(engineContext, CancellationToken.None);
 
             // Assert
-            template.Model.Should().BeNull();
-            template.AdditionalParameter.Should().Be(additionalParameters.AdditionalParameter);
+            template.Model.ShouldBeNull();
+            template.AdditionalParameter.ShouldBe(additionalParameters.AdditionalParameter);
         }
 
         [Theory, AutoMockData]
@@ -175,7 +175,7 @@ public class ParameterInitializerComponentTests
             await sut.Initialize(engineContext, CancellationToken.None);
 
             // Assert
-            template.ViewModel.Should().BeSameAs(viewModel);
+            template.ViewModel.ShouldBeSameAs(viewModel);
         }
 
         [Theory, AutoMockData]
@@ -197,7 +197,7 @@ public class ParameterInitializerComponentTests
             await sut.Initialize(engineContext, CancellationToken.None);
 
             // Assert
-            template.Parameter.Should().Be(additionalParameters.Parameter);
+            template.Parameter.ShouldBe(additionalParameters.Parameter);
         }
 
         [Theory, AutoMockData]
@@ -219,8 +219,8 @@ public class ParameterInitializerComponentTests
             var result = await sut.Initialize(engineContext, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom!");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom!");
         }
 
         [Theory, AutoMockData]
@@ -239,8 +239,8 @@ public class ParameterInitializerComponentTests
             templateEngine.GetParameters(Arg.Any<object>()).Returns(Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(TestData.PocoParameterizedTemplate.Parameter), typeof(string))]));
 
             // Act & Assert
-            await sut.Awaiting(x => x.Initialize(engineContext, CancellationToken.None))
-                     .Should().NotThrowAsync();
+            Task t = sut.Initialize(engineContext, CancellationToken.None);
+            await t.ShouldNotThrowAsync();
         }
     }
 }

@@ -24,7 +24,7 @@ public class RunTemplateCommandTests : TestBase<RunTemplateCommand>
             sut.Initialize(app);
 
             // Assert
-            app.Commands.Should().ContainSingle();
+            app.Commands.Count.ShouldBe(1);
         }
 
         [Fact]
@@ -34,8 +34,8 @@ public class RunTemplateCommandTests : TestBase<RunTemplateCommand>
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Initialize(app: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("app");
+            Action a = () => sut.Initialize(app: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("app");
         }
     }
 
@@ -51,7 +51,7 @@ public class RunTemplateCommandTests : TestBase<RunTemplateCommand>
             var output = await CommandLineCommandHelper.ExecuteCommand(sut, "--assembly ");
 
             // Assert
-            output.Should().Be("Error: Assembly name is required." + Environment.NewLine);
+            output.ShouldBe("Error: Assembly name is required." + Environment.NewLine);
         }
 
         [Fact]
@@ -64,7 +64,7 @@ public class RunTemplateCommandTests : TestBase<RunTemplateCommand>
             var output = await CommandLineCommandHelper.ExecuteCommand(sut, "--assembly MyAssembly", "--classname ");
 
             // Assert
-            output.Should().Be("Error: Class name is required." + Environment.NewLine);
+            output.ShouldBe("Error: Class name is required." + Environment.NewLine);
         }
 
         [Fact]
@@ -190,7 +190,7 @@ public class RunTemplateCommandTests : TestBase<RunTemplateCommand>
             var output = await CommandLineCommandHelper.ExecuteCommand(sut, "--assembly MyAssembly", "--classname MyClass", "--list-parameters", "--default parameters.txt", "--dryrun", "--bare");
 
             // Assert
-            output.Should().Be(@"parameters.txt:
+            output.ShouldBe(@"parameters.txt:
 AdditionalParameter (System.String)
 
 
@@ -213,7 +213,7 @@ AdditionalParameter (System.String)
             var output = await CommandLineCommandHelper.ExecuteCommand(sut, "--assembly MyAssembly", "--classname MyClass", "--list-parameters");
 
             // Assert
-            output.Should().Be(@"Error: Default filename is required if you want to list parameters
+            output.ShouldBe(@"Error: Default filename is required if you want to list parameters
 ");
         }
 
@@ -235,7 +235,7 @@ AdditionalParameter (System.String)
             var output = await CommandLineCommandHelper.ExecuteCommand(sut, "--formattablestring myfile.txt", "--default parameters.txt", "--dryrun");
 
             // Assert
-            output.Should().Be(@"Error: File 'myfile.txt' does not exist
+            output.ShouldBe(@"Error: File 'myfile.txt' does not exist
 ");
         }
 
@@ -257,7 +257,7 @@ AdditionalParameter (System.String)
             var output = await CommandLineCommandHelper.ExecuteCommand(sut, "--expressionstring myfile.txt", "--default parameters.txt", "--dryrun");
 
             // Assert
-            output.Should().Be(@"Error: File 'myfile.txt' does not exist
+            output.ShouldBe(@"Error: File 'myfile.txt' does not exist
 ");
         }
     }

@@ -1,4 +1,4 @@
-﻿namespace TemplateFramework.Core.Tests;
+namespace TemplateFramework.Core.Tests;
 
 public partial class TemplateContextTests
 {
@@ -14,7 +14,7 @@ public partial class TemplateContextTests
             var result = sut.GetModelFromContextByType<GetModelFromContextByType>();
 
             // Assert
-            result.Should().BeNull();
+            result.ShouldBeNull();
         }
 
         [Fact]
@@ -27,7 +27,7 @@ public partial class TemplateContextTests
             var result = sut.GetModelFromContextByType<string>();
 
             // Assert
-            result.Should().Be("test model");
+            result.ShouldBe("test model");
         }
 
         [Fact]
@@ -40,7 +40,7 @@ public partial class TemplateContextTests
             var result = sut.GetModelFromContextByType<int>(_ => true);
 
             // Assert
-            result.Should().Be(1);
+            result.ShouldBe(1);
         }
 
         [Fact]
@@ -53,7 +53,7 @@ public partial class TemplateContextTests
             var result = sut.GetModelFromContextByType<int>(_ => false);
 
             // Assert
-            result.Should().Be(default);
+            result.ShouldBe(default);
         }
     }
 }

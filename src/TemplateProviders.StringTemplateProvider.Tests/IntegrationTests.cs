@@ -25,7 +25,7 @@ public class IntegrationTests : TestBase
         await templateEngine.Render(request, CancellationToken.None);
 
         // Assert
-        builder.ToString().Should().Be("Hello world!");
+        builder.ToString().ShouldBe("Hello world!");
     }
 
     [Fact]
@@ -47,8 +47,8 @@ public class IntegrationTests : TestBase
         var result = template.GetParameters();
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.GetValueOrThrow().Select(x => x.Name).Should().BeEquivalentTo("Prefix", "Name");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.GetValueOrThrow().Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "Name", "Prefix" });
     }
 
     [Fact]
@@ -91,7 +91,7 @@ public class IntegrationTests : TestBase
         await templateEngine.Render(request, CancellationToken.None);
 
         // Assert
-        builder.ToString().Should().Be("aaa Hello world! zzz");
+        builder.ToString().ShouldBe("aaa Hello world! zzz");
     }
 
     [Fact]
@@ -123,7 +123,7 @@ public class IntegrationTests : TestBase
         await templateEngine.Render(request, CancellationToken.None);
 
         // Assert
-        builder.ToString().Should().Be("aaa 2 zzz");
+        builder.ToString().ShouldBe("aaa 2 zzz");
     }
 
     [Fact]
@@ -166,8 +166,8 @@ public class IntegrationTests : TestBase
         var result = await templateEngine.Render(request, CancellationToken.None);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        builder.ToString().Should().Be("aaa Hello world! zzz");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        builder.ToString().ShouldBe("aaa Hello world! zzz");
     }
 
     [Fact]
@@ -210,7 +210,7 @@ public class IntegrationTests : TestBase
         var result = await templateEngine.Render(request, CancellationToken.None);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        builder.ToString().Should().Be("aaa Hello world! zzz");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        builder.ToString().ShouldBe("aaa Hello world! zzz");
     }
 }

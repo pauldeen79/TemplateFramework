@@ -30,7 +30,7 @@ public class ProviderComponentTests
             var result = sut.Supports(null!);
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
 
         [Fact]
@@ -43,7 +43,7 @@ public class ProviderComponentTests
             var result = sut.Supports(Substitute.For<ITemplateIdentifier>());
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
 
         [Fact]
@@ -56,7 +56,7 @@ public class ProviderComponentTests
             var result = sut.Supports(new ExpressionStringTemplateIdentifier("template", CultureInfo.CurrentCulture));
 
             // Assert
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
 
         [Fact]
@@ -69,7 +69,7 @@ public class ProviderComponentTests
             var result = sut.Supports(new FormattableStringTemplateIdentifier("template", CultureInfo.CurrentCulture));
 
             // Assert
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
     }
 
@@ -82,8 +82,8 @@ public class ProviderComponentTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Create(identifier: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("identifier");
+            Action a = () => sut.Create(identifier: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("identifier");
         }
 
         [Fact]
@@ -93,8 +93,8 @@ public class ProviderComponentTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Create(identifier: Substitute.For<ITemplateIdentifier>()))
-               .Should().Throw<NotSupportedException>();
+            Action a = () => sut.Create(identifier: Substitute.For<ITemplateIdentifier>());
+            a.ShouldThrow<NotSupportedException>();
         }
 
         [Fact]
@@ -108,7 +108,7 @@ public class ProviderComponentTests
             var result = sut.Create(identifier);
 
             // Assert
-            result.Should().BeOfType<ExpressionStringTemplate>();
+            result.ShouldBeOfType<ExpressionStringTemplate>();
         }
 
         [Fact]
@@ -122,7 +122,7 @@ public class ProviderComponentTests
             var result = sut.Create(identifier);
 
             // Assert
-            result.Should().BeOfType<FormattableStringTemplate>();
+            result.ShouldBeOfType<FormattableStringTemplate>();
         }
     }
 
@@ -139,7 +139,7 @@ public class ProviderComponentTests
             await sut.StartSession(CancellationToken.None);
 
             // Assert
-            ComponentRegistrationContext.Placeholders.Should().BeEmpty();
+            ComponentRegistrationContext.Placeholders.ShouldBeEmpty();
         }
 
         [Fact]
@@ -153,7 +153,7 @@ public class ProviderComponentTests
             await sut.StartSession(CancellationToken.None);
 
             // Assert
-            ComponentRegistrationContext.Functions.Should().BeEmpty();
+            ComponentRegistrationContext.Functions.ShouldBeEmpty();
         }
     }
 }

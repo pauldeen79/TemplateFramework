@@ -16,11 +16,11 @@ public class ModelInitializerComponentTests
         private const string DefaultFilename = "DefaultFilename.txt";
 
         [Theory, AutoMockData]
-        public async Task Throws_On_Null_Context(ModelInitializerComponent sut)
+        public void Throws_On_Null_Context(ModelInitializerComponent sut)
         {
             // Act & Assert
-            await sut.Awaiting(x => x.Initialize(context: null!, CancellationToken.None))
-                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Action a = () => sut.Initialize(context: null!, CancellationToken.None);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
         }
 
         [Theory, AutoMockData]
@@ -41,7 +41,7 @@ public class ModelInitializerComponentTests
             await sut.Initialize(engineContext, CancellationToken.None);
 
             // Assert
-            template.Model.Should().Be(model);
+            template.Model.ShouldBe(model);
         }
     }
 }

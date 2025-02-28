@@ -21,8 +21,8 @@ public class MultipleContentBuilderTests
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.AddContent(filename: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("filename");
+            Action a = () => sut.AddContent(filename: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("filename");
         }
 
         [Fact]
@@ -36,7 +36,7 @@ public class MultipleContentBuilderTests
             var result = sut.AddContent("File.txt", skipWhenFileExists: false, builder: builder);
 
             // Assert
-            result.Builder.ToString().Should().Be("ExistingContent");
+            result.Builder.ToString().ShouldBe("ExistingContent");
         }
 
         [Fact]
@@ -49,7 +49,7 @@ public class MultipleContentBuilderTests
             var result = sut.AddContent("File.txt");
 
             // Assert
-            result.Builder.ToString().Should().BeEmpty();
+            result.Builder.ToString().ShouldBeEmpty();
         }
 
         [Fact]
@@ -62,7 +62,7 @@ public class MultipleContentBuilderTests
             var result = sut.AddContent("File.txt");
 
             // Assert
-            result.Filename.Should().Be("File.txt");
+            result.Filename.ShouldBe("File.txt");
         }
 
         [Fact]
@@ -75,7 +75,7 @@ public class MultipleContentBuilderTests
             var result = sut.AddContent("File.txt", skipWhenFileExists: true);
 
             // Assert
-            result.SkipWhenFileExists.Should().BeTrue();
+            result.SkipWhenFileExists.ShouldBeTrue();
         }
 
         [Fact]
@@ -88,8 +88,8 @@ public class MultipleContentBuilderTests
             _ = sut.AddContent("File.txt");
 
             // Assert
-            sut.Contents.Should().HaveCount(3); //two are added from initialization in CreateSut, one is added using AddContent here
-            sut.Contents.Should().Contain(x => x.Filename == "File.txt");
+            sut.Contents.Count().ShouldBe(3); //two are added from initialization in CreateSut, one is added using AddContent here;
+            sut.Contents.ShouldContain(x => x.Filename == "File.txt");
         }
     }
 
@@ -105,9 +105,9 @@ public class MultipleContentBuilderTests
             var instance = sut.Build();
 
             // Assert
-            instance.Should().NotBeNull();
-            instance.Contents.Should().HaveCount(2);
-            instance.Contents.Select(x => x.SkipWhenFileExists).Should().AllBeEquivalentTo(true);
+            instance.ShouldNotBeNull();
+            instance.Contents.Count.ShouldBe(2);
+            instance.Contents.Select(x => x.SkipWhenFileExists).ShouldAllBe(x => x == true);
         }
 
         [Fact]
@@ -119,8 +119,8 @@ public class MultipleContentBuilderTests
             c1.Builder.AppendLine("Test1");
 
             // Act & Assert
-            sut.Invoking(x => x.Build())
-               .Should().Throw<ArgumentException>().WithParameterName("filename");
+            Action a = () => sut.Build();
+            a.ShouldThrow<ArgumentException>().ParamName.ShouldBe("filename");
         }
     }
 }
