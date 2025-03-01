@@ -35,7 +35,7 @@ public class ParameterInitializerComponent : ITemplateInitializerComponent
 
         foreach (var item in session.Where(x => x.Key != Constants.ModelKey))
         {
-            var parameter = Array.Find(result.GetValueOrThrow(), p => p.Name == item.Key);
+            var parameter = Array.Find(result.Value!, p => p.Name == item.Key);
             if (parameter is null)
             {
                 continue;
