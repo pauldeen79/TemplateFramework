@@ -320,7 +320,14 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
                 _status = status;
             }
 
-            public Task<Result> Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken) { _action(registry); return Task.FromResult(_status == ResultStatus.Ok ? Result.Success() : Result.Error()); }
+            public Task<Result> Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken)
+                => Task.Run(() =>
+                {
+                    _action(registry);
+                    return _status == ResultStatus.Ok
+                        ? Result.Success()
+                        : Result.Error();
+                });
         }
     }
 }
