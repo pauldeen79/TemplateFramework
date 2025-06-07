@@ -3,12 +3,11 @@
 public class ExpressionStringTemplateTests
 {
     protected const string Template = "Hello {Name}!";
-    protected IExpressionStringEvaluator ExpressionStringEvaluatorMock { get; } = Substitute.For<IExpressionStringEvaluator>();
-    protected IFormattableStringParser FormattableStringParserMock { get; } = Substitute.For<IFormattableStringParser>();
+    protected IExpressionEvaluator ExpressionEvaluatorMock { get; } = Substitute.For<IExpressionEvaluator>();
     protected ExpressionStringTemplateIdentifier Identifier { get; } = new ExpressionStringTemplateIdentifier(Template, CultureInfo.CurrentCulture);
-    protected ComponentRegistrationContext ComponentRegistrationContext { get; } = new([new ComponentRegistrationContextFunction(Substitute.For<IFunctionDescriptorMapper>())]);
+    protected ComponentRegistrationContext ComponentRegistrationContext { get; } = new([new ComponentRegistrationContextFunction(Substitute.For<IMemberDescriptorMapper>())]);
 
-    protected ExpressionStringTemplate CreateSut() => new(Identifier, ExpressionStringEvaluatorMock, FormattableStringParserMock, ComponentRegistrationContext);
+    protected ExpressionStringTemplate CreateSut() => new(Identifier, ExpressionEvaluatorMock, ComponentRegistrationContext);
 
     public class Constructor : ExpressionStringTemplateTests
     {
@@ -23,22 +22,23 @@ public class ExpressionStringTemplateTests
     public class Render : ExpressionStringTemplateTests
     {
         [Fact]
-        public void Throws_On_Null_Builder()
+        public async Task Throws_On_Null_Builder()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            Action a = () => sut.Render(builder: null!, CancellationToken.None);
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("builder");
+            Task t =  sut.Render(builder: null!, CancellationToken.None);
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("builder");
         }
 
         [Fact]
         public async Task Return_Result_On_NonSuccesful_Result_From_FormattableStringParser()
         {
             // Arrange
-            ExpressionStringEvaluatorMock.Evaluate(Arg.Any<string>(), Arg.Any<ExpressionStringEvaluatorSettings>(), Arg.Any<TemplateFrameworkStringContext>(), Arg.Any<IFormattableStringParser>())
-                .Returns(Result.Error<object?>("Kaboom!"));
+            ExpressionEvaluatorMock
+                .EvaluateTypedAsync<GenericFormattableString>(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
+                .Returns(Result.Error<GenericFormattableString>("Kaboom!"));
             var sut = CreateSut();
             var builder = new StringBuilder();
 
@@ -54,8 +54,9 @@ public class ExpressionStringTemplateTests
         public async Task Appends_Result_From_ExpressionStringParser_To_Builder_On_Succesful_Result()
         {
             // Arrange
-            ExpressionStringEvaluatorMock.Evaluate(Arg.Any<string>(), Arg.Any<ExpressionStringEvaluatorSettings>(), Arg.Any<TemplateFrameworkStringContext>(), Arg.Any<IFormattableStringParser>())
-                .Returns(Result.Success<object?>("Parse result"));
+            ExpressionEvaluatorMock
+                .EvaluateTypedAsync<GenericFormattableString>(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
+                .Returns(Result.Success<GenericFormattableString>("Parse result"));
             var sut = CreateSut();
             var builder = new StringBuilder();
 

@@ -1,39 +1,36 @@
-﻿using TemplateFramework.Abstractions.Templates;
-using Shouldly;
-
-namespace TemplateFramework.Core.Tests.TemplateParameterExtractorComponents;
+﻿namespace TemplateFramework.Core.Tests.TemplateParameterExtractorComponents;
 
 public class TypedExtractorTests
 {
     public class Extract
     {
         [Theory, AutoMockData]
-        public void Throws_On_Null_TemplateInstance(TypedExtractor sut)
+        public async Task Throws_On_Null_TemplateInstance(TypedExtractor sut)
         {
             // Act & Assert
-            Action a = () => sut.Extract(templateInstance: null!);
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("templateInstance");
+            Task t = sut.ExtractAsync(templateInstance: null!, CancellationToken.None);
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("templateInstance");
         }
 
         [Theory, AutoMockData]
-        public void Throws_On_TemplateInstance_Of_Wrong_Type(TypedExtractor sut)
+        public async Task Throws_On_TemplateInstance_Of_Wrong_Type(TypedExtractor sut)
         {
             // Act & Assert
-            Action a = () => sut.Extract(templateInstance: new object());
-            a.ShouldThrow<ArgumentException>().ParamName.ShouldBe("templateInstance");
+            Task t = sut.ExtractAsync(templateInstance: new object(), CancellationToken.None);
+            (await t.ShouldThrowAsync<ArgumentException>()).ParamName.ShouldBe("templateInstance");
         }
 
         [Fact]
-        public void Returns_Result_From_TemplateInstance_When_It_Implements_IParameterizedTemplate()
+        public async Task Returns_Result_From_TemplateInstance_When_It_Implements_IParameterizedTemplate()
         {
             // Arrange
             var parameterizedTemplate = Substitute.For<IParameterizedTemplate>();
             var parameters = Result.Success<ITemplateParameter[]>([new TemplateParameter("SomeName", typeof(string))]);
-            parameterizedTemplate.GetParameters().Returns(parameters);
+            parameterizedTemplate.GetParametersAsync(Arg.Any<CancellationToken>()).Returns(parameters);
             var sut = new TypedExtractor();
 
             // Act
-            var result = sut.Extract(parameterizedTemplate);
+            var result = await sut.ExtractAsync(parameterizedTemplate, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

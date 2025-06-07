@@ -3,11 +3,11 @@
 public class FormattableStringTemplateTests
 {
     protected const string Template = "Hello {Name}!";
-    protected IFormattableStringParser FormattableStringParserMock { get; } = Substitute.For<IFormattableStringParser>();
+    protected IExpressionEvaluator ExpressionEvaluatorMock { get; } = Substitute.For<IExpressionEvaluator>();
     protected FormattableStringTemplateIdentifier Identifier { get; } = new FormattableStringTemplateIdentifier(Template, CultureInfo.CurrentCulture);
     protected ComponentRegistrationContext ComponentRegistrationContext { get; } = new([]);
 
-    protected FormattableStringTemplate CreateSut() => new(Identifier, FormattableStringParserMock, ComponentRegistrationContext);
+    protected FormattableStringTemplate CreateSut() => new(Identifier, ExpressionEvaluatorMock, ComponentRegistrationContext);
 
     public class Constructor : FormattableStringTemplateTests
     {
@@ -22,21 +22,22 @@ public class FormattableStringTemplateTests
     public class GetParameters : FormattableStringTemplateTests
     {
         [Fact]
-        public void Returns_Parameters_From_Template()
+        public async Task Returns_Parameters_From_Template()
         {
             // Arrange
             var sut = CreateSut();
-            FormattableStringParserMock.Parse(Arg.Any<string>(), Arg.Any<FormattableStringParserSettings>(), Arg.Any<TemplateFrameworkStringContext>())
-                .Returns(x =>
+            ExpressionEvaluatorMock.EvaluateTypedAsync<GenericFormattableString>(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
+                .Returns(async x =>
                 {
                     // Note that in this unit test, we have to mock the behavior of FormattableStringParser :)
                     // There is also an Integration test to prove it works in real life ;-)
-                    x.ArgAt<TemplateFrameworkStringContext>(2).ParameterNamesList.Add("Name");
+                    var ctx = Result.FromExistingResult<TemplateFrameworkStringContext>(await x.ArgAt<ExpressionEvaluatorContext>(0).State["context"].ConfigureAwait(false));
+                    ctx.GetValueOrThrow().ParameterNamesList.Add("Name");
                     return Result.Success<GenericFormattableString>(string.Empty);
                 });
 
             // Act
-            var result = sut.GetParameters();
+            var result = await sut.GetParametersAsync(CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -47,22 +48,22 @@ public class FormattableStringTemplateTests
     public class Render : FormattableStringTemplateTests
     {
         [Fact]
-        public void Throws_On_Null_Builder()
+        public async Task Throws_On_Null_Builder()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            Action a = () => sut.Render(builder: null!, CancellationToken.None);
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("builder");
+            Task t = sut.Render(builder: null!, CancellationToken.None);
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("builder");
         }
 
         [Fact]
         public async Task Returns_Reuslt_On_NonSuccesful_Result_From_FormattableStringParser()
         {
             // Arrange
-            FormattableStringParserMock
-                .Parse(Arg.Any<string>(), Arg.Any<FormattableStringParserSettings>(), Arg.Any<TemplateFrameworkStringContext>())
+            ExpressionEvaluatorMock
+                .EvaluateTypedAsync<GenericFormattableString>(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(Result.Error<GenericFormattableString>("Kaboom!"));
             var sut = CreateSut();
             var builder = new StringBuilder();
@@ -79,8 +80,8 @@ public class FormattableStringTemplateTests
         public async Task Appends_Result_From_FormattableStringParser_To_Builder_On_Succesful_Result()
         {
             // Arrange
-            FormattableStringParserMock
-                .Parse(Arg.Any<string>(), Arg.Any<FormattableStringParserSettings>(), Arg.Any<TemplateFrameworkStringContext>())
+            ExpressionEvaluatorMock
+                .EvaluateTypedAsync<GenericFormattableString>(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(Result.Success<GenericFormattableString>("Parse result"));
             var sut = CreateSut();
             var builder = new StringBuilder();
@@ -101,17 +102,18 @@ public class FormattableStringTemplateTests
             // Arrange
             var sut = CreateSut();
             IDictionary<string, object?>? dictionary = null;
-            FormattableStringParserMock
-                .Parse(Arg.Any<string>(), Arg.Any<FormattableStringParserSettings>(), Arg.Any<TemplateFrameworkStringContext>())
-                .Returns(x =>
+            ExpressionEvaluatorMock
+                .EvaluateTypedAsync<GenericFormattableString>(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
+                .Returns(async x =>
                 {
-                    dictionary = x.ArgAt<TemplateFrameworkStringContext>(2).ParametersDictionary;
+                    var ctx = Result.FromExistingResult<TemplateFrameworkStringContext>(await x.ArgAt<ExpressionEvaluatorContext>(0).State["context"].ConfigureAwait(false));
+                    dictionary = ctx.GetValueOrThrow().ParametersDictionary;
 
                     return Result.Success<GenericFormattableString>(string.Empty);
                 });
 
             // Act
-            var result = sut.SetParameter("Name", "Value");
+            var result = await sut.SetParameterAsync("Name", "Value", CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

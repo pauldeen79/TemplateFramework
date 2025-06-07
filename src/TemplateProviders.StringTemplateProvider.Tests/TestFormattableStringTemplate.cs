@@ -3,15 +3,15 @@
 public class TestFormattableStringTemplate : IParameterizedTemplate, IBuilderTemplate<StringBuilder>, ISessionAwareComponent
 {
     private readonly Dictionary<string, object?> _parameterValues = [];
-    private readonly IFormattableStringParser _formattableStringParser;
+    private readonly IExpressionEvaluator _expressionEvaluator;
     private readonly ComponentRegistrationContext _componentRegistrationContext;
 
-    public TestFormattableStringTemplate(IFormattableStringParser formattableStringParser, ComponentRegistrationContext componentRegistrationContext)
+    public TestFormattableStringTemplate(IExpressionEvaluator expressionEvaluator, ComponentRegistrationContext componentRegistrationContext)
     {
-        Guard.IsNotNull(formattableStringParser);
+        Guard.IsNotNull(expressionEvaluator);
         Guard.IsNotNull(componentRegistrationContext);
 
-        _formattableStringParser = formattableStringParser;
+        _expressionEvaluator = expressionEvaluator;
         _componentRegistrationContext = componentRegistrationContext;
     }
 
@@ -28,32 +28,33 @@ public class TestFormattableStringTemplate : IParameterizedTemplate, IBuilderTem
             //TODO
         }}";
 
-    public Result<ITemplateParameter[]> GetParameters()
-        => new FormattableStringTemplate(new FormattableStringTemplateIdentifier(Template, CultureInfo.CurrentCulture), _formattableStringParser, _componentRegistrationContext).GetParameters();
+    public Task<Result<ITemplateParameter[]>> GetParametersAsync(CancellationToken cancellationToken)
+        => new FormattableStringTemplate(new FormattableStringTemplateIdentifier(Template, CultureInfo.CurrentCulture), _expressionEvaluator, _componentRegistrationContext).GetParametersAsync(cancellationToken);
 
-    public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
+    public async Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
 
         var context = new TemplateFrameworkStringContext(_parameterValues, _componentRegistrationContext, false);
 
-        var result = _formattableStringParser.Parse(Template, CultureInfo.CurrentCulture, context);
+        var result = await _expressionEvaluator.EvaluateTypedAsync<GenericFormattableString>("$\"" + Template + "\"", new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.CurrentCulture), new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success<object?>(context)) } }, cancellationToken).ConfigureAwait(false);
 
         if (result.IsSuccessful() && result.Value is not null)
         {
             builder.Append(result.Value);
         }
 
-        return Task.FromResult((Result)result);
+        return result;
     }
 
-    public Result SetParameter(string name, object? value)
-    {
-        //TODO: Find out why this is called twice when running the console app
-        _parameterValues[name] = value;
-        //_parameterValues.Add(name, value);
-        return Result.Success();
-    }
+    public Task<Result> SetParameterAsync(string name, object? value, CancellationToken cancellationToken)
+        => Task.Run(() =>
+        {
+            //TODO: Find out why this is called twice when running the console app
+            _parameterValues[name] = value;
+            //_parameterValues.Add(name, value);
+            return Result.Success();
+        }, cancellationToken);
 
     public Task<Result> StartSession(CancellationToken cancellationToken)
     {

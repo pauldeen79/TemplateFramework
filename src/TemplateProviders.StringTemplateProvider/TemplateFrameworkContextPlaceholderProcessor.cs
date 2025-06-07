@@ -1,37 +1,37 @@
 ﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider;
 
-public sealed class TemplateFrameworkContextPlaceholderProcessor : IPlaceholder
+public sealed class TemplateFrameworkContextPlaceholderProcessor : INonGenericMember
 {
-    public Result<GenericFormattableString> Evaluate(string value, PlaceholderSettings settings, object? context, IFormattableStringParser formattableStringParser)
+    public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
     {
-        Guard.IsNotNull(value);
-        Guard.IsNotNull(settings);
-        Guard.IsNotNull(formattableStringParser);
+        Guard.IsNotNull(context);
 
-        if (context is not TemplateFrameworkStringContext templateFrameworkFormattableStringContext)
+        if ((await context.Context.State["context"].ConfigureAwait(false)).Value is not TemplateFrameworkStringContext templateFrameworkFormattableStringContext)
         {
             return Result.Continue<GenericFormattableString>();
         }
 
-        foreach (var placholderProcessor in templateFrameworkFormattableStringContext.Context.Placeholders)
+        foreach (var placholderProcessor in templateFrameworkFormattableStringContext.Context.Expressions)
         {
-            var result = placholderProcessor.Evaluate(value, settings, context, formattableStringParser);
+            var result = await placholderProcessor.EvaluateAsync(context, token).ConfigureAwait(false);
             if (result.Status != ResultStatus.Continue)
             {
                 return result;
             }
         }
 
-        if (templateFrameworkFormattableStringContext.ParametersDictionary.TryGetValue(value, out var parameterValue))
+        var functionName = context.FunctionCall.Name;
+
+        if (templateFrameworkFormattableStringContext.ParametersDictionary.TryGetValue(functionName, out var parameterValue))
         {
             return Result.Success<GenericFormattableString>(parameterValue?.ToString() ?? string.Empty);
         }
 
         // Also return the parameter name, so GetParameters works.
         // For dynamically registered placeholders, make sure the name starts with two underscores, so it gets excluded here.
-        if (!value.StartsWith("__", StringComparison.CurrentCulture))
+        if (!functionName.StartsWith("__", StringComparison.CurrentCulture))
         {
-            templateFrameworkFormattableStringContext.ParameterNamesList.Add(value);
+            templateFrameworkFormattableStringContext.ParameterNamesList.Add(functionName);
         }
 
         if (templateFrameworkFormattableStringContext.GetParametersOnly)
@@ -41,10 +41,5 @@ public sealed class TemplateFrameworkContextPlaceholderProcessor : IPlaceholder
         }
 
         return Result.Continue<GenericFormattableString>();
-    }
-
-    public Result Validate(string value, PlaceholderSettings settings, object? context, IFormattableStringParser formattableStringParser)
-    {
-        return Result.Success();
     }
 }

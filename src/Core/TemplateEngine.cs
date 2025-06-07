@@ -24,14 +24,14 @@ public sealed class TemplateEngine : ITemplateEngine
         _renderers = renderers;
     }
 
-    public Task<Result<ITemplateParameter[]>> GetParameters(object templateInstance)
+    public async Task<Result<ITemplateParameter[]>> GetParametersAsync(object templateInstance, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(templateInstance);
 
-        return Task.FromResult(_parameterExtractor.Extract(templateInstance));
+        return await _parameterExtractor.ExtractAsync(templateInstance, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Result> Render(IRenderTemplateRequest request, CancellationToken cancellationToken)
+    public async Task<Result> RenderAsync(IRenderTemplateRequest request, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(request);
 

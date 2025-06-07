@@ -38,7 +38,7 @@ public class MultipleStringContentBuilderTemplateRenderer : ITemplateRenderer
         // Render using a stringbuilder, then add it to multiple contents
         var stringBuilder = new StringBuilder();
         var singleRequest = new RenderTemplateRequest(context.Identifier, context.Model, stringBuilder, context.DefaultFilename, context.AdditionalParameters, context.Context);
-        var result = await context.Engine.Render(singleRequest, cancellationToken).ConfigureAwait(false);
+        var result = await context.Engine.RenderAsync(singleRequest, cancellationToken).ConfigureAwait(false);
         if (!result.IsSuccessful())
         {
             return result;

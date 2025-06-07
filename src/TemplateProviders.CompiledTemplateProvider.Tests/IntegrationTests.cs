@@ -23,7 +23,7 @@ public class IntegrationTests : TestBase
         var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), builder);
 
         // Act
-        await templateEngine.Render(request, CancellationToken.None);
+        await templateEngine.RenderAsync(request, CancellationToken.None);
 
         // Assert
         builder.ToString().ShouldBe("Hello world!");

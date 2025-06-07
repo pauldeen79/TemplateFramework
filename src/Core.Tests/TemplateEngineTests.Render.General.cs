@@ -18,7 +18,7 @@ public partial class TemplateEngineTests
             var request = Substitute.For<IRenderTemplateRequest>();
 
             // Act
-            var result = await sut.Render(request, CancellationToken.None);
+            var result = await sut.RenderAsync(request, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -35,7 +35,7 @@ public partial class TemplateEngineTests
             var request = Substitute.For<IRenderTemplateRequest>();
 
             // Act
-            var result = await sut.Render(request, CancellationToken.None);
+            var result = await sut.RenderAsync(request, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -53,7 +53,7 @@ public partial class TemplateEngineTests
             var request = Substitute.For<IRenderTemplateRequest>();
 
             // Act
-            var result = await sut.Render(request, CancellationToken.None);
+            var result = await sut.RenderAsync(request, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.NotSupported);

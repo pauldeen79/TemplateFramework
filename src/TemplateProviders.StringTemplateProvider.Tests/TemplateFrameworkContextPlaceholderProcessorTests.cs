@@ -14,40 +14,40 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
     public class Evaluate : TemplateFrameworkContextPlaceholderProcessorTests
     {
         private ComponentRegistrationContext ComponentRegistrationContext { get; } = new([]);
-        public IFormattableStringParser FormattableStringParser { get; }
+        public IExpressionEvaluator ExpressionEvaluator { get; }
 
         public Evaluate()
         {
-            FormattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+            ExpressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
         }
 
         [Fact]
-        public void Returns_Continue_When_Context_Is_Not_TemplateFrameworkFormattableStringContext()
+        public async Task Returns_Continue_When_Context_Is_Not_TemplateFrameworkFormattableStringContext()
         {
             // Arrange
-            var context = "some context that's not of type TemplateFrameworkFormattableStringContext";
+            var context = new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success<object?>("some context that's not of type TemplateFrameworkFormattableStringContext")) } };
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate("some template", new PlaceholderSettingsBuilder(), context, FormattableStringParser);
+            var result = await sut.EvaluateAsync(new FunctionCallContext(new FunctionCallBuilder().WithName("some template").WithMemberType(MemberType.Function), new ExpressionEvaluatorContext("some template", new ExpressionEvaluatorSettingsBuilder(), ExpressionEvaluator, context)), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
         }
 
         [Fact]
-        public void Returns_Success_With_Parameter_Value_When_Context_Is_TemplateFrameworkFormattableStringContext_And_Parameter_Is_Known_And_Not_Null()
+        public async Task Returns_Success_With_Parameter_Value_When_Context_Is_TemplateFrameworkFormattableStringContext_And_Parameter_Is_Known_And_Not_Null()
         {
             // Arrange
             var parametersDictionary = new Dictionary<string, object?>
             {
                 { "Name", "Value" }
             };
-            var context = new TemplateFrameworkStringContext(parametersDictionary, ComponentRegistrationContext, false);
+            var context = new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success<object?>(new TemplateFrameworkStringContext(parametersDictionary, ComponentRegistrationContext, false))) } };
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate("Name", new PlaceholderSettingsBuilder(), context, FormattableStringParser);
+            var result = Result.FromExistingResult<GenericFormattableString>(await sut.EvaluateAsync(new FunctionCallContext(new FunctionCallBuilder().WithName("Name").WithMemberType(MemberType.Function), new ExpressionEvaluatorContext("Name", new ExpressionEvaluatorSettingsBuilder(), ExpressionEvaluator, context)), CancellationToken.None));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -55,18 +55,18 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
         }
 
         [Fact]
-        public void Returns_Success_With_StringEmpty_When_Context_Is_TemplateFrameworkFormattableStringContext_And_Parameter_Is_Known_But_Null()
+        public async Task Returns_Success_With_StringEmpty_When_Context_Is_TemplateFrameworkFormattableStringContext_And_Parameter_Is_Known_But_Null()
         {
             // Arrange
             var parametersDictionary = new Dictionary<string, object?>
             {
                 { "Name", null }
             };
-            var context = new TemplateFrameworkStringContext(parametersDictionary, ComponentRegistrationContext, false);
+            var context = new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success<object?>(new TemplateFrameworkStringContext(parametersDictionary, ComponentRegistrationContext, false))) } };
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate("Name", new PlaceholderSettingsBuilder(), context, FormattableStringParser);
+            var result = Result.FromExistingResult<GenericFormattableString>(await sut.EvaluateAsync(new FunctionCallContext(new FunctionCallBuilder().WithName("Name").WithMemberType(MemberType.Function), new ExpressionEvaluatorContext("Name", new ExpressionEvaluatorSettingsBuilder(), ExpressionEvaluator, context)), CancellationToken.None));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -74,48 +74,50 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
         }
 
         [Fact]
-        public void Returns_Continue_When_Context_Is_TemplateFrameworkFormattableStringContext_And_Parameter_Is_Unknown()
+        public async Task Returns_Continue_When_Context_Is_TemplateFrameworkFormattableStringContext_And_Parameter_Is_Unknown()
         {
             // Arrange
             var parametersDictionary = new Dictionary<string, object?>();
-            var context = new TemplateFrameworkStringContext(parametersDictionary, ComponentRegistrationContext, false);
+            var context = new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success<object?>(new TemplateFrameworkStringContext(parametersDictionary, ComponentRegistrationContext, false))) } };
             var sut = CreateSut();
 
             // Act
-            var result = sut.Evaluate("Name", new PlaceholderSettingsBuilder(), context, FormattableStringParser);
+            var result = Result.FromExistingResult<GenericFormattableString>(await sut.EvaluateAsync(new FunctionCallContext(new FunctionCallBuilder().WithName("Name").WithMemberType(MemberType.Function), new ExpressionEvaluatorContext("Name", new ExpressionEvaluatorSettingsBuilder(), ExpressionEvaluator, context)), CancellationToken.None));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
         }
 
         [Fact]
-        public void Adds_Parameter_Name_To_List()
+        public async Task Adds_Parameter_Name_To_List()
         {
             // Arrange
             var parametersDictionary = new Dictionary<string, object?>();
-            var context = new TemplateFrameworkStringContext(parametersDictionary, ComponentRegistrationContext, false);
+            var ctx = new TemplateFrameworkStringContext(parametersDictionary, ComponentRegistrationContext, false);
+            var context = new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success<object?>(ctx)) } };
             var sut = CreateSut();
 
             // Act
-            _ = sut.Evaluate("Name", new PlaceholderSettingsBuilder(), context, FormattableStringParser);
+            _ = Result.FromExistingResult<GenericFormattableString>(await sut.EvaluateAsync(new FunctionCallContext(new FunctionCallBuilder().WithName("Name").WithMemberType(MemberType.Function), new ExpressionEvaluatorContext("Name", new ExpressionEvaluatorSettingsBuilder(), ExpressionEvaluator, context)), CancellationToken.None));
 
             // Assert
-            context.ParameterNamesList.ToArray().ShouldBeEquivalentTo(new[] { "Name" });
+            ctx.ParameterNamesList.ToArray().ShouldBeEquivalentTo(new[] { "Name" });
         }
 
         [Fact]
-        public void Does_Not_Add_Parameter_Name_To_List_When_Name_Starts_With_Double_Underscore()
+        public async Task Does_Not_Add_Parameter_Name_To_List_When_Name_Starts_With_Double_Underscore()
         {
             // Arrange
             var parametersDictionary = new Dictionary<string, object?>();
-            var context = new TemplateFrameworkStringContext(parametersDictionary, ComponentRegistrationContext, false);
+            var ctx = new TemplateFrameworkStringContext(parametersDictionary, ComponentRegistrationContext, false);
+            var context = new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success<object?>(ctx)) } };
             var sut = CreateSut();
 
             // Act
-            _ = sut.Evaluate("__Name", new PlaceholderSettingsBuilder(), context, FormattableStringParser);
+            _ = Result.FromExistingResult<GenericFormattableString>(await sut.EvaluateAsync(new FunctionCallContext(new FunctionCallBuilder().WithName("__Name").WithMemberType(MemberType.Function), new ExpressionEvaluatorContext("__Name", new ExpressionEvaluatorSettingsBuilder(), ExpressionEvaluator, context)), CancellationToken.None));
 
             // Assert
-            context.ParameterNamesList.ShouldBeEmpty();
+            ctx.ParameterNamesList.ShouldBeEmpty();
         }
     }
 }

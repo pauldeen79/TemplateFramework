@@ -13,27 +13,27 @@ public sealed class TestTemplateComponentRegistryPlugin : ITemplateComponentRegi
 
     public Task<Result> Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken)
     {
-        var processorProcessorMock = Substitute.For<IPlaceholder>();
+        var processorProcessorMock = Substitute.For<INonGenericMember>();
         processorProcessorMock
-            .Evaluate(Arg.Any<string>(), Arg.Any<PlaceholderSettings>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>())
+            .EvaluateAsync(Arg.Any<FunctionCallContext>(), Arg.Any<CancellationToken>())
             .Returns(args => args.ArgAt<string>(0) == "__test"
                 ? Result.Success<GenericFormattableString>("Hello world!")
                 : Result.Continue<GenericFormattableString>());
 
         var functionMock = new FunctionMock();
 
-        ComponentRegistrationContext.Placeholders.Add(processorProcessorMock);
+        ComponentRegistrationContext.Expressions.Add(processorProcessorMock);
         ComponentRegistrationContext.AddFunction(functionMock);
 
         return Task.FromResult(Result.Success());
     }
 
-    [FunctionName("MyFunction")]
+    [MemberName("MyFunction")]
     private sealed class FunctionMock : IFunction
     {
-        public Result<object?> Evaluate(FunctionCallContext context)
+        public Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
         {
-            return Result.Success<object?>("Hello world!");
+            return Task.FromResult(Result.Success<object?>("Hello world!"));
         }
     }
 }

@@ -17,7 +17,7 @@ public class IntegrationTests
         var builder = new MultipleContentBuilder();
 
         // Act
-        await sut.Render(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), builder), CancellationToken.None);
+        await sut.RenderAsync(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), builder), CancellationToken.None);
 
         // Assert
         builder.Contents.Count().ShouldBe(1);

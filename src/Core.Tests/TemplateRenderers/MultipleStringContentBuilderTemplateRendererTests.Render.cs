@@ -72,7 +72,7 @@ public partial class MultipleStringContentBuilderTemplateRendererTests
             var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
             TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(template);
             TemplateEngineMock
-                .Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>())
+                .RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>())
                 .Returns(x =>
                 {
                     ((StringBuilderEnvironment)x.ArgAt<IRenderTemplateRequest>(0).GenerationEnvironment).Builder.Append(template.ToString());
@@ -107,7 +107,7 @@ public partial class MultipleStringContentBuilderTemplateRendererTests
             var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
             TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(template);
             TemplateEngineMock
-                .Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>())
+                .RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>())
                 .Returns(x =>
                 {
                     ((StringBuilderEnvironment)x.ArgAt<IRenderTemplateRequest>(0).GenerationEnvironment).Builder.Append(template.ToString());
@@ -141,7 +141,7 @@ public partial class MultipleStringContentBuilderTemplateRendererTests
             var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
             TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(template);
             TemplateEngineMock
-                .Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>())
+                .RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>())
                 .Returns(x =>
                 {
                     ((StringBuilderEnvironment)x.ArgAt<IRenderTemplateRequest>(0).GenerationEnvironment).Builder.Append(template.ToString());

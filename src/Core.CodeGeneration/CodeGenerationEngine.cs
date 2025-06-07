@@ -44,7 +44,7 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
         var modelResult = results[nameof(ICodeGenerationProvider.CreateModel)];
         var additionalParametersResult = results[nameof(ICodeGenerationProvider.CreateAdditionalParameters)];
 
-        var result = await _templateEngine.Render(
+        var result = await _templateEngine.RenderAsync(
             new RenderTemplateRequest
             (
                 identifier: new TemplateTypeIdentifier(codeGenerationProvider.GetGeneratorType(), _templateFactory),

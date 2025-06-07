@@ -1,4 +1,6 @@
-﻿namespace TemplateFramework.Console.Commands;
+﻿using System.Threading;
+
+namespace TemplateFramework.Console.Commands;
 
 public class RunTemplateCommand : CommandBase
 {
@@ -151,7 +153,7 @@ public class RunTemplateCommand : CommandBase
                         return;
                     }
 
-                    (await _templateEngine.GetParameters(template).ConfigureAwait(false))
+                    (await _templateEngine.GetParametersAsync(template, args.cancellationToken).ConfigureAwait(false))
                     .OnFailure(async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false))
                     .OnSuccess(
                         x =>
@@ -164,7 +166,7 @@ public class RunTemplateCommand : CommandBase
                 {
                     if (args.interactive)
                     {
-                        (await _templateEngine.GetParameters(template).ConfigureAwait(false))
+                        (await _templateEngine.GetParametersAsync(template, args.cancellationToken).ConfigureAwait(false))
                         .OnFailure(async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false))
                         .OnSuccess(
                             x =>
@@ -178,7 +180,7 @@ public class RunTemplateCommand : CommandBase
                     var identifier = new TemplateInstanceIdentifierWithTemplateProvider(template, args.currentDirectory, args.assemblyName, args.templateProviderPluginClassName);
                     var request = new RenderTemplateRequest(identifier, null, generationEnvironment, args.defaultFilename, args.parameters, context);
 
-                    (await _templateEngine.Render(request, args.cancellationToken).ConfigureAwait(false))
+                    (await _templateEngine.RenderAsync(request, args.cancellationToken).ConfigureAwait(false))
                     .OnFailure(async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false))
                     .OnSuccess(_ => success = true);
                 }

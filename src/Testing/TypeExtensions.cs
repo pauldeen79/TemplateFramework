@@ -1,6 +1,4 @@
-﻿using CrossCutting.Common.Testing;
-
-namespace TemplateFramework.Testing;
+﻿namespace TemplateFramework.Testing;
 
 [ExcludeFromCodeCoverage]
 public static class TypeExtensions
@@ -20,7 +18,8 @@ public static class TypeExtensions
         Func<ParameterInfo, object?>? parameterReplaceDelegate = null,
         Func<ConstructorInfo, bool>? constructorPredicate = null)
         => type.ShouldThrowArgumentNullExceptionsInConstructorsOnNullArguments(
-            t => t.CreateInstance(t2 => Substitute.For([t2], Array.Empty<object>()), parameterReplaceDelegate, constructorPredicate),
+            //TODO: Fix string construction in CrossCutting.Common.Testing, so we don't have to exclude typeof(char) here.
+            t => t.CreateInstance(t2 => t2 == typeof(char) ? ' ' : Substitute.For([t2], Array.Empty<object>()), parameterReplaceDelegate, constructorPredicate),
             parameterPredicate,
             parameterReplaceDelegate,
             constructorPredicate);

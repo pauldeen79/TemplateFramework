@@ -35,7 +35,7 @@ public class TemplateEngineExtensionsTests
             _ = await sut.RenderChildTemplate(Model, generationEnvironment, identifier, templateContext, CancellationToken.None);
 
             // Assert
-            await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
+            await sut.Received().RenderAsync(Arg.Is<IRenderTemplateRequest>(request =>
                 request.AdditionalParameters == null
                 && request.Context == templateContext
                 && request.DefaultFilename == string.Empty
@@ -81,7 +81,7 @@ public class TemplateEngineExtensionsTests
             _ = await sut.RenderChildTemplate(Model, generationEnvironment, _ => identifier, templateContext, CancellationToken.None);
 
             // Assert
-            await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
+            await sut.Received().RenderAsync(Arg.Is<IRenderTemplateRequest>(request =>
                 request.AdditionalParameters == null
                 && request.Context == templateContext
                 && request.DefaultFilename == string.Empty
@@ -116,7 +116,7 @@ public class TemplateEngineExtensionsTests
             _ = await sut.RenderChildTemplate(generationEnvironment, identifier, templateContext, CancellationToken.None);
 
             // Assert
-            await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
+            await sut.Received().RenderAsync(Arg.Is<IRenderTemplateRequest>(request =>
                 request.AdditionalParameters == null
                 && request.Context == templateContext
                 && request.DefaultFilename == string.Empty
@@ -162,7 +162,7 @@ public class TemplateEngineExtensionsTests
             _ = await sut.RenderChildTemplate(generationEnvironment, () => identifier, templateContext, CancellationToken.None);
 
             // Assert
-            await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
+            await sut.Received().RenderAsync(Arg.Is<IRenderTemplateRequest>(request =>
                 request.AdditionalParameters == null
                 && request.Context == templateContext
                 && request.DefaultFilename == string.Empty
@@ -182,7 +182,7 @@ public class TemplateEngineExtensionsTests
             _ = await sut.RenderChildTemplate(Model, generationEnvironment, identifier, CancellationToken.None);
 
             // Assert
-            await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
+            await sut.Received().RenderAsync(Arg.Is<IRenderTemplateRequest>(request =>
                 request.AdditionalParameters == null
                 && request.Context == null
                 && request.DefaultFilename == string.Empty
@@ -211,7 +211,7 @@ public class TemplateEngineExtensionsTests
             _ = await sut.RenderChildTemplate(Model, generationEnvironment, _ => identifier, CancellationToken.None);
 
             // Assert
-            await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
+            await sut.Received().RenderAsync(Arg.Is<IRenderTemplateRequest>(request =>
                 request.AdditionalParameters == null
                 && request.Context == null
                 && request.DefaultFilename == string.Empty
@@ -230,7 +230,7 @@ public class TemplateEngineExtensionsTests
             _ = await sut.RenderChildTemplate(generationEnvironment, identifier, CancellationToken.None);
 
             // Assert
-            await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
+            await sut.Received().RenderAsync(Arg.Is<IRenderTemplateRequest>(request =>
                 request.AdditionalParameters == null
                 && request.Context == null
                 && request.DefaultFilename == string.Empty
@@ -259,7 +259,7 @@ public class TemplateEngineExtensionsTests
             _ = await sut.RenderChildTemplate(generationEnvironment, () => identifier, CancellationToken.None);
 
             // Assert
-            await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
+            await sut.Received().RenderAsync(Arg.Is<IRenderTemplateRequest>(request =>
                 request.AdditionalParameters == null
                 && request.Context == null
                 && request.DefaultFilename == string.Empty
@@ -309,7 +309,7 @@ public class TemplateEngineExtensionsTests
             _ = await sut.RenderChildTemplate(Model, generationEnvironment, templateContext, identifier, CancellationToken.None);
 
             // Assert
-            await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
+            await sut.Received().RenderAsync(Arg.Is<IRenderTemplateRequest>(request =>
                 request.AdditionalParameters == null
                 && request.Context == templateContext
                 && request.DefaultFilename == templateContext.DefaultFilename
@@ -359,7 +359,7 @@ public class TemplateEngineExtensionsTests
             _ = await sut.RenderChildTemplate(generationEnvironment, templateContext, identifier, CancellationToken.None);
 
             // Assert
-            await sut.Received().Render(Arg.Is<IRenderTemplateRequest>(request =>
+            await sut.Received().RenderAsync(Arg.Is<IRenderTemplateRequest>(request =>
                 request.AdditionalParameters == null
                 && request.Context == templateContext
                 && request.DefaultFilename == templateContext.DefaultFilename
@@ -408,7 +408,7 @@ public class TemplateEngineExtensionsTests
             _ = await sut.RenderChildTemplates(Models, generationEnvironment, identifier, templateContext, CancellationToken.None);
 
             // Assert
-            await sut.Received(Models.Count()).Render(Arg.Is<IRenderTemplateRequest>(request =>
+            await sut.Received(Models.Count()).RenderAsync(Arg.Is<IRenderTemplateRequest>(request =>
                 request.AdditionalParameters == null
                 && request.Context == templateContext
                 && request.DefaultFilename == string.Empty
@@ -456,7 +456,7 @@ public class TemplateEngineExtensionsTests
             _ = await sut.RenderChildTemplates(Models, generationEnvironment, _ => identifier, templateContext, CancellationToken.None);
 
             // Assert
-            await sut.Received(Models.Count()).Render(Arg.Is<IRenderTemplateRequest>(request =>
+            await sut.Received(Models.Count()).RenderAsync(Arg.Is<IRenderTemplateRequest>(request =>
                 request.AdditionalParameters == null
                 && request.Context == templateContext
                 && request.DefaultFilename == string.Empty
@@ -488,7 +488,7 @@ public class TemplateEngineExtensionsTests
             _ = await sut.RenderChildTemplates(Models, generationEnvironment, identifier, CancellationToken.None);
 
             // Assert
-            await sut.Received(Models.Count()).Render(Arg.Is<IRenderTemplateRequest>(request =>
+            await sut.Received(Models.Count()).RenderAsync(Arg.Is<IRenderTemplateRequest>(request =>
                 request.AdditionalParameters == null
                 && request.Context == null
                 && request.DefaultFilename == string.Empty
@@ -518,7 +518,7 @@ public class TemplateEngineExtensionsTests
             _ = await sut.RenderChildTemplates(Models, generationEnvironment, _ => identifier, CancellationToken.None);
 
             // Assert
-            await sut.Received(Models.Count()).Render(Arg.Is<IRenderTemplateRequest>(request =>
+            await sut.Received(Models.Count()).RenderAsync(Arg.Is<IRenderTemplateRequest>(request =>
                 request.AdditionalParameters == null
                 && request.Context == null
                 && request.DefaultFilename == string.Empty
@@ -580,7 +580,7 @@ public class TemplateEngineExtensionsTests
             _ = await sut.RenderChildTemplates(Models, generationEnvironment, templateContext, _ => identifier, CancellationToken.None);
 
             // Assert
-            await sut.Received(Models.Count()).Render(Arg.Is<IRenderTemplateRequest>(request =>
+            await sut.Received(Models.Count()).RenderAsync(Arg.Is<IRenderTemplateRequest>(request =>
                 request.AdditionalParameters == null
                 && request.Context == templateContext
                 && request.DefaultFilename == templateContext.DefaultFilename
@@ -636,7 +636,7 @@ public class TemplateEngineExtensionsTests
             _ = await sut.RenderChildTemplates(Models, generationEnvironment, templateContext, _ => Template, CancellationToken.None);
 
             // Assert
-            await sut.Received(Models.Count()).Render(Arg.Is<IRenderTemplateRequest>(request =>
+            await sut.Received(Models.Count()).RenderAsync(Arg.Is<IRenderTemplateRequest>(request =>
                 request.AdditionalParameters == null
                 && request.Context == templateContext
                 && request.DefaultFilename == templateContext.DefaultFilename
@@ -695,7 +695,7 @@ public class TemplateEngineExtensionsTests
             _ = await sut.RenderChildTemplates(Models, generationEnvironment, templateContext, identifier, CancellationToken.None);
 
             // Assert
-            await sut.Received(Models.Count()).Render(Arg.Is<IRenderTemplateRequest>(request =>
+            await sut.Received(Models.Count()).RenderAsync(Arg.Is<IRenderTemplateRequest>(request =>
                 request.AdditionalParameters == null
                 && request.Context == templateContext
                 && request.DefaultFilename == templateContext.DefaultFilename

@@ -11,7 +11,7 @@ public class TemplateParameterExtractor : ITemplateParameterExtractor
         _components = components;
     }
 
-    public Result<ITemplateParameter[]> Extract(object templateInstance)
+    public async Task<Result<ITemplateParameter[]>> ExtractAsync(object templateInstance, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(templateInstance);
 
@@ -21,6 +21,6 @@ public class TemplateParameterExtractor : ITemplateParameterExtractor
             return Result.Continue(Array.Empty<ITemplateParameter>());
         }
 
-        return component.Extract(templateInstance);
+        return await component.ExtractAsync(templateInstance, cancellationToken).ConfigureAwait(false);
     }
 }

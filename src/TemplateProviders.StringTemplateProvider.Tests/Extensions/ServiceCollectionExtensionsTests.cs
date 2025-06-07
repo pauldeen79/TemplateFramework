@@ -12,7 +12,7 @@ public class ServiceCollectionExtensionsTests : TestBase
 
             // Act
             using var provider = new ServiceCollection()
-                .AddParsers()
+                .AddExpressionEvaluator()
                 .AddTemplateFramework()
                 .AddTemplateFrameworkStringTemplateProvider()
                 .AddSingleton(templateComponentRegistryPluginFactory)
