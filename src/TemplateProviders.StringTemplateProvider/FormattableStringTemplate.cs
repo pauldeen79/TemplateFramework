@@ -30,7 +30,11 @@ public class FormattableStringTemplate : IParameterizedTemplate, IBuilderTemplat
 
         var templateFrameworkStringContext = new TemplateFrameworkStringContext(Context.ParametersDictionary, _componentRegistrationContext, true);
 
-        _ = await _expressionEvaluator.ParseAsync("$\"" + _formattableStringTemplateIdentifier.Template + "\"", new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(_formattableStringTemplateIdentifier.FormatProvider), new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success<object?>(templateFrameworkStringContext)) } }, cancellationToken).ConfigureAwait(false);
+        var result = await _expressionEvaluator.ParseAsync("$\"" + _formattableStringTemplateIdentifier.Template + "\"", new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(_formattableStringTemplateIdentifier.FormatProvider), new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success<object?>(templateFrameworkStringContext)) } }, cancellationToken).ConfigureAwait(false);
+        if (!result.IsSuccessful())
+        {
+            return Result.FromExistingResult<ITemplateParameter[]>(result);
+        }
 
         return Result.Success<ITemplateParameter[]>(templateFrameworkStringContext.ParameterNamesList
             .Select(x => new TemplateParameter(x, typeof(string)))

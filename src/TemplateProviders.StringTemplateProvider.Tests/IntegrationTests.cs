@@ -22,9 +22,10 @@ public class IntegrationTests : TestBase
         var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), builder, new { Name = "world" });
 
         // Act
-        await templateEngine.RenderAsync(request, CancellationToken.None);
+        var result = await templateEngine.RenderAsync(request, CancellationToken.None);
 
         // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
         builder.ToString().ShouldBe("Hello world!");
     }
 
@@ -93,9 +94,10 @@ public class IntegrationTests : TestBase
         var request = new RenderTemplateRequest(identifier, builder, context);
 
         // Act
-        await templateEngine.RenderAsync(request, CancellationToken.None);
+        var result = await templateEngine.RenderAsync(request, CancellationToken.None);
 
         // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
         builder.ToString().ShouldBe("aaa Hello world! zzz");
     }
 
