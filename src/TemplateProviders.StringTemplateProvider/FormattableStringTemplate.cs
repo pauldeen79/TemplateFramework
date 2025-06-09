@@ -1,11 +1,12 @@
 ﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider;
 
-public class FormattableStringTemplate : IParameterizedTemplate, IBuilderTemplate<StringBuilder>
+public class FormattableStringTemplate : IParameterizedTemplate, IBuilderTemplate<StringBuilder>, ITemplateEngineContextContainer
 {
+    public ITemplateEngineContext Context { get; set; }
+
     private readonly FormattableStringTemplateIdentifier _formattableStringTemplateIdentifier;
     private readonly IExpressionEvaluator _expressionEvaluator;
     private readonly ComponentRegistrationContext _componentRegistrationContext;
-    private readonly Dictionary<string, object?> _parametersDictionary;
 
     public FormattableStringTemplate(
         FormattableStringTemplateIdentifier formattableStringTemplateIdentifier,
@@ -20,26 +21,29 @@ public class FormattableStringTemplate : IParameterizedTemplate, IBuilderTemplat
         _expressionEvaluator = expressionEvaluator;
         _componentRegistrationContext = componentRegistrationContext;
 
-        _parametersDictionary = [];
+        Context = default!; // furhter on in the process, this will get filled
     }
 
     public async Task<Result<ITemplateParameter[]>> GetParametersAsync(CancellationToken cancellationToken)
     {
-        var context = new TemplateFrameworkStringContext(_parametersDictionary, _componentRegistrationContext, true);
+        Guard.IsNotNull(Context);
 
-        _ = await _expressionEvaluator.ParseAsync("$\"" + _formattableStringTemplateIdentifier.Template + "\"", new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(_formattableStringTemplateIdentifier.FormatProvider), new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success<object?>(context)) } }, cancellationToken).ConfigureAwait(false);
+        var templateFrameworkStringContext = new TemplateFrameworkStringContext(Context.ParametersDictionary, _componentRegistrationContext, true);
 
-        return Result.Success<ITemplateParameter[]>(context.ParameterNamesList
+        _ = await _expressionEvaluator.ParseAsync("$\"" + _formattableStringTemplateIdentifier.Template + "\"", new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(_formattableStringTemplateIdentifier.FormatProvider), new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success<object?>(templateFrameworkStringContext)) } }, cancellationToken).ConfigureAwait(false);
+
+        return Result.Success<ITemplateParameter[]>(templateFrameworkStringContext.ParameterNamesList
             .Select(x => new TemplateParameter(x, typeof(string)))
             .ToArray());
     }
 
     public async Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
     {
+        Guard.IsNotNull(Context);
         Guard.IsNotNull(builder);
 
-        var context = new TemplateFrameworkStringContext(_parametersDictionary, _componentRegistrationContext, false);
-        var result = await _expressionEvaluator.EvaluateTypedAsync<GenericFormattableString>("$\"" + _formattableStringTemplateIdentifier.Template + "\"", new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(_formattableStringTemplateIdentifier.FormatProvider), new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success<object?>(context)) } }, cancellationToken).ConfigureAwait(false);
+        var templateFrameworkStringContext = new TemplateFrameworkStringContext(Context.ParametersDictionary, _componentRegistrationContext, false);
+        var result = await _expressionEvaluator.EvaluateTypedAsync<GenericFormattableString>("$\"" + _formattableStringTemplateIdentifier.Template + "\"", new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(_formattableStringTemplateIdentifier.FormatProvider), new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success<object?>(templateFrameworkStringContext)) } }, cancellationToken).ConfigureAwait(false);
 
         if (result.IsSuccessful() && result.Value is not null)
         {
@@ -52,7 +56,7 @@ public class FormattableStringTemplate : IParameterizedTemplate, IBuilderTemplat
     public Task<Result> SetParameterAsync(string name, object? value, CancellationToken cancellationToken)
         => Task.Run(() =>
         {
-            _parametersDictionary[name] = value;
+            Context.ParametersDictionary[name] = value;
             return Result.Success();
         }, cancellationToken);
 }

@@ -4,6 +4,8 @@ public class TypedBuilderTemplateRenderer<TBuilder> : IBuilderTemplateRenderer<T
 {
     public async Task<Result> TryRender(object instance, TBuilder builder, CancellationToken cancellationToken)
     {
+        Guard.IsNotNull(builder);
+
         if (instance is IBuilderTemplate<TBuilder> typedTemplate)
         {
             return await typedTemplate.Render(builder, cancellationToken).ConfigureAwait(false);

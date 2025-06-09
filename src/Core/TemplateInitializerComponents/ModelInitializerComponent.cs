@@ -11,6 +11,8 @@ public class ModelInitializerComponent : ITemplateInitializerComponent
         _converter = converter;
     }
 
+    public int Order => 3;
+
     public Task<Result> Initialize(ITemplateEngineContext context, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(context);

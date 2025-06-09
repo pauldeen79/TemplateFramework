@@ -32,16 +32,21 @@ public class IntegrationTests : TestBase
     public async Task Can_Get_TemplateParameters_From_FormattableString()
     {
         // Arrange
+        var templateComponentRegistryPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
+        var componentRegistry = Fixture.Freeze<ITemplateComponentRegistry>();
         var services = new ServiceCollection()
             .AddExpressionEvaluator()
             .AddTemplateFramework()
-            .AddTemplateFrameworkStringTemplateProvider();
+            .AddTemplateFrameworkStringTemplateProvider()
+            .AddSingleton(templateComponentRegistryPluginFactory);
 
         using var provider = services.BuildServiceProvider(true);
         using var scope = provider.CreateScope();
         var expressionEvaluator = scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>();
         var componentRegistrationContext = scope.ServiceProvider.GetRequiredService<ComponentRegistrationContext>();
+        var engine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
         var template = new FormattableStringTemplate(new FormattableStringTemplateIdentifier("Hello {Prefix} {Name}!", CultureInfo.CurrentCulture), expressionEvaluator, componentRegistrationContext);
+        template.Context = new TemplateEngineContext(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder()), engine, componentRegistry, template);
 
         // Act 
         var result = await template.GetParametersAsync(CancellationToken.None);

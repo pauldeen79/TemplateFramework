@@ -11,6 +11,8 @@ public class ProviderPluginInitializerComponent : ITemplateInitializerComponent
         _factory = factory;
     }
 
+    public int Order => 4;
+
     public async Task<Result> Initialize(ITemplateEngineContext context, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(context);

@@ -1,9 +1,13 @@
-﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider.Tests;
+﻿using CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions;
+
+namespace TemplateFramework.TemplateProviders.StringTemplateProvider.Tests;
 
 public class FormattableStringTemplateTests
 {
     protected const string Template = "Hello {Name}!";
     protected IExpressionEvaluator ExpressionEvaluatorMock { get; } = Substitute.For<IExpressionEvaluator>();
+    protected ITemplateEngine EngineMock { get; } = Substitute.For<ITemplateEngine>();
+    protected ITemplateComponentRegistry ComponentRegistryMock { get; } = Substitute.For<ITemplateComponentRegistry>();
     protected FormattableStringTemplateIdentifier Identifier { get; } = new FormattableStringTemplateIdentifier(Template, CultureInfo.CurrentCulture);
     protected ComponentRegistrationContext ComponentRegistrationContext { get; } = new([]);
 
@@ -26,15 +30,19 @@ public class FormattableStringTemplateTests
         {
             // Arrange
             var sut = CreateSut();
-            ExpressionEvaluatorMock.EvaluateTypedAsync<GenericFormattableString>(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
+            ExpressionEvaluatorMock.ParseAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(async x =>
                 {
-                    // Note that in this unit test, we have to mock the behavior of FormattableStringParser :)
+                    // Note that in this unit test, we have to mock the behavior of ExpressionEvaluator :)
                     // There is also an Integration test to prove it works in real life ;-)
                     var ctx = Result.FromExistingResult<TemplateFrameworkStringContext>(await x.ArgAt<ExpressionEvaluatorContext>(0).State["context"].ConfigureAwait(false));
                     ctx.GetValueOrThrow().ParameterNamesList.Add("Name");
-                    return Result.Success<GenericFormattableString>(string.Empty);
+                    return new ExpressionParseResultBuilder()
+                        .WithSourceExpression("Dummy")
+                        .WithStatus(ResultStatus.Ok)
+                        .Build();
                 });
+            sut.Context = new TemplateEngineContext(new RenderTemplateRequest(new TemplateInstanceIdentifier(sut), new StringBuilder()), EngineMock, ComponentRegistryMock, sut);
 
             // Act
             var result = await sut.GetParametersAsync(CancellationToken.None);
@@ -52,6 +60,7 @@ public class FormattableStringTemplateTests
         {
             // Arrange
             var sut = CreateSut();
+            sut.Context = Substitute.For<ITemplateEngineContext>();
 
             // Act & Assert
             Task t = sut.Render(builder: null!, CancellationToken.None);
@@ -67,6 +76,7 @@ public class FormattableStringTemplateTests
                 .Returns(Result.Error<GenericFormattableString>("Kaboom!"));
             var sut = CreateSut();
             var builder = new StringBuilder();
+            sut.Context = new TemplateEngineContext(new RenderTemplateRequest(new TemplateInstanceIdentifier(sut), builder), EngineMock, ComponentRegistryMock, sut);
 
             // Act
             var result = await sut.Render(builder, CancellationToken.None);
@@ -85,6 +95,7 @@ public class FormattableStringTemplateTests
                 .Returns(Result.Success<GenericFormattableString>("Parse result"));
             var sut = CreateSut();
             var builder = new StringBuilder();
+            sut.Context = new TemplateEngineContext(new RenderTemplateRequest(new TemplateInstanceIdentifier(sut), builder), EngineMock, ComponentRegistryMock, sut);
 
             // Act
             await sut.Render(builder, CancellationToken.None);
@@ -111,6 +122,7 @@ public class FormattableStringTemplateTests
 
                     return Result.Success<GenericFormattableString>(string.Empty);
                 });
+            sut.Context = new TemplateEngineContext(new RenderTemplateRequest(new TemplateInstanceIdentifier(sut), new StringBuilder()), EngineMock, ComponentRegistryMock, sut);
 
             // Act
             var result = await sut.SetParameterAsync("Name", "Value", CancellationToken.None);

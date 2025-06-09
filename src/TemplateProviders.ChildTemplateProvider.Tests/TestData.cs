@@ -48,16 +48,20 @@ internal static class TestData
 
     internal sealed class MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine : IMultipleContentBuilderTemplate, ITemplateContextContainer
     {
-        private readonly Action<IMultipleContentBuilder<StringBuilder>, ITemplateContext> _delegate;
+        private readonly Func<IMultipleContentBuilder<StringBuilder>, ITemplateContext, Task> _delegate;
 
-        public MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine(Action<IMultipleContentBuilder<StringBuilder>, ITemplateContext> @delegate)
+        public MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine(Func<IMultipleContentBuilder<StringBuilder>, ITemplateContext, Task> @delegate)
         {
             _delegate = @delegate;
         }
 
         public ITemplateContext Context { get; set; } = default!;
 
-        public Task<Result> Render(IMultipleContentBuilder<StringBuilder> builder, CancellationToken cancellationToken) { _delegate(builder, Context); return Task.FromResult(Result.Success()); }
+        public async Task<Result> Render(IMultipleContentBuilder<StringBuilder> builder, CancellationToken cancellationToken)
+        {
+            await _delegate(builder, Context).ConfigureAwait(false);
+            return Result.Success();
+        }
     }
 
     internal sealed class CsharpClassGeneratorViewModel<TModel>

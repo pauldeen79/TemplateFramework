@@ -2,8 +2,10 @@
 
 public class ExpressionStringTemplateTests
 {
-    protected const string Template = "Hello {Name}!";
+    protected const string Template = "$\"Hello {Name}!\"";
     protected IExpressionEvaluator ExpressionEvaluatorMock { get; } = Substitute.For<IExpressionEvaluator>();
+    protected ITemplateEngine EngineMock { get; } = Substitute.For<ITemplateEngine>();
+    protected ITemplateComponentRegistry ComponentRegistryMock { get; } = Substitute.For<ITemplateComponentRegistry>();
     protected ExpressionStringTemplateIdentifier Identifier { get; } = new ExpressionStringTemplateIdentifier(Template, CultureInfo.CurrentCulture);
     protected ComponentRegistrationContext ComponentRegistrationContext { get; } = new([new ComponentRegistrationContextFunction(Substitute.For<IMemberDescriptorMapper>())]);
 
@@ -37,10 +39,11 @@ public class ExpressionStringTemplateTests
         {
             // Arrange
             ExpressionEvaluatorMock
-                .EvaluateTypedAsync<GenericFormattableString>(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
-                .Returns(Result.Error<GenericFormattableString>("Kaboom!"));
+                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
+                .Returns(Result.Error<object?>("Kaboom!"));
             var sut = CreateSut();
             var builder = new StringBuilder();
+            sut.Context = new TemplateEngineContext(new RenderTemplateRequest(new TemplateInstanceIdentifier(sut), builder), EngineMock, ComponentRegistryMock, sut);
 
             // Act
             var result = await sut.Render(builder, CancellationToken.None);
@@ -55,10 +58,11 @@ public class ExpressionStringTemplateTests
         {
             // Arrange
             ExpressionEvaluatorMock
-                .EvaluateTypedAsync<GenericFormattableString>(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
-                .Returns(Result.Success<GenericFormattableString>("Parse result"));
+                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
+                .Returns(Result.Success<object?>("Parse result"));
             var sut = CreateSut();
             var builder = new StringBuilder();
+            sut.Context = new TemplateEngineContext(new RenderTemplateRequest(new TemplateInstanceIdentifier(sut), builder), EngineMock, ComponentRegistryMock, sut);
 
             // Act
             await sut.Render(builder, CancellationToken.None);

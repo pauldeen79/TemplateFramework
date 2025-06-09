@@ -11,6 +11,8 @@ public class ParameterInitializerComponent : ITemplateInitializerComponent
         _converter = converter;
     }
 
+    public int Order => 5;
+
     public async Task<Result> Initialize(ITemplateEngineContext context, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(context);

@@ -1,6 +1,4 @@
-﻿using System.Threading;
-
-namespace TemplateFramework.Console.Commands;
+﻿namespace TemplateFramework.Console.Commands;
 
 public class RunTemplateCommand : CommandBase
 {

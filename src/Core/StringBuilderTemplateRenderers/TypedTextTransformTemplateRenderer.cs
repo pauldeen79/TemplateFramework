@@ -4,6 +4,8 @@ public class TypedTextTransformTemplateRenderer : IBuilderTemplateRenderer<Strin
 {
     public async Task<Result> TryRender(object instance, StringBuilder builder, CancellationToken cancellationToken)
     {
+        Guard.IsNotNull(builder);
+
         if (instance is ITextTransformTemplate textTransformTemplate)
         {
             Guard.IsNotNull(builder);

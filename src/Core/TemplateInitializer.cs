@@ -8,7 +8,7 @@ public sealed class TemplateInitializer : ITemplateInitializer
     {
         Guard.IsNotNull(components);
 
-        _components = components;
+        _components = components.OrderBy(x => x.Order);
     }
 
     public async Task<Result> Initialize(ITemplateEngineContext context, CancellationToken cancellationToken)
