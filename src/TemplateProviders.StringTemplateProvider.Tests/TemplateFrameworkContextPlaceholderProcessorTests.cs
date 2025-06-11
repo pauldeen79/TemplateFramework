@@ -1,6 +1,6 @@
 ﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider.Tests;
 
-public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<TemplateFrameworkContextPlaceholderProcessor>
+public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<TemplateFrameworkContextExpressionComponent>
 {
     public class Constructor
     {
@@ -29,7 +29,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
             var sut = CreateSut();
 
             // Act
-            var result = await sut.EvaluateAsync(new FunctionCallContext(new FunctionCallBuilder().WithName("some template").WithMemberType(MemberType.Function), new ExpressionEvaluatorContext("some template", new ExpressionEvaluatorSettingsBuilder(), ExpressionEvaluator, context)), CancellationToken.None);
+            var result = await sut.EvaluateAsync(new ExpressionEvaluatorContext("some template", new ExpressionEvaluatorSettingsBuilder(), ExpressionEvaluator, context), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
@@ -47,7 +47,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
             var sut = CreateSut();
 
             // Act
-            var result = Result.FromExistingResult<GenericFormattableString>(await sut.EvaluateAsync(new FunctionCallContext(new FunctionCallBuilder().WithName("Name").WithMemberType(MemberType.Function), new ExpressionEvaluatorContext("Name", new ExpressionEvaluatorSettingsBuilder(), ExpressionEvaluator, context)), CancellationToken.None));
+            var result = Result.FromExistingResult<GenericFormattableString>(await sut.EvaluateAsync(new ExpressionEvaluatorContext("Name", new ExpressionEvaluatorSettingsBuilder(), ExpressionEvaluator, context), CancellationToken.None));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -66,7 +66,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
             var sut = CreateSut();
 
             // Act
-            var result = Result.FromExistingResult<GenericFormattableString>(await sut.EvaluateAsync(new FunctionCallContext(new FunctionCallBuilder().WithName("Name").WithMemberType(MemberType.Function), new ExpressionEvaluatorContext("Name", new ExpressionEvaluatorSettingsBuilder(), ExpressionEvaluator, context)), CancellationToken.None));
+            var result = Result.FromExistingResult<GenericFormattableString>(await sut.EvaluateAsync(new ExpressionEvaluatorContext("Name", new ExpressionEvaluatorSettingsBuilder(), ExpressionEvaluator, context), CancellationToken.None));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -82,7 +82,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
             var sut = CreateSut();
 
             // Act
-            var result = Result.FromExistingResult<GenericFormattableString>(await sut.EvaluateAsync(new FunctionCallContext(new FunctionCallBuilder().WithName("Name").WithMemberType(MemberType.Function), new ExpressionEvaluatorContext("Name", new ExpressionEvaluatorSettingsBuilder(), ExpressionEvaluator, context)), CancellationToken.None));
+            var result = Result.FromExistingResult<GenericFormattableString>(await sut.EvaluateAsync(new ExpressionEvaluatorContext("Name", new ExpressionEvaluatorSettingsBuilder(), ExpressionEvaluator, context), CancellationToken.None));
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
@@ -98,7 +98,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
             var sut = CreateSut();
 
             // Act
-            _ = Result.FromExistingResult<GenericFormattableString>(await sut.EvaluateAsync(new FunctionCallContext(new FunctionCallBuilder().WithName("Name").WithMemberType(MemberType.Function), new ExpressionEvaluatorContext("Name", new ExpressionEvaluatorSettingsBuilder(), ExpressionEvaluator, context)), CancellationToken.None));
+            _ = Result.FromExistingResult<GenericFormattableString>(await sut.EvaluateAsync(new ExpressionEvaluatorContext("Name", new ExpressionEvaluatorSettingsBuilder(), ExpressionEvaluator, context), CancellationToken.None));
 
             // Assert
             ctx.ParameterNamesList.ToArray().ShouldBeEquivalentTo(new[] { "Name" });
@@ -114,7 +114,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
             var sut = CreateSut();
 
             // Act
-            _ = Result.FromExistingResult<GenericFormattableString>(await sut.EvaluateAsync(new FunctionCallContext(new FunctionCallBuilder().WithName("__Name").WithMemberType(MemberType.Function), new ExpressionEvaluatorContext("__Name", new ExpressionEvaluatorSettingsBuilder(), ExpressionEvaluator, context)), CancellationToken.None));
+            _ = Result.FromExistingResult<GenericFormattableString>(await sut.EvaluateAsync(new ExpressionEvaluatorContext("__Name", new ExpressionEvaluatorSettingsBuilder(), ExpressionEvaluator, context), CancellationToken.None));
 
             // Assert
             ctx.ParameterNamesList.ShouldBeEmpty();

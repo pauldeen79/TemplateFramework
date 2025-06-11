@@ -131,7 +131,7 @@ public class ProviderComponentTests
         public async Task Clears_PlaceholderProcessors()
         {
             // Arrange
-            ComponentRegistrationContext.Expressions.Add(Substitute.For<INonGenericMember>());
+            ComponentRegistrationContext.Expressions.Add(Substitute.For<IExpressionComponent>());
             var sut = CreateSut();
 
             // Act

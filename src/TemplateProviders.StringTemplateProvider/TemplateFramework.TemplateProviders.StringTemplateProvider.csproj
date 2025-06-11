@@ -43,6 +43,7 @@
     <Using Include="CrossCutting.Utilities.ExpressionEvaluator" />
     <Using Include="CrossCutting.Utilities.ExpressionEvaluator.Abstractions" />
     <Using Include="CrossCutting.Utilities.ExpressionEvaluator.Builders" />
+    <Using Include="CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions; "/>
     <Using Include="CrossCutting.Utilities.ExpressionEvaluator.Extensions" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
     <Using Include="System.ComponentModel" />

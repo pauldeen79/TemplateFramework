@@ -1,4 +1,6 @@
-﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider.Tests;
+﻿using CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions;
+
+namespace TemplateFramework.TemplateProviders.StringTemplateProvider.Tests;
 
 public sealed class TestTemplateComponentRegistryPlugin : ITemplateComponentRegistryPlugin
 {
@@ -13,12 +15,18 @@ public sealed class TestTemplateComponentRegistryPlugin : ITemplateComponentRegi
 
     public Task<Result> Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken)
     {
-        var processorProcessorMock = Substitute.For<INonGenericMember>();
+        var processorProcessorMock = Substitute.For<IExpressionComponent>();
         processorProcessorMock
-            .EvaluateAsync(Arg.Any<FunctionCallContext>(), Arg.Any<CancellationToken>())
-            .Returns(args => args.ArgAt<string>(0) == "__test"
+            .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
+            .Returns(args => args.ArgAt<ExpressionEvaluatorContext>(0).Expression == "__test"
                 ? Result.Success<GenericFormattableString>("Hello world!")
                 : Result.Continue<GenericFormattableString>());
+
+        processorProcessorMock
+            .ParseAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
+            .Returns(args => args.ArgAt<ExpressionEvaluatorContext>(0).Expression == "__test"
+                ? new ExpressionParseResultBuilder().WithSourceExpression(args.ArgAt<ExpressionEvaluatorContext>(0).Expression).WithExpressionComponentType(GetType()).WithResultType(typeof(GenericFormattableString)).WithStatus(ResultStatus.Ok).Build()
+                : new ExpressionParseResultBuilder().WithSourceExpression(args.ArgAt<ExpressionEvaluatorContext>(0).Expression).WithExpressionComponentType(GetType()).WithStatus(ResultStatus.Continue).Build());
 
         var functionMock = new FunctionMock();
 

@@ -2,7 +2,7 @@
 
 public sealed class ComponentRegistrationContext
 {
-    public IList<INonGenericMember> Expressions { get; } = [];
+    public IList<IExpressionComponent> Expressions { get; } = [];
     public IList<IMember> Functions { get; } = [];
     public ComponentRegistrationContextFunction DescriptorsFunction { get; }
 
