@@ -597,7 +597,7 @@ public class TemplateEngineExtensionsTests
             ITemplateEngine sut)
         {
             // Act & Assert
-            Task t = sut.RenderChildTemplatesAync(childModels: null!, generationEnvironment, templateContext, _ => Template, CancellationToken.None);
+            Task t = sut.RenderChildTemplatesAsync(childModels: null!, generationEnvironment, templateContext, _ => Template, CancellationToken.None);
             (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("childModels");
         }
 
@@ -607,7 +607,7 @@ public class TemplateEngineExtensionsTests
             ITemplateEngine sut)
         {
             // Act & Assert
-            Task t = sut.RenderChildTemplatesAync(Models, generationEnvironment, context: null!, _ => Template, CancellationToken.None);
+            Task t = sut.RenderChildTemplatesAsync(Models, generationEnvironment, context: null!, _ => Template, CancellationToken.None);
             (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("context");
         }
 
@@ -633,7 +633,7 @@ public class TemplateEngineExtensionsTests
             templateContext.DefaultFilename.Returns(DefaultFilename);
 
             // Act
-            _ = await sut.RenderChildTemplatesAync(Models, generationEnvironment, templateContext, _ => Template, CancellationToken.None);
+            _ = await sut.RenderChildTemplatesAsync(Models, generationEnvironment, templateContext, _ => Template, CancellationToken.None);
 
             // Assert
             await sut.Received(Models.Count()).RenderAsync(Arg.Is<IRenderTemplateRequest>(request =>

@@ -62,7 +62,7 @@ public static class TemplateEngineExtensions
         }).ConfigureAwait(false);
     }
 
-    public static async Task<Result> RenderChildTemplatesAync(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, ITemplateContext context, Func<object?, object> templateFactory, CancellationToken cancellationToken)
+    public static async Task<Result> RenderChildTemplatesAsync(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, ITemplateContext context, Func<object?, object> templateFactory, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(childModels);
         Guard.IsNotNull(context);
