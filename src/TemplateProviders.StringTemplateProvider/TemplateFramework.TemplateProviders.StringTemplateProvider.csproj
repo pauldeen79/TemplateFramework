@@ -19,8 +19,8 @@
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.4.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.5" />
-    <PackageReference Include="pauldeen79.CrossCutting.Utilities.ExpressionEvaluator" Version="2.0.8" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.6" />
+    <PackageReference Include="pauldeen79.CrossCutting.Utilities.ExpressionEvaluator" Version="2.0.9" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
   </ItemGroup>
@@ -43,7 +43,7 @@
     <Using Include="CrossCutting.Utilities.ExpressionEvaluator" />
     <Using Include="CrossCutting.Utilities.ExpressionEvaluator.Abstractions" />
     <Using Include="CrossCutting.Utilities.ExpressionEvaluator.Builders" />
-    <Using Include="CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions; "/>
+    <Using Include="CrossCutting.Utilities.ExpressionEvaluator.Builders.Extensions; " />
     <Using Include="CrossCutting.Utilities.ExpressionEvaluator.Extensions" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
     <Using Include="System.ComponentModel" />
