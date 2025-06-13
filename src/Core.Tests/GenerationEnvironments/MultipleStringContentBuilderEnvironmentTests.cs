@@ -400,9 +400,9 @@ public class MultipleStringContentBuilderEnvironmentTests
         }
     }
 
-    public class SaveContents : MultipleStringContentBuilderEnvironmentTests
+    public class SaveContentsAsync : MultipleStringContentBuilderEnvironmentTests
     {
-        public SaveContents()
+        public SaveContentsAsync()
         {
             CodeGenerationProviderMock.LastGeneratedFilesFilename.Returns("LastGeneratedFiles.txt");
             CodeGenerationProviderMock.Encoding.Returns(Encoding.Latin1);
@@ -421,7 +421,7 @@ public class MultipleStringContentBuilderEnvironmentTests
             FileSystemMock.FileExists(Path.Combine(TestData.BasePath, "Subdirectory", "LastGeneratedFiles.txt")).Returns(true);
 
             // Act
-            await sut.SaveContents(CodeGenerationProviderMock, TestData.BasePath, string.Empty, CancellationToken.None);
+            await sut.SaveContentsAsync(CodeGenerationProviderMock, TestData.BasePath, string.Empty, CancellationToken.None);
 
             // Assert
             FileSystemMock.Received().ReadAllLines(Path.Combine(TestData.BasePath, "Subdirectory", "LastGeneratedFiles.txt"), Encoding.Latin1);
@@ -435,7 +435,7 @@ public class MultipleStringContentBuilderEnvironmentTests
             CodeGenerationProviderMock.LastGeneratedFilesFilename.Returns(default(string)!);
 
             // Act
-            await sut.SaveContents(CodeGenerationProviderMock, TestData.BasePath, string.Empty, CancellationToken.None);
+            await sut.SaveContentsAsync(CodeGenerationProviderMock, TestData.BasePath, string.Empty, CancellationToken.None);
 
             // Assert
             FileSystemMock.DidNotReceive().ReadAllLines(Arg.Any<string>(), Arg.Any<Encoding>());
@@ -449,7 +449,7 @@ public class MultipleStringContentBuilderEnvironmentTests
             CodeGenerationProviderMock.LastGeneratedFilesFilename.Returns(string.Empty);
 
             // Act
-            await sut.SaveContents(CodeGenerationProviderMock, TestData.BasePath, string.Empty, CancellationToken.None);
+            await sut.SaveContentsAsync(CodeGenerationProviderMock, TestData.BasePath, string.Empty, CancellationToken.None);
 
             // Assert
             FileSystemMock.DidNotReceive().ReadAllLines(Arg.Any<string>(), Arg.Any<Encoding>());
@@ -462,7 +462,7 @@ public class MultipleStringContentBuilderEnvironmentTests
             var sut = CreateSut();
 
             // Act
-            await sut.SaveContents(CodeGenerationProviderMock, TestData.BasePath, string.Empty, CancellationToken.None);
+            await sut.SaveContentsAsync(CodeGenerationProviderMock, TestData.BasePath, string.Empty, CancellationToken.None);
 
             // Assert
             FileSystemMock.Received().WriteAllText(Path.Combine(TestData.BasePath, "Subdirectory", "Filename.txt"), "Content", Encoding.Latin1);

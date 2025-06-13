@@ -10,7 +10,7 @@ public class ContextInitializerComponentTests
         public void Throws_On_Null_Context(ContextInitializerComponent sut)
         {
             // Act & Assert
-            Action a = () => sut.Initialize(context: null!, CancellationToken.None);
+            Action a = () => sut.InitializeAsync(context: null!, CancellationToken.None);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
         }
 
@@ -27,7 +27,7 @@ public class ContextInitializerComponentTests
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
 
             // Act
-            await sut.Initialize(engineContext, CancellationToken.None);
+            await sut.InitializeAsync(engineContext, CancellationToken.None);
 
             // Assert
             template.Context.ShouldBeSameAs(context);
@@ -45,7 +45,7 @@ public class ContextInitializerComponentTests
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
 
             // Act
-            await sut.Initialize(engineContext, CancellationToken.None);
+            await sut.InitializeAsync(engineContext, CancellationToken.None);
 
             // Assert
             template.Context.ShouldNotBeNull();
@@ -68,7 +68,7 @@ public class ContextInitializerComponentTests
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
 
             // Act
-            await sut.Initialize(engineContext, CancellationToken.None);
+            await sut.InitializeAsync(engineContext, CancellationToken.None);
 
             // Assert
             template.Context.ShouldNotBeNull();

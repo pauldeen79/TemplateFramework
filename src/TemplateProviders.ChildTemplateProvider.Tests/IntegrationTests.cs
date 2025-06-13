@@ -87,7 +87,7 @@ public class IntegrationTests : TestBase
         var settings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        var result = await engine.Generate(new CsharpClassGeneratorCodeGenerationProvider(), generationEnvironment, settings);
+        var result = await engine.GenerateAsync(new CsharpClassGeneratorCodeGenerationProvider(), generationEnvironment, settings);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);

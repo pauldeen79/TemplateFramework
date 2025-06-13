@@ -11,7 +11,7 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
         }
     }
 
-    public class Generate : CodeGenerationEngineTests
+    public class GenerateAsync : CodeGenerationEngineTests
     {
         [Fact]
         public async Task Throws_On_Null_CodeGenerationProvider()
@@ -22,7 +22,7 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var sut = CreateSut();
 
             // Act
-            Task t = sut.Generate(codeGenerationProvider: null!, generationEnvironment, codeGenerationSettings);
+            Task t = sut.GenerateAsync(codeGenerationProvider: null!, generationEnvironment, codeGenerationSettings);
             (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("codeGenerationProvider");
         }
 
@@ -35,7 +35,7 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var sut = CreateSut();
 
             // Act
-            Task t = sut.Generate(codeGenerationProvider, generationEnvironment: null!, codeGenerationSettings);
+            Task t = sut.GenerateAsync(codeGenerationProvider, generationEnvironment: null!, codeGenerationSettings);
             (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("generationEnvironment");
         }
 
@@ -48,7 +48,7 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var sut = CreateSut();
 
             // Act
-            Task t = sut.Generate(codeGenerationProvider, generationEnvironment, settings: null!);
+            Task t = sut.GenerateAsync(codeGenerationProvider, generationEnvironment, settings: null!);
             (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("settings");
         }
 
@@ -64,20 +64,20 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             codeGenerationProvider.Encoding.Returns(Encoding.Latin1);
             codeGenerationProvider.Path.Returns(TestData.BasePath);
             codeGenerationProvider.GetGeneratorType().Returns(GetType());
-            codeGenerationProvider.CreateModel(Arg.Any<CancellationToken>()).Returns(Task.FromResult(Result.Continue<object?>()));
-            codeGenerationProvider.CreateAdditionalParameters(Arg.Any<CancellationToken>()).Returns(Task.FromResult(Result.Continue<object?>()));
+            codeGenerationProvider.CreateModelAsync(Arg.Any<CancellationToken>()).Returns(Task.FromResult(Result.Continue<object?>()));
+            codeGenerationProvider.CreateAdditionalParametersAsync(Arg.Any<CancellationToken>()).Returns(Task.FromResult(Result.Continue<object?>()));
             codeGenerationSettings.DryRun.Returns(false);
             codeGenerationSettings.BasePath.Returns(TestData.BasePath);
             codeGenerationSettings.DefaultFilename.Returns("Filename.txt");
             templateEngine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
-            templateProvider.StartSession(Arg.Any<CancellationToken>()).Returns(Result.Continue());
+            templateProvider.StartSessionAsync(Arg.Any<CancellationToken>()).Returns(Result.Continue());
             var sut = CreateSut();
 
             // Act
-            await sut.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+            await sut.GenerateAsync(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
             // Assert
-            await generationEnvironment.Received().SaveContents(codeGenerationProvider, TestData.BasePath, "Filename.txt", CancellationToken.None);
+            await generationEnvironment.Received().SaveContentsAsync(codeGenerationProvider, TestData.BasePath, "Filename.txt", CancellationToken.None);
         }
 
         [Fact]
@@ -92,19 +92,19 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             codeGenerationProvider.Encoding.Returns(Encoding.Latin1);
             codeGenerationProvider.Path.Returns(TestData.BasePath);
             codeGenerationProvider.GetGeneratorType().Returns(GetType());
-            codeGenerationProvider.CreateModel(Arg.Any<CancellationToken>()).Returns(Task.FromResult(Result.Continue<object?>()));
-            codeGenerationProvider.CreateAdditionalParameters(Arg.Any<CancellationToken>()).Returns(Task.FromResult(Result.Continue<object?>()));
+            codeGenerationProvider.CreateModelAsync(Arg.Any<CancellationToken>()).Returns(Task.FromResult(Result.Continue<object?>()));
+            codeGenerationProvider.CreateAdditionalParametersAsync(Arg.Any<CancellationToken>()).Returns(Task.FromResult(Result.Continue<object?>()));
             codeGenerationSettings.DryRun.Returns(true);
             codeGenerationSettings.DefaultFilename.Returns("Filename.txt");
             templateEngine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
-            templateProvider.StartSession(Arg.Any<CancellationToken>()).Returns(Result.Continue());
+            templateProvider.StartSessionAsync(Arg.Any<CancellationToken>()).Returns(Result.Continue());
             var sut = CreateSut();
 
             // Act
-            await sut.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+            await sut.GenerateAsync(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
             // Assert
-            await generationEnvironment.DidNotReceive().SaveContents(codeGenerationProvider, TestData.BasePath, "Filename.txt", CancellationToken.None);
+            await generationEnvironment.DidNotReceive().SaveContentsAsync(codeGenerationProvider, TestData.BasePath, "Filename.txt", CancellationToken.None);
         }
 
         [Fact]
@@ -112,7 +112,7 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
         {
             // Arrange
             var counter = 0;
-            var provider = new MyPluginCodeGenerationProvider(_ => counter++);
+            var provider = new MyPluginCodeGenerationProvider(_ => Task.Run(() => counter++));
             var generationEnvironment = Fixture.Freeze<IGenerationEnvironment>();
             var codeGenerationSettings = Fixture.Freeze<ICodeGenerationSettings>();
             var templateEngine = Fixture.Freeze<ITemplateEngine>();
@@ -121,12 +121,12 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             codeGenerationSettings.BasePath.Returns(TestData.BasePath);
             codeGenerationSettings.DefaultFilename.Returns("Filename.txt");
             templateEngine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
-            generationEnvironment.SaveContents(Arg.Any<ICodeGenerationProvider>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
-            templateProvider.StartSession(Arg.Any<CancellationToken>()).Returns(Result.Continue());
+            generationEnvironment.SaveContentsAsync(Arg.Any<ICodeGenerationProvider>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
+            templateProvider.StartSessionAsync(Arg.Any<CancellationToken>()).Returns(Result.Continue());
             var sut = CreateSut();
 
             // Act
-            var result = await sut.Generate(provider, generationEnvironment, codeGenerationSettings);
+            var result = await sut.GenerateAsync(provider, generationEnvironment, codeGenerationSettings);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -138,22 +138,22 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
         {
             // Arrange
             var counter = 0;
-            var provider = new MyPluginCodeGenerationProvider(_ => counter++);
+            var provider = new MyPluginCodeGenerationProvider(_ => Task.Run(() => counter++));
             var generationEnvironment = Fixture.Freeze<IGenerationEnvironment>();
             var codeGenerationSettings = Fixture.Freeze<ICodeGenerationSettings>();
             var templateEngine = Fixture.Freeze<ITemplateEngine>();
             var templateProvider = Fixture.Freeze<ITemplateProvider>();
             codeGenerationSettings.DryRun.Returns(true);
             templateEngine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
-            templateProvider.StartSession(Arg.Any<CancellationToken>()).Returns(Result.Error());
+            templateProvider.StartSessionAsync(Arg.Any<CancellationToken>()).Returns(Result.Error());
             var sut = CreateSut();
 
             // Act
-            var result = await sut.Generate(provider, generationEnvironment, codeGenerationSettings);
+            var result = await sut.GenerateAsync(provider, generationEnvironment, codeGenerationSettings);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
-            counter.ShouldBe(0); // start session fails, so the callback of the mock is not reached;
+            counter.ShouldBe(0); // start session fails, so the callback of the mock is not reached
         }
 
         [Fact]
@@ -161,7 +161,7 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
         {
             // Arrange
             var counter = 0;
-            var provider = new MyPluginCodeGenerationProvider(_ => counter++, ResultStatus.Error);
+            var provider = new MyPluginCodeGenerationProvider(_ => Task.Run(() => counter++), ResultStatus.Error);
             var generationEnvironment = Fixture.Freeze<IGenerationEnvironment>();
             var codeGenerationSettings = Fixture.Freeze<ICodeGenerationSettings>();
             var templateEngine = Fixture.Freeze<ITemplateEngine>();
@@ -170,11 +170,11 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             codeGenerationSettings.BasePath.Returns(TestData.BasePath);
             codeGenerationSettings.DefaultFilename.Returns("Filename.txt");
             templateEngine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
-            templateProvider.StartSession(Arg.Any<CancellationToken>()).Returns(Result.Continue());
+            templateProvider.StartSessionAsync(Arg.Any<CancellationToken>()).Returns(Result.Continue());
             var sut = CreateSut();
 
             // Act
-            var result = await sut.Generate(provider, generationEnvironment, codeGenerationSettings);
+            var result = await sut.GenerateAsync(provider, generationEnvironment, codeGenerationSettings);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -192,13 +192,13 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             codeGenerationProvider.Encoding.Returns(Encoding.Latin1);
             codeGenerationProvider.Path.Returns(TestData.BasePath);
             codeGenerationProvider.GetGeneratorType().Returns(GetType());
-            codeGenerationProvider.CreateModel(Arg.Any<CancellationToken>()).Returns(Task.FromResult(Result.Error<object?>("Kaboom")));
-            codeGenerationProvider.CreateAdditionalParameters(Arg.Any<CancellationToken>()).Returns(Task.FromResult(Result.Continue<object?>()));
-            templateProvider.StartSession(Arg.Any<CancellationToken>()).Returns(Result.Continue());
+            codeGenerationProvider.CreateModelAsync(Arg.Any<CancellationToken>()).Returns(Task.FromResult(Result.Error<object?>("Kaboom")));
+            codeGenerationProvider.CreateAdditionalParametersAsync(Arg.Any<CancellationToken>()).Returns(Task.FromResult(Result.Continue<object?>()));
+            templateProvider.StartSessionAsync(Arg.Any<CancellationToken>()).Returns(Result.Continue());
             var sut = CreateSut();
 
             // Act
-            var result = await sut.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+            var result = await sut.GenerateAsync(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -216,13 +216,13 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             codeGenerationProvider.Encoding.Returns(Encoding.Latin1);
             codeGenerationProvider.Path.Returns(TestData.BasePath);
             codeGenerationProvider.GetGeneratorType().Returns(GetType());
-            codeGenerationProvider.CreateModel(Arg.Any<CancellationToken>()).Returns(Task.FromResult(Result.Continue<object?>()));
-            codeGenerationProvider.CreateAdditionalParameters(Arg.Any<CancellationToken>()).Returns(Task.FromResult(Result.Error<object?>("Kaboom")));
-            templateProvider.StartSession(Arg.Any<CancellationToken>()).Returns(Result.Continue());
+            codeGenerationProvider.CreateModelAsync(Arg.Any<CancellationToken>()).Returns(Task.FromResult(Result.Continue<object?>()));
+            codeGenerationProvider.CreateAdditionalParametersAsync(Arg.Any<CancellationToken>()).Returns(Task.FromResult(Result.Error<object?>("Kaboom")));
+            templateProvider.StartSessionAsync(Arg.Any<CancellationToken>()).Returns(Result.Continue());
             var sut = CreateSut();
 
             // Act
-            var result = await sut.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+            var result = await sut.GenerateAsync(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -241,19 +241,19 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             codeGenerationProvider.Encoding.Returns(Encoding.Latin1);
             codeGenerationProvider.Path.Returns(TestData.BasePath);
             codeGenerationProvider.GetGeneratorType().Returns(GetType());
-            codeGenerationProvider.CreateModel(Arg.Any<CancellationToken>()).Returns(Task.FromResult(Result.Continue<object?>()));
-            codeGenerationProvider.CreateAdditionalParameters(Arg.Any<CancellationToken>()).Returns(Task.FromResult(Result.Continue<object?>()));
+            codeGenerationProvider.CreateModelAsync(Arg.Any<CancellationToken>()).Returns(Task.FromResult(Result.Continue<object?>()));
+            codeGenerationProvider.CreateAdditionalParametersAsync(Arg.Any<CancellationToken>()).Returns(Task.FromResult(Result.Continue<object?>()));
             codeGenerationSettings.DryRun.Returns(true);
             codeGenerationSettings.DefaultFilename.Returns("Filename.txt");
             templateEngine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
-            templateProvider.StartSession(Arg.Any<CancellationToken>()).Returns(Result.Continue());
+            templateProvider.StartSessionAsync(Arg.Any<CancellationToken>()).Returns(Result.Continue());
             var sut = CreateSut();
 
             // Act
-            await sut.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+            await sut.GenerateAsync(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
             // Assert
-            await templateProvider.Received().StartSession(CancellationToken.None);
+            await templateProvider.Received().StartSessionAsync(CancellationToken.None);
         }
 
         [Fact]
@@ -261,18 +261,18 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
         {
             // Arrange
             var counter = 0;
-            var provider = new MyPluginCodeGenerationProvider(_ => counter++);
+            var provider = new MyPluginCodeGenerationProvider(_ => Task.Run(() => counter++));
             var generationEnvironment = Fixture.Freeze<IGenerationEnvironment>();
             var codeGenerationSettings = Fixture.Freeze<ICodeGenerationSettings>();
             var templateEngine = Fixture.Freeze<ITemplateEngine>();
             var templateProvider = Fixture.Freeze<ITemplateProvider>();
             codeGenerationSettings.DryRun.Returns(true);
             templateEngine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
-            templateProvider.StartSession(Arg.Any<CancellationToken>()).Returns(Result.Continue());
+            templateProvider.StartSessionAsync(Arg.Any<CancellationToken>()).Returns(Result.Continue());
             var sut = CreateSut();
 
             // Act
-            var result = await sut.Generate(provider, generationEnvironment, codeGenerationSettings);
+            var result = await sut.GenerateAsync(provider, generationEnvironment, codeGenerationSettings);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -283,18 +283,18 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
         {
             // Arrange
             var counter = 0;
-            var provider = new MyPluginCodeGenerationProvider(_ => counter++);
+            var provider = new MyPluginCodeGenerationProvider(_ => Task.Run(() => counter++));
             var generationEnvironment = Fixture.Freeze<IGenerationEnvironment>();
             var codeGenerationSettings = Fixture.Freeze<ICodeGenerationSettings>();
             var templateEngine = Fixture.Freeze<ITemplateEngine>();
             var templateProvider = Fixture.Freeze<ITemplateProvider>();
             codeGenerationSettings.DryRun.Returns(true);
             templateEngine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Error());
-            templateProvider.StartSession(Arg.Any<CancellationToken>()).Returns(Result.Continue());
+            templateProvider.StartSessionAsync(Arg.Any<CancellationToken>()).Returns(Result.Continue());
             var sut = CreateSut();
 
             // Act
-            var result = await sut.Generate(provider, generationEnvironment, codeGenerationSettings);
+            var result = await sut.GenerateAsync(provider, generationEnvironment, codeGenerationSettings);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -307,27 +307,27 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             public string LastGeneratedFilesFilename => string.Empty;
             public Encoding Encoding => Encoding.UTF8;
 
-            public Task<Result<object?>> CreateAdditionalParameters(CancellationToken cancellationToken) => Task.FromResult(Result.Success<object?>(default));
+            public Task<Result<object?>> CreateAdditionalParametersAsync(CancellationToken cancellationToken) => Task.FromResult(Result.Success<object?>(default));
             public Type GetGeneratorType() => typeof(object);
-            public Task<Result<object?>> CreateModel(CancellationToken cancellationToken) => Task.FromResult(Result.Success<object?>(default));
+            public Task<Result<object?>> CreateModelAsync(CancellationToken cancellationToken) => Task.FromResult(Result.Success<object?>(default));
 
-            private readonly Action<ITemplateComponentRegistry> _action;
+            private readonly Func<ITemplateComponentRegistry, Task> _action;
             private readonly ResultStatus _status;
 
-            public MyPluginCodeGenerationProvider(Action<ITemplateComponentRegistry> action, ResultStatus status = ResultStatus.Ok)
+            public MyPluginCodeGenerationProvider(Func<ITemplateComponentRegistry, Task> action, ResultStatus status = ResultStatus.Ok)
             {
                 _action = action;
                 _status = status;
             }
 
-            public Task<Result> Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken)
-                => Task.Run(() =>
-                {
-                    _action(registry);
-                    return _status == ResultStatus.Ok
-                        ? Result.Success()
-                        : Result.Error();
-                });
+            public async Task<Result> InitializeAsync(ITemplateComponentRegistry registry, CancellationToken cancellationToken)
+            {
+                await _action(registry).ConfigureAwait(false);
+
+                return _status == ResultStatus.Ok
+                    ? Result.Success()
+                    : Result.Error();
+            }
         }
     }
 }

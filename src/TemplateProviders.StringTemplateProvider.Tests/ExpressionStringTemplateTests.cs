@@ -21,7 +21,7 @@ public class ExpressionStringTemplateTests
         }
     }
 
-    public class Render : ExpressionStringTemplateTests
+    public class RenderAsync : ExpressionStringTemplateTests
     {
         [Fact]
         public async Task Throws_On_Null_Builder()
@@ -30,7 +30,7 @@ public class ExpressionStringTemplateTests
             var sut = CreateSut();
 
             // Act & Assert
-            Task t =  sut.Render(builder: null!, CancellationToken.None);
+            Task t =  sut.RenderAsync(builder: null!, CancellationToken.None);
             (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("builder");
         }
 
@@ -46,7 +46,7 @@ public class ExpressionStringTemplateTests
             sut.Context = new TemplateEngineContext(new RenderTemplateRequest(new TemplateInstanceIdentifier(sut), builder), EngineMock, ComponentRegistryMock, sut);
 
             // Act
-            var result = await sut.Render(builder, CancellationToken.None);
+            var result = await sut.RenderAsync(builder, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -65,7 +65,7 @@ public class ExpressionStringTemplateTests
             sut.Context = new TemplateEngineContext(new RenderTemplateRequest(new TemplateInstanceIdentifier(sut), builder), EngineMock, ComponentRegistryMock, sut);
 
             // Act
-            await sut.Render(builder, CancellationToken.None);
+            await sut.RenderAsync(builder, CancellationToken.None);
 
             // Assert
             builder.ToString().ShouldBe("Parse result");

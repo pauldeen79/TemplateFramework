@@ -13,7 +13,7 @@ public class ProviderPluginInitializerComponent : ITemplateInitializerComponent
 
     public int Order => 4;
 
-    public async Task<Result> Initialize(ITemplateEngineContext context, CancellationToken cancellationToken)
+    public async Task<Result> InitializeAsync(ITemplateEngineContext context, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(context);
 
@@ -24,7 +24,7 @@ public class ProviderPluginInitializerComponent : ITemplateInitializerComponent
 
         if (context.Template is ITemplateComponentRegistryPlugin registryPlugin)
         {
-            return await registryPlugin.Initialize(context.Context.TemplateComponentRegistry, cancellationToken).ConfigureAwait(false);
+            return await registryPlugin.InitializeAsync(context.Context.TemplateComponentRegistry, cancellationToken).ConfigureAwait(false);
         }
 
         if (context.Identifier is ITemplateComponentRegistryIdentifier pluginIdentifier
@@ -33,7 +33,7 @@ public class ProviderPluginInitializerComponent : ITemplateInitializerComponent
         {
             var identifierPlugin = _factory.Create(pluginIdentifier.PluginAssemblyName, pluginIdentifier.PluginClassName, pluginIdentifier.CurrentDirectory);
 
-            return await identifierPlugin.Initialize(context.Context.TemplateComponentRegistry, cancellationToken).ConfigureAwait(false);
+            return await identifierPlugin.InitializeAsync(context.Context.TemplateComponentRegistry, cancellationToken).ConfigureAwait(false);
         }
 
         return Result.Continue();

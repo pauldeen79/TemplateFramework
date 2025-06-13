@@ -2,5 +2,5 @@
 
 public interface ITextTransformTemplate
 {
-    Task<string> TransformText(CancellationToken cancellationToken);
+    Task<string> TransformTextAsync(CancellationToken cancellationToken);
 }

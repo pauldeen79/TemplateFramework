@@ -13,7 +13,7 @@ public class ParameterInitializerComponent : ITemplateInitializerComponent
 
     public int Order => 5;
 
-    public async Task<Result> Initialize(ITemplateEngineContext context, CancellationToken cancellationToken)
+    public async Task<Result> InitializeAsync(ITemplateEngineContext context, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(context);
         Guard.IsNotNull(context.Template);

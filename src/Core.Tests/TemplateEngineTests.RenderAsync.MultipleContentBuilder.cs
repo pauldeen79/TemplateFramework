@@ -2,9 +2,9 @@
 
 public partial class TemplateEngineTests
 {
-    public class Render_MultipleContentBuilder : TemplateEngineTests
+    public class RenderAsync_MultipleContentBuilder : TemplateEngineTests
     {
-        public Render_MultipleContentBuilder()
+        public RenderAsync_MultipleContentBuilder()
         {
             TemplateRendererMock.Supports(Arg.Any<IGenerationEnvironment>()).Returns(true);
         }
@@ -30,13 +30,13 @@ public partial class TemplateEngineTests
             var additionalParameters = new { AdditionalParameter = "Some value" };
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), generationEnvironment, additionalParameters);
             TemplateProviderMock.Create(Arg.Any<TemplateInstanceIdentifier>()).Returns(template);
-            TemplateInitializerMock.Initialize(Arg.Any<ITemplateEngineContext>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
+            TemplateInitializerMock.InitializeAsync(Arg.Any<ITemplateEngineContext>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
 
             // Act
             await sut.RenderAsync(request, CancellationToken.None);
 
             // Assert
-            await TemplateInitializerMock.Received().Initialize(Arg.Any<ITemplateEngineContext>(), Arg.Any<CancellationToken>());
+            await TemplateInitializerMock.Received().InitializeAsync(Arg.Any<ITemplateEngineContext>(), Arg.Any<CancellationToken>());
         }
 
         [Fact]
@@ -50,13 +50,13 @@ public partial class TemplateEngineTests
             TemplateRendererMock.Supports(Arg.Any<IGenerationEnvironment>()).Returns(true);
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), additionalParameters, generationEnvironment);
             TemplateProviderMock.Create(Arg.Any<TemplateInstanceIdentifier>()).Returns(template);
-            TemplateInitializerMock.Initialize(Arg.Any<ITemplateEngineContext>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
+            TemplateInitializerMock.InitializeAsync(Arg.Any<ITemplateEngineContext>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
 
             // Act
             await sut.RenderAsync(request, CancellationToken.None);
 
             // Assert
-            await TemplateRendererMock.Received().Render(Arg.Is<ITemplateEngineContext>(req =>
+            await TemplateRendererMock.Received().RenderAsync(Arg.Is<ITemplateEngineContext>(req =>
                 req.Identifier is TemplateInstanceIdentifier
                 && req.GenerationEnvironment is MultipleContentBuilderEnvironment<StringBuilder>
                 && req.DefaultFilename == string.Empty), Arg.Any<CancellationToken>());

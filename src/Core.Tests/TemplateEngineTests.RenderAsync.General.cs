@@ -2,9 +2,9 @@
 
 public partial class TemplateEngineTests
 {
-    public class Render_General : TemplateEngineTests
+    public class RenderAsync_General : TemplateEngineTests
     {
-        public Render_General()
+        public RenderAsync_General()
         {
             TemplateRendererMock.Supports(Arg.Any<IGenerationEnvironment>()).Returns(true);
         }
@@ -30,7 +30,7 @@ public partial class TemplateEngineTests
         {
             // Arrange
             TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(new object());
-            TemplateInitializerMock.Initialize(Arg.Any<ITemplateEngineContext>(), Arg.Any<CancellationToken>()).Returns(Result.Error("Kaboom"));
+            TemplateInitializerMock.InitializeAsync(Arg.Any<ITemplateEngineContext>(), Arg.Any<CancellationToken>()).Returns(Result.Error("Kaboom"));
             var sut = CreateSut();
             var request = Substitute.For<IRenderTemplateRequest>();
 
@@ -47,7 +47,7 @@ public partial class TemplateEngineTests
         {
             // Arrange
             TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(new object());
-            TemplateInitializerMock.Initialize(Arg.Any<ITemplateEngineContext>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
+            TemplateInitializerMock.InitializeAsync(Arg.Any<ITemplateEngineContext>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
             TemplateRendererMock.Supports(Arg.Any<IGenerationEnvironment>()).Returns(false);
             var sut = CreateSut();
             var request = Substitute.For<IRenderTemplateRequest>();

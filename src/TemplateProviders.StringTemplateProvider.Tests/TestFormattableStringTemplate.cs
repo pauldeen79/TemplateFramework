@@ -31,7 +31,7 @@ public class TestFormattableStringTemplate : IParameterizedTemplate, IBuilderTem
     public Task<Result<ITemplateParameter[]>> GetParametersAsync(CancellationToken cancellationToken)
         => new FormattableStringTemplate(new FormattableStringTemplateIdentifier(Template, CultureInfo.CurrentCulture), _expressionEvaluator, _componentRegistrationContext).GetParametersAsync(cancellationToken);
 
-    public async Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
+    public async Task<Result> RenderAsync(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
 
@@ -56,7 +56,7 @@ public class TestFormattableStringTemplate : IParameterizedTemplate, IBuilderTem
             return Result.Success();
         }, cancellationToken);
 
-    public Task<Result> StartSession(CancellationToken cancellationToken)
+    public Task<Result> StartSessionAsync(CancellationToken cancellationToken)
     {
         _parameterValues.Clear();
 

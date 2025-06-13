@@ -2,10 +2,10 @@
 
 internal static class CommandLineCommandHelper
 {
-    internal static async Task<string> ExecuteCommand<T>(T sut, params string[] arguments)
-        where T : ICommandLineCommand => await ExecuteCommand(() => sut, arguments).ConfigureAwait(false);
+    internal static async Task<string> ExecuteCommandAsync<T>(T sut, params string[] arguments)
+        where T : ICommandLineCommand => await ExecuteCommandAsync(() => sut, arguments).ConfigureAwait(false);
 
-    internal static async Task<string> ExecuteCommand<T>(Func<T> sutCreateDelegate, params string[] arguments)
+    internal static async Task<string> ExecuteCommandAsync<T>(Func<T> sutCreateDelegate, params string[] arguments)
         where T : ICommandLineCommand
     {
         // Arrange
@@ -24,7 +24,7 @@ internal static class CommandLineCommandHelper
         return Encoding.UTF8.GetString(stream.ToArray());
     }
 
-    internal static async Task<string> ExecuteCommand(Func<CommandLineApplication, Task> appDelegate)
+    internal static async Task<string> ExecuteCommandAsync(Func<CommandLineApplication, Task> appDelegate)
     {
         // Arrange
         using var stream = new MemoryStream();

@@ -27,7 +27,7 @@ public sealed class PlainTemplateWithAdditionalParameters : IParameterizedTempla
 
 public sealed class TestTemplateComponentRegistryPlugin : ITemplateComponentRegistryPlugin
 {
-    public Task<Result> Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken)
+    public Task<Result> InitializeAsync(ITemplateComponentRegistry registry, CancellationToken cancellationToken)
     {
         return Task.FromResult(Result.Success());
     }
@@ -51,7 +51,7 @@ internal static class TestData
 
         public Template(Action<StringBuilder> @delegate) => _delegate = @delegate;
 
-        public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.FromResult(Result.Success()); }
+        public Task<Result> RenderAsync(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.FromResult(Result.Success()); }
     }
 
     internal sealed class TemplateWithModel<T> : IBuilderTemplate<StringBuilder>, IModelContainer<T>
@@ -62,7 +62,7 @@ internal static class TestData
 
         public TemplateWithModel(Action<StringBuilder> @delegate) => _delegate = @delegate;
 
-        public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.FromResult(Result.Success()); }
+        public Task<Result> RenderAsync(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.FromResult(Result.Success()); }
     }
 
     internal sealed class TemplateWithDefaultFilename : IBuilderTemplate<StringBuilder>, IDefaultFilenameContainer
@@ -73,7 +73,7 @@ internal static class TestData
 
         public string DefaultFilename { get; set; } = "";
 
-        public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.FromResult(Result.Success()); }
+        public Task<Result> RenderAsync(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.FromResult(Result.Success()); }
     }
 
     internal sealed class TemplateWithViewModel<T> : IBuilderTemplate<StringBuilder>, IParameterizedTemplate
@@ -84,7 +84,7 @@ internal static class TestData
 
         public TemplateWithViewModel(Action<StringBuilder> @delegate) => _delegate = @delegate;
 
-        public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.FromResult(Result.Success()); }
+        public Task<Result> RenderAsync(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.FromResult(Result.Success()); }
 
         // this is added in case of viewmodels which don't have a public parameterless constructor
         public Task<Result> SetParameterAsync(string name, object? value, CancellationToken cancellationToken)
@@ -152,7 +152,7 @@ internal static class TestData
 
         public TextTransformTemplate(Func<string> @delegate) => _delegate = @delegate;
 
-        public Task<string> TransformText(CancellationToken cancellationToken) => Task.FromResult(_delegate());
+        public Task<string> TransformTextAsync(CancellationToken cancellationToken) => Task.FromResult(_delegate());
     }
 
     /// <summary>

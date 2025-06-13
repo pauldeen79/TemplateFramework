@@ -84,7 +84,7 @@ public class TemplateProviderTests
         }
     }
 
-    public class StartSession : TemplateProviderTests
+    public class StartSessionAsync : TemplateProviderTests
     {
         [Theory, AutoMockData]
         public async Task Clears_Registration_Performed_On_Current_Instance(
@@ -98,7 +98,7 @@ public class TemplateProviderTests
             sut.RegisterComponent(newTemplateProviderComponent);
 
             // Act
-            await sut.StartSession(CancellationToken.None);
+            await sut.StartSessionAsync(CancellationToken.None);
 
             // Assert
             Action a = () => sut.Create(identifier);
@@ -113,7 +113,7 @@ public class TemplateProviderTests
             var sut = new TemplateProvider([sessionAwareTemplateProviderComponent]);
 
             // Act
-            await sut.StartSession(CancellationToken.None);
+            await sut.StartSessionAsync(CancellationToken.None);
 
             // Assert
             sessionAwareTemplateProviderComponent.Counter.ShouldBe(1);
@@ -127,7 +127,7 @@ public class TemplateProviderTests
             var sut = new TemplateProvider([sessionAwareTemplateProviderComponent]);
 
             // Act
-            var result = await sut.StartSession(CancellationToken.None);
+            var result = await sut.StartSessionAsync(CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -141,7 +141,7 @@ public class TemplateProviderTests
             var sut = new TemplateProvider([sessionAwareTemplateProviderComponent]);
 
             // Act
-            var result = await sut.StartSession(CancellationToken.None);
+            var result = await sut.StartSessionAsync(CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -165,7 +165,7 @@ public class TemplateProviderTests
                 throw new NotImplementedException();
             }
 
-            public Task<Result> StartSession(CancellationToken cancellationToken)
+            public Task<Result> StartSessionAsync(CancellationToken cancellationToken)
             {
                 Counter++;
                 return Task.FromResult(Success

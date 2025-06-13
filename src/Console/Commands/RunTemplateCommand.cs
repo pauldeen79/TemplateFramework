@@ -136,7 +136,7 @@ public class RunTemplateCommand : CommandBase
             var generationEnvironment = new MultipleStringContentBuilderEnvironment();
             var templateIdentifier = GetTemplateIdentifier(args);
 
-            (await _templateProvider.StartSession(args.cancellationToken).ConfigureAwait(false))
+            (await _templateProvider.StartSessionAsync(args.cancellationToken).ConfigureAwait(false))
             .OnFailure(async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false))
             .OnSuccess(async () =>
             {

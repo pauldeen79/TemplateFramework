@@ -11,11 +11,11 @@ public sealed class TemplateInitializer : ITemplateInitializer
         _components = components.OrderBy(x => x.Order);
     }
 
-    public async Task<Result> Initialize(ITemplateEngineContext context, CancellationToken cancellationToken)
+    public async Task<Result> InitializeAsync(ITemplateEngineContext context, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(context);
 
-        var results = await Task.WhenAll(_components.Select(component => component.Initialize(context, cancellationToken))).ConfigureAwait(false);
+        var results = await Task.WhenAll(_components.Select(component => component.InitializeAsync(context, cancellationToken))).ConfigureAwait(false);
         return Result.Aggregate(results, Result.Success(), nonSuccesfulResults => Result.Error(nonSuccesfulResults, "One or more template initializer components returned a non-succesful result, see the inner results for more details"));
     }
 }

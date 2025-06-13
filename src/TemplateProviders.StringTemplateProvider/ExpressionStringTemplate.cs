@@ -24,7 +24,7 @@ public class ExpressionStringTemplate : IBuilderTemplate<StringBuilder>, ITempla
         Context = default!; // furhter on in the process, this will get filled
     }
 
-    public async Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
+    public async Task<Result> RenderAsync(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
 

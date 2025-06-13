@@ -17,7 +17,7 @@ public class ProviderPluginInitializerComponentTests
         public async Task Throws_On_Null_Context(ProviderPluginInitializerComponent sut)
         {
             // Act & Assert
-            Task t = sut.Initialize(context: null!, CancellationToken.None);
+            Task t = sut.InitializeAsync(context: null!, CancellationToken.None);
             (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("context");
         }
 
@@ -31,7 +31,7 @@ public class ProviderPluginInitializerComponentTests
             templateEngine.Template.Returns(templateComponentRegistryPlugin);
 
             // Act & Assert
-            Task t = sut.Initialize(templateEngine, CancellationToken.None);
+            Task t = sut.InitializeAsync(templateEngine, CancellationToken.None);
             await t.ShouldNotThrowAsync();
         }
 
@@ -46,7 +46,7 @@ public class ProviderPluginInitializerComponentTests
             templateEngine.Template.Returns(new object());
 
             // Act & Assert
-            Task t = sut.Initialize(templateEngine, CancellationToken.None);
+            Task t = sut.InitializeAsync(templateEngine, CancellationToken.None);
             await t.ShouldNotThrowAsync();
         }
 
@@ -62,10 +62,10 @@ public class ProviderPluginInitializerComponentTests
             templateEngine.Template.Returns(templateComponentRegistryPlugin);
 
             // Act
-            await sut.Initialize(templateEngine, CancellationToken.None);
+            await sut.InitializeAsync(templateEngine, CancellationToken.None);
 
             // Assert
-            await templateComponentRegistryPlugin.Received().Initialize(Arg.Any<ITemplateComponentRegistry>(), Arg.Any<CancellationToken>());
+            await templateComponentRegistryPlugin.Received().InitializeAsync(Arg.Any<ITemplateComponentRegistry>(), Arg.Any<CancellationToken>());
         }
 
         [Theory, AutoMockData]
@@ -84,10 +84,10 @@ public class ProviderPluginInitializerComponentTests
             templateProviderPluginFactory.Create(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>()).Returns(templateComponentRegistryPlugin);
 
             // Act
-            await sut.Initialize(templateEngine, CancellationToken.None);
+            await sut.InitializeAsync(templateEngine, CancellationToken.None);
 
             // Assert
-            await templateComponentRegistryPlugin.Received().Initialize(Arg.Any<ITemplateComponentRegistry>(), Arg.Any<CancellationToken>());
+            await templateComponentRegistryPlugin.Received().InitializeAsync(Arg.Any<ITemplateComponentRegistry>(), Arg.Any<CancellationToken>());
         }
 
         private sealed class IdentifierWithTemplateProviderPluginIdentifier : ITemplateComponentRegistryIdentifier

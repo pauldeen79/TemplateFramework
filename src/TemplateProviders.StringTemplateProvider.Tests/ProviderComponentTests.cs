@@ -125,7 +125,7 @@ public class ProviderComponentTests
         }
     }
 
-    public class StartSession : ProviderComponentTests
+    public class StartSessionAsync : ProviderComponentTests
     {
         [Fact]
         public async Task Clears_PlaceholderProcessors()
@@ -135,7 +135,7 @@ public class ProviderComponentTests
             var sut = CreateSut();
 
             // Act
-            await sut.StartSession(CancellationToken.None);
+            await sut.StartSessionAsync(CancellationToken.None);
 
             // Assert
             ComponentRegistrationContext.Expressions.ShouldBeEmpty();
@@ -149,7 +149,7 @@ public class ProviderComponentTests
             var sut = CreateSut();
 
             // Act
-            await sut.StartSession(CancellationToken.None);
+            await sut.StartSessionAsync(CancellationToken.None);
 
             // Assert
             ComponentRegistrationContext.Functions.ShouldBeEmpty();
