@@ -113,9 +113,10 @@ public class TemplateProviderTests
             var sut = new TemplateProvider([sessionAwareTemplateProviderComponent]);
 
             // Act
-            await sut.StartSessionAsync(CancellationToken.None);
+            var result = await sut.StartSessionAsync(CancellationToken.None);
 
             // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
             sessionAwareTemplateProviderComponent.Counter.ShouldBe(1);
         }
 
