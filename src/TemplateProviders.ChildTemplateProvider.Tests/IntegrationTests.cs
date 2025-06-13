@@ -1,7 +1,4 @@
-﻿using NSubstitute.Core;
-using TemplateFramework.Core.BuilderTemplateRenderers;
-
-namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests;
+﻿namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests;
 
 public class IntegrationTests : TestBase
 {
@@ -22,7 +19,7 @@ public class IntegrationTests : TestBase
         var template = new TestData.MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine(async (builder, context) =>
         {
             var identifier = new TemplateByNameIdentifier("MyTemplate");
-            await context.Engine.RenderChildTemplate(new MultipleStringContentBuilderEnvironment(builder), identifier, context, CancellationToken.None).ConfigureAwait(false);
+            await context.Engine.RenderChildTemplateAsync(new MultipleStringContentBuilderEnvironment(builder), identifier, context, CancellationToken.None).ConfigureAwait(false);
         });
         var generationEnvironment = new MultipleContentBuilder();
 

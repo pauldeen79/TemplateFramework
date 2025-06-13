@@ -170,7 +170,7 @@ internal static class TestData
 
         private async Task<Result> RenderHeader(IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
         {
-            var result = await Context.Engine.RenderChildTemplate(
+            var result = await Context.Engine.RenderChildTemplateAsync(
                 Model!.Settings,
                 generationEnvironment,
                 Context,
@@ -184,7 +184,7 @@ internal static class TestData
 
             if (Context.IsRootContext)
             {
-                result = await Context.Engine.RenderChildTemplate(
+                result = await Context.Engine.RenderChildTemplateAsync(
                     Model,
                     generationEnvironment,
                     Context,
@@ -211,7 +211,7 @@ internal static class TestData
                     .OrderBy(typeBase => typeBase.Name)
                     .Select(typeBase => new CsharpClassGeneratorViewModel<TypeBase>(typeBase, Model.Settings));
 
-                result = await Context.Engine.RenderChildTemplates(
+                result = await Context.Engine.RenderChildTemplatesAsync(
                     typeBaseItems,
                     generationEnvironment,
                     Context,
@@ -331,14 +331,14 @@ internal static class TestData
                 generationEnvironment = new StringBuilderEnvironment(contentBuilder.Builder);
                 var actions = new[]
                 {
-                    Context.Engine.RenderChildTemplate(
+                    Context.Engine.RenderChildTemplateAsync(
                         Model.Settings,
                         generationEnvironment,
                         Context,
                         new TemplateByNameIdentifier("CodeGenerationHeader"),
                         cancellationToken
                         ),
-                    Context.Engine.RenderChildTemplate(
+                    Context.Engine.RenderChildTemplateAsync(
                         new CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>([Model.Data], Model.Settings),
                         generationEnvironment,
                         Context,
@@ -374,7 +374,7 @@ internal static class TestData
             //TODO: Render child items
             if (Model.Data.SubClasses is not null && Model.Data.SubClasses.Length > 0)
             {
-                result = await Context.Engine.RenderChildTemplates(
+                result = await Context.Engine.RenderChildTemplatesAsync(
                     Model.Data.SubClasses.Select(typeBase => new CsharpClassGeneratorViewModel<TypeBase>(typeBase, Model.Settings.ForSubclasses())),
                     new MultipleStringContentBuilderEnvironment(builder),
                     Context,
@@ -487,7 +487,7 @@ public class XDocumentTemplate : IBuilderTemplate<XDocumentBuilder>, ITemplateCo
         builder.CurrentElement = builder.CurrentElement.Element("subItems")!;
         // Because this is just a POC, we are using a collection of strings, and a named template.
         // If you are using a (View)Model, then you can omit the name and resolve the template by model type.
-        return await Context.Engine.RenderChildTemplates(Model.SubItems, new XDocumentGenerationEnvironment(builder), new TemplateByNameIdentifier("SubItem"), Context, cancellationToken).ConfigureAwait(false);
+        return await Context.Engine.RenderChildTemplatesAsync(Model.SubItems, new XDocumentGenerationEnvironment(builder), new TemplateByNameIdentifier("SubItem"), Context, cancellationToken).ConfigureAwait(false);
     }
 }
 
