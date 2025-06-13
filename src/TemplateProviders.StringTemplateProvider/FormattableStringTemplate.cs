@@ -60,7 +60,10 @@ public class FormattableStringTemplate : IParameterizedTemplate, IBuilderTemplat
     public Task<Result> SetParameterAsync(string name, object? value, CancellationToken cancellationToken)
         => Task.Run(() =>
         {
+            Guard.IsNotNull(Context);
+
             Context.ParametersDictionary[name] = value;
+
             return Result.Success();
         }, cancellationToken);
 }

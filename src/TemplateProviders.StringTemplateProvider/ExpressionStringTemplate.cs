@@ -26,6 +26,7 @@ public class ExpressionStringTemplate : IBuilderTemplate<StringBuilder>, ITempla
 
     public async Task<Result> RenderAsync(StringBuilder builder, CancellationToken cancellationToken)
     {
+        Guard.IsNotNull(Context);
         Guard.IsNotNull(builder);
 
         var templateFrameworkStringContext = new TemplateFrameworkStringContext(Context.ParametersDictionary, _componentRegistrationContext, false);

@@ -28,6 +28,8 @@ public class ExpressionStringTemplateTests
         {
             // Arrange
             var sut = CreateSut();
+            var builder = new StringBuilder();
+            sut.Context = new TemplateEngineContext(new RenderTemplateRequest(new TemplateInstanceIdentifier(sut), builder), EngineMock, ComponentRegistryMock, sut);
 
             // Act & Assert
             Task t =  sut.RenderAsync(builder: null!, CancellationToken.None);
