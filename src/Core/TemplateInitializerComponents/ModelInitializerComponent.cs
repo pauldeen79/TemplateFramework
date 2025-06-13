@@ -11,7 +11,7 @@ public class ModelInitializerComponent : ITemplateInitializerComponent
         _converter = converter;
     }
 
-    public int Order => 3;
+    public int Order => 1;
 
     public Task<Result> InitializeAsync(ITemplateEngineContext context, CancellationToken cancellationToken)
     {

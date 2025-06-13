@@ -2,7 +2,7 @@
 
 public class ContextInitializerComponent : ITemplateInitializerComponent
 {
-    public int Order => 1;
+    public int Order => 3;
 
     public Task<Result> InitializeAsync(ITemplateEngineContext context, CancellationToken cancellationToken)
     {
