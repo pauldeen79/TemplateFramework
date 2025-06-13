@@ -11,7 +11,7 @@ public class CodeGenerationAssemblyTests : TestBase<CodeGenerationAssembly>
         }
     }
 
-    public class Generate : CodeGenerationAssemblyTests
+    public class GenerateAsync : CodeGenerationAssemblyTests
     {
         [Fact]
         public async Task Throws_On_Null_Settings()
@@ -21,7 +21,7 @@ public class CodeGenerationAssemblyTests : TestBase<CodeGenerationAssembly>
             var sut = CreateSut();
 
             // Act & Assert
-            Task t = sut.Generate(settings: null!, generationEnvironment, CancellationToken.None);
+            Task t = sut.GenerateAsync(settings: null!, generationEnvironment, CancellationToken.None);
             (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("settings");
         }
 
@@ -33,7 +33,7 @@ public class CodeGenerationAssemblyTests : TestBase<CodeGenerationAssembly>
             var sut = CreateSut();
 
             // Act & Assert
-            Task t = sut.Generate(settings, generationEnvironment: null!, CancellationToken.None);
+            Task t = sut.GenerateAsync(settings, generationEnvironment: null!, CancellationToken.None);
             (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("generationEnvironment");
         }
 
@@ -47,14 +47,14 @@ public class CodeGenerationAssemblyTests : TestBase<CodeGenerationAssembly>
             var codeGenerationProviderCreator = Fixture.Freeze<ICodeGenerationProviderCreator>();
             SetupAssemblyService(assemblyService);
             SetupCodeGenerationProviderCreator(codeGenerationProviderCreator);
-            codeGenerationEngine.Generate(Arg.Any<ICodeGenerationProvider>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<ICodeGenerationSettings>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
+            codeGenerationEngine.GenerateAsync(Arg.Any<ICodeGenerationProvider>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<ICodeGenerationSettings>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
             var sut = CreateSut();
 
             // Act
-            await sut.Generate(new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), currentDirectory: TestData.BasePath), generationEnvironment, CancellationToken.None);
+            await sut.GenerateAsync(new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), currentDirectory: TestData.BasePath), generationEnvironment, CancellationToken.None);
 
             // Assert
-            await codeGenerationEngine.Received().Generate(Arg.Any<ICodeGenerationProvider>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<ICodeGenerationSettings>(), Arg.Any<CancellationToken>());
+            await codeGenerationEngine.Received().GenerateAsync(Arg.Any<ICodeGenerationProvider>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<ICodeGenerationSettings>(), Arg.Any<CancellationToken>());
         }
 
         [Fact]
@@ -67,14 +67,14 @@ public class CodeGenerationAssemblyTests : TestBase<CodeGenerationAssembly>
             var codeGenerationProviderCreator = Fixture.Freeze<ICodeGenerationProviderCreator>();
             SetupAssemblyService(assemblyService);
             SetupCodeGenerationProviderCreator(codeGenerationProviderCreator);
-            codeGenerationEngine.Generate(Arg.Any<ICodeGenerationProvider>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<ICodeGenerationSettings>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
+            codeGenerationEngine.GenerateAsync(Arg.Any<ICodeGenerationProvider>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<ICodeGenerationSettings>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
             var sut = CreateSut();
 
             // Act
-            await sut.Generate(new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), currentDirectory: TestData.BasePath, classNameFilter: [typeof(MyGeneratorProvider).FullName!]), generationEnvironment, CancellationToken.None);
+            await sut.GenerateAsync(new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), currentDirectory: TestData.BasePath, classNameFilter: [typeof(MyGeneratorProvider).FullName!]), generationEnvironment, CancellationToken.None);
 
             // Assert
-            await codeGenerationEngine.Received().Generate(Arg.Any<ICodeGenerationProvider>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<ICodeGenerationSettings>(), Arg.Any<CancellationToken>());
+            await codeGenerationEngine.Received().GenerateAsync(Arg.Any<ICodeGenerationProvider>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<ICodeGenerationSettings>(), Arg.Any<CancellationToken>());
         }
 
         [Fact]
@@ -90,10 +90,10 @@ public class CodeGenerationAssemblyTests : TestBase<CodeGenerationAssembly>
             var sut = CreateSut();
 
             // Act
-            await sut.Generate(new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), currentDirectory: TestData.BasePath, classNameFilter: ["WrongName"]), generationEnvironment, CancellationToken.None);
+            await sut.GenerateAsync(new CodeGenerationAssemblySettings(TestData.BasePath, "DefaultFilename.txt", TestData.GetAssemblyName(), currentDirectory: TestData.BasePath, classNameFilter: ["WrongName"]), generationEnvironment, CancellationToken.None);
 
             // Assert
-            await codeGenerationEngine.DidNotReceive().Generate(Arg.Any<ICodeGenerationProvider>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<ICodeGenerationSettings>(), Arg.Any<CancellationToken>());
+            await codeGenerationEngine.DidNotReceive().GenerateAsync(Arg.Any<ICodeGenerationProvider>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<ICodeGenerationSettings>(), Arg.Any<CancellationToken>());
         }
 
         private void SetupCodeGenerationProviderCreator(ICodeGenerationProviderCreator codeGenerationProviderCreator)

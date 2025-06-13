@@ -1,11 +1,8 @@
-﻿using CrossCutting.Common.Results;
-using Shouldly;
-
-namespace TemplateFramework.Core.Tests.TemplateRenderers;
+﻿namespace TemplateFramework.Core.Tests.TemplateRenderers;
 
 public partial class MultipleStringContentBuilderTemplateRendererTests
 {
-    public class Render : MultipleStringContentBuilderTemplateRendererTests
+    public class RenderAsync : MultipleStringContentBuilderTemplateRendererTests
     {
         [Fact]
         public async Task Throws_When_Context_Is_Null()
@@ -14,7 +11,7 @@ public partial class MultipleStringContentBuilderTemplateRendererTests
             var sut = CreateSut();
 
             // Act & Assert
-            Task t = sut.Render(context: null!, CancellationToken.None);
+            Task t = sut.RenderAsync(context: null!, CancellationToken.None);
             (await t.ShouldThrowAsync<ArgumentException>()).ParamName.ShouldBe("context");
         }
 
@@ -28,7 +25,7 @@ public partial class MultipleStringContentBuilderTemplateRendererTests
             var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
 
             // Act
-            var result = await sut.Render(engineContext, CancellationToken.None);
+            var result = await sut.RenderAsync(engineContext, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.NotSupported);
@@ -46,10 +43,10 @@ public partial class MultipleStringContentBuilderTemplateRendererTests
             MultipleContentBuilderTemplateCreatorMock.TryCreate(Arg.Any<object>()).Returns(templateMock);
 
             // Act
-            await sut.Render(engineContext, CancellationToken.None);
+            await sut.RenderAsync(engineContext, CancellationToken.None);
 
             // Assert
-            await templateMock.Received().Render(Arg.Any<IMultipleContentBuilder<StringBuilder>>(), Arg.Any<CancellationToken>());
+            await templateMock.Received().RenderAsync(Arg.Any<IMultipleContentBuilder<StringBuilder>>(), Arg.Any<CancellationToken>());
         }
 
         [Fact]
@@ -72,7 +69,7 @@ public partial class MultipleStringContentBuilderTemplateRendererTests
             var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
             TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(template);
             TemplateEngineMock
-                .Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>())
+                .RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>())
                 .Returns(x =>
                 {
                     ((StringBuilderEnvironment)x.ArgAt<IRenderTemplateRequest>(0).GenerationEnvironment).Builder.Append(template.ToString());
@@ -80,7 +77,7 @@ public partial class MultipleStringContentBuilderTemplateRendererTests
                 });
 
             // Act
-            await sut.Render(engineContext, CancellationToken.None);
+            await sut.RenderAsync(engineContext, CancellationToken.None);
 
             // Assert
             contentBuilderMock.Builder.ShouldNotBeNull();
@@ -107,7 +104,7 @@ public partial class MultipleStringContentBuilderTemplateRendererTests
             var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
             TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(template);
             TemplateEngineMock
-                .Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>())
+                .RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>())
                 .Returns(x =>
                 {
                     ((StringBuilderEnvironment)x.ArgAt<IRenderTemplateRequest>(0).GenerationEnvironment).Builder.Append(template.ToString());
@@ -115,7 +112,7 @@ public partial class MultipleStringContentBuilderTemplateRendererTests
                 });
 
             // Act
-            var result = await sut.Render(engineContext, CancellationToken.None);
+            var result = await sut.RenderAsync(engineContext, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -141,7 +138,7 @@ public partial class MultipleStringContentBuilderTemplateRendererTests
             var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
             TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(template);
             TemplateEngineMock
-                .Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>())
+                .RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>())
                 .Returns(x =>
                 {
                     ((StringBuilderEnvironment)x.ArgAt<IRenderTemplateRequest>(0).GenerationEnvironment).Builder.Append(template.ToString());
@@ -149,7 +146,7 @@ public partial class MultipleStringContentBuilderTemplateRendererTests
                 });
 
             // Act
-            var result = await sut.Render(engineContext, CancellationToken.None);
+            var result = await sut.RenderAsync(engineContext, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);

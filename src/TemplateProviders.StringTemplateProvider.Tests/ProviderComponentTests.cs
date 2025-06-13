@@ -2,11 +2,10 @@
 
 public class ProviderComponentTests
 {
-    protected IExpressionStringEvaluator ExpressionStringEvaluatorMock { get; } = Substitute.For<IExpressionStringEvaluator>();
-    protected IFormattableStringParser FormattableStringParserMock { get; } = Substitute.For<IFormattableStringParser>();
-    protected ComponentRegistrationContext ComponentRegistrationContext { get; } = new([new ComponentRegistrationContextFunction(Substitute.For<IFunctionDescriptorMapper>())]);
+    protected IExpressionEvaluator ExpressionEvaluatorMock { get; } = Substitute.For<IExpressionEvaluator>();
+    protected ComponentRegistrationContext ComponentRegistrationContext { get; } = new([new ComponentRegistrationContextFunction(Substitute.For<IMemberDescriptorMapper>())]);
 
-    protected ProviderComponent CreateSut() => new(ExpressionStringEvaluatorMock, FormattableStringParserMock, ComponentRegistrationContext);
+    protected ProviderComponent CreateSut() => new(ExpressionEvaluatorMock, ComponentRegistrationContext);
 
     public class Constructor : ProviderComponentTests
     {
@@ -126,20 +125,20 @@ public class ProviderComponentTests
         }
     }
 
-    public class StartSession : ProviderComponentTests
+    public class StartSessionAsync : ProviderComponentTests
     {
         [Fact]
         public async Task Clears_PlaceholderProcessors()
         {
             // Arrange
-            ComponentRegistrationContext.Placeholders.Add(Substitute.For<IPlaceholder>());
+            ComponentRegistrationContext.Expressions.Add(Substitute.For<IExpressionComponent>());
             var sut = CreateSut();
 
             // Act
-            await sut.StartSession(CancellationToken.None);
+            await sut.StartSessionAsync(CancellationToken.None);
 
             // Assert
-            ComponentRegistrationContext.Placeholders.ShouldBeEmpty();
+            ComponentRegistrationContext.Expressions.ShouldBeEmpty();
         }
 
         [Fact]
@@ -150,7 +149,7 @@ public class ProviderComponentTests
             var sut = CreateSut();
 
             // Act
-            await sut.StartSession(CancellationToken.None);
+            await sut.StartSessionAsync(CancellationToken.None);
 
             // Assert
             ComponentRegistrationContext.Functions.ShouldBeEmpty();

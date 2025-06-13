@@ -1,6 +1,4 @@
-﻿using CrossCutting.Common.Testing;
-
-namespace TemplateFramework.Testing;
+﻿namespace TemplateFramework.Testing;
 
 [ExcludeFromCodeCoverage]
 public static class TypeExtensions

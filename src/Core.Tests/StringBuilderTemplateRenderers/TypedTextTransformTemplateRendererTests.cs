@@ -8,7 +8,7 @@ public class TypedTextTransformTemplateRendererTests
         public async Task Returns_Continue_On_Null_Instance(TypedTextTransformTemplateRenderer sut)
         {
             // Act
-            var result = await sut.TryRender(instance: null!, new StringBuilder(), CancellationToken.None);
+            var result = await sut.TryRenderAsync(instance: null!, new StringBuilder(), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
@@ -18,7 +18,7 @@ public class TypedTextTransformTemplateRendererTests
         public async Task Returns_Continue_On_NonNull_Instance_But_Wrong_Type(TypedTextTransformTemplateRenderer sut)
         {
             // Act
-            var result = await sut.TryRender(instance: this, new StringBuilder(), CancellationToken.None);
+            var result = await sut.TryRenderAsync(instance: this, new StringBuilder(), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
@@ -30,7 +30,7 @@ public class TypedTextTransformTemplateRendererTests
             TypedTextTransformTemplateRenderer sut)
         {
             // Act
-            var result = await sut.TryRender(instance: textTransformTemplate, new StringBuilder(), CancellationToken.None);
+            var result = await sut.TryRenderAsync(instance: textTransformTemplate, new StringBuilder(), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -42,10 +42,10 @@ public class TypedTextTransformTemplateRendererTests
             TypedTextTransformTemplateRenderer sut)
         {
             // Act
-            _ = await sut.TryRender(instance: textTransformTemplate, new StringBuilder(), CancellationToken.None);
+            _ = await sut.TryRenderAsync(instance: textTransformTemplate, new StringBuilder(), CancellationToken.None);
 
             // Assert
-            await textTransformTemplate.Received().TransformText(Arg.Any<CancellationToken>());
+            await textTransformTemplate.Received().TransformTextAsync(Arg.Any<CancellationToken>());
         }
 
         [Theory, AutoMockData]
@@ -54,11 +54,11 @@ public class TypedTextTransformTemplateRendererTests
             TypedTextTransformTemplateRenderer sut)
         {
             // Arrange
-            textTransformTemplate.TransformText(Arg.Any<CancellationToken>()).Returns("Hello world!");
+            textTransformTemplate.TransformTextAsync(Arg.Any<CancellationToken>()).Returns("Hello world!");
             var builder = new StringBuilder();
 
             // Act
-            _ = await sut.TryRender(instance: textTransformTemplate, builder, CancellationToken.None);
+            _ = await sut.TryRenderAsync(instance: textTransformTemplate, builder, CancellationToken.None);
 
             // Assert
             builder.ToString().ShouldBe("Hello world!");
@@ -70,10 +70,10 @@ public class TypedTextTransformTemplateRendererTests
             TypedTextTransformTemplateRenderer sut)
         {
             // Arrange
-            textTransformTemplate.TransformText(Arg.Any<CancellationToken>()).Returns("Hello world!");
+            textTransformTemplate.TransformTextAsync(Arg.Any<CancellationToken>()).Returns("Hello world!");
 
             // Act & Assert
-            Task t = sut.TryRender(textTransformTemplate, builder: null!, CancellationToken.None);
+            Task t = sut.TryRenderAsync(textTransformTemplate, builder: null!, CancellationToken.None);
             (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("builder");
         }
     }

@@ -83,7 +83,7 @@ public class CommandBaseTests : TestBase<CommandBaseTests.CommandBaseTest>
             var sut = CreateSut();
 
             // Act
-            var result = await CommandLineCommandHelper.ExecuteCommand(async app => await sut.WatchPublic(app, true, Filename, () => Task.CompletedTask).ConfigureAwait(false));
+            var result = await CommandLineCommandHelper.ExecuteCommandAsync(async app => await sut.WatchPublic(app, true, Filename, () => Task.CompletedTask).ConfigureAwait(false));
 
             // Assert
             result.ShouldBe("Error: Could not find file [MyFile.txt]. Could not watch file for changes." + Environment.NewLine);
@@ -153,7 +153,7 @@ public class CommandBaseTests : TestBase<CommandBaseTests.CommandBaseTest>
             });
 
             // Act
-            var result = await CommandLineCommandHelper.ExecuteCommand(app => sut.WatchPublic(app, true, Filename, () => { actionCallCounter++; return Task.CompletedTask; }));
+            var result = await CommandLineCommandHelper.ExecuteCommandAsync(app => sut.WatchPublic(app, true, Filename, () => { actionCallCounter++; return Task.CompletedTask; }));
 
             // Assert
             result.ShouldBe(@"Watching file [MyFile.txt] for changes...
@@ -346,7 +346,7 @@ Contents from file2
             var sut = CreateSut();
 
             // Act & Assert
-            Task t = CommandLineCommandHelper.ExecuteCommand(_ => sut.WriteOutputToHostPublic(app: null!, "TemplateOutput", true));
+            Task t = CommandLineCommandHelper.ExecuteCommandAsync(_ => sut.WriteOutputToHostPublic(app: null!, "TemplateOutput", true));
             (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("app");
         }
 
@@ -357,7 +357,7 @@ Contents from file2
             var sut = CreateSut();
 
             // Act & Assert
-            Task t = CommandLineCommandHelper.ExecuteCommand(app => sut.WriteOutputToHostPublic(app, templateOutput: null!, true));
+            Task t = CommandLineCommandHelper.ExecuteCommandAsync(app => sut.WriteOutputToHostPublic(app, templateOutput: null!, true));
             (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("templateOutput");
         }
 
@@ -368,7 +368,7 @@ Contents from file2
             var sut = CreateSut();
 
             // Act
-            var result = await CommandLineCommandHelper.ExecuteCommand(app => sut.WriteOutputToHostPublic(app, "TemplateOutput", true));
+            var result = await CommandLineCommandHelper.ExecuteCommandAsync(app => sut.WriteOutputToHostPublic(app, "TemplateOutput", true));
 
             // Assert
             result.ShouldBe("TemplateOutput" + Environment.NewLine);
@@ -381,7 +381,7 @@ Contents from file2
             var sut = CreateSut();
 
             // Act
-            var result = await CommandLineCommandHelper.ExecuteCommand(app => sut.WriteOutputToHostPublic(app, "TemplateOutput", false));
+            var result = await CommandLineCommandHelper.ExecuteCommandAsync(app => sut.WriteOutputToHostPublic(app, "TemplateOutput", false));
 
             // Assert
             result.ShouldBe(@"Code generation output:
@@ -406,7 +406,7 @@ TemplateOutput
             var sut = CreateSut();
 
             // Act & Assert
-            Task t = CommandLineCommandHelper.ExecuteCommand(_ => sut.WriteOutputToClipboardPublic(app: null!, "TemplateOutput", true));
+            Task t = CommandLineCommandHelper.ExecuteCommandAsync(_ => sut.WriteOutputToClipboardPublic(app: null!, "TemplateOutput", true));
             (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("app");
         }
 
@@ -417,7 +417,7 @@ TemplateOutput
             var sut = CreateSut();
 
             // Act & Assert
-            Task t = CommandLineCommandHelper.ExecuteCommand(app => sut.WriteOutputToClipboardPublic(app, templateOutput: null!, true));
+            Task t = CommandLineCommandHelper.ExecuteCommandAsync(app => sut.WriteOutputToClipboardPublic(app, templateOutput: null!, true));
             (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("templateOutput");
         }
 
@@ -428,7 +428,7 @@ TemplateOutput
             var sut = CreateSut();
 
             // Act
-            _ = await CommandLineCommandHelper.ExecuteCommand(app => sut.WriteOutputToClipboardPublic(app, "TemplateOutput", true));
+            _ = await CommandLineCommandHelper.ExecuteCommandAsync(app => sut.WriteOutputToClipboardPublic(app, "TemplateOutput", true));
 
             // Assert
             await clipboard.Received().SetTextAsync("TemplateOutput");
@@ -441,7 +441,7 @@ TemplateOutput
             var sut = CreateSut();
 
             // Act
-            var result = await CommandLineCommandHelper.ExecuteCommand(app => sut.WriteOutputToClipboardPublic(app, "TemplateOutput", false));
+            var result = await CommandLineCommandHelper.ExecuteCommandAsync(app => sut.WriteOutputToClipboardPublic(app, "TemplateOutput", false));
 
             // Assert
             result.ShouldBe("Copied code generation output to clipboard" + Environment.NewLine);
@@ -454,7 +454,7 @@ TemplateOutput
             var sut = CreateSut();
 
             // Act
-            var result = await CommandLineCommandHelper.ExecuteCommand(app => sut.WriteOutputToClipboardPublic(app, "TemplateOutput", true));
+            var result = await CommandLineCommandHelper.ExecuteCommandAsync(app => sut.WriteOutputToClipboardPublic(app, "TemplateOutput", true));
 
             // Assert
             result.ShouldBeEmpty();

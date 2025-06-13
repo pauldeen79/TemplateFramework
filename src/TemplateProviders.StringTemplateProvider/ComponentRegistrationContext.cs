@@ -2,11 +2,11 @@
 
 public sealed class ComponentRegistrationContext
 {
-    public IList<IPlaceholder> Placeholders { get; } = [];
-    public IList<IFunction> Functions { get; } = [];
+    public IList<IExpressionComponent> Expressions { get; } = [];
+    public IList<IMember> Functions { get; } = [];
     public ComponentRegistrationContextFunction DescriptorsFunction { get; }
 
-    public ComponentRegistrationContext(IEnumerable<IFunction> functions)
+    public ComponentRegistrationContext(IEnumerable<IMember> functions)
     {
         Guard.IsNotNull(functions);
 

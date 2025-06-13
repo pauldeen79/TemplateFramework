@@ -2,13 +2,14 @@
 
 public class ExpressionStringTemplateTests
 {
-    protected const string Template = "Hello {Name}!";
-    protected IExpressionStringEvaluator ExpressionStringEvaluatorMock { get; } = Substitute.For<IExpressionStringEvaluator>();
-    protected IFormattableStringParser FormattableStringParserMock { get; } = Substitute.For<IFormattableStringParser>();
+    protected const string Template = "$\"Hello {Name}!\"";
+    protected IExpressionEvaluator ExpressionEvaluatorMock { get; } = Substitute.For<IExpressionEvaluator>();
+    protected ITemplateEngine EngineMock { get; } = Substitute.For<ITemplateEngine>();
+    protected ITemplateComponentRegistry ComponentRegistryMock { get; } = Substitute.For<ITemplateComponentRegistry>();
     protected ExpressionStringTemplateIdentifier Identifier { get; } = new ExpressionStringTemplateIdentifier(Template, CultureInfo.CurrentCulture);
-    protected ComponentRegistrationContext ComponentRegistrationContext { get; } = new([new ComponentRegistrationContextFunction(Substitute.For<IFunctionDescriptorMapper>())]);
+    protected ComponentRegistrationContext ComponentRegistrationContext { get; } = new([new ComponentRegistrationContextFunction(Substitute.For<IMemberDescriptorMapper>())]);
 
-    protected ExpressionStringTemplate CreateSut() => new(Identifier, ExpressionStringEvaluatorMock, FormattableStringParserMock, ComponentRegistrationContext);
+    protected ExpressionStringTemplate CreateSut() => new(Identifier, ExpressionEvaluatorMock, ComponentRegistrationContext);
 
     public class Constructor : ExpressionStringTemplateTests
     {
@@ -20,30 +21,34 @@ public class ExpressionStringTemplateTests
         }
     }
 
-    public class Render : ExpressionStringTemplateTests
+    public class RenderAsync : ExpressionStringTemplateTests
     {
         [Fact]
-        public void Throws_On_Null_Builder()
+        public async Task Throws_On_Null_Builder()
         {
             // Arrange
             var sut = CreateSut();
+            var builder = new StringBuilder();
+            sut.Context = new TemplateEngineContext(new RenderTemplateRequest(new TemplateInstanceIdentifier(sut), builder), EngineMock, ComponentRegistryMock, sut);
 
             // Act & Assert
-            Action a = () => sut.Render(builder: null!, CancellationToken.None);
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("builder");
+            Task t =  sut.RenderAsync(builder: null!, CancellationToken.None);
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("builder");
         }
 
         [Fact]
         public async Task Return_Result_On_NonSuccesful_Result_From_FormattableStringParser()
         {
             // Arrange
-            ExpressionStringEvaluatorMock.Evaluate(Arg.Any<string>(), Arg.Any<ExpressionStringEvaluatorSettings>(), Arg.Any<TemplateFrameworkStringContext>(), Arg.Any<IFormattableStringParser>())
+            ExpressionEvaluatorMock
+                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(Result.Error<object?>("Kaboom!"));
             var sut = CreateSut();
             var builder = new StringBuilder();
+            sut.Context = new TemplateEngineContext(new RenderTemplateRequest(new TemplateInstanceIdentifier(sut), builder), EngineMock, ComponentRegistryMock, sut);
 
             // Act
-            var result = await sut.Render(builder, CancellationToken.None);
+            var result = await sut.RenderAsync(builder, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -54,13 +59,15 @@ public class ExpressionStringTemplateTests
         public async Task Appends_Result_From_ExpressionStringParser_To_Builder_On_Succesful_Result()
         {
             // Arrange
-            ExpressionStringEvaluatorMock.Evaluate(Arg.Any<string>(), Arg.Any<ExpressionStringEvaluatorSettings>(), Arg.Any<TemplateFrameworkStringContext>(), Arg.Any<IFormattableStringParser>())
+            ExpressionEvaluatorMock
+                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(Result.Success<object?>("Parse result"));
             var sut = CreateSut();
             var builder = new StringBuilder();
+            sut.Context = new TemplateEngineContext(new RenderTemplateRequest(new TemplateInstanceIdentifier(sut), builder), EngineMock, ComponentRegistryMock, sut);
 
             // Act
-            await sut.Render(builder, CancellationToken.None);
+            await sut.RenderAsync(builder, CancellationToken.None);
 
             // Assert
             builder.ToString().ShouldBe("Parse result");

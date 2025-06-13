@@ -17,18 +17,19 @@ internal static class TestData
 
         public string AdditionalParameter { get; set; } = "";
 
-        public Result SetParameter(string name, object? value)
-        {
-            if (name == nameof(AdditionalParameter))
+        public Task<Result> SetParameterAsync(string name, object? value, CancellationToken cancellationToken)
+            => Task.Run(() =>
             {
-                AdditionalParameter = value?.ToString() ?? string.Empty;
-                return Result.Success();
-            }
+                if (name == nameof(AdditionalParameter))
+                {
+                    AdditionalParameter = value?.ToString() ?? string.Empty;
+                    return Result.Success();
+                }
 
-            return Result.Continue();
-        }
+                return Result.Continue();
+            }, cancellationToken);
 
-        public Result<ITemplateParameter[]> GetParameters() => Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(AdditionalParameter), typeof(T?))]);
+        public Task<Result<ITemplateParameter[]>> GetParametersAsync(CancellationToken cancellationToken) => Task.Run(() => Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(AdditionalParameter), typeof(T?))]), cancellationToken);
 
         public override string ToString() => AdditionalParameter;
     }

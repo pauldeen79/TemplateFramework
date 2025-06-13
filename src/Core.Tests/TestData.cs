@@ -8,25 +8,26 @@ public sealed class PlainTemplateWithAdditionalParameters : IParameterizedTempla
     public Result<ITemplateParameter[]>? GetParametersReturnValue { get; set; }
 
 
-    public Result SetParameter(string name, object? value)
-    {
-        if (name == nameof(AdditionalParameter))
+    public Task<Result> SetParameterAsync(string name, object? value, CancellationToken cancellationToken) =>
+        Task.Run(() =>
         {
-            AdditionalParameter = value?.ToString() ?? string.Empty;
-            return SetParameterReturnValue;
-        }
+            if (name == nameof(AdditionalParameter))
+            {
+                AdditionalParameter = value?.ToString() ?? string.Empty;
+                return SetParameterReturnValue;
+            }
 
-        return Result.Continue();
-    }
+            return Result.Continue();
+        }, cancellationToken);
 
-    public Result<ITemplateParameter[]> GetParameters() => GetParametersReturnValue ?? Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(AdditionalParameter), typeof(string))]);
+    public Task<Result<ITemplateParameter[]>> GetParametersAsync(CancellationToken cancellationToken) => Task.Run(() => GetParametersReturnValue ?? Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(AdditionalParameter), typeof(string))]), cancellationToken);
 
     public override string ToString() => AdditionalParameter;
 }
 
 public sealed class TestTemplateComponentRegistryPlugin : ITemplateComponentRegistryPlugin
 {
-    public Task<Result> Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken)
+    public Task<Result> InitializeAsync(ITemplateComponentRegistry registry, CancellationToken cancellationToken)
     {
         return Task.FromResult(Result.Success());
     }
@@ -50,7 +51,7 @@ internal static class TestData
 
         public Template(Action<StringBuilder> @delegate) => _delegate = @delegate;
 
-        public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.FromResult(Result.Success()); }
+        public Task<Result> RenderAsync(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.FromResult(Result.Success()); }
     }
 
     internal sealed class TemplateWithModel<T> : IBuilderTemplate<StringBuilder>, IModelContainer<T>
@@ -61,7 +62,7 @@ internal static class TestData
 
         public TemplateWithModel(Action<StringBuilder> @delegate) => _delegate = @delegate;
 
-        public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.FromResult(Result.Success()); }
+        public Task<Result> RenderAsync(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.FromResult(Result.Success()); }
     }
 
     internal sealed class TemplateWithDefaultFilename : IBuilderTemplate<StringBuilder>, IDefaultFilenameContainer
@@ -72,7 +73,7 @@ internal static class TestData
 
         public string DefaultFilename { get; set; } = "";
 
-        public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.FromResult(Result.Success()); }
+        public Task<Result> RenderAsync(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.FromResult(Result.Success()); }
     }
 
     internal sealed class TemplateWithViewModel<T> : IBuilderTemplate<StringBuilder>, IParameterizedTemplate
@@ -83,20 +84,22 @@ internal static class TestData
 
         public TemplateWithViewModel(Action<StringBuilder> @delegate) => _delegate = @delegate;
 
-        public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.FromResult(Result.Success()); }
+        public Task<Result> RenderAsync(StringBuilder builder, CancellationToken cancellationToken) { _delegate(builder); return Task.FromResult(Result.Success()); }
 
-        public Result SetParameter(string name, object? value) // this is added in case of viewmodels which don't have a public parameterless constructor
-        {
-            if (name == nameof(ViewModel))
+        // this is added in case of viewmodels which don't have a public parameterless constructor
+        public Task<Result> SetParameterAsync(string name, object? value, CancellationToken cancellationToken)
+            => Task.Run(() =>
             {
-                ViewModel = (T?)value;
-                return Result.Success();
-            }
+                if (name == nameof(ViewModel))
+                {
+                    ViewModel = (T?)value;
+                    return Result.Success();
+                }
 
-            return Result.Continue();
-        }
+                return Result.Continue();
+            }, cancellationToken);
 
-        public Result<ITemplateParameter[]> GetParameters() => Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(ViewModel), typeof(T?))]);
+        public Task<Result<ITemplateParameter[]>> GetParametersAsync(CancellationToken cancellationToken) => Task.Run(() => Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(ViewModel), typeof(T?))]), cancellationToken);
     }
 
     internal sealed class MyViewModel<T> : IViewModel, IModelContainer<T>
@@ -115,18 +118,19 @@ internal static class TestData
 
         public string AdditionalParameter { get; set; } = "";
 
-        public Result SetParameter(string name, object? value)
-        {
-            if (name == nameof(AdditionalParameter))
+        public Task<Result> SetParameterAsync(string name, object? value, CancellationToken cancellationToken)
+            => Task.Run(() =>
             {
-                AdditionalParameter = value?.ToString() ?? string.Empty;
-                return Result.Success();
-            }
+                if (name == nameof(AdditionalParameter))
+                {
+                    AdditionalParameter = value?.ToString() ?? string.Empty;
+                    return Result.Success();
+                }
 
-            return Result.Continue();
-        }
+                return Result.Continue();
+            }, cancellationToken);
 
-        public Result<ITemplateParameter[]> GetParameters() => Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(AdditionalParameter), typeof(T?))]);
+        public Task<Result<ITemplateParameter[]>> GetParametersAsync(CancellationToken cancellationToken) => Task.Run(() => Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(AdditionalParameter), typeof(T?))]), cancellationToken);
 
         public override string ToString() => AdditionalParameter;
     }
@@ -148,7 +152,7 @@ internal static class TestData
 
         public TextTransformTemplate(Func<string> @delegate) => _delegate = @delegate;
 
-        public Task<string> TransformText(CancellationToken cancellationToken) => Task.FromResult(_delegate());
+        public Task<string> TransformTextAsync(CancellationToken cancellationToken) => Task.FromResult(_delegate());
     }
 
     /// <summary>
@@ -163,18 +167,19 @@ internal static class TestData
 
         public string Property { get; set; }
 
-        public Result SetParameter(string name, object? value)
-        {
-            if (name == nameof(Property))
+        public Task<Result> SetParameterAsync(string name, object? value, CancellationToken cancellationToken)
+            => Task.Run(() =>
             {
-                Property = value?.ToString() ?? string.Empty;
-                return Result.Success();
-            }
+                if (name == nameof(Property))
+                {
+                    Property = value?.ToString() ?? string.Empty;
+                    return Result.Success();
+                }
 
-            return Result.Continue();
-        }
+                return Result.Continue();
+            }, cancellationToken);
 
-        public Result<ITemplateParameter[]> GetParameters() => Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(Property), typeof(string))]);
+        public Task<Result<ITemplateParameter[]>> GetParametersAsync(CancellationToken cancellationToken) => Task.Run(() => Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(Property), typeof(string))]), cancellationToken);
     }
 
     internal sealed class PocoParameterizedTemplate

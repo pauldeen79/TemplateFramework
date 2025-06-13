@@ -2,5 +2,5 @@
 
 public interface ITemplateParameterExtractor
 {
-    Result<ITemplateParameter[]> Extract(object templateInstance);
+    Task<Result<ITemplateParameter[]>> ExtractAsync(object templateInstance, CancellationToken cancellationToken);
 }

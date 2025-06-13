@@ -1,6 +1,4 @@
-﻿using TemplateFramework.Core.BuilderTemplateRenderers;
-
-namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests;
+﻿namespace TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests;
 
 public class IntegrationTests : TestBase
 {
@@ -21,14 +19,15 @@ public class IntegrationTests : TestBase
         var template = new TestData.MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine(async (builder, context) =>
         {
             var identifier = new TemplateByNameIdentifier("MyTemplate");
-            await context.Engine.RenderChildTemplate(new MultipleStringContentBuilderEnvironment(builder), identifier, context, CancellationToken.None).ConfigureAwait(false);
+            await context.Engine.RenderChildTemplateAsync(new MultipleStringContentBuilderEnvironment(builder), identifier, context, CancellationToken.None).ConfigureAwait(false);
         });
         var generationEnvironment = new MultipleContentBuilder();
 
         // Act
-        await engine.Render(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), generationEnvironment), CancellationToken.None);
+        var result = await engine.RenderAsync(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), generationEnvironment), CancellationToken.None);
 
         // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
         generationEnvironment.Contents.Count().ShouldBe(1);
         generationEnvironment.Contents.Single().Builder.ToString().ShouldBe("Context IsRootContext: False");
     }
@@ -56,9 +55,10 @@ public class IntegrationTests : TestBase
         var generationEnvironment = new MultipleContentBuilder();
 
         // Act
-        await engine.Render(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), generationEnvironment), CancellationToken.None);
+        var result = await engine.RenderAsync(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), generationEnvironment), CancellationToken.None);
 
         // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
         generationEnvironment.Contents.Count().ShouldBe(1);
         generationEnvironment.Contents.Single().Builder.ToString().ShouldBe("Hello world!");
     }
@@ -84,9 +84,10 @@ public class IntegrationTests : TestBase
         var settings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        await engine.Generate(new CsharpClassGeneratorCodeGenerationProvider(), generationEnvironment, settings);
+        var result = await engine.GenerateAsync(new CsharpClassGeneratorCodeGenerationProvider(), generationEnvironment, settings);
 
         // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Count().ShouldBe(4);
     }
 
@@ -111,9 +112,10 @@ public class IntegrationTests : TestBase
         var model = new XDocumentTestModel("Item1", "Item2", "Item3");
 
         // Act
-        await engine.Render(new RenderTemplateRequest(new TemplateByNameIdentifier("XDocumentTemplate"), model, generationEnvironment, string.Empty, null, null), CancellationToken.None);
+        var result = await engine.RenderAsync(new RenderTemplateRequest(new TemplateByNameIdentifier("XDocumentTemplate"), model, generationEnvironment, string.Empty, null, null), CancellationToken.None);
 
         // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
         generationEnvironment.Builder.Document.ToString().ShouldBe(@"<MyRootElement processed=""true"">
   <subItems>
     <item>Item1</item>
@@ -139,7 +141,7 @@ public class IntegrationTests : TestBase
         var generationEnvironment = new MultipleContentBuilder();
 
         // Act & Assert
-        Task t = engine.Render(new RenderTemplateRequest(new TemplateByNameIdentifier("Unknown"), generationEnvironment), CancellationToken.None);
+        Task t = engine.RenderAsync(new RenderTemplateRequest(new TemplateByNameIdentifier("Unknown"), generationEnvironment), CancellationToken.None);
         (await t.ShouldThrowAsync<NotSupportedException>()).Message.ShouldBe("Template with name Unknown is not supported");
     }
 
@@ -159,7 +161,7 @@ public class IntegrationTests : TestBase
         var generationEnvironment = new MultipleContentBuilder();
 
         // Act & Assert
-        Task t = engine.Render(new RenderTemplateRequest(new TemplateByModelIdentifier("Unknown"), generationEnvironment), CancellationToken.None);
+        Task t = engine.RenderAsync(new RenderTemplateRequest(new TemplateByModelIdentifier("Unknown"), generationEnvironment), CancellationToken.None);
         (await t.ShouldThrowAsync<NotSupportedException>()).Message.ShouldBe("Model of type System.String is not supported");
     }
 }

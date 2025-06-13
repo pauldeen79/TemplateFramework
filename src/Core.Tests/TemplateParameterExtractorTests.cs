@@ -13,15 +13,15 @@ public class TemplateParameterExtractorTests
     public class Extract
     {
         [Theory, AutoMockData]
-        public void Throws_On_Null_TemplateInstance(TemplateParameterExtractor sut)
+        public async Task Throws_On_Null_TemplateInstance(TemplateParameterExtractor sut)
         {
             // Act & Assert
-            Action a = () => sut.Extract(templateInstance: null!);
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("templateInstance");
+            Task t = sut.ExtractAsync(templateInstance: null!, CancellationToken.None);
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("templateInstance");
         }
 
         [Theory, AutoMockData]
-        public void Returns_Empty_Result_On_Unsupported_Type(
+        public async Task Returns_Empty_Result_On_Unsupported_Type(
             [Frozen] ITemplateParameterExtractorComponent templateParameterExtractorComponent,
             TemplateParameterExtractor sut)
         {
@@ -29,7 +29,7 @@ public class TemplateParameterExtractorTests
             templateParameterExtractorComponent.Supports(Arg.Any<object>()).Returns(false);
 
             // Act
-            var result = sut.Extract(templateInstance: new object());
+            var result = await sut.ExtractAsync(templateInstance: new object(), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
@@ -37,18 +37,18 @@ public class TemplateParameterExtractorTests
         }
 
         [Fact]
-        public void Returns_Result_From_Component_On_Supported_Type()
+        public async Task Returns_Result_From_Component_On_Supported_Type()
         {
             // Arrange
             var template = new object();
             var templateParameterExtractorComponent = Substitute.For<ITemplateParameterExtractorComponent>();
             var parametersResult = Result.Success<ITemplateParameter[]>([new TemplateParameter("name", typeof(string))]);
             templateParameterExtractorComponent.Supports(template).Returns(true);
-            templateParameterExtractorComponent.Extract(template).Returns(parametersResult);
+            templateParameterExtractorComponent.ExtractAsync(template, Arg.Any<CancellationToken>()).Returns(parametersResult);
             var sut = new TemplateParameterExtractor([templateParameterExtractorComponent]);
 
             // Act
-            var result = sut.Extract(template);
+            var result = await sut.ExtractAsync(template, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

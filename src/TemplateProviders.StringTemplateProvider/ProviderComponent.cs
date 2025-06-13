@@ -2,21 +2,17 @@
 
 public class ProviderComponent : ITemplateProviderComponent, ISessionAwareComponent
 {
-    private readonly IExpressionStringEvaluator _expressionStringEvaluator;
-    private readonly IFormattableStringParser _formattableStringParser;
+    private readonly IExpressionEvaluator _expressionEvaluator;
     private readonly ComponentRegistrationContext _componentRegistrationContext;
 
     public ProviderComponent(
-        IExpressionStringEvaluator expressionStringEvaluator,
-        IFormattableStringParser formattableStringParser,
+        IExpressionEvaluator expressionEvaluator,
         ComponentRegistrationContext componentRegistrationContext)
     {
-        Guard.IsNotNull(expressionStringEvaluator);
-        Guard.IsNotNull(formattableStringParser);
+        Guard.IsNotNull(expressionEvaluator);
         Guard.IsNotNull(componentRegistrationContext);
 
-        _expressionStringEvaluator = expressionStringEvaluator;
-        _formattableStringParser = formattableStringParser;
+        _expressionEvaluator = expressionEvaluator;
         _componentRegistrationContext = componentRegistrationContext;
     }
 
@@ -28,11 +24,11 @@ public class ProviderComponent : ITemplateProviderComponent, ISessionAwareCompon
 
         if (identifier is ExpressionStringTemplateIdentifier expressionStringTemplateIdentifier)
         {
-            return new ExpressionStringTemplate(expressionStringTemplateIdentifier, _expressionStringEvaluator, _formattableStringParser, _componentRegistrationContext);
+            return new ExpressionStringTemplate(expressionStringTemplateIdentifier, _expressionEvaluator, _componentRegistrationContext);
         }
         else if (identifier is FormattableStringTemplateIdentifier formattableStringTemplateIdentifier)
         {
-            return new FormattableStringTemplate(formattableStringTemplateIdentifier, _formattableStringParser, _componentRegistrationContext);
+            return new FormattableStringTemplate(formattableStringTemplateIdentifier, _expressionEvaluator, _componentRegistrationContext);
         }
         else
         {
@@ -40,9 +36,9 @@ public class ProviderComponent : ITemplateProviderComponent, ISessionAwareCompon
         }
     }
 
-    public Task<Result> StartSession(CancellationToken cancellationToken)
+    public Task<Result> StartSessionAsync(CancellationToken cancellationToken)
     {
-        _componentRegistrationContext.Placeholders.Clear();
+        _componentRegistrationContext.Expressions.Clear();
         _componentRegistrationContext.ClearFunctions();
 
         return Task.FromResult(Result.Success());

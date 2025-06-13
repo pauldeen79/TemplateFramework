@@ -17,19 +17,19 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
     private readonly ITemplateFactory _templateFactory;
     private readonly ITemplateProvider _templateProvider;
 
-    public async Task<Result> Generate(ICodeGenerationProvider codeGenerationProvider, IGenerationEnvironment generationEnvironment, ICodeGenerationSettings settings, CancellationToken cancellationToken)
+    public async Task<Result> GenerateAsync(ICodeGenerationProvider codeGenerationProvider, IGenerationEnvironment generationEnvironment, ICodeGenerationSettings settings, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(codeGenerationProvider);
         Guard.IsNotNull(generationEnvironment);
         Guard.IsNotNull(settings);
 
         var results = await new AsyncResultDictionaryBuilder()
-            .Add(nameof(ITemplateProvider.StartSession), _templateProvider.StartSession(cancellationToken))
-            .Add(nameof(ITemplateComponentRegistryPlugin.Initialize), codeGenerationProvider is ITemplateComponentRegistryPlugin x
-                ? x.Initialize(_templateProvider, cancellationToken)
+            .Add(nameof(ITemplateProvider.StartSessionAsync), _templateProvider.StartSessionAsync(cancellationToken))
+            .Add(nameof(ITemplateComponentRegistryPlugin.InitializeAsync), codeGenerationProvider is ITemplateComponentRegistryPlugin x
+                ? x.InitializeAsync(_templateProvider, cancellationToken)
                 : Task.FromResult(Result.Continue()))
-            .Add(nameof(ICodeGenerationProvider.CreateModel), codeGenerationProvider.CreateModel(cancellationToken))
-            .Add(nameof(ICodeGenerationProvider.CreateAdditionalParameters), codeGenerationProvider.CreateAdditionalParameters(cancellationToken))
+            .Add(nameof(ICodeGenerationProvider.CreateModelAsync), codeGenerationProvider.CreateModelAsync(cancellationToken))
+            .Add(nameof(ICodeGenerationProvider.CreateAdditionalParametersAsync), codeGenerationProvider.CreateAdditionalParametersAsync(cancellationToken))
             .Build()
             .ConfigureAwait(false);
 
@@ -41,10 +41,10 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
             return error;
         }
 
-        var modelResult = results[nameof(ICodeGenerationProvider.CreateModel)];
-        var additionalParametersResult = results[nameof(ICodeGenerationProvider.CreateAdditionalParameters)];
+        var modelResult = results[nameof(ICodeGenerationProvider.CreateModelAsync)];
+        var additionalParametersResult = results[nameof(ICodeGenerationProvider.CreateAdditionalParametersAsync)];
 
-        var result = await _templateEngine.Render(
+        var result = await _templateEngine.RenderAsync(
             new RenderTemplateRequest
             (
                 identifier: new TemplateTypeIdentifier(codeGenerationProvider.GetGeneratorType(), _templateFactory),
@@ -62,7 +62,7 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
 
         if (!settings.DryRun)
         {
-            return await generationEnvironment.SaveContents(codeGenerationProvider, settings.BasePath, settings.DefaultFilename, cancellationToken).ConfigureAwait(false);
+            return await generationEnvironment.SaveContentsAsync(codeGenerationProvider, settings.BasePath, settings.DefaultFilename, cancellationToken).ConfigureAwait(false);
         }
 
         return result;

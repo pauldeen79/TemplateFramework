@@ -2,4 +2,5 @@
 
 public interface ITemplateInitializerComponent : ITemplateInitializer
 {
+    int Order { get; }
 }

@@ -1,57 +1,69 @@
 ﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider;
 
-public class FormattableStringTemplate : IParameterizedTemplate, IBuilderTemplate<StringBuilder>
+public class FormattableStringTemplate : IParameterizedTemplate, IBuilderTemplate<StringBuilder>, ITemplateEngineContextContainer
 {
+    public ITemplateEngineContext Context { get; set; }
+
     private readonly FormattableStringTemplateIdentifier _formattableStringTemplateIdentifier;
-    private readonly IFormattableStringParser _formattableStringParser;
+    private readonly IExpressionEvaluator _expressionEvaluator;
     private readonly ComponentRegistrationContext _componentRegistrationContext;
-    private readonly Dictionary<string, object?> _parametersDictionary;
 
     public FormattableStringTemplate(
         FormattableStringTemplateIdentifier formattableStringTemplateIdentifier,
-        IFormattableStringParser formattableStringParser,
+        IExpressionEvaluator expressionEvaluator,
         ComponentRegistrationContext componentRegistrationContext)
     {
         Guard.IsNotNull(formattableStringTemplateIdentifier);
-        Guard.IsNotNull(formattableStringParser);
+        Guard.IsNotNull(expressionEvaluator);
         Guard.IsNotNull(componentRegistrationContext);
 
         _formattableStringTemplateIdentifier = formattableStringTemplateIdentifier;
-        _formattableStringParser = formattableStringParser;
+        _expressionEvaluator = expressionEvaluator;
         _componentRegistrationContext = componentRegistrationContext;
 
-        _parametersDictionary = [];
+        Context = default!; // furhter on in the process, this will get filled
     }
 
-    public Result<ITemplateParameter[]> GetParameters()
+    public async Task<Result<ITemplateParameter[]>> GetParametersAsync(CancellationToken cancellationToken)
     {
-        var context = new TemplateFrameworkStringContext(_parametersDictionary, _componentRegistrationContext, true);
+        Guard.IsNotNull(Context);
 
-        _ = _formattableStringParser.Parse(_formattableStringTemplateIdentifier.Template, _formattableStringTemplateIdentifier.FormatProvider, context);
+        var templateFrameworkStringContext = new TemplateFrameworkStringContext(Context.ParametersDictionary, _componentRegistrationContext, true);
 
-        return Result.Success<ITemplateParameter[]>(context.ParameterNamesList
+        var result = await _expressionEvaluator.ParseAsync("$\"" + _formattableStringTemplateIdentifier.Template + "\"", new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(_formattableStringTemplateIdentifier.FormatProvider), new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success<object?>(templateFrameworkStringContext)) } }, cancellationToken).ConfigureAwait(false);
+        if (!result.IsSuccessful())
+        {
+            return Result.FromExistingResult<ITemplateParameter[]>(result);
+        }
+
+        return Result.Success<ITemplateParameter[]>(templateFrameworkStringContext.ParameterNamesList
             .Select(x => new TemplateParameter(x, typeof(string)))
             .ToArray());
     }
 
-    public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
+    public async Task<Result> RenderAsync(StringBuilder builder, CancellationToken cancellationToken)
     {
+        Guard.IsNotNull(Context);
         Guard.IsNotNull(builder);
 
-        var context = new TemplateFrameworkStringContext(_parametersDictionary, _componentRegistrationContext, false);
-        var result = _formattableStringParser.Parse(_formattableStringTemplateIdentifier.Template, _formattableStringTemplateIdentifier.FormatProvider, context);
+        var templateFrameworkStringContext = new TemplateFrameworkStringContext(Context.ParametersDictionary, _componentRegistrationContext, false);
+        var result = await _expressionEvaluator.EvaluateTypedAsync<GenericFormattableString>("$\"" + _formattableStringTemplateIdentifier.Template + "\"", new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(_formattableStringTemplateIdentifier.FormatProvider), new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success<object?>(templateFrameworkStringContext)) } }, cancellationToken).ConfigureAwait(false);
 
         if (result.IsSuccessful() && result.Value is not null)
         {
             builder.Append(result.Value.ToString(_formattableStringTemplateIdentifier.FormatProvider));
         }
 
-        return Task.FromResult((Result)result);
+        return result;
     }
 
-    public Result SetParameter(string name, object? value)
-    {
-        _parametersDictionary[name] = value;
-        return Result.Success();
-    }
+    public Task<Result> SetParameterAsync(string name, object? value, CancellationToken cancellationToken)
+        => Task.Run(() =>
+        {
+            Guard.IsNotNull(Context);
+
+            Context.ParametersDictionary[name] = value;
+
+            return Result.Success();
+        }, cancellationToken);
 }

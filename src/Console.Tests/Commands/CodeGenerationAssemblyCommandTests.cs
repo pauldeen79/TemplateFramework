@@ -39,7 +39,7 @@ public class CodeGenerationAssemblyCommandTests : TestBase<CodeGenerationAssembl
         }
     }
 
-    public class ExecuteComand : CodeGenerationAssemblyCommandTests
+    public class ExecuteComandAsync : CodeGenerationAssemblyCommandTests
     {
         [Fact]
         public async Task Empty_AssemblyName_Results_In_Error()
@@ -48,7 +48,7 @@ public class CodeGenerationAssemblyCommandTests : TestBase<CodeGenerationAssembl
             var sut = CreateSut();
 
             // Act
-            var output = await CommandLineCommandHelper.ExecuteCommand(sut);
+            var output = await CommandLineCommandHelper.ExecuteCommandAsync(sut);
 
             // Assert
             output.ShouldBe("Error: Assembly name is required." + Environment.NewLine);
@@ -62,10 +62,10 @@ public class CodeGenerationAssemblyCommandTests : TestBase<CodeGenerationAssembl
             var sut = CreateSut();
 
             // Act
-            _ = await CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}");
+            _ = await CommandLineCommandHelper.ExecuteCommandAsync(sut, $"--name {GetType().Assembly.FullName}");
 
             // Assert
-            await codeGenerationAssembly.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.CurrentDirectory == Directory.GetCurrentDirectory()), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>());
+            await codeGenerationAssembly.Received().GenerateAsync(Arg.Is<ICodeGenerationAssemblySettings>(x => x.CurrentDirectory == Directory.GetCurrentDirectory()), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>());
         }
 
         [Fact]
@@ -76,10 +76,10 @@ public class CodeGenerationAssemblyCommandTests : TestBase<CodeGenerationAssembl
             var sut = CreateSut();
 
             // Act
-            _ = await CommandLineCommandHelper.ExecuteCommand(sut, $"--name {Path.Combine(TestData.BasePath, "myassembly.dll")}");
+            _ = await CommandLineCommandHelper.ExecuteCommandAsync(sut, $"--name {Path.Combine(TestData.BasePath, "myassembly.dll")}");
 
             // Assert
-            await codeGenerationAssembly.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.CurrentDirectory == TestData.BasePath), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>());
+            await codeGenerationAssembly.Received().GenerateAsync(Arg.Is<ICodeGenerationAssemblySettings>(x => x.CurrentDirectory == TestData.BasePath), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>());
         }
 
         [Fact]
@@ -90,10 +90,10 @@ public class CodeGenerationAssemblyCommandTests : TestBase<CodeGenerationAssembl
             var sut = CreateSut();
 
             // Act
-            _ = await CommandLineCommandHelper.ExecuteCommand(sut, $"--name {Path.Combine(TestData.BasePath, "myassembly.dll")}", "--directory something");
+            _ = await CommandLineCommandHelper.ExecuteCommandAsync(sut, $"--name {Path.Combine(TestData.BasePath, "myassembly.dll")}", "--directory something");
 
             // Assert
-            await codeGenerationAssembly.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.CurrentDirectory == "something"), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>());
+            await codeGenerationAssembly.Received().GenerateAsync(Arg.Is<ICodeGenerationAssemblySettings>(x => x.CurrentDirectory == "something"), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>());
         }
 
         [Fact]
@@ -104,10 +104,10 @@ public class CodeGenerationAssemblyCommandTests : TestBase<CodeGenerationAssembl
             var sut = CreateSut();
 
             // Act
-            _ = await CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", $"--path {TestData.BasePath}");
+            _ = await CommandLineCommandHelper.ExecuteCommandAsync(sut, $"--name {GetType().Assembly.FullName}", $"--path {TestData.BasePath}");
 
             // Assert
-            await codeGenerationAssembly.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.BasePath == TestData.BasePath), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>());
+            await codeGenerationAssembly.Received().GenerateAsync(Arg.Is<ICodeGenerationAssemblySettings>(x => x.BasePath == TestData.BasePath), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>());
         }
 
         [Fact]
@@ -118,10 +118,10 @@ public class CodeGenerationAssemblyCommandTests : TestBase<CodeGenerationAssembl
             var sut = CreateSut();
 
             // Act
-            _ = await CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}");
+            _ = await CommandLineCommandHelper.ExecuteCommandAsync(sut, $"--name {GetType().Assembly.FullName}");
 
             // Assert
-            await codeGenerationAssembly.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.BasePath == string.Empty), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>());
+            await codeGenerationAssembly.Received().GenerateAsync(Arg.Is<ICodeGenerationAssemblySettings>(x => x.BasePath == string.Empty), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>());
         }
 
         [Fact]
@@ -132,10 +132,10 @@ public class CodeGenerationAssemblyCommandTests : TestBase<CodeGenerationAssembl
             var sut = CreateSut();
 
             // Act
-            _ = await CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--default MyFile.txt");
+            _ = await CommandLineCommandHelper.ExecuteCommandAsync(sut, $"--name {GetType().Assembly.FullName}", "--default MyFile.txt");
 
             // Assert
-            await codeGenerationAssembly.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.DefaultFilename == "MyFile.txt"), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>());
+            await codeGenerationAssembly.Received().GenerateAsync(Arg.Is<ICodeGenerationAssemblySettings>(x => x.DefaultFilename == "MyFile.txt"), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>());
         }
 
         [Fact]
@@ -146,10 +146,10 @@ public class CodeGenerationAssemblyCommandTests : TestBase<CodeGenerationAssembl
             var sut = CreateSut();
 
             // Act
-            _ = await CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}");
+            _ = await CommandLineCommandHelper.ExecuteCommandAsync(sut, $"--name {GetType().Assembly.FullName}");
 
             // Assert
-            await codeGenerationAssembly.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.DefaultFilename == string.Empty), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>());
+            await codeGenerationAssembly.Received().GenerateAsync(Arg.Is<ICodeGenerationAssemblySettings>(x => x.DefaultFilename == string.Empty), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>());
         }
 
         [Fact]
@@ -160,10 +160,10 @@ public class CodeGenerationAssemblyCommandTests : TestBase<CodeGenerationAssembl
             var sut = CreateSut();
 
             // Act
-            _ = await CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--dryrun");
+            _ = await CommandLineCommandHelper.ExecuteCommandAsync(sut, $"--name {GetType().Assembly.FullName}", "--dryrun");
 
             // Assert
-            await codeGenerationAssembly.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.DryRun), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>());
+            await codeGenerationAssembly.Received().GenerateAsync(Arg.Is<ICodeGenerationAssemblySettings>(x => x.DryRun), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>());
         }
 
         [Fact]
@@ -174,10 +174,10 @@ public class CodeGenerationAssemblyCommandTests : TestBase<CodeGenerationAssembl
             var sut = CreateSut();
 
             // Act
-            _ = await CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--clipboard");
+            _ = await CommandLineCommandHelper.ExecuteCommandAsync(sut, $"--name {GetType().Assembly.FullName}", "--clipboard");
 
             // Assert
-            await codeGenerationAssembly.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.DryRun), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>());
+            await codeGenerationAssembly.Received().GenerateAsync(Arg.Is<ICodeGenerationAssemblySettings>(x => x.DryRun), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>());
         }
 
         [Fact]
@@ -188,10 +188,10 @@ public class CodeGenerationAssemblyCommandTests : TestBase<CodeGenerationAssembl
             var sut = CreateSut();
 
             // Act
-            _ = await CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--clipboard", "--dryrun");
+            _ = await CommandLineCommandHelper.ExecuteCommandAsync(sut, $"--name {GetType().Assembly.FullName}", "--clipboard", "--dryrun");
 
             // Assert
-            await codeGenerationAssembly.Received().Generate(Arg.Is<ICodeGenerationAssemblySettings>(x => x.DryRun), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>());
+            await codeGenerationAssembly.Received().GenerateAsync(Arg.Is<ICodeGenerationAssemblySettings>(x => x.DryRun), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>());
         }
 
         [Fact]
@@ -201,7 +201,7 @@ public class CodeGenerationAssemblyCommandTests : TestBase<CodeGenerationAssembl
             var sut = CreateSut();
 
             // Act
-            var output = await CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", $"--path {TestData.BasePath}");
+            var output = await CommandLineCommandHelper.ExecuteCommandAsync(sut, $"--name {GetType().Assembly.FullName}", $"--path {TestData.BasePath}");
 
             // Assert
             output.ShouldBe("Written code generation output to path: " + TestData.BasePath + Environment.NewLine);
@@ -214,7 +214,7 @@ public class CodeGenerationAssemblyCommandTests : TestBase<CodeGenerationAssembl
             var sut = CreateSut();
 
             // Act
-            var output = await CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}");
+            var output = await CommandLineCommandHelper.ExecuteCommandAsync(sut, $"--name {GetType().Assembly.FullName}");
 
             // Assert
             output.ShouldBe("Written code generation output to path: " + Directory.GetCurrentDirectory() + Environment.NewLine);
@@ -227,7 +227,7 @@ public class CodeGenerationAssemblyCommandTests : TestBase<CodeGenerationAssembl
             var sut = CreateSut();
 
             // Act
-            var output = await CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--bare");
+            var output = await CommandLineCommandHelper.ExecuteCommandAsync(sut, $"--name {GetType().Assembly.FullName}", "--bare");
 
             // Assert
             output.ShouldBeEmpty();
@@ -242,14 +242,14 @@ public class CodeGenerationAssemblyCommandTests : TestBase<CodeGenerationAssembl
             var sut = CreateSut();
 
             // Arrange
-            codeGenerationAssembly.When(x => x.Generate(Arg.Any<ICodeGenerationAssemblySettings>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>()))
+            codeGenerationAssembly.When(x => x.GenerateAsync(Arg.Any<ICodeGenerationAssemblySettings>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>()))
                                   .Do(args =>
                                   {
                                       var x = args.ArgAt<MultipleContentBuilderEnvironment<StringBuilder>>(1);
                                       x.Builder.AddContent("MyFile.txt").Builder.Append("Hello!");
                                   });
             // Act
-            _ = await CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--clipboard");
+            _ = await CommandLineCommandHelper.ExecuteCommandAsync(sut, $"--name {GetType().Assembly.FullName}", "--clipboard");
 
             // Assert
             await clipboardMock.Received().SetTextAsync(@"MyFile.txt:
@@ -264,7 +264,7 @@ Hello!
             var sut = CreateSut();
 
             // Act
-            var output = await CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--clipboard");
+            var output = await CommandLineCommandHelper.ExecuteCommandAsync(sut, $"--name {GetType().Assembly.FullName}", "--clipboard");
 
             // Assert
             output.ShouldBe("Copied code generation output to clipboard" + Environment.NewLine);
@@ -277,7 +277,7 @@ Hello!
             var sut = CreateSut();
 
             // Act
-            var output = await CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--clipboard", "--bare");
+            var output = await CommandLineCommandHelper.ExecuteCommandAsync(sut, $"--name {GetType().Assembly.FullName}", "--clipboard", "--bare");
 
             // Assert
             output.ShouldBeEmpty();
@@ -291,7 +291,7 @@ Hello!
             var sut = CreateSut();
 
             // Arrange
-            codeGenerationAssembly.When(x => x.Generate(Arg.Any<ICodeGenerationAssemblySettings>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>()))
+            codeGenerationAssembly.When(x => x.GenerateAsync(Arg.Any<ICodeGenerationAssemblySettings>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>()))
                                   .Do(args =>
                                   {
                                       var x = args.ArgAt<MultipleContentBuilderEnvironment<StringBuilder>>(1);
@@ -299,7 +299,7 @@ Hello!
                                   });
 
             // Act
-            var output = await CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--dryrun");
+            var output = await CommandLineCommandHelper.ExecuteCommandAsync(sut, $"--name {GetType().Assembly.FullName}", "--dryrun");
 
             // Assert
             output.ShouldBe("Code generation output:" + Environment.NewLine + @"MyFile.txt:
@@ -312,7 +312,7 @@ Hello!
         {
             // Arrange
             var codeGenerationAssembly = Fixture.Freeze<ICodeGenerationAssembly>();
-            codeGenerationAssembly.When(x => x.Generate(Arg.Any<ICodeGenerationAssemblySettings>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>()))
+            codeGenerationAssembly.When(x => x.GenerateAsync(Arg.Any<ICodeGenerationAssemblySettings>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<CancellationToken>()))
                                   .Do(args =>
                                   {
                                       var x = args.ArgAt<MultipleContentBuilderEnvironment<StringBuilder>>(1);
@@ -321,7 +321,7 @@ Hello!
             var sut = CreateSut();
 
             // Act
-            var output = await CommandLineCommandHelper.ExecuteCommand(sut, $"--name {GetType().Assembly.FullName}", "--dryrun", $"--path {TestData.BasePath}");
+            var output = await CommandLineCommandHelper.ExecuteCommandAsync(sut, $"--name {GetType().Assembly.FullName}", "--dryrun", $"--path {TestData.BasePath}");
 
             // Assert
             output.ShouldBe("Code generation output:" + Environment.NewLine + @$"{Path.Combine(TestData.BasePath, "MyFile.txt")}:

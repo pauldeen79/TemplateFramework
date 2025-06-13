@@ -1,15 +1,15 @@
 ﻿namespace TemplateFramework.TemplateProviders.StringTemplateProvider;
 
-public class ComponentRegistrationContextFunction : IDynamicDescriptorsFunction
+public class ComponentRegistrationContextFunction : IDynamicDescriptorsProvider, IFunction
 {
     private readonly List<IFunction> _functions = new();
-    private readonly IFunctionDescriptorMapper _functionDescriptorMapper;
+    private readonly IMemberDescriptorMapper _memberDescriptorMapper;
 
-    public ComponentRegistrationContextFunction(IFunctionDescriptorMapper functionDescriptorMapper)
+    public ComponentRegistrationContextFunction(IMemberDescriptorMapper memberDescriptorMapper)
     {
-        Guard.IsNotNull(functionDescriptorMapper);
+        Guard.IsNotNull(memberDescriptorMapper);
 
-        _functionDescriptorMapper = functionDescriptorMapper;
+        _memberDescriptorMapper = memberDescriptorMapper;
     }
 
     public void AddFunction(IFunction function)
@@ -24,13 +24,19 @@ public class ComponentRegistrationContextFunction : IDynamicDescriptorsFunction
         _functions.Clear();
     }
 
-    public Result<object?> Evaluate(FunctionCallContext context)
+    public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
     {
         Guard.IsNotNull(context);
 
-        foreach (var function in _functions.Where(x => _functionDescriptorMapper.Map(x, x.GetType()).Any(y => y.Name.Equals(context.FunctionCall.Name, StringComparison.OrdinalIgnoreCase))))
+        var descriptorsResult = GetDescriptors();
+        if (!descriptorsResult.IsSuccessful())
         {
-            var result = function.Evaluate(context);
+            return descriptorsResult;
+        }
+
+        foreach (var function in _functions.Where(x => descriptorsResult.Value!.Any(y => y.Name.Equals(context.FunctionCall.Name, StringComparison.OrdinalIgnoreCase))))
+        {
+            var result = await function.EvaluateAsync(context, token).ConfigureAwait(false);
             if (result.Status != ResultStatus.Continue)
             {
                 return result;
@@ -40,8 +46,21 @@ public class ComponentRegistrationContextFunction : IDynamicDescriptorsFunction
         return Result.NotSupported<object?>($"Unknown function: {context.FunctionCall.Name}");
     }
 
-    public IEnumerable<FunctionDescriptor> GetDescriptors()
+    public Result<IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptor>> GetDescriptors()
     {
-        return _functions.SelectMany(x => _functionDescriptorMapper.Map(x, GetType())).ToArray();
+        var items = new List<CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptor>();
+
+        foreach (var function in _functions)
+        {
+            var result = _memberDescriptorMapper.Map(function, GetType());
+            if (!result.EnsureValue().IsSuccessful())
+            {
+                return result;
+            }
+
+            items.AddRange(result.Value!);
+        }
+
+        return Result.Success<IReadOnlyCollection<CrossCutting.Utilities.ExpressionEvaluator.MemberDescriptor>>(items);
     }
 }

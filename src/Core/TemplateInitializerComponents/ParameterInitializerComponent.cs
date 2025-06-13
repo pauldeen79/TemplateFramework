@@ -11,23 +11,25 @@ public class ParameterInitializerComponent : ITemplateInitializerComponent
         _converter = converter;
     }
 
-    public async Task<Result> Initialize(ITemplateEngineContext context, CancellationToken cancellationToken)
+    public int Order => 5;
+
+    public async Task<Result> InitializeAsync(ITemplateEngineContext context, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(context);
         Guard.IsNotNull(context.Template);
 
         if (context.Template is IParameterizedTemplate parameterizedTemplate)
         {
-            return SetTyped(context, parameterizedTemplate);
+            return await SetTyped(context, parameterizedTemplate, cancellationToken).ConfigureAwait(false);
         }
 
-        return await TrySetProperties(context).ConfigureAwait(false);
+        return await TrySetProperties(context, cancellationToken).ConfigureAwait(false);
     }
 
-    private Result SetTyped(ITemplateEngineContext context, IParameterizedTemplate parameterizedTemplate)
+    private async Task<Result> SetTyped(ITemplateEngineContext context, IParameterizedTemplate parameterizedTemplate, CancellationToken cancellationToken)
     {
         var session = context.AdditionalParameters.ToKeyValuePairs();
-        var result = parameterizedTemplate.GetParameters();
+        var result = await parameterizedTemplate.GetParametersAsync(cancellationToken).ConfigureAwait(false);
         if (!result.IsSuccessful())
         {
             return result;
@@ -41,7 +43,7 @@ public class ParameterInitializerComponent : ITemplateInitializerComponent
                 continue;
             }
 
-            var setParametersResult = parameterizedTemplate.SetParameter(item.Key, _converter.Convert(item.Value, parameter.Type, context));
+            var setParametersResult = await parameterizedTemplate.SetParameterAsync(item.Key, _converter.Convert(item.Value, parameter.Type, context), cancellationToken).ConfigureAwait(false);
             if (!setParametersResult.IsSuccessful())
             {
                 return setParametersResult;
@@ -51,10 +53,10 @@ public class ParameterInitializerComponent : ITemplateInitializerComponent
         return Result.Success();
     }
 
-    private async Task<Result> TrySetProperties(ITemplateEngineContext context)
+    private async Task<Result> TrySetProperties(ITemplateEngineContext context, CancellationToken cancellationToken)
     {
         var session = context.AdditionalParameters.ToKeyValuePairs();
-        var result = await context.Engine.GetParameters(context.Template!).ConfigureAwait(false);
+        var result = await context.Engine.GetParametersAsync(context.Template!, cancellationToken).ConfigureAwait(false);
         if (!result.IsSuccessful())
         {
             return result;

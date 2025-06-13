@@ -11,13 +11,13 @@ public class TemplateEngineExtensionsTests
             var templateEngine = Substitute.For<ITemplateEngine>();
             var generationEnvironment = Substitute.For<IGenerationEnvironment>();
             IEnumerable childModels = new object[] { new object(), new object(), new object() };
-            templateEngine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
+            templateEngine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
 
             // Act
             await templateEngine.RenderChildTemplates(childModels, generationEnvironment, CancellationToken.None);
 
             // Assert
-            await templateEngine.Received(3).Render(Arg.Any<IRenderTemplateRequest>(), CancellationToken.None);
+            await templateEngine.Received(3).RenderAsync(Arg.Any<IRenderTemplateRequest>(), CancellationToken.None);
         }
 
         [Fact]
@@ -28,13 +28,13 @@ public class TemplateEngineExtensionsTests
             var generationEnvironment = Substitute.For<IGenerationEnvironment>();
             var templateContext = Substitute.For<ITemplateContext>();
             IEnumerable childModels = new object[] { new object(), new object(), new object() };
-            templateEngine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
+            templateEngine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
 
             // Act
             await templateEngine.RenderChildTemplates(childModels, generationEnvironment, templateContext, CancellationToken.None);
 
             // Assert
-            await templateEngine.Received(3).Render(Arg.Any<IRenderTemplateRequest>(), CancellationToken.None);
+            await templateEngine.Received(3).RenderAsync(Arg.Any<IRenderTemplateRequest>(), CancellationToken.None);
         }
     }
 
@@ -52,7 +52,7 @@ public class TemplateEngineExtensionsTests
             await templateEngine.RenderChildTemplate(childModel, generationEnvironment, CancellationToken.None);
 
             // Assert
-            await templateEngine.Received(1).Render(Arg.Any<IRenderTemplateRequest>(), CancellationToken.None);
+            await templateEngine.Received(1).RenderAsync(Arg.Any<IRenderTemplateRequest>(), CancellationToken.None);
         }
 
         [Fact]
@@ -68,7 +68,7 @@ public class TemplateEngineExtensionsTests
             await templateEngine.RenderChildTemplate(childModel, generationEnvironment, templateContext, CancellationToken.None);
 
             // Assert
-            await templateEngine.Received(1).Render(Arg.Any<IRenderTemplateRequest>(), CancellationToken.None);
+            await templateEngine.Received(1).RenderAsync(Arg.Any<IRenderTemplateRequest>(), CancellationToken.None);
         }
     }
 }

@@ -24,14 +24,14 @@ public sealed class TemplateEngine : ITemplateEngine
         _renderers = renderers;
     }
 
-    public Task<Result<ITemplateParameter[]>> GetParameters(object templateInstance)
+    public async Task<Result<ITemplateParameter[]>> GetParametersAsync(object templateInstance, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(templateInstance);
 
-        return Task.FromResult(_parameterExtractor.Extract(templateInstance));
+        return await _parameterExtractor.ExtractAsync(templateInstance, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<Result> Render(IRenderTemplateRequest request, CancellationToken cancellationToken)
+    public async Task<Result> RenderAsync(IRenderTemplateRequest request, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(request);
 
@@ -47,7 +47,7 @@ public sealed class TemplateEngine : ITemplateEngine
 
         var engineContext = new TemplateEngineContext(request, this, _provider, template);
 
-        var result = await _initializer.Initialize(engineContext, cancellationToken).ConfigureAwait(false);
+        var result = await _initializer.InitializeAsync(engineContext, cancellationToken).ConfigureAwait(false);
         if (!result.IsSuccessful())
         {
             return result;
@@ -59,6 +59,6 @@ public sealed class TemplateEngine : ITemplateEngine
             return Result.NotSupported($"Type of GenerationEnvironment ({request.GenerationEnvironment.GetType().FullName}) is not supported");
         }
 
-        return await renderer.Render(engineContext, cancellationToken).ConfigureAwait(false);
+        return await renderer.RenderAsync(engineContext, cancellationToken).ConfigureAwait(false);
     }
 }

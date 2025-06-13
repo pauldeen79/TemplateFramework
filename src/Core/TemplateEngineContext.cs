@@ -11,6 +11,7 @@ public class TemplateEngineContext : ITemplateEngineContext
     public object? Template { get; }
     public ITemplateEngine Engine { get; }
     public ITemplateComponentRegistry ComponentRegistry { get; }
+    public IDictionary<string, object?> ParametersDictionary { get; }
 
     public TemplateEngineContext(IRenderTemplateRequest request, ITemplateEngine engine, ITemplateComponentRegistry componentRegistry, object template)
     {
@@ -28,5 +29,6 @@ public class TemplateEngineContext : ITemplateEngineContext
         Engine = engine;
         ComponentRegistry = componentRegistry;
         Template = template;
+        ParametersDictionary = new Dictionary<string, object?>();
     }
 }

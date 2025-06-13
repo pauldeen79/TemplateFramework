@@ -16,7 +16,7 @@ public static class Program
         var dynamicTemplateFactory = new ServiceProviderCompiledTemplateFactory();
         var dynamicComponentRegistryPluginFactory = new ServiceProviderTemplateComponentRegistryPluginFactory();
         var serviceCollection = new ServiceCollection()
-            .AddParsers()
+            .AddExpressionEvaluator()
             .AddTemplateFramework()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkCompiledTemplateProvider()

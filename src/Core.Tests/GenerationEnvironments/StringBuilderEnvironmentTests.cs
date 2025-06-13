@@ -37,7 +37,7 @@ public class StringBuilderEnvironmentTests
             var sut = CreateSut();
 
             // Act & Assert
-            Action a = () => sut.SaveContents(provider: null!, TestData.BasePath, "Filename.txt", CancellationToken.None);
+            Action a = () => sut.SaveContentsAsync(provider: null!, TestData.BasePath, "Filename.txt", CancellationToken.None);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("provider");
         }
 
@@ -48,7 +48,7 @@ public class StringBuilderEnvironmentTests
             var sut = CreateSut();
 
             // Act & Assert
-            Action a = () => sut.SaveContents(CodeGenerationProviderMock, TestData.BasePath, defaultFilename: null!, CancellationToken.None);
+            Action a = () => sut.SaveContentsAsync(CodeGenerationProviderMock, TestData.BasePath, defaultFilename: null!, CancellationToken.None);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("defaultFilename");
         }
 
@@ -59,7 +59,7 @@ public class StringBuilderEnvironmentTests
             var sut = CreateSut();
 
             // Act & Assert
-            Action a = () => sut.SaveContents(CodeGenerationProviderMock, TestData.BasePath, defaultFilename: string.Empty, CancellationToken.None);
+            Action a = () => sut.SaveContentsAsync(CodeGenerationProviderMock, TestData.BasePath, defaultFilename: string.Empty, CancellationToken.None);
             a.ShouldThrow<ArgumentException>().ParamName.ShouldBe("defaultFilename");
         }
 
@@ -72,7 +72,7 @@ public class StringBuilderEnvironmentTests
             Builder.Append("Contents");
 
             // Act
-            await sut.SaveContents(CodeGenerationProviderMock, string.Empty, "Filename.txt", CancellationToken.None);
+            await sut.SaveContentsAsync(CodeGenerationProviderMock, string.Empty, "Filename.txt", CancellationToken.None);
 
             // Arrange
             FileSystemMock.Received().WriteAllText("Filename.txt", "Contents", Encoding.UTF32);
@@ -87,7 +87,7 @@ public class StringBuilderEnvironmentTests
             Builder.Append("Contents");
 
             // Act
-            await sut.SaveContents(CodeGenerationProviderMock, TestData.BasePath, "Filename.txt", CancellationToken.None);
+            await sut.SaveContentsAsync(CodeGenerationProviderMock, TestData.BasePath, "Filename.txt", CancellationToken.None);
 
             // Arrange
             FileSystemMock.Received().WriteAllText(Path.Combine(TestData.BasePath, "Filename.txt"), "Contents", Encoding.UTF32);

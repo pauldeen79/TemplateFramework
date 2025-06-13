@@ -2,6 +2,6 @@
 
 public interface IParameterizedTemplate
 {
-    Result SetParameter(string name, object? value);
-    Result<ITemplateParameter[]> GetParameters();
+    Task<Result> SetParameterAsync(string name, object? value, CancellationToken cancellationToken);
+    Task<Result<ITemplateParameter[]>> GetParametersAsync(CancellationToken cancellationToken);
 }

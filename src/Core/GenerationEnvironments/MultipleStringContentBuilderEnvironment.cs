@@ -32,7 +32,7 @@ public class MultipleContentBuilderEnvironment<T> : IGenerationEnvironment where
 
     public IMultipleContentBuilder<T> Builder { get; }
 
-    public Task<Result> SaveContents(ICodeGenerationProvider provider, string basePath, string defaultFilename, CancellationToken cancellationToken)
+    public Task<Result> SaveContentsAsync(ICodeGenerationProvider provider, string basePath, string defaultFilename, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(provider);
 

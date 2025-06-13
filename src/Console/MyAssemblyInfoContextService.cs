@@ -16,7 +16,7 @@ public sealed class MyAssemblyInfoContextService : IAssemblyInfoContextService
         "TemplateFramework.TemplateProviders.CompiledTemplateProvider",
         "TemplateFramework.TemplateProviders.StringTemplateProvider",
         "CrossCutting.Common",
-        "CrossCutting.Utilities.Parsers",
+        "CrossCutting.Utilities.ExpressionEvaluator",
         "Microsoft.Extensions.DependencyInjection",
         "Microsoft.Extensions.DependencyInjection.Abstractions"
     ];
