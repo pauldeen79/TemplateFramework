@@ -50,7 +50,7 @@ public class IntegrationTests : TestBase
         var template = new TestData.MultipleContentBuilderTemplateWithTemplateContextAndTemplateEngine(async (builder, context) =>
         {
             var model = new TestData.Model { Contents = "Hello world!" };
-            await context.Engine.RenderChildTemplate(model, new MultipleStringContentBuilderEnvironment(builder), context, CancellationToken.None).ConfigureAwait(false);
+            await context.Engine.RenderChildTemplateAsync(model, new MultipleStringContentBuilderEnvironment(builder), context, CancellationToken.None).ConfigureAwait(false);
         });
         var generationEnvironment = new MultipleContentBuilder();
 

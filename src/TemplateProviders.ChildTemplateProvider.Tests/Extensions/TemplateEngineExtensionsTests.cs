@@ -14,7 +14,7 @@ public class TemplateEngineExtensionsTests
             templateEngine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
 
             // Act
-            await templateEngine.RenderChildTemplates(childModels, generationEnvironment, CancellationToken.None);
+            await templateEngine.RenderChildTemplatesAsync(childModels, generationEnvironment, CancellationToken.None);
 
             // Assert
             await templateEngine.Received(3).RenderAsync(Arg.Any<IRenderTemplateRequest>(), CancellationToken.None);
@@ -31,7 +31,7 @@ public class TemplateEngineExtensionsTests
             templateEngine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
 
             // Act
-            await templateEngine.RenderChildTemplates(childModels, generationEnvironment, templateContext, CancellationToken.None);
+            await templateEngine.RenderChildTemplatesAsync(childModels, generationEnvironment, templateContext, CancellationToken.None);
 
             // Assert
             await templateEngine.Received(3).RenderAsync(Arg.Any<IRenderTemplateRequest>(), CancellationToken.None);
@@ -49,7 +49,7 @@ public class TemplateEngineExtensionsTests
             object childModel = new object();
 
             // Act
-            await templateEngine.RenderChildTemplate(childModel, generationEnvironment, CancellationToken.None);
+            await templateEngine.RenderChildTemplateAsync(childModel, generationEnvironment, CancellationToken.None);
 
             // Assert
             await templateEngine.Received(1).RenderAsync(Arg.Any<IRenderTemplateRequest>(), CancellationToken.None);
@@ -65,7 +65,7 @@ public class TemplateEngineExtensionsTests
             object childModel = new object();
 
             // Act
-            await templateEngine.RenderChildTemplate(childModel, generationEnvironment, templateContext, CancellationToken.None);
+            await templateEngine.RenderChildTemplateAsync(childModel, generationEnvironment, templateContext, CancellationToken.None);
 
             // Assert
             await templateEngine.Received(1).RenderAsync(Arg.Any<IRenderTemplateRequest>(), CancellationToken.None);

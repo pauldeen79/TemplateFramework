@@ -2,7 +2,7 @@
 
 public static class TemplateEngineExtensions
 {
-    public static async Task<Result> RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, ITemplateContext context, CancellationToken cancellationToken)
+    public static async Task<Result> RenderChildTemplatesAsync(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, ITemplateContext context, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(childModels);
         Guard.IsNotNull(context);
@@ -15,14 +15,14 @@ public static class TemplateEngineExtensions
         return await items.PerformUntilFailure(x => instance.RenderAsync(new RenderTemplateRequest(x.Identifier, x.Model, generationEnvironment, string.Empty, null, context.CreateChildContext(new ChildTemplateContext(x.Identifier, x.Model, x.Index, items.Length))), cancellationToken)).ConfigureAwait(false);
     }
 
-    public static async Task<Result> RenderChildTemplates(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
+    public static async Task<Result> RenderChildTemplatesAsync(this ITemplateEngine instance, IEnumerable childModels, IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(childModels);
 
         return await childModels.PerformUntilFailure(x => instance.RenderAsync(new RenderTemplateRequest(new TemplateByModelIdentifier(x), x, generationEnvironment, string.Empty, null, null), cancellationToken)).ConfigureAwait(false);
     }
 
-    public static async Task<Result> RenderChildTemplate(this ITemplateEngine instance, object? childModel, IGenerationEnvironment generationEnvironment, ITemplateContext context, CancellationToken cancellationToken)
+    public static async Task<Result> RenderChildTemplateAsync(this ITemplateEngine instance, object? childModel, IGenerationEnvironment generationEnvironment, ITemplateContext context, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(context);
 
@@ -32,7 +32,7 @@ public static class TemplateEngineExtensions
             .ConfigureAwait(false);
     }
 
-    public static async Task<Result> RenderChildTemplate(this ITemplateEngine instance, object? childModel, IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
+    public static async Task<Result> RenderChildTemplateAsync(this ITemplateEngine instance, object? childModel, IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
     {
         var identifier = new TemplateByModelIdentifier(childModel);
 

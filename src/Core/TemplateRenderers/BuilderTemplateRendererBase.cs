@@ -33,8 +33,8 @@ public abstract class BuilderTemplateRendererBase<TEnvironment, TBuilder> : ISin
             }
         }
 
-        return await DefaultImplementation(context.Template, environment.Builder).ConfigureAwait(false);
+        return await DefaultImplementationAsync(context.Template, environment.Builder).ConfigureAwait(false);
     }
 
-    protected abstract Task<Result> DefaultImplementation(object templateInstance, TBuilder builder);
+    protected abstract Task<Result> DefaultImplementationAsync(object templateInstance, TBuilder builder);
 }
