@@ -47,7 +47,7 @@ public class IntegrationTests : TestBase
 
     public sealed class IntegrationTemplate : IMultipleContentBuilderTemplate, IModelContainer<string>
     {
-        public string? Model { get; set; }
+        public string Model { get; set; } = string.Empty;
 
         public Task<Result> RenderAsync(IMultipleContentBuilder<StringBuilder> builder, CancellationToken cancellationToken)
         {

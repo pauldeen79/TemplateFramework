@@ -2,5 +2,5 @@
 
 public interface IModelContainer<T>
 {
-    T? Model { get; set; }
+    T Model { get; set; }
 }

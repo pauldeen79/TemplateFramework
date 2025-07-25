@@ -28,9 +28,7 @@ public sealed class PlainTemplateWithAdditionalParameters : IParameterizedTempla
 public sealed class TestTemplateComponentRegistryPlugin : ITemplateComponentRegistryPlugin
 {
     public Task<Result> InitializeAsync(ITemplateComponentRegistry registry, CancellationToken cancellationToken)
-    {
-        return Task.FromResult(Result.Success());
-    }
+        => Task.FromResult(Result.Success());
 }
 
 internal static class TestData
@@ -56,7 +54,7 @@ internal static class TestData
 
     internal sealed class TemplateWithModel<T> : IBuilderTemplate<StringBuilder>, IModelContainer<T>
     {
-        public T? Model { get; set; } = default!;
+        public T Model { get; set; } = default!;
 
         private readonly Action<StringBuilder> _delegate;
 
@@ -104,17 +102,17 @@ internal static class TestData
 
     internal sealed class MyViewModel<T> : IViewModel, IModelContainer<T>
     {
-        public T? Model { get; set; }
+        public T Model { get; set; } = default!;
     }
 
     internal sealed class MyModel<T> : IModelContainer<T>
     {
-        public T? Model { get; set; }
+        public T Model { get; set; } = default!;
     }
 
     internal sealed class PlainTemplateWithModelAndAdditionalParameters<T> : IModelContainer<T>, IParameterizedTemplate
     {
-        public T? Model { get; set; } = default!;
+        public T Model { get; set; } = default!;
 
         public string AdditionalParameter { get; set; } = "";
 

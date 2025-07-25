@@ -24,7 +24,7 @@ internal static class TestData
 
     internal sealed class TemplateWithViewModel<T> : IBuilderTemplate<StringBuilder>, IModelContainer<T>
     {
-        public T? Model { get; set; }
+        public T Model { get; set; } = default!;
 
         private readonly Action<StringBuilder, T> _delegate;
 
@@ -37,7 +37,7 @@ internal static class TestData
 #pragma warning disable CA1812 // Avoid uninstantiated internal classes
     internal sealed class ViewModel<TModel> : IModelContainer<TModel>, IViewModel
     {
-        public TModel? Model { get; set; }
+        public TModel Model { get; set; } = default!;
     }
 #pragma warning restore CA1812 // Avoid uninstantiated internal classes
 
@@ -118,7 +118,7 @@ internal static class TestData
     internal abstract class CsharpClassGeneratorBase<TModel> : IModelContainer<TModel>, ITemplateContextContainer
     {
         public ITemplateContext Context { get; set; } = default!;
-        public TModel? Model { get; set; }
+        public TModel Model { get; set; } = default!;
     }
 
     // False positive, it gets created through DI container
@@ -471,7 +471,7 @@ public sealed class CsharpClassGeneratorCodeGenerationProvider : ICodeGeneration
 public class XDocumentTemplate : IBuilderTemplate<XDocumentBuilder>, ITemplateContextContainer, IModelContainer<XDocumentTestModel>
 {
     public ITemplateContext Context { get; set; } = default!;
-    public XDocumentTestModel? Model { get; set; }
+    public XDocumentTestModel Model { get; set; } = default!;
 
     public async Task<Result> RenderAsync(XDocumentBuilder builder, CancellationToken cancellationToken)
     {
@@ -493,7 +493,7 @@ public class XDocumentTemplate : IBuilderTemplate<XDocumentBuilder>, ITemplateCo
 
 public class SubItemTemplate : IBuilderTemplate<XDocumentBuilder>, IModelContainer<string>
 {
-    public string? Model { get; set; }
+    public string Model { get; set; } = string.Empty;
 
     public Task<Result> RenderAsync(XDocumentBuilder builder, CancellationToken cancellationToken)
     {

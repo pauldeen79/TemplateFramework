@@ -13,7 +13,7 @@ internal static class TestData
 #endif
     internal sealed class PlainTemplateWithModelAndAdditionalParameters<T> : IModelContainer<T>, IParameterizedTemplate
     {
-        public T? Model { get; set; } = default!;
+        public T Model { get; set; } = default!;
 
         public string AdditionalParameter { get; set; } = "";
 
