@@ -48,7 +48,7 @@ To create a StringBuilder template, implement this interface from the TemplateFr
 ```C#
 public interface IStringBuilderTemplate
 {
-    Task Render(StringBuilder builder, CancellationToken cancellationToken);
+    Task RenderAsync(StringBuilder builder, CancellationToken cancellationToken);
 }
 ```
 
@@ -57,7 +57,7 @@ To create a Text Transform template, implement this interface from the TemplateF
 ```C#
 public interface ITextTransformTemplate
 {
-    Task<string> TransformText(CancellationToken cancellationToken);
+    Task<string> TransformTextAsync(CancellationToken cancellationToken);
 }
 ```
 
@@ -66,7 +66,7 @@ To create a Multiple Content Builder template, implement this interface from the
 ```C#
 public interface IMultipleContentBuilderTemplate
 {
-    Task Render(IMultipleContentBuilder builder, CancellationToken cancellationToken);
+    Task RenderAsync(IMultipleContentBuilder builder, CancellationToken cancellationToken);
 }
 ```
 
@@ -97,8 +97,8 @@ Note that the following assemblies will be loaded from the host (Console) comman
 - TemplateFramework.TemplateProviders.ChildTemplateProvider
 - TemplateFramework.TemplateProviders.CompiledTemplateProvider
 - TemplateFramework.TemplateProviders.StringTemplateProvider
-- CrossCutting.Common (3.30.0)
-- CrossCutting.Utilities.ExpressionEvaluator (2.1.0)
+- CrossCutting.Common (3.31.0)
+- CrossCutting.Utilities.ExpressionEvaluator (2.1.1)
 - Microsoft.Extensions.DependencyInjection (9.0.8)
 - Microsoft.Extensions.DependencyInjection.Abstractions (9.0.8)
 
@@ -124,7 +124,7 @@ There is also an integration test in the TemplateFramework.TemplateProviders.Chi
 In order to register child templates, so that they can be resolved from the (root) template that's being rendered, you have to create a class that implements the following interface, from the TemplateFramework.Abstractions package:
 
 ```C#
-public interface ITemplateProviderPlugin
+public interface ITemplateProviderComponent
 {
     Task Initialize(ITemplateProvider provider, CancellationToken cancellationToken);
 }
