@@ -129,7 +129,7 @@ public class FormattableStringTemplateTests
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            (await sut.RenderAsync(new StringBuilder(), CancellationToken.None)).ThrowIfInvalid();
+            (await sut.RenderAsync(new StringBuilder(), CancellationToken.None)).ThrowIfNotSuccessful();
             dictionary.ShouldNotBeNull();
             dictionary!.First().Key.ShouldBe("Name");
             dictionary!.First().Value.ShouldBe("Value");
