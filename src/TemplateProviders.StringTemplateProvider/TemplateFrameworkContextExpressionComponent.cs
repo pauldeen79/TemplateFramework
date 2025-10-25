@@ -8,7 +8,8 @@ public sealed class TemplateFrameworkContextExpressionComponent : IExpressionCom
     {
         Guard.IsNotNull(context);
 
-        if ((await context.State["context"].ConfigureAwait(false)).Value is not TemplateFrameworkStringContext templateFrameworkFormattableStringContext)
+        var contextResult = await context.State["context"]().ConfigureAwait(false);
+        if (contextResult.Value is not TemplateFrameworkStringContext templateFrameworkFormattableStringContext)
         {
             return Result.Continue<GenericFormattableString>();
         }
@@ -51,7 +52,8 @@ public sealed class TemplateFrameworkContextExpressionComponent : IExpressionCom
             .WithExpressionComponentType(GetType())
             .WithSourceExpression(context.Expression);
 
-        if ((await context.State["context"].ConfigureAwait(false)).Value is not TemplateFrameworkStringContext templateFrameworkFormattableStringContext)
+        var contextResult = await context.State["context"]().ConfigureAwait(false);
+        if (contextResult.Value is not TemplateFrameworkStringContext templateFrameworkFormattableStringContext)
         {
             return result.WithStatus(ResultStatus.Continue);
         }

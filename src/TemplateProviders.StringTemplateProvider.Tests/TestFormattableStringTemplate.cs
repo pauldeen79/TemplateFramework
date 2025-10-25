@@ -37,7 +37,7 @@ public class TestFormattableStringTemplate : IParameterizedTemplate, IBuilderTem
 
         var context = new TemplateFrameworkStringContext(_parameterValues, _componentRegistrationContext, false);
 
-        var result = await _expressionEvaluator.EvaluateTypedAsync<GenericFormattableString>("$\"" + Template + "\"", new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.CurrentCulture), new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success<object?>(context)) } }, cancellationToken).ConfigureAwait(false);
+        var result = await _expressionEvaluator.EvaluateTypedAsync<GenericFormattableString>("$\"" + Template + "\"", new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.CurrentCulture), new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success<object?>(context)) } }, cancellationToken).ConfigureAwait(false);
 
         if (result.IsSuccessful() && result.Value is not null)
         {

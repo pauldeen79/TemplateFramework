@@ -30,7 +30,7 @@ public class ExpressionStringTemplate : IBuilderTemplate<StringBuilder>, ITempla
         Guard.IsNotNull(builder);
 
         var templateFrameworkStringContext = new TemplateFrameworkStringContext(Context.ParametersDictionary, _componentRegistrationContext, false);
-        var result = await _expressionEvaluator.EvaluateAsync(_expressionStringTemplateIdentifier.Template, new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(_expressionStringTemplateIdentifier.FormatProvider), new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success<object?>(templateFrameworkStringContext)) } }, cancellationToken).ConfigureAwait(false);
+        var result = await _expressionEvaluator.EvaluateAsync(_expressionStringTemplateIdentifier.Template, new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(_expressionStringTemplateIdentifier.FormatProvider), new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success<object?>(templateFrameworkStringContext)) } }, cancellationToken).ConfigureAwait(false);
 
         if (result.IsSuccessful() && result.Value is not null)
         {

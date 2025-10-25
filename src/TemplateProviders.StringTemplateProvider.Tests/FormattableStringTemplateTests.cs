@@ -35,7 +35,7 @@ public class FormattableStringTemplateTests
                 {
                     // Note that in this unit test, we have to mock the behavior of ExpressionEvaluator :)
                     // There is also an Integration test to prove it works in real life ;-)
-                    var ctx = Result.FromExistingResult<TemplateFrameworkStringContext>(await x.ArgAt<ExpressionEvaluatorContext>(0).State["context"].ConfigureAwait(false));
+                    var ctx = Result.FromExistingResult<TemplateFrameworkStringContext>(await x.ArgAt<ExpressionEvaluatorContext>(0).State["context"]().ConfigureAwait(false));
                     ctx.GetValueOrThrow().ParameterNamesList.Add("Name");
                     return new ExpressionParseResultBuilder()
                         .WithSourceExpression("Dummy")
@@ -117,7 +117,7 @@ public class FormattableStringTemplateTests
                 .EvaluateTypedAsync<GenericFormattableString>(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(async x =>
                 {
-                    var ctx = Result.FromExistingResult<TemplateFrameworkStringContext>(await x.ArgAt<ExpressionEvaluatorContext>(0).State["context"].ConfigureAwait(false));
+                    var ctx = Result.FromExistingResult<TemplateFrameworkStringContext>(await x.ArgAt<ExpressionEvaluatorContext>(0).State["context"]().ConfigureAwait(false));
                     dictionary = ctx.GetValueOrThrow().ParametersDictionary;
 
                     return Result.Success<GenericFormattableString>(string.Empty);

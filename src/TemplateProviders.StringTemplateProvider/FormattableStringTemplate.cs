@@ -30,7 +30,7 @@ public class FormattableStringTemplate : IParameterizedTemplate, IBuilderTemplat
 
         var templateFrameworkStringContext = new TemplateFrameworkStringContext(Context.ParametersDictionary, _componentRegistrationContext, true);
 
-        var result = await _expressionEvaluator.ParseAsync("$\"" + _formattableStringTemplateIdentifier.Template + "\"", new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(_formattableStringTemplateIdentifier.FormatProvider), new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success<object?>(templateFrameworkStringContext)) } }, cancellationToken).ConfigureAwait(false);
+        var result = await _expressionEvaluator.ParseAsync("$\"" + _formattableStringTemplateIdentifier.Template + "\"", new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(_formattableStringTemplateIdentifier.FormatProvider), new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success<object?>(templateFrameworkStringContext)) } }, cancellationToken).ConfigureAwait(false);
         if (!result.IsSuccessful())
         {
             return Result.FromExistingResult<ITemplateParameter[]>(result);
@@ -47,7 +47,7 @@ public class FormattableStringTemplate : IParameterizedTemplate, IBuilderTemplat
         Guard.IsNotNull(builder);
 
         var templateFrameworkStringContext = new TemplateFrameworkStringContext(Context.ParametersDictionary, _componentRegistrationContext, false);
-        var result = await _expressionEvaluator.EvaluateTypedAsync<GenericFormattableString>("$\"" + _formattableStringTemplateIdentifier.Template + "\"", new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(_formattableStringTemplateIdentifier.FormatProvider), new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success<object?>(templateFrameworkStringContext)) } }, cancellationToken).ConfigureAwait(false);
+        var result = await _expressionEvaluator.EvaluateTypedAsync<GenericFormattableString>("$\"" + _formattableStringTemplateIdentifier.Template + "\"", new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(_formattableStringTemplateIdentifier.FormatProvider), new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success<object?>(templateFrameworkStringContext)) } }, cancellationToken).ConfigureAwait(false);
 
         if (result.IsSuccessful() && result.Value is not null)
         {

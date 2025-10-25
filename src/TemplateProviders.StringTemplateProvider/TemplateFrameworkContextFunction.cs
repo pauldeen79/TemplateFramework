@@ -6,7 +6,8 @@ public class TemplateFrameworkContextFunction : IFunction
     {
         Guard.IsNotNull(context);
 
-        if ((await context.Context.State["context"].ConfigureAwait(false)).Value is not TemplateFrameworkStringContext templateFrameworkFormattableStringContext)
+        var contextResult = await context.Context.State["context"]().ConfigureAwait(false);
+        if (contextResult.Value is not TemplateFrameworkStringContext templateFrameworkFormattableStringContext)
         {
             return Result.Continue<object?>();
         }

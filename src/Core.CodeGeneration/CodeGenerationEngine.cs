@@ -24,12 +24,12 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
         Guard.IsNotNull(settings);
 
         var results = await new AsyncResultDictionaryBuilder()
-            .Add(nameof(ITemplateProvider.StartSessionAsync), _templateProvider.StartSessionAsync(cancellationToken))
-            .Add(nameof(ITemplateComponentRegistryPlugin.InitializeAsync), codeGenerationProvider is ITemplateComponentRegistryPlugin x
+            .Add(() => _templateProvider.StartSessionAsync(cancellationToken))
+            .Add(() => codeGenerationProvider is ITemplateComponentRegistryPlugin x
                 ? x.InitializeAsync(_templateProvider, cancellationToken)
                 : Task.FromResult(Result.Continue()))
-            .Add(nameof(ICodeGenerationProvider.CreateModelAsync), codeGenerationProvider.CreateModelAsync(cancellationToken))
-            .Add(nameof(ICodeGenerationProvider.CreateAdditionalParametersAsync), codeGenerationProvider.CreateAdditionalParametersAsync(cancellationToken))
+            .Add(nameof(ICodeGenerationProvider.CreateModelAsync), () => codeGenerationProvider.CreateModelAsync(cancellationToken))
+            .Add(nameof(ICodeGenerationProvider.CreateAdditionalParametersAsync), () => codeGenerationProvider.CreateAdditionalParametersAsync(cancellationToken))
             .Build()
             .ConfigureAwait(false);
 

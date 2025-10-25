@@ -25,7 +25,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
         public async Task Returns_Continue_When_Context_Is_Not_TemplateFrameworkFormattableStringContext()
         {
             // Arrange
-            var context = new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success<object?>("some context that's not of type TemplateFrameworkFormattableStringContext")) } };
+            var context = new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success<object?>("some context that's not of type TemplateFrameworkFormattableStringContext")) } };
             var sut = CreateSut();
 
             // Act
@@ -43,7 +43,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
             {
                 { "Name", "Value" }
             };
-            var context = new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success<object?>(new TemplateFrameworkStringContext(parametersDictionary, ComponentRegistrationContext, false))) } };
+            var context = new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success<object?>(new TemplateFrameworkStringContext(parametersDictionary, ComponentRegistrationContext, false))) } };
             var sut = CreateSut();
 
             // Act
@@ -62,7 +62,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
             {
                 { "Name", null }
             };
-            var context = new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success<object?>(new TemplateFrameworkStringContext(parametersDictionary, ComponentRegistrationContext, false))) } };
+            var context = new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success<object?>(new TemplateFrameworkStringContext(parametersDictionary, ComponentRegistrationContext, false))) } };
             var sut = CreateSut();
 
             // Act
@@ -78,7 +78,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
         {
             // Arrange
             var parametersDictionary = new Dictionary<string, object?>();
-            var context = new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success<object?>(new TemplateFrameworkStringContext(parametersDictionary, ComponentRegistrationContext, false))) } };
+            var context = new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success<object?>(new TemplateFrameworkStringContext(parametersDictionary, ComponentRegistrationContext, false))) } };
             var sut = CreateSut();
 
             // Act
@@ -94,7 +94,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
             // Arrange
             var parametersDictionary = new Dictionary<string, object?>();
             var ctx = new TemplateFrameworkStringContext(parametersDictionary, ComponentRegistrationContext, false);
-            var context = new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success<object?>(ctx)) } };
+            var context = new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success<object?>(ctx)) } };
             var sut = CreateSut();
 
             // Act
@@ -110,7 +110,7 @@ public class TemplateFrameworkContextPlaceholderProcessorTests : TestBase<Templa
             // Arrange
             var parametersDictionary = new Dictionary<string, object?>();
             var ctx = new TemplateFrameworkStringContext(parametersDictionary, ComponentRegistrationContext, false);
-            var context = new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success<object?>(ctx)) } };
+            var context = new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success<object?>(ctx)) } };
             var sut = CreateSut();
 
             // Act

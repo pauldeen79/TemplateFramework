@@ -144,8 +144,8 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             var templateEngine = Fixture.Freeze<ITemplateEngine>();
             var templateProvider = Fixture.Freeze<ITemplateProvider>();
             codeGenerationSettings.DryRun.Returns(true);
-            templateEngine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
-            templateProvider.StartSessionAsync(Arg.Any<CancellationToken>()).Returns(Result.Error());
+            templateEngine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Task.FromResult(Result.Success()));
+            templateProvider.StartSessionAsync(Arg.Any<CancellationToken>()).Returns(Task.FromResult(Result.Error()));
             var sut = CreateSut();
 
             // Act
