@@ -30,7 +30,7 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
                 : Task.FromResult(Result.Continue()))
             .Add(nameof(ICodeGenerationProvider.CreateModelAsync), () => codeGenerationProvider.CreateModelAsync(cancellationToken))
             .Add(nameof(ICodeGenerationProvider.CreateAdditionalParametersAsync), () => codeGenerationProvider.CreateAdditionalParametersAsync(cancellationToken))
-            .Build()
+            .BuildAsync()
             .ConfigureAwait(false);
 
         // Note that there will be an extension method on Dictionary<string, Result> to get the error in the near future
