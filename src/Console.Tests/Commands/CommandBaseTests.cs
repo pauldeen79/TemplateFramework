@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace TemplateFramework.Console.Tests.Commands;
+﻿namespace TemplateFramework.Console.Tests.Commands;
 
 public class CommandBaseTests : TestBase<CommandBaseTests.CommandBaseTest>
 {
