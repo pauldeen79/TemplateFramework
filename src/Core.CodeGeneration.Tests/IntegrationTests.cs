@@ -40,16 +40,16 @@ public class IntegrationTests : TestBase
         public string LastGeneratedFilesFilename => "*.generated.txt";
         public Encoding Encoding => Encoding.UTF8;
 
-        public Task<Result<object?>> CreateAdditionalParametersAsync(CancellationToken cancellationToken) => Task.FromResult(Result.Success<object?>(default));
+        public Task<Result<object?>> CreateAdditionalParametersAsync(CancellationToken token) => Task.FromResult(Result.Success<object?>(default));
         public Type GetGeneratorType() => typeof(IntegrationTemplate);
-        public Task<Result<object?>> CreateModelAsync(CancellationToken cancellationToken) => Task.FromResult(Result.Success<object?>("Hello world!"));
+        public Task<Result<object?>> CreateModelAsync(CancellationToken token) => Task.FromResult(Result.Success<object?>("Hello world!"));
     }
 
     public sealed class IntegrationTemplate : IMultipleContentBuilderTemplate, IModelContainer<string>
     {
         public string Model { get; set; } = string.Empty;
 
-        public Task<Result> RenderAsync(IMultipleContentBuilder<StringBuilder> builder, CancellationToken cancellationToken)
+        public Task<Result> RenderAsync(IMultipleContentBuilder<StringBuilder> builder, CancellationToken token)
         {
             var content = builder.AddContent("Filename.txt");
             content.Builder.Append(CultureInfo.InvariantCulture, $"Model is: {Model}");

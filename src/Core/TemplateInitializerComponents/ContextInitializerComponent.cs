@@ -4,7 +4,7 @@ public class ContextInitializerComponent : ITemplateInitializerComponent
 {
     public int Order => 3;
 
-    public Task<Result> InitializeAsync(ITemplateEngineContext context, CancellationToken cancellationToken)
+    public Task<Result> InitializeAsync(ITemplateEngineContext context, CancellationToken token)
     {
         Guard.IsNotNull(context);
 

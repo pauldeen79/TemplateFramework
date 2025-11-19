@@ -2,6 +2,6 @@
 
 public interface ITemplateEngine
 {
-    Task<Result> RenderAsync(IRenderTemplateRequest request, CancellationToken cancellationToken);
-    Task<Result<ITemplateParameter[]>> GetParametersAsync(object templateInstance, CancellationToken cancellationToken);
+    Task<Result> RenderAsync(IRenderTemplateRequest request, CancellationToken token);
+    Task<Result<ITemplateParameter[]>> GetParametersAsync(object templateInstance, CancellationToken token);
 }

@@ -24,13 +24,13 @@ public class ExpressionStringTemplate : IBuilderTemplate<StringBuilder>, ITempla
         Context = default!; // furhter on in the process, this will get filled
     }
 
-    public async Task<Result> RenderAsync(StringBuilder builder, CancellationToken cancellationToken)
+    public async Task<Result> RenderAsync(StringBuilder builder, CancellationToken token)
     {
         Guard.IsNotNull(Context);
         Guard.IsNotNull(builder);
 
         var templateFrameworkStringContext = new TemplateFrameworkStringContext(Context.ParametersDictionary, _componentRegistrationContext, false);
-        var result = await _expressionEvaluator.EvaluateAsync(_expressionStringTemplateIdentifier.Template, new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(_expressionStringTemplateIdentifier.FormatProvider), new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success<object?>(templateFrameworkStringContext)) } }, cancellationToken).ConfigureAwait(false);
+        var result = await _expressionEvaluator.EvaluateAsync(_expressionStringTemplateIdentifier.Template, new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(_expressionStringTemplateIdentifier.FormatProvider), new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success<object?>(templateFrameworkStringContext)) } }, token).ConfigureAwait(false);
 
         if (result.IsSuccessful() && result.Value is not null)
         {

@@ -21,7 +21,7 @@ public abstract class GenerationEnvironmentBase<T> : IGenerationEnvironment
 
     public T Builder { get; }
 
-    public Task<Result> SaveContentsAsync(ICodeGenerationProvider provider, string basePath, string defaultFilename, CancellationToken cancellationToken)
+    public Task<Result> SaveContentsAsync(ICodeGenerationProvider provider, string basePath, string defaultFilename, CancellationToken token)
     {
         Guard.IsNotNull(provider);
         Guard.IsNotNullOrEmpty(defaultFilename);

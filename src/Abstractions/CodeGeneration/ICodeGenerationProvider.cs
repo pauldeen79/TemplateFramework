@@ -8,6 +8,6 @@ public interface ICodeGenerationProvider
     Encoding Encoding { get; }
 
     Type GetGeneratorType();
-    Task<Result<object?>> CreateAdditionalParametersAsync(CancellationToken cancellationToken);
-    Task<Result<object?>> CreateModelAsync(CancellationToken cancellationToken);
+    Task<Result<object?>> CreateAdditionalParametersAsync(CancellationToken token);
+    Task<Result<object?>> CreateModelAsync(CancellationToken token);
 }

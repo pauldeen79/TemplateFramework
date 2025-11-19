@@ -17,19 +17,19 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
     private readonly ITemplateFactory _templateFactory;
     private readonly ITemplateProvider _templateProvider;
 
-    public async Task<Result> GenerateAsync(ICodeGenerationProvider codeGenerationProvider, IGenerationEnvironment generationEnvironment, ICodeGenerationSettings settings, CancellationToken cancellationToken)
+    public async Task<Result> GenerateAsync(ICodeGenerationProvider codeGenerationProvider, IGenerationEnvironment generationEnvironment, ICodeGenerationSettings settings, CancellationToken token)
     {
         Guard.IsNotNull(codeGenerationProvider);
         Guard.IsNotNull(generationEnvironment);
         Guard.IsNotNull(settings);
 
         var results = await new AsyncResultDictionaryBuilder()
-            .Add(() => _templateProvider.StartSessionAsync(cancellationToken))
+            .Add(() => _templateProvider.StartSessionAsync(token))
             .Add(() => codeGenerationProvider is ITemplateComponentRegistryPlugin x
-                ? x.InitializeAsync(_templateProvider, cancellationToken)
+                ? x.InitializeAsync(_templateProvider, token)
                 : Task.FromResult(Result.Continue()))
-            .Add(nameof(ICodeGenerationProvider.CreateModelAsync), () => codeGenerationProvider.CreateModelAsync(cancellationToken))
-            .Add(nameof(ICodeGenerationProvider.CreateAdditionalParametersAsync), () => codeGenerationProvider.CreateAdditionalParametersAsync(cancellationToken))
+            .Add(nameof(ICodeGenerationProvider.CreateModelAsync), () => codeGenerationProvider.CreateModelAsync(token))
+            .Add(nameof(ICodeGenerationProvider.CreateAdditionalParametersAsync), () => codeGenerationProvider.CreateAdditionalParametersAsync(token))
             .BuildAsync()
             .ConfigureAwait(false);
 
@@ -53,7 +53,7 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
                 additionalParameters: additionalParametersResult.GetValue(),
                 defaultFilename: settings.DefaultFilename,
                 context: null
-            ), cancellationToken).ConfigureAwait(false);
+            ), token).ConfigureAwait(false);
 
         if (!result.IsSuccessful())
         {
@@ -62,7 +62,7 @@ public sealed class CodeGenerationEngine : ICodeGenerationEngine
 
         if (!settings.DryRun)
         {
-            return await generationEnvironment.SaveContentsAsync(codeGenerationProvider, settings.BasePath, settings.DefaultFilename, cancellationToken).ConfigureAwait(false);
+            return await generationEnvironment.SaveContentsAsync(codeGenerationProvider, settings.BasePath, settings.DefaultFilename, token).ConfigureAwait(false);
         }
 
         return result;

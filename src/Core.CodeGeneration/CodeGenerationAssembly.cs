@@ -20,14 +20,14 @@ public sealed class CodeGenerationAssembly : ICodeGenerationAssembly
         _creators = creators;
     }
 
-    public async Task<Result> GenerateAsync(ICodeGenerationAssemblySettings settings, IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
+    public async Task<Result> GenerateAsync(ICodeGenerationAssemblySettings settings, IGenerationEnvironment generationEnvironment, CancellationToken token)
     {
         Guard.IsNotNull(settings);
         Guard.IsNotNull(generationEnvironment);
 
         var assembly = _assemblyService.GetAssembly(settings.AssemblyName, settings.CurrentDirectory);
         var results = await Task.WhenAll(GetCodeGeneratorProviders(assembly, settings.ClassNameFilter)
-            .Select(x => _codeGenerationEngine.GenerateAsync(x, generationEnvironment, settings, cancellationToken)))
+            .Select(x => _codeGenerationEngine.GenerateAsync(x, generationEnvironment, settings, token)))
             .ConfigureAwait(false);
 
         return Result.Aggregate(results, Result.Success(), nonSuccesfulResults => Result.Error(nonSuccesfulResults, "One or more code generation engines returned a non-succesful result, see the inner results for more details"));

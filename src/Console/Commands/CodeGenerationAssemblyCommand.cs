@@ -28,7 +28,7 @@ public class CodeGenerationAssemblyCommand : CommandBase
             var clipboardOption = command.Option<bool>("-c|--clipboard", "Copy output to clipboard", CommandOptionType.NoValue);
             var filterClassNameOption = command.Option<string>("-f|--filter <CLASSNAME>", "Filter code generation provider by class name", CommandOptionType.MultipleValue);
             command.HelpOption();
-            command.OnExecuteAsync(async cancellationToken =>
+            command.OnExecuteAsync(async token =>
             {
                 var assemblyName = assemblyOption.Value();
                 if (string.IsNullOrEmpty(assemblyName))
@@ -45,9 +45,9 @@ public class CodeGenerationAssemblyCommand : CommandBase
                     var generationEnvironment = new MultipleStringContentBuilderEnvironment();
                     var classNameFilter = filterClassNameOption.Values.Where(x => x is not null).Select(x => x!);
                     var settings = new CodeGenerationAssemblySettings(basePath, GetDefaultFilename(defaultFilenameOption.Value()), assemblyName, dryRun, GetCurrentDirectory(currentDirectoryOption.Value(), assemblyName!), classNameFilter);
-                    await _codeGenerationAssembly.GenerateAsync(settings, generationEnvironment, cancellationToken).ConfigureAwait(false);
-                    await WriteOutput(app, generationEnvironment, basePath, bareOption.HasValue(), clipboardOption.HasValue(), dryRun, cancellationToken).ConfigureAwait(false);
-                }, cancellationToken).ConfigureAwait(false);
+                    await _codeGenerationAssembly.GenerateAsync(settings, generationEnvironment, token).ConfigureAwait(false);
+                    await WriteOutput(app, generationEnvironment, basePath, bareOption.HasValue(), clipboardOption.HasValue(), dryRun, token).ConfigureAwait(false);
+                }, token).ConfigureAwait(false);
             });
         });
     }

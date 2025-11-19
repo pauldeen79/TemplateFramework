@@ -2,5 +2,5 @@
 
 public interface ITemplateInitializer
 {
-    Task<Result> InitializeAsync(ITemplateEngineContext context, CancellationToken cancellationToken);
+    Task<Result> InitializeAsync(ITemplateEngineContext context, CancellationToken token);
 }

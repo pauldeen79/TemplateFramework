@@ -307,9 +307,9 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
             public string LastGeneratedFilesFilename => string.Empty;
             public Encoding Encoding => Encoding.UTF8;
 
-            public Task<Result<object?>> CreateAdditionalParametersAsync(CancellationToken cancellationToken) => Task.FromResult(Result.Success<object?>(default));
+            public Task<Result<object?>> CreateAdditionalParametersAsync(CancellationToken token) => Task.FromResult(Result.Success<object?>(default));
             public Type GetGeneratorType() => typeof(object);
-            public Task<Result<object?>> CreateModelAsync(CancellationToken cancellationToken) => Task.FromResult(Result.Success<object?>(default));
+            public Task<Result<object?>> CreateModelAsync(CancellationToken token) => Task.FromResult(Result.Success<object?>(default));
 
             private readonly Func<ITemplateComponentRegistry, Task> _action;
             private readonly ResultStatus _status;
@@ -320,7 +320,7 @@ public class CodeGenerationEngineTests : TestBase<CodeGenerationEngine>
                 _status = status;
             }
 
-            public async Task<Result> InitializeAsync(ITemplateComponentRegistry registry, CancellationToken cancellationToken)
+            public async Task<Result> InitializeAsync(ITemplateComponentRegistry registry, CancellationToken token)
             {
                 await _action(registry).ConfigureAwait(false);
 

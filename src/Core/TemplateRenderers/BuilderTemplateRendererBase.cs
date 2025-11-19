@@ -14,7 +14,7 @@ public abstract class BuilderTemplateRendererBase<TEnvironment, TBuilder> : ISin
 
     public bool Supports(IGenerationEnvironment generationEnvironment) => generationEnvironment is TEnvironment;
 
-    public async Task<Result> RenderAsync(ITemplateEngineContext context, CancellationToken cancellationToken)
+    public async Task<Result> RenderAsync(ITemplateEngineContext context, CancellationToken token)
     {
         Guard.IsNotNull(context);
         Guard.IsNotNull(context.Template);
@@ -26,7 +26,7 @@ public abstract class BuilderTemplateRendererBase<TEnvironment, TBuilder> : ISin
 
         foreach (var renderer in _renderers)
         {
-            var result = await renderer.TryRenderAsync(context.Template, environment.Builder, cancellationToken).ConfigureAwait(false);
+            var result = await renderer.TryRenderAsync(context.Template, environment.Builder, token).ConfigureAwait(false);
             if (result.Status != ResultStatus.Continue)
             {
                 return result;

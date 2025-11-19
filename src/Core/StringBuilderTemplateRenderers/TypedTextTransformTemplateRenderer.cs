@@ -2,7 +2,7 @@
 
 public class TypedTextTransformTemplateRenderer : IBuilderTemplateRenderer<StringBuilder>
 {
-    public async Task<Result> TryRenderAsync(object instance, StringBuilder builder, CancellationToken cancellationToken)
+    public async Task<Result> TryRenderAsync(object instance, StringBuilder builder, CancellationToken token)
     {
         Guard.IsNotNull(builder);
 
@@ -10,7 +10,7 @@ public class TypedTextTransformTemplateRenderer : IBuilderTemplateRenderer<Strin
         {
             Guard.IsNotNull(builder);
 
-            var output = await textTransformTemplate.TransformTextAsync(cancellationToken).ConfigureAwait(false);
+            var output = await textTransformTemplate.TransformTextAsync(token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(output))
             {
                 builder.Append(output);

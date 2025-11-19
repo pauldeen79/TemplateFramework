@@ -28,16 +28,16 @@ public class TestFormattableStringTemplate : IParameterizedTemplate, IBuilderTem
             //TODO
         }}";
 
-    public Task<Result<ITemplateParameter[]>> GetParametersAsync(CancellationToken cancellationToken)
-        => new FormattableStringTemplate(new FormattableStringTemplateIdentifier(Template, CultureInfo.CurrentCulture), _expressionEvaluator, _componentRegistrationContext).GetParametersAsync(cancellationToken);
+    public Task<Result<ITemplateParameter[]>> GetParametersAsync(CancellationToken token)
+        => new FormattableStringTemplate(new FormattableStringTemplateIdentifier(Template, CultureInfo.CurrentCulture), _expressionEvaluator, _componentRegistrationContext).GetParametersAsync(token);
 
-    public async Task<Result> RenderAsync(StringBuilder builder, CancellationToken cancellationToken)
+    public async Task<Result> RenderAsync(StringBuilder builder, CancellationToken token)
     {
         Guard.IsNotNull(builder);
 
         var context = new TemplateFrameworkStringContext(_parameterValues, _componentRegistrationContext, false);
 
-        var result = await _expressionEvaluator.EvaluateTypedAsync<GenericFormattableString>("$\"" + Template + "\"", new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.CurrentCulture), new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success<object?>(context)) } }, cancellationToken).ConfigureAwait(false);
+        var result = await _expressionEvaluator.EvaluateTypedAsync<GenericFormattableString>("$\"" + Template + "\"", new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(CultureInfo.CurrentCulture), new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success<object?>(context)) } }, token).ConfigureAwait(false);
 
         if (result.IsSuccessful() && result.Value is not null)
         {
@@ -47,16 +47,16 @@ public class TestFormattableStringTemplate : IParameterizedTemplate, IBuilderTem
         return result;
     }
 
-    public Task<Result> SetParameterAsync(string name, object? value, CancellationToken cancellationToken)
+    public Task<Result> SetParameterAsync(string name, object? value, CancellationToken token)
         => Task.Run(() =>
         {
             //TODO: Find out why this is called twice when running the console app
             _parameterValues[name] = value;
             //_parameterValues.Add(name, value);
             return Result.Success();
-        }, cancellationToken);
+        }, token);
 
-    public Task<Result> StartSessionAsync(CancellationToken cancellationToken)
+    public Task<Result> StartSessionAsync(CancellationToken token)
     {
         _parameterValues.Clear();
 

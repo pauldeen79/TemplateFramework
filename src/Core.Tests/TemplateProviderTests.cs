@@ -166,7 +166,7 @@ public class TemplateProviderTests
                 throw new NotImplementedException();
             }
 
-            public Task<Result> StartSessionAsync(CancellationToken cancellationToken)
+            public Task<Result> StartSessionAsync(CancellationToken token)
             {
                 Counter++;
                 return Task.FromResult(Success

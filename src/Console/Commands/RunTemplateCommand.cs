@@ -130,13 +130,13 @@ public class RunTemplateCommand : CommandBase
                                 string defaultFilename,
                                 bool dryRun,
                                 KeyValuePair<string, object?>[] parameters,
-                                CancellationToken cancellationToken) args)
+                                CancellationToken token) args)
         => await Watch(args.app, args.watch, args.assemblyName ?? args.formattableStringFilename ?? args.expressionStringFilename!, async () =>
         {
             var generationEnvironment = new MultipleStringContentBuilderEnvironment();
             var templateIdentifier = GetTemplateIdentifier(args);
 
-            (await _templateProvider.StartSessionAsync(args.cancellationToken).ConfigureAwait(false))
+            (await _templateProvider.StartSessionAsync(args.token).ConfigureAwait(false))
             .OnFailure(async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false))
             .OnSuccess(async () =>
             {
@@ -151,7 +151,7 @@ public class RunTemplateCommand : CommandBase
                         return;
                     }
 
-                    (await _templateEngine.GetParametersAsync(template, args.cancellationToken).ConfigureAwait(false))
+                    (await _templateEngine.GetParametersAsync(template, args.token).ConfigureAwait(false))
                     .OnFailure(async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false))
                     .OnSuccess(
                         x =>
@@ -164,7 +164,7 @@ public class RunTemplateCommand : CommandBase
                 {
                     if (args.interactive)
                     {
-                        (await _templateEngine.GetParametersAsync(template, args.cancellationToken).ConfigureAwait(false))
+                        (await _templateEngine.GetParametersAsync(template, args.token).ConfigureAwait(false))
                         .OnFailure(async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false))
                         .OnSuccess(
                             x =>
@@ -178,19 +178,19 @@ public class RunTemplateCommand : CommandBase
                     var identifier = new TemplateInstanceIdentifierWithTemplateProvider(template, args.currentDirectory, args.assemblyName, args.templateProviderPluginClassName);
                     var request = new RenderTemplateRequest(identifier, null, generationEnvironment, args.defaultFilename, args.parameters, context);
 
-                    (await _templateEngine.RenderAsync(request, args.cancellationToken).ConfigureAwait(false))
+                    (await _templateEngine.RenderAsync(request, args.token).ConfigureAwait(false))
                     .OnFailure(async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false))
                     .OnSuccess(_ => success = true);
                 }
 
                 if (success)
                 {
-                    await WriteOutput(args.app, generationEnvironment, args.basePath, args.bare, args.clipboard, args.dryRun, args.cancellationToken).ConfigureAwait(false);
+                    await WriteOutput(args.app, generationEnvironment, args.basePath, args.bare, args.clipboard, args.dryRun, args.token).ConfigureAwait(false);
                 }
             });
-        }, args.cancellationToken).ConfigureAwait(false);
+        }, args.token).ConfigureAwait(false);
 
-    private ITemplateIdentifier GetTemplateIdentifier((CommandLineApplication app, bool watch, bool interactive, bool listParameters, bool bare, bool clipboard, string? assemblyName, string? className, string? formattableStringFilename, string? expressionStringFilename, string? currentDirectory, string? templateProviderPluginClassName, string basePath, string defaultFilename, bool dryRun, KeyValuePair<string, object?>[] parameters, CancellationToken cancellationToken) args)
+    private ITemplateIdentifier GetTemplateIdentifier((CommandLineApplication app, bool watch, bool interactive, bool listParameters, bool bare, bool clipboard, string? assemblyName, string? className, string? formattableStringFilename, string? expressionStringFilename, string? currentDirectory, string? templateProviderPluginClassName, string basePath, string defaultFilename, bool dryRun, KeyValuePair<string, object?>[] parameters, CancellationToken token) args)
     {
         ITemplateIdentifier templateIdentifier = null!;
         if (!string.IsNullOrEmpty(args.className))

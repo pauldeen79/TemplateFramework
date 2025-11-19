@@ -21,7 +21,7 @@ public abstract class CommandBase : ICommandLineCommand
         UserInput = userInput;
     }
 
-    protected async Task Watch(CommandLineApplication app, bool watch, string filename, Func<Task> action, CancellationToken cancellationToken)
+    protected async Task Watch(CommandLineApplication app, bool watch, string filename, Func<Task> action, CancellationToken token)
     {
         Guard.IsNotNull(app);
         Guard.IsNotNull(filename);
@@ -57,7 +57,7 @@ public abstract class CommandBase : ICommandLineCommand
                 await action().ConfigureAwait(false);
             }
 
-            await Task.Delay(SleepTimeInMs, cancellationToken).ConfigureAwait(false);
+            await Task.Delay(SleepTimeInMs, token).ConfigureAwait(false);
         }
     }
 
@@ -104,7 +104,7 @@ public abstract class CommandBase : ICommandLineCommand
         await app.Out.WriteLineAsync(templateOutput).ConfigureAwait(false);
     }
 
-    protected async Task WriteOutput(CommandLineApplication app, MultipleContentBuilderEnvironment<StringBuilder> generationEnvironment, string basePath, bool bare, bool clipboard, bool dryRun, CancellationToken cancellationToken)
+    protected async Task WriteOutput(CommandLineApplication app, MultipleContentBuilderEnvironment<StringBuilder> generationEnvironment, string basePath, bool bare, bool clipboard, bool dryRun, CancellationToken token)
     {
         Guard.IsNotNull(app);
         Guard.IsNotNull(generationEnvironment);
@@ -123,7 +123,7 @@ public abstract class CommandBase : ICommandLineCommand
         }
         else if (clipboard)
         {
-            await WriteOutputToClipboard(app, GenerateSingleOutput(generationEnvironment.Builder, basePath), bare, cancellationToken).ConfigureAwait(false);
+            await WriteOutputToClipboard(app, GenerateSingleOutput(generationEnvironment.Builder, basePath), bare, token).ConfigureAwait(false);
         }
         else
         {
@@ -131,12 +131,12 @@ public abstract class CommandBase : ICommandLineCommand
         }
     }
 
-    protected async Task WriteOutputToClipboard(CommandLineApplication app, string templateOutput, bool bare, CancellationToken cancellationToken)
+    protected async Task WriteOutputToClipboard(CommandLineApplication app, string templateOutput, bool bare, CancellationToken token)
     {
         Guard.IsNotNull(app);
         Guard.IsNotNull(templateOutput);
 
-        await _clipboard.SetTextAsync(templateOutput, cancellationToken).ConfigureAwait(false);
+        await _clipboard.SetTextAsync(templateOutput, token).ConfigureAwait(false);
 
         if (!bare)
         {

@@ -13,7 +13,7 @@ public sealed class TestTemplateComponentRegistryPlugin : ITemplateComponentRegi
         ComponentRegistrationContext = componentRegistrationContext;
     }
 
-    public Task<Result> InitializeAsync(ITemplateComponentRegistry registry, CancellationToken cancellationToken)
+    public Task<Result> InitializeAsync(ITemplateComponentRegistry registry, CancellationToken token)
     {
         var processorProcessorMock = Substitute.For<IExpressionComponent>();
         processorProcessorMock

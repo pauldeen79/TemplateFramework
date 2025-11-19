@@ -4,7 +4,7 @@ public class DefaultFilenameInitializerComponent : ITemplateInitializerComponent
 {
     public int Order => 2;
 
-    public Task<Result> InitializeAsync(ITemplateEngineContext context, CancellationToken cancellationToken)
+    public Task<Result> InitializeAsync(ITemplateEngineContext context, CancellationToken token)
     {
         Guard.IsNotNull(context);
         Guard.IsNotNull(context.Template);

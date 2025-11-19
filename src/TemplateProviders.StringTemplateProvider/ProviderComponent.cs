@@ -36,7 +36,7 @@ public class ProviderComponent : ITemplateProviderComponent, ISessionAwareCompon
         }
     }
 
-    public Task<Result> StartSessionAsync(CancellationToken cancellationToken)
+    public Task<Result> StartSessionAsync(CancellationToken token)
     {
         _componentRegistrationContext.Expressions.Clear();
         _componentRegistrationContext.ClearFunctions();

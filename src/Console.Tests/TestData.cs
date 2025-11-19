@@ -17,7 +17,7 @@ internal static class TestData
 
         public string AdditionalParameter { get; set; } = "";
 
-        public Task<Result> SetParameterAsync(string name, object? value, CancellationToken cancellationToken)
+        public Task<Result> SetParameterAsync(string name, object? value, CancellationToken token)
             => Task.Run(() =>
             {
                 if (name == nameof(AdditionalParameter))
@@ -27,9 +27,9 @@ internal static class TestData
                 }
 
                 return Result.Continue();
-            }, cancellationToken);
+            }, token);
 
-        public Task<Result<ITemplateParameter[]>> GetParametersAsync(CancellationToken cancellationToken) => Task.Run(() => Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(AdditionalParameter), typeof(T?))]), cancellationToken);
+        public Task<Result<ITemplateParameter[]>> GetParametersAsync(CancellationToken token) => Task.Run(() => Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(AdditionalParameter), typeof(T?))]), token);
 
         public override string ToString() => AdditionalParameter;
     }

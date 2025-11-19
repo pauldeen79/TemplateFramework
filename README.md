@@ -48,7 +48,7 @@ To create a StringBuilder template, implement this interface from the TemplateFr
 ```C#
 public interface IStringBuilderTemplate
 {
-    Task RenderAsync(StringBuilder builder, CancellationToken cancellationToken);
+    Task RenderAsync(StringBuilder builder, CancellationToken token);
 }
 ```
 
@@ -57,7 +57,7 @@ To create a Text Transform template, implement this interface from the TemplateF
 ```C#
 public interface ITextTransformTemplate
 {
-    Task<string> TransformTextAsync(CancellationToken cancellationToken);
+    Task<string> TransformTextAsync(CancellationToken token);
 }
 ```
 
@@ -66,7 +66,7 @@ To create a Multiple Content Builder template, implement this interface from the
 ```C#
 public interface IMultipleContentBuilderTemplate
 {
-    Task RenderAsync(IMultipleContentBuilder builder, CancellationToken cancellationToken);
+    Task RenderAsync(IMultipleContentBuilder builder, CancellationToken token);
 }
 ```
 
@@ -126,7 +126,7 @@ In order to register child templates, so that they can be resolved from the (roo
 ```C#
 public interface ITemplateProviderComponent
 {
-    Task Initialize(ITemplateProvider provider, CancellationToken cancellationToken);
+    Task Initialize(ITemplateProvider provider, CancellationToken token);
 }
 ```
 
@@ -150,7 +150,7 @@ To register this dynamically, you need to create a class that implements this in
 ```C#
 public interface ITemplateComponentRegistryPlugin
 {
-    Task Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken);
+    Task Initialize(ITemplateComponentRegistry registry, CancellationToken token);
 }
 ```
 
@@ -168,7 +168,7 @@ public sealed class MyTemplateComponentRegistryPlugin : ITemplateComponentRegist
         ComponentRegistrationContext = componentRegistrationContext;
     }
 
-    public Task Initialize(ITemplateComponentRegistry registry, CancellationToken cancellationToken)
+    public Task Initialize(ITemplateComponentRegistry registry, CancellationToken token)
     {
         var processorProcessor = new MyPlaceholderProcessor();
         var functionResultParser = new MyFunctionResultParser();
@@ -202,18 +202,18 @@ Task<object?> CreateAdditionalParameters();
 Task<object?> CreateModel();
 
 //ISessionAwareComponent:
-Task StartSession(CancellationToken cancellationToken);
+Task StartSession(CancellationToken token);
 ```
 
 has changed to
 
 ```C#
 //ICodeGenerationProvider:
-Task<Result<object?>> CreateAdditionalParameters(CancellationToken cancellationToken);
-Task<Result<object?>> CreateModel(CancellationToken cancellationToken);
+Task<Result<object?>> CreateAdditionalParameters(CancellationToken token);
+Task<Result<object?>> CreateModel(CancellationToken token);
 
 //ISessionAwareComponent:
-Task<Result> StartSession(CancellationToken cancellationToken);
+Task<Result> StartSession(CancellationToken token);
 ```
 
 This enables you to return error messages from model creation, instead of throwing exceptions.

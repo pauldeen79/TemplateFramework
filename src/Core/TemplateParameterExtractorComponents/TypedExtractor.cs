@@ -2,14 +2,14 @@
 
 public class TypedExtractor : ITemplateParameterExtractorComponent
 {
-    public async Task<Result<ITemplateParameter[]>> ExtractAsync(object templateInstance, CancellationToken cancellationToken)
+    public async Task<Result<ITemplateParameter[]>> ExtractAsync(object templateInstance, CancellationToken token)
     {
         Guard.IsNotNull(templateInstance);
         Guard.IsAssignableToType<IParameterizedTemplate>(templateInstance);
 
         var parameterizedTemplate = (IParameterizedTemplate)templateInstance;
 
-        return await parameterizedTemplate.GetParametersAsync(cancellationToken).ConfigureAwait(false);
+        return await parameterizedTemplate.GetParametersAsync(token).ConfigureAwait(false);
     }
 
     public bool Supports(object templateInstance) => templateInstance is IParameterizedTemplate;
