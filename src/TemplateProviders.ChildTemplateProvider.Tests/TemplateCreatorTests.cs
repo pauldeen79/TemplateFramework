@@ -53,14 +53,16 @@ public class TemplateCreatorTests
         }
 
         [Fact]
-        public void Throws_When_Model_Is_Not_Of_Correct_Type()
+        public void Returns_Continue_When_Model_Is_Not_Of_Correct_Type()
         {
             // Arrange
             var sut = new TemplateCreator<TemplateCreatorTests>(() => new TemplateCreatorTests(), typeof(string), null);
 
-            // Act & Assert
-            Action a = () => sut.CreateByModel(1);
-            a.ShouldThrow<NotSupportedException>();
+            // Act
+            var result = sut.CreateByModel(1);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Continue);
         }
     }
 
@@ -80,14 +82,16 @@ public class TemplateCreatorTests
         }
 
         [Fact]
-        public void Throws_When_Name_Is_Not_Equal()
+        public void Returns_Continue_When_Name_Is_Not_Equal()
         {
             // Arrange
             var sut = new TemplateCreator<TemplateCreatorTests>(() => new TemplateCreatorTests(), null, "Correct");
 
-            // Act & Assert
-            Action a = () => sut.CreateByName("Incorrect");
-            a.ShouldThrow<NotSupportedException>();
+            // Act
+            var result = sut.CreateByName("Incorrect");
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Continue);
         }
     }
 

@@ -16,13 +16,13 @@ public class IntegrationTests : TestBase
         using var provider = services.BuildServiceProvider(true);
         using var scope = provider.CreateScope();
         var templateProvider = scope.ServiceProvider.GetRequiredService<ITemplateProvider>();
-        var template = templateProvider.Create(new FormattableStringTemplateIdentifier("Hello {Name}!", CultureInfo.CurrentCulture));
+        var template = templateProvider.Create(new FormattableStringTemplateIdentifier("Hello {Name}!", CultureInfo.CurrentCulture)).GetValueOrThrow();
         var templateEngine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
         var builder = new StringBuilder();
         var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), builder, new { Name = "world" });
 
         // Act
-        var result = await templateEngine.RenderAsync(request, CancellationToken.None);
+        var result = await templateEngine.RenderAsync(request);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -89,12 +89,12 @@ public class IntegrationTests : TestBase
             typeof(TestTemplateComponentRegistryPlugin).FullName,
             Directory.GetCurrentDirectory()
         );
-        var template = scope.ServiceProvider.GetRequiredService<ITemplateProvider>().Create(identifier);
+        var template = scope.ServiceProvider.GetRequiredService<ITemplateProvider>().Create(identifier).GetValueOrThrow();
         var context = new TemplateContext(templateEngine, scope.ServiceProvider.GetRequiredService<ITemplateProvider>(), "myfile.txt", identifier, template);
         var request = new RenderTemplateRequest(identifier, builder, context);
 
         // Act
-        var result = await templateEngine.RenderAsync(request, CancellationToken.None);
+        var result = await templateEngine.RenderAsync(request);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -122,12 +122,12 @@ public class IntegrationTests : TestBase
             "aaa {1 + 1} zzz",
             CultureInfo.CurrentCulture
         );
-        var template = scope.ServiceProvider.GetRequiredService<ITemplateProvider>().Create(identifier);
+        var template = scope.ServiceProvider.GetRequiredService<ITemplateProvider>().Create(identifier).GetValueOrThrow();
         var context = new TemplateContext(templateEngine, scope.ServiceProvider.GetRequiredService<ITemplateProvider>(), "myfile.txt", identifier, template);
         var request = new RenderTemplateRequest(identifier, builder, context);
 
         // Act
-        await templateEngine.RenderAsync(request, CancellationToken.None);
+        await templateEngine.RenderAsync(request);
 
         // Assert
         builder.ToString().ShouldBe("aaa 2 zzz");
@@ -165,12 +165,12 @@ public class IntegrationTests : TestBase
             typeof(TestTemplateComponentRegistryPlugin).FullName,
             Directory.GetCurrentDirectory()
         );
-        var template = scope.ServiceProvider.GetRequiredService<ITemplateProvider>().Create(identifier);
+        var template = scope.ServiceProvider.GetRequiredService<ITemplateProvider>().Create(identifier).GetValueOrThrow();
         var context = new TemplateContext(templateEngine, scope.ServiceProvider.GetRequiredService<ITemplateProvider>(), "myfile.txt", identifier, template);
         var request = new RenderTemplateRequest(identifier, builder, context);
 
         // Act
-        var result = await templateEngine.RenderAsync(request, CancellationToken.None);
+        var result = await templateEngine.RenderAsync(request);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);

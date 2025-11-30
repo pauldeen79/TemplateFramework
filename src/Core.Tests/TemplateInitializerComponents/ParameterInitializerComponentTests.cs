@@ -1,4 +1,6 @@
-﻿namespace TemplateFramework.Core.Tests.TemplateInitializerComponents;
+﻿using TemplateFramework.Core.Abstractions;
+
+namespace TemplateFramework.Core.Tests.TemplateInitializerComponents;
 
 public class ParameterInitializerComponentTests
 {
@@ -35,7 +37,7 @@ public class ParameterInitializerComponentTests
             var template = new PlainTemplateWithAdditionalParameters();
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
-            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
+            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => Result.Success<object?>(x.Args()[0]));
 
             // Act
             await sut.InitializeAsync(engineContext, CancellationToken.None);
@@ -59,7 +61,9 @@ public class ParameterInitializerComponentTests
             };
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
-            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
+            valueConverter
+                .Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>())
+                .Returns(Result.Error<object?>("Kaboom!"));
 
             // Act
             var result = await sut.InitializeAsync(engineContext, CancellationToken.None);
@@ -84,7 +88,7 @@ public class ParameterInitializerComponentTests
             };
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
-            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
+            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => Result.Success<object?>(x.Args()[0]));
 
             // Act
             var result = await sut.InitializeAsync(engineContext, CancellationToken.None);
@@ -106,7 +110,7 @@ public class ParameterInitializerComponentTests
             var template = new PlainTemplateWithAdditionalParameters();
             object? convertedValue = "Hello world!";
             valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>())
-                          .Returns(convertedValue);
+                          .Returns(Result.Success<object?>(convertedValue));
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
 
@@ -121,6 +125,7 @@ public class ParameterInitializerComponentTests
         public async Task Does_Not_Throw_On_Non_Existing_AdditionalParameters(
             [Frozen] ITemplateEngine templateEngine,
             [Frozen] ITemplateProvider templateProvider,
+            [Frozen] IValueConverter valueConverter,
             ParameterInitializerComponent sut)
         {
             // Arrange
@@ -128,6 +133,8 @@ public class ParameterInitializerComponentTests
             var template = new PlainTemplateWithAdditionalParameters();
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
+            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>())
+                          .Returns(Result.Continue<object?>());
 
             // Act & Assert
             Task t = sut.InitializeAsync(engineContext, CancellationToken.None);
@@ -147,7 +154,7 @@ public class ParameterInitializerComponentTests
             var template = new TestData.PlainTemplateWithModelAndAdditionalParameters<string>();
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), model, new StringBuilder(), DefaultFilename, additionalParameters);
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
-            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
+            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => Result.Success<object?>(x.Args()[0]));
 
             // Act
             await sut.InitializeAsync(engineContext, CancellationToken.None);
@@ -169,7 +176,7 @@ public class ParameterInitializerComponentTests
             var viewModel = new TestData.NonConstructableViewModel("Some value");
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters: new { ViewModel = viewModel });
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
-            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
+            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => Result.Success<object?>(x.Args()[0]));
 
             // Act
             await sut.InitializeAsync(engineContext, CancellationToken.None);
@@ -190,7 +197,7 @@ public class ParameterInitializerComponentTests
             var template = new TestData.PocoParameterizedTemplate();
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
-            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
+            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => Result.Success<object?>(x.Args()[0]));
             templateEngine.GetParametersAsync(Arg.Any<object>(), Arg.Any<CancellationToken>()).Returns(Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(TestData.PocoParameterizedTemplate.Parameter), typeof(string))]));
 
             // Act
@@ -198,6 +205,33 @@ public class ParameterInitializerComponentTests
 
             // Assert
             template.Parameter.ShouldBe(additionalParameters.Parameter);
+        }
+
+        [Theory, AutoMockData]
+        public async Task Returns_Result_When_Template_Has_Public_Readable_And_Writable_Properties_And_ValueConverter_Returns_Non_Successful_Result(
+            [Frozen] ITemplateEngine templateEngine,
+            [Frozen] ITemplateProvider templateProvider,
+            [Frozen] IValueConverter valueConverter,
+            ParameterInitializerComponent sut)
+        {
+            // Arrange
+            var additionalParameters = new { Parameter = "Hello world!" };
+            var template = new TestData.PocoParameterizedTemplate();
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
+            var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
+            valueConverter
+                .Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>())
+                .Returns(Result.Error<ITemplateParameter[]>("Kaboom!"));
+            templateEngine
+                .GetParametersAsync(Arg.Any<object>(), Arg.Any<CancellationToken>())
+                .Returns(Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(TestData.PocoParameterizedTemplate.Parameter), typeof(string))]));
+
+            // Act
+            var result = await sut.InitializeAsync(engineContext, CancellationToken.None);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom!");
         }
 
         [Theory, AutoMockData]
@@ -212,8 +246,12 @@ public class ParameterInitializerComponentTests
             var template = new TestData.PocoParameterizedTemplate();
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
-            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
-            templateEngine.GetParametersAsync(Arg.Any<object>(), Arg.Any<CancellationToken>()).Returns(Result.Error<ITemplateParameter[]>("Kaboom!"));
+            valueConverter
+                .Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>())
+                .Returns(x => Result.Success<object?>(x.Args()[0]));
+            templateEngine
+                .GetParametersAsync(Arg.Any<object>(), Arg.Any<CancellationToken>())
+                .Returns(Result.Error<ITemplateParameter[]>("Kaboom!"));
 
             // Act
             var result = await sut.InitializeAsync(engineContext, CancellationToken.None);
@@ -235,7 +273,7 @@ public class ParameterInitializerComponentTests
             var template = new TestData.PocoParameterizedTemplate();
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
-            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
+            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => Result.Success<object?>(x.Args()[0]));
             templateEngine.GetParametersAsync(Arg.Any<object>(), Arg.Any<CancellationToken>()).Returns(Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(TestData.PocoParameterizedTemplate.Parameter), typeof(string))]));
 
             // Act & Assert

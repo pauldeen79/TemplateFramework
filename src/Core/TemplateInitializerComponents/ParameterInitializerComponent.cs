@@ -23,7 +23,7 @@ public class ParameterInitializerComponent : ITemplateInitializerComponent
             return await SetTyped(context, parameterizedTemplate, token).ConfigureAwait(false);
         }
 
-        return await TrySetProperties(context, token).ConfigureAwait(false);
+        return await SetProperties(context, token).ConfigureAwait(false);
     }
 
     private async Task<Result> SetTyped(ITemplateEngineContext context, IParameterizedTemplate parameterizedTemplate, CancellationToken token)
@@ -43,17 +43,20 @@ public class ParameterInitializerComponent : ITemplateInitializerComponent
                 continue;
             }
 
-            var setParametersResult = await parameterizedTemplate.SetParameterAsync(item.Key, _converter.Convert(item.Value, parameter.Type, context), token).ConfigureAwait(false);
-            if (!setParametersResult.IsSuccessful())
+            var conversionResult = await _converter.Convert(item.Value, parameter.Type, context)
+                .OnSuccessAsync(value => parameterizedTemplate.SetParameterAsync(item.Key, value, token))
+                .ConfigureAwait(false);
+
+            if (!conversionResult.IsSuccessful())
             {
-                return setParametersResult;
+                return conversionResult;
             }
         }
 
         return Result.Success();
     }
 
-    private async Task<Result> TrySetProperties(ITemplateEngineContext context, CancellationToken token)
+    private async Task<Result> SetProperties(ITemplateEngineContext context, CancellationToken token)
     {
         var session = context.AdditionalParameters.ToKeyValuePairs();
         var result = await context.Engine.GetParametersAsync(context.Template!, token).ConfigureAwait(false);
@@ -79,7 +82,13 @@ public class ParameterInitializerComponent : ITemplateInitializerComponent
                 continue;
             }
 
-            prop.SetValue(context.Template, _converter.Convert(item.Value, prop.PropertyType, context));
+            var conversionResult = _converter.Convert(item.Value, prop.PropertyType, context);
+            if (!conversionResult.IsSuccessful())
+            {
+                return conversionResult;
+            }
+
+            prop.SetValue(context.Template, conversionResult.Value);
         }
 
         return Result.Success();

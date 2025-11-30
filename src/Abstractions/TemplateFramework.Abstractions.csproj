@@ -20,6 +20,7 @@
     <Using Include="System.Collections" />
     <Using Include="System.Text" />
     <Using Include="CrossCutting.Common" />
+    <Using Include="CrossCutting.Common.Abstractions" />
     <Using Include="CrossCutting.Common.Extensions" />
     <Using Include="CrossCutting.Common.Results" />
     <Using Include="TemplateFramework.Abstractions.CodeGeneration" />
@@ -33,7 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="pauldeen79.CrossCutting.Common" Version="4.0.0" />
+    <PackageReference Include="pauldeen79.CrossCutting.Common" Version="4.0.1" />
   </ItemGroup>
 
 </Project>

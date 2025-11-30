@@ -2,6 +2,5 @@
 
 public interface ITemplateProviderComponent
 {
-    bool Supports(ITemplateIdentifier identifier);
-    object Create(ITemplateIdentifier identifier);
+    Result<object> Create(ITemplateIdentifier identifier);
 }

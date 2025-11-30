@@ -5,19 +5,23 @@ public class TypedExtractorTests
     public class Extract
     {
         [Theory, AutoMockData]
-        public async Task Throws_On_Null_TemplateInstance(TypedExtractor sut)
+        public async Task Returns_Continue_On_Null_TemplateInstance(TypedExtractor sut)
         {
-            // Act & Assert
-            Task t = sut.ExtractAsync(templateInstance: null!, CancellationToken.None);
-            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("templateInstance");
+            // Act
+            var result = await sut.ExtractAsync(templateInstance: null!, CancellationToken.None);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Continue);
         }
 
         [Theory, AutoMockData]
-        public async Task Throws_On_TemplateInstance_Of_Wrong_Type(TypedExtractor sut)
+        public async Task Returns_Continue_On_TemplateInstance_Of_Wrong_Type(TypedExtractor sut)
         {
-            // Act & Assert
-            Task t = sut.ExtractAsync(templateInstance: new object(), CancellationToken.None);
-            (await t.ShouldThrowAsync<ArgumentException>()).ParamName.ShouldBe("templateInstance");
+            // Act
+            var result = await sut.ExtractAsync(templateInstance: new object(), CancellationToken.None);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Continue);
         }
 
         [Fact]
@@ -36,40 +40,25 @@ public class TypedExtractorTests
             result.Status.ShouldBe(ResultStatus.Ok);
             result.Value.ShouldBeEquivalentTo(parameters.Value);
         }
-    }
 
-    public class Supports
-    {
         [Theory, AutoMockData]
-        public void Returns_True_When_Template_Implements_IParameterizedTemplate(
-            [Frozen] IParameterizedTemplate parameterizedTemplate,
-            TypedExtractor sut)
+        public async Task Returns_Continue_When_Template_Is_Null(TypedExtractor sut)
         {
             // Act
-            var result = sut.Supports(parameterizedTemplate);
+            var result = await sut.ExtractAsync(null!, CancellationToken.None);
 
             // Assert
-            result.ShouldBeTrue();
+            result.Status.ShouldBe(ResultStatus.Continue);
         }
 
         [Theory, AutoMockData]
-        public void Returns_False_When_Template_Is_Null(TypedExtractor sut)
+        public async Task Returns_Continue_When_Template_Is_Not_Null_But_Does_Not_Implement_IParameterizedTemplate(TypedExtractor sut)
         {
             // Act
-            var result = sut.Supports(null!);
+            var result = await sut.ExtractAsync(new object(), CancellationToken.None);
 
             // Assert
-            result.ShouldBeFalse();
-        }
-
-        [Theory, AutoMockData]
-        public void Returns_False_When_Template_Is_Not_Null_But_Does_Not_Implement_IParameterizedTemplate(TypedExtractor sut)
-        {
-            // Act
-            var result = sut.Supports(new object());
-
-            // Assert
-            result.ShouldBeFalse();
+            result.Status.ShouldBe(ResultStatus.Continue);
         }
     }
 }

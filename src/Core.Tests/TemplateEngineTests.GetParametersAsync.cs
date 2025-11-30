@@ -11,7 +11,7 @@ public partial class TemplateEngineTests
             var sut = CreateSut();
 
             // Act & Assert
-            Task t = sut.GetParametersAsync(templateInstance: null!, CancellationToken.None);
+            Task t = sut.GetParametersAsync(templateInstance: null!);
             (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("templateInstance");
         }
 
@@ -25,7 +25,7 @@ public partial class TemplateEngineTests
             TemplateParameterExtractorMock.ExtractAsync(template, CancellationToken.None).Returns(parameters);
 
             // Act
-            var result = await sut.GetParametersAsync(template, CancellationToken.None);
+            var result = await sut.GetParametersAsync(template);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

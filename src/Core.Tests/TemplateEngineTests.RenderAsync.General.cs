@@ -13,12 +13,12 @@ public partial class TemplateEngineTests
         public async Task Returns_Error_When_TemplateProvider_Does_Not_Create_Template_Instance()
         {
             // Arrange
-            TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(default(object));
+            TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(default(Result<object>));
             var sut = CreateSut();
             var request = Substitute.For<IRenderTemplateRequest>();
 
             // Act
-            var result = await sut.RenderAsync(request, CancellationToken.None);
+            var result = await sut.RenderAsync(request);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -29,13 +29,13 @@ public partial class TemplateEngineTests
         public async Task Returns_Result_From_Initializer_When_Initialization_Returns_Not_Successful()
         {
             // Arrange
-            TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(new object());
+            TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(Result.Success(new object()));
             TemplateInitializerMock.InitializeAsync(Arg.Any<ITemplateEngineContext>(), Arg.Any<CancellationToken>()).Returns(Result.Error("Kaboom"));
             var sut = CreateSut();
             var request = Substitute.For<IRenderTemplateRequest>();
 
             // Act
-            var result = await sut.RenderAsync(request, CancellationToken.None);
+            var result = await sut.RenderAsync(request);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -46,14 +46,14 @@ public partial class TemplateEngineTests
         public async Task Returns_NotSupported_When_No_Renderer_Supports_The_GenerationEnvironment()
         {
             // Arrange
-            TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(new object());
+            TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(Result.Success(new object()));
             TemplateInitializerMock.InitializeAsync(Arg.Any<ITemplateEngineContext>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
             TemplateRendererMock.Supports(Arg.Any<IGenerationEnvironment>()).Returns(false);
             var sut = CreateSut();
             var request = Substitute.For<IRenderTemplateRequest>();
 
             // Act
-            var result = await sut.RenderAsync(request, CancellationToken.None);
+            var result = await sut.RenderAsync(request);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.NotSupported);

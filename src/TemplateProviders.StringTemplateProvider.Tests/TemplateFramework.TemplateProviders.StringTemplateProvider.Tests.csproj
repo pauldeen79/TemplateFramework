@@ -15,7 +15,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageReference Include="NSubstitute" Version="5.3.0" />
-    <PackageReference Include="pauldeen79.CrossCutting.Utilities.ExpressionEvaluator" Version="2.2.6" />
+    <PackageReference Include="pauldeen79.CrossCutting.Utilities.ExpressionEvaluator" Version="2.2.7" />
     <PackageReference Include="Shouldly" Version="4.3.0" />
     <PackageReference Include="xunit" Version="2.9.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
@@ -50,6 +50,7 @@
     <Using Include="System.Globalization" />
     <Using Include="System.Text" />
     <Using Include="TemplateFramework.Abstractions" />
+    <Using Include="TemplateFramework.Abstractions.Extensions" />
     <Using Include="TemplateFramework.Abstractions.Templates" />
     <Using Include="TemplateFramework.Core" />
     <Using Include="TemplateFramework.Core.Extensions" />

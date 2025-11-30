@@ -303,7 +303,7 @@ public class TemplateEngineExtensionsTests
             templateContext.DefaultFilename.Returns(DefaultFilename);
             templateContext.TemplateComponentRegistry.Returns(templateComponentRegistry);
             templateContext.CreateChildContext(Arg.Any<IChildTemplateContext>()).Returns(templateContext);
-            templateProvider.Create(Arg.Any<ITemplateIdentifier>()).Returns(Template);
+            templateProvider.Create(Arg.Any<ITemplateIdentifier>()).Returns(Result.Success(Template));
 
             // Act
             _ = await sut.RenderChildTemplateAsync(Model, generationEnvironment, templateContext, identifier, CancellationToken.None);
@@ -353,7 +353,7 @@ public class TemplateEngineExtensionsTests
             templateContext.DefaultFilename.Returns(DefaultFilename);
             templateContext.TemplateComponentRegistry.Returns(templateComponentRegistry);
             templateContext.CreateChildContext(Arg.Any<IChildTemplateContext>()).Returns(templateContext);
-            templateProvider.Create(Arg.Any<ITemplateIdentifier>()).Returns(Template);
+            templateProvider.Create(Arg.Any<ITemplateIdentifier>()).Returns(Result.Success(Template));
 
             // Act
             _ = await sut.RenderChildTemplateAsync(generationEnvironment, templateContext, identifier, CancellationToken.None);
@@ -574,7 +574,7 @@ public class TemplateEngineExtensionsTests
             templateContext.CreateChildContext(Arg.Any<IChildTemplateContext>()).Returns(templateContext);
             templateContext.DefaultFilename.Returns(DefaultFilename);
             templateContext.TemplateComponentRegistry.Returns(templateProvider);
-            templateProvider.Create(Arg.Any<ITemplateIdentifier>()).Returns(Template);
+            templateProvider.Create(Arg.Any<ITemplateIdentifier>()).Returns(Result.Success(Template));
 
             // Act
             _ = await sut.RenderChildTemplatesAsync(Models, generationEnvironment, templateContext, _ => identifier, CancellationToken.None);

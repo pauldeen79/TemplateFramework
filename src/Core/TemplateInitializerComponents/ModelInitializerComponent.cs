@@ -14,20 +14,20 @@ public class ModelInitializerComponent : ITemplateInitializerComponent
     public int Order => 1;
 
     public Task<Result> InitializeAsync(ITemplateEngineContext context, CancellationToken token)
-    {
-        Guard.IsNotNull(context);
-        Guard.IsNotNull(context.Template);
-
-        var templateType = context.Template.GetType();
-
-        if (!Array.Exists(templateType.GetInterfaces(), t => t.FullName?.StartsWith("TemplateFramework.Abstractions.IModelContainer", StringComparison.InvariantCulture) == true))
+        => Task.Run(() =>
         {
-            return Task.FromResult(Result.Continue());
-        }
+            Guard.IsNotNull(context);
+            Guard.IsNotNull(context.Template);
 
-        var modelProperty = templateType.GetProperty(nameof(IModelContainer<object?>.Model))!;
-        modelProperty.SetValue(context.Template, _converter.Convert(context.Model, modelProperty.PropertyType, context));
+            var templateType = context.Template.GetType();
 
-        return Task.FromResult(Result.Success());
-    }
+            if (!Array.Exists(templateType.GetInterfaces(), t => t.FullName?.StartsWith("TemplateFramework.Abstractions.IModelContainer", StringComparison.InvariantCulture) == true))
+            {
+                return Result.Continue();
+            }
+
+            var modelProperty = templateType.GetProperty(nameof(IModelContainer<object?>.Model))!;
+            return _converter.Convert(context.Model, modelProperty.PropertyType, context)
+                .OnSuccess(result => modelProperty.SetValue(context.Template, result.Value));
+        }, token);
 }

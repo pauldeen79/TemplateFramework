@@ -24,7 +24,7 @@ public class IntegrationTests : TestBase
         var generationEnvironment = new MultipleContentBuilder();
 
         // Act
-        var result = await engine.RenderAsync(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), generationEnvironment), CancellationToken.None);
+        var result = await engine.RenderAsync(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), generationEnvironment));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -55,7 +55,7 @@ public class IntegrationTests : TestBase
         var generationEnvironment = new MultipleContentBuilder();
 
         // Act
-        var result = await engine.RenderAsync(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), generationEnvironment), CancellationToken.None);
+        var result = await engine.RenderAsync(new RenderTemplateRequest(new TemplateInstanceIdentifier(template), generationEnvironment));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -112,7 +112,7 @@ public class IntegrationTests : TestBase
         var model = new XDocumentTestModel("Item1", "Item2", "Item3");
 
         // Act
-        var result = await engine.RenderAsync(new RenderTemplateRequest(new TemplateByNameIdentifier("XDocumentTemplate"), model, generationEnvironment, string.Empty, null, null), CancellationToken.None);
+        var result = await engine.RenderAsync(new RenderTemplateRequest(new TemplateByNameIdentifier("XDocumentTemplate"), model, generationEnvironment, string.Empty, null, null));
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -140,9 +140,12 @@ public class IntegrationTests : TestBase
         var engine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
         var generationEnvironment = new MultipleContentBuilder();
 
-        // Act & Assert
-        Task t = engine.RenderAsync(new RenderTemplateRequest(new TemplateByNameIdentifier("Unknown"), generationEnvironment), CancellationToken.None);
-        (await t.ShouldThrowAsync<NotSupportedException>()).Message.ShouldBe("Template with name Unknown is not supported");
+        // Act
+        var result = await engine.RenderAsync(new RenderTemplateRequest(new TemplateByNameIdentifier("Unknown"), generationEnvironment));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.NotSupported);
+        result.ErrorMessage.ShouldBe("Template with name Unknown is not supported");
     }
 
     [Fact]
@@ -160,8 +163,11 @@ public class IntegrationTests : TestBase
         var engine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
         var generationEnvironment = new MultipleContentBuilder();
 
-        // Act & Assert
-        Task t = engine.RenderAsync(new RenderTemplateRequest(new TemplateByModelIdentifier("Unknown"), generationEnvironment), CancellationToken.None);
-        (await t.ShouldThrowAsync<NotSupportedException>()).Message.ShouldBe("Model of type System.String is not supported");
+        // Act
+        var result = await engine.RenderAsync(new RenderTemplateRequest(new TemplateByModelIdentifier("Unknown"), generationEnvironment));
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.NotSupported);
+        result.ErrorMessage.ShouldBe("Model of type System.String is not supported");
     }
 }

@@ -2,13 +2,13 @@
 
 public class TemplateInstanceIdentifierComponent : ITemplateProviderComponent
 {
-    public object Create(ITemplateIdentifier identifier)
+    public Result<object> Create(ITemplateIdentifier identifier)
     {
-        Guard.IsNotNull(identifier);
-        Guard.IsAssignableToType<TemplateInstanceIdentifier>(identifier);
+        if (identifier is not TemplateInstanceIdentifier templateInstanceIdentifier)
+        {
+            return Result.Continue<object>();
+        }
 
-        return ((TemplateInstanceIdentifier)identifier).Instance;
+        return Result.Success(templateInstanceIdentifier.Instance);
     }
-
-    public bool Supports(ITemplateIdentifier identifier) => identifier is TemplateInstanceIdentifier;
 }

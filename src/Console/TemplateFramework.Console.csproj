@@ -23,7 +23,7 @@
   <ItemGroup>
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="4.1.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
-    <PackageReference Include="pauldeen79.CrossCutting.Utilities.ExpressionEvaluator" Version="2.2.6" />
+    <PackageReference Include="pauldeen79.CrossCutting.Utilities.ExpressionEvaluator" Version="2.2.7" />
     <PackageReference Include="Sharprompt" Version="3.0.1" />
     <PackageReference Include="TextCopy" Version="6.2.1" />
   </ItemGroup>

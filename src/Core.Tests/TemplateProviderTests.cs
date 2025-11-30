@@ -14,25 +14,35 @@ public class TemplateProviderTests
     public class Create
     {
         [Theory, AutoMockData]
-        public void Throws_On_Null_Identifier(TemplateProvider sut)
+        public void Returns_Invalid_On_Null_Identifier(
+            [Frozen] ITemplateProviderComponent templateProviderComponent,
+            TemplateProvider sut)
         {
-            // Act & Assert
-            Action a = () => sut.Create(identifier: null!);
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("identifier");
+            // Arrange
+            templateProviderComponent.Create(Arg.Any<ITemplateIdentifier>()).Returns(Result.Continue<object>());
+
+            // Act
+            var result = sut.Create(identifier: null!);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Identifier is required");
         }
 
         [Theory, AutoMockData]
-        public void Throws_On_Unsupported_Type(
+        public void Returns_NotSupported_On_Unsupported_Type(
             [Frozen] ITemplateProviderComponent templateProviderComponent,
             [Frozen] ITemplateIdentifier identifier,
             TemplateProvider sut)
         {
             // Arrange
-            templateProviderComponent.Supports(identifier).Returns(false);
+            templateProviderComponent.Create(Arg.Any<ITemplateIdentifier>()).Returns(Result.Continue<object>());
 
-            // Act & Assert
-            Action a = () => sut.Create(identifier: identifier);
-            a.ShouldThrow<NotSupportedException>();
+            // Act
+            var result = sut.Create(identifier: identifier);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.NotSupported);
         }
 
         [Theory, AutoMockData]
@@ -43,14 +53,14 @@ public class TemplateProviderTests
         {
             // Arrange
             var expectedTemplate = new object();
-            templateProviderComponent.Supports(identifier).Returns(true);
-            templateProviderComponent.Create(identifier).Returns(expectedTemplate);
+            templateProviderComponent.Create(Arg.Any<ITemplateIdentifier>()).Returns(Result.Success(expectedTemplate));
 
             // Act
             var template = sut.Create(identifier);
 
             // Assert
-            template.ShouldBeSameAs(expectedTemplate);
+            template.Status.ShouldBe(ResultStatus.Ok);
+            template.Value.ShouldBeSameAs(expectedTemplate);
         }
     }
 
@@ -72,8 +82,7 @@ public class TemplateProviderTests
         {
             // Arrange
             var expectedTemplate = new object();
-            customTemplateProviderComponent.Supports(identifier).Returns(true);
-            customTemplateProviderComponent.Create(identifier).Returns(expectedTemplate);
+            customTemplateProviderComponent.Create(Arg.Any<ITemplateIdentifier>()).Returns(Result.Success(expectedTemplate));
 
             // Act
             sut.RegisterComponent(customTemplateProviderComponent);
@@ -93,16 +102,15 @@ public class TemplateProviderTests
         {
             // Arrange
             var sut = new TemplateProvider(Enumerable.Empty<ITemplateProviderComponent>()); //important for this test to begin without any template provider components
-            newTemplateProviderComponent.Supports(Arg.Any<ITemplateIdentifier>()).Returns(true);
-            newTemplateProviderComponent.Create(Arg.Any<ITemplateIdentifier>()).Returns(this);
+            newTemplateProviderComponent.Create(Arg.Any<ITemplateIdentifier>()).Returns(Result.Success<object>(this));
             sut.RegisterComponent(newTemplateProviderComponent);
 
             // Act
             await sut.StartSessionAsync(CancellationToken.None);
 
             // Assert
-            Action a = () => sut.Create(identifier);
-            a.ShouldThrow<NotSupportedException>();
+            var result = sut.Create(identifier);
+            result.Status.ShouldBe(ResultStatus.NotSupported);
         }
 
         [Fact]
@@ -161,7 +169,7 @@ public class TemplateProviderTests
                 Success = success;
             }
 
-            public object Create(ITemplateIdentifier identifier)
+            public Result<object> Create(ITemplateIdentifier identifier)
             {
                 throw new NotImplementedException();
             }
@@ -172,11 +180,6 @@ public class TemplateProviderTests
                 return Task.FromResult(Success
                     ? Result.Success()
                     : Result.Error("Kaboom"));
-            }
-
-            public bool Supports(ITemplateIdentifier identifier)
-            {
-                throw new NotImplementedException();
             }
         }
     }

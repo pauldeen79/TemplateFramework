@@ -67,7 +67,7 @@ public partial class MultipleStringContentBuilderTemplateRendererTests
                                  });
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), DefaultFilename, generationEnvironment);
             var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
-            TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(template);
+            TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(Result.Success<object>(template));
             TemplateEngineMock
                 .RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>())
                 .Returns(x =>
@@ -102,7 +102,7 @@ public partial class MultipleStringContentBuilderTemplateRendererTests
                                  });
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), DefaultFilename, generationEnvironment);
             var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
-            TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(template);
+            TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(Result.Success<object>(template));
             TemplateEngineMock
                 .RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>())
                 .Returns(x =>
@@ -136,7 +136,7 @@ public partial class MultipleStringContentBuilderTemplateRendererTests
                                  });
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), DefaultFilename, generationEnvironment);
             var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
-            TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(template);
+            TemplateProviderMock.Create(Arg.Any<ITemplateIdentifier>()).Returns(Result.Success<object>(template));
             TemplateEngineMock
                 .RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>())
                 .Returns(x =>

@@ -15,12 +15,15 @@ public class TemplateParameterExtractor : ITemplateParameterExtractor
     {
         Guard.IsNotNull(templateInstance);
 
-        var component = _components.FirstOrDefault(x => x.Supports(templateInstance));
-        if (component is null)
+        foreach (var component in _components)
         {
-            return Result.Continue(Array.Empty<ITemplateParameter>());
+            var result = await component.ExtractAsync(templateInstance, token).ConfigureAwait(false);
+            if (result.Status != ResultStatus.Continue)
+            {
+                return result;
+            }
         }
 
-        return await component.ExtractAsync(templateInstance, token).ConfigureAwait(false);
+        return Result.Continue(Array.Empty<ITemplateParameter>());
     }
 }

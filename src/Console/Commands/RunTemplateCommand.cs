@@ -138,9 +138,9 @@ public class RunTemplateCommand : CommandBase
 
             (await _templateProvider.StartSessionAsync(args.token).ConfigureAwait(false))
             .OnFailure(async err => await args.app.Out.WriteLineAsync(err.ToString()).ConfigureAwait(false))
-            .OnSuccess(async () =>
+            .OnSuccess(() => _templateProvider.Create(templateIdentifier))
+            .OnSuccess(async template =>
             {
-                var template = _templateProvider.Create(templateIdentifier);
                 var success = false;
 
                 if (args.listParameters)

@@ -29,15 +29,15 @@ public class TemplateCreator<T> : ITemplateCreator
         _factory = factory;
     }
 
-    public object CreateByModel(object? model)
+    public Result<object> CreateByModel(object? model)
         => SupportsModel(model)
-            ? _factory()
-            : throw new NotSupportedException("Model type is not supported");
+            ? Result.Success<object>(_factory()).EnsureValue()
+            : Result.Continue<object>();
 
-    public object CreateByName(string name)
+    public Result<object> CreateByName(string name)
         => SupportsName(name)
-            ? _factory()
-            : throw new NotSupportedException("Name is not supported");
+            ? Result.Success<object>(_factory()).EnsureValue()
+            : Result.Continue<object>();
 
     public bool SupportsModel(object? model)
         => model is not null && _modelType?.IsInstanceOfType(model) == true;

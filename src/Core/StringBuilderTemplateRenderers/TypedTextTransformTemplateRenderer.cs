@@ -2,7 +2,7 @@
 
 public class TypedTextTransformTemplateRenderer : IBuilderTemplateRenderer<StringBuilder>
 {
-    public async Task<Result> TryRenderAsync(object instance, StringBuilder builder, CancellationToken token)
+    public async Task<Result> RenderAsync(object instance, StringBuilder builder, CancellationToken token)
     {
         Guard.IsNotNull(builder);
 

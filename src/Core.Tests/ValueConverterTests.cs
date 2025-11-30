@@ -1,4 +1,4 @@
-namespace TemplateFramework.Core.Tests;
+﻿namespace TemplateFramework.Core.Tests;
 
 public class ValueConverterTests
 {
@@ -21,13 +21,14 @@ public class ValueConverterTests
         {
             // Arrange
             var value = "Hello world!";
-            templateParameterConverter.TryConvert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>(), out Arg.Any<object?>()).Returns(false);
+            templateParameterConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(Result.Continue<object?>());
 
             // Act
             var result = sut.Convert(value, value.GetType(), context);
 
             // Assert
-            result.ShouldBeSameAs(value);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeSameAs(value);
         }
 
         [Theory, AutoMockData]
@@ -38,17 +39,16 @@ public class ValueConverterTests
         {
             // Arrange
             var value = "Hello world!";
-            templateParameterConverter.TryConvert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>(), out Arg.Any<object?>()).Returns(x =>
-            {
-                x[3] = value.ToUpperInvariant();
-                return true;
-            });
+            templateParameterConverter
+                .Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>())
+                .Returns(x => Result.Success<object?>(value.ToUpperInvariant()));
 
             // Act
             var result = sut.Convert(value, value.GetType(), context);
 
             // Assert
-            result.ShouldBeEquivalentTo(value.ToUpperInvariant());
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeEquivalentTo(value.ToUpperInvariant());
         }
     }
 }

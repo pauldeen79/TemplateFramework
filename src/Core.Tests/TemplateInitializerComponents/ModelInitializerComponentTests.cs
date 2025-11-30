@@ -19,8 +19,8 @@ public class ModelInitializerComponentTests
         public void Throws_On_Null_Context(ModelInitializerComponent sut)
         {
             // Act & Assert
-            Action a = () => sut.InitializeAsync(context: null!, CancellationToken.None);
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
+            Task t = sut.InitializeAsync(context: null!, CancellationToken.None);
+            t.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
         }
 
         [Theory, AutoMockData]
@@ -35,7 +35,9 @@ public class ModelInitializerComponentTests
             var template = new TestData.TemplateWithModel<string>(_ => { });
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), model, new StringBuilder(), DefaultFilename);
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
-            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => x.Args()[0]);
+            valueConverter
+                .Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>())
+                .Returns(x => Result.Success<object?>(x.Args()[0]));
 
             // Act
             await sut.InitializeAsync(engineContext, CancellationToken.None);

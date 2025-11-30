@@ -6,7 +6,7 @@ public partial class StringBuilderTemplateRendererTests
     {
         public RenderAsync()
         {
-            StringBuilderTemplateRendererMock.TryRenderAsync(Arg.Any<object>(), Arg.Any<StringBuilder>(), Arg.Any<CancellationToken>())
+            StringBuilderTemplateRendererMock.RenderAsync(Arg.Any<object>(), Arg.Any<StringBuilder>(), Arg.Any<CancellationToken>())
                 .Returns(Result.Success());
         }
 
@@ -51,7 +51,7 @@ public partial class StringBuilderTemplateRendererTests
             await sut.RenderAsync(engineContext, CancellationToken.None);
 
             // Assert
-            await StringBuilderTemplateRendererMock.Received().TryRenderAsync(Arg.Any<object>(), Arg.Any<StringBuilder>(), Arg.Any<CancellationToken>());
+            await StringBuilderTemplateRendererMock.Received().RenderAsync(Arg.Any<object>(), Arg.Any<StringBuilder>(), Arg.Any<CancellationToken>());
         }
 
         [Fact]
@@ -63,7 +63,7 @@ public partial class StringBuilderTemplateRendererTests
             var generationEnvironment = new StringBuilder();
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), generationEnvironment);
             var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
-            StringBuilderTemplateRendererMock.TryRenderAsync(Arg.Any<object>(), Arg.Any<StringBuilder>(), Arg.Any<CancellationToken>())
+            StringBuilderTemplateRendererMock.RenderAsync(Arg.Any<object>(), Arg.Any<StringBuilder>(), Arg.Any<CancellationToken>())
                 .Returns(Result.Continue());
 
             // Act
@@ -81,7 +81,7 @@ public partial class StringBuilderTemplateRendererTests
             var template = new TestData.Template(b => b.Append("Hello world!"));
             var generationEnvironment = new StringBuilder();
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), generationEnvironment);
-            StringBuilderTemplateRendererMock.TryRenderAsync(Arg.Any<object>(), Arg.Any<StringBuilder>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
+            StringBuilderTemplateRendererMock.RenderAsync(Arg.Any<object>(), Arg.Any<StringBuilder>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
             var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
 
             // Act
@@ -99,7 +99,7 @@ public partial class StringBuilderTemplateRendererTests
             var template = new TestData.Template(b => b.Append("Hello world!"));
             var generationEnvironment = new StringBuilder();
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), generationEnvironment);
-            StringBuilderTemplateRendererMock.TryRenderAsync(Arg.Any<object>(), Arg.Any<StringBuilder>(), Arg.Any<CancellationToken>()).Returns(Result.Error());
+            StringBuilderTemplateRendererMock.RenderAsync(Arg.Any<object>(), Arg.Any<StringBuilder>(), Arg.Any<CancellationToken>()).Returns(Result.Error());
             var engineContext = new TemplateEngineContext(request, TemplateEngineMock, TemplateProviderMock, template);
 
             // Act

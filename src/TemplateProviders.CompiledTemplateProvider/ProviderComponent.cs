@@ -1,4 +1,6 @@
-﻿namespace TemplateFramework.TemplateProviders.CompiledTemplateProvider;
+﻿using CrossCutting.Common.Results;
+
+namespace TemplateFramework.TemplateProviders.CompiledTemplateProvider;
 
 public sealed class ProviderComponent : ITemplateProviderComponent
 {
@@ -14,21 +16,26 @@ public sealed class ProviderComponent : ITemplateProviderComponent
         _templateFactory = templateFactory;
     }
 
-    public bool Supports(ITemplateIdentifier identifier) => identifier is CompiledTemplateIdentifier;
-
-    public object Create(ITemplateIdentifier identifier)
+    public Result<object> Create(ITemplateIdentifier identifier)
     {
-        Guard.IsNotNull(identifier);
-        Guard.IsAssignableToType<CompiledTemplateIdentifier>(identifier);
+        if (identifier is not CompiledTemplateIdentifier createCompiledTemplateRequest)
+        {
+            return Result.Continue<object>();
+        }
 
-        var createCompiledTemplateRequest = (CompiledTemplateIdentifier)identifier;
         var assembly = _assemblyService.GetAssembly(createCompiledTemplateRequest.AssemblyName, createCompiledTemplateRequest.CurrentDirectory);
-        var type = assembly.GetType(createCompiledTemplateRequest.ClassName)
-            ?? throw new InvalidOperationException($"Could not get type for class {createCompiledTemplateRequest.ClassName}");
+        var type = assembly.GetType(createCompiledTemplateRequest.ClassName);
+        if (type is null)
+        {
+            return Result.Error<object>($"Could not get type for class {createCompiledTemplateRequest.ClassName}");
+        }
 
-        var template = _templateFactory.Create(type)
-            ?? throw new InvalidOperationException($"Could not create instance of type {createCompiledTemplateRequest.ClassName}");
+        var template = _templateFactory.Create(type);
+        if (template is null)
+        {
+            return Result.Error<object>($"Could not create instance of type {createCompiledTemplateRequest.ClassName}");
+        }
 
-        return template;
+        return Result.Success(template);
     }
 }
