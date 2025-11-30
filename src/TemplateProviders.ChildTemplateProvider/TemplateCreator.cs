@@ -31,12 +31,12 @@ public class TemplateCreator<T> : ITemplateCreator
 
     public Result<object> CreateByModel(object? model)
         => SupportsModel(model)
-            ? Result.Success<object>(_factory()).EnsureNotNull().EnsureValue()
+            ? Result.Success<object>(_factory()).EnsureValue()
             : Result.Continue<object>();
 
     public Result<object> CreateByName(string name)
         => SupportsName(name)
-            ? Result.Success<object>(_factory()).EnsureNotNull().EnsureValue()
+            ? Result.Success<object>(_factory()).EnsureValue()
             : Result.Continue<object>();
 
     public bool SupportsModel(object? model)

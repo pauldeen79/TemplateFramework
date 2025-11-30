@@ -38,7 +38,9 @@ public sealed class TemplateEngine : ITemplateEngine
         var template = request.Context?.Template;
         if (template is null || template is IIgnoreThis)
         {
-            var templateResult = _provider.Create(request.Identifier).EnsureNotNull("TemplateProvider did not create a template instance").EnsureValue("TemplateProvider did not create a template instance");
+            var templateResult = _provider.Create(request.Identifier)
+                .EnsureNotNull("TemplateProvider did not create a template instance")
+                .EnsureValue("TemplateProvider did not create a template instance");
             if (!templateResult.IsSuccessful())
             {
                 return templateResult;
