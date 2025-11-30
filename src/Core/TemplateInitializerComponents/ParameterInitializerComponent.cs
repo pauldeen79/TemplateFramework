@@ -23,7 +23,7 @@ public class ParameterInitializerComponent : ITemplateInitializerComponent
             return await SetTyped(context, parameterizedTemplate, token).ConfigureAwait(false);
         }
 
-        return await TrySetProperties(context, token).ConfigureAwait(false);
+        return await SetProperties(context, token).ConfigureAwait(false);
     }
 
     private async Task<Result> SetTyped(ITemplateEngineContext context, IParameterizedTemplate parameterizedTemplate, CancellationToken token)
@@ -42,19 +42,21 @@ public class ParameterInitializerComponent : ITemplateInitializerComponent
             {
                 continue;
             }
-            var conversionResult = _converter.Convert(item.Value, parameter.Type, context);
+
+            var conversionResult = await _converter.Convert(item.Value, parameter.Type, context)
+                .OnSuccessAsync(value => parameterizedTemplate.SetParameterAsync(item.Key, value, token))
+                .ConfigureAwait(false);
+
             if (!conversionResult.IsSuccessful())
             {
                 return conversionResult;
             }
-
-            return await parameterizedTemplate.SetParameterAsync(item.Key, conversionResult.Value, token).ConfigureAwait(false);
         }
 
         return Result.Success();
     }
 
-    private async Task<Result> TrySetProperties(ITemplateEngineContext context, CancellationToken token)
+    private async Task<Result> SetProperties(ITemplateEngineContext context, CancellationToken token)
     {
         var session = context.AdditionalParameters.ToKeyValuePairs();
         var result = await context.Engine.GetParametersAsync(context.Template!, token).ConfigureAwait(false);

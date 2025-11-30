@@ -61,7 +61,9 @@ public class ParameterInitializerComponentTests
             };
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
-            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => Result.Success<object?>(x.Args()[0]));
+            valueConverter
+                .Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>())
+                .Returns(Result.Error<object?>("Kaboom!"));
 
             // Act
             var result = await sut.InitializeAsync(engineContext, CancellationToken.None);
