@@ -83,7 +83,7 @@ public class ParameterInitializerComponent : ITemplateInitializerComponent
             }
 
             var conversionResult = _converter.Convert(item.Value, prop.PropertyType, context);
-            if (!result.IsSuccessful())
+            if (!conversionResult.IsSuccessful())
             {
                 return conversionResult;
             }

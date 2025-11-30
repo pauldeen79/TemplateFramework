@@ -208,6 +208,33 @@ public class ParameterInitializerComponentTests
         }
 
         [Theory, AutoMockData]
+        public async Task Returns_Result_When_Template_Has_Public_Readable_And_Writable_Properties_And_ValueConverter_Returns_Non_Successful_Result(
+            [Frozen] ITemplateEngine templateEngine,
+            [Frozen] ITemplateProvider templateProvider,
+            [Frozen] IValueConverter valueConverter,
+            ParameterInitializerComponent sut)
+        {
+            // Arrange
+            var additionalParameters = new { Parameter = "Hello world!" };
+            var template = new TestData.PocoParameterizedTemplate();
+            var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
+            var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
+            valueConverter
+                .Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>())
+                .Returns(Result.Error<ITemplateParameter[]>("Kaboom!"));
+            templateEngine
+                .GetParametersAsync(Arg.Any<object>(), Arg.Any<CancellationToken>())
+                .Returns(Result.Success<ITemplateParameter[]>([new TemplateParameter(nameof(TestData.PocoParameterizedTemplate.Parameter), typeof(string))]));
+
+            // Act
+            var result = await sut.InitializeAsync(engineContext, CancellationToken.None);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom!");
+        }
+
+        [Theory, AutoMockData]
         public async Task Returns_Result_When_Template_Has_Public_Readable_And_Writable_Properties_And_GetParameters_Returns_Non_Successful_Result(
             [Frozen] ITemplateEngine templateEngine,
             [Frozen] ITemplateProvider templateProvider,
@@ -219,8 +246,12 @@ public class ParameterInitializerComponentTests
             var template = new TestData.PocoParameterizedTemplate();
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), new StringBuilder(), DefaultFilename, additionalParameters);
             var engineContext = new TemplateEngineContext(request, templateEngine, templateProvider, template);
-            valueConverter.Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>()).Returns(x => Result.Success<object?>(x.Args()[0]));
-            templateEngine.GetParametersAsync(Arg.Any<object>(), Arg.Any<CancellationToken>()).Returns(Result.Error<ITemplateParameter[]>("Kaboom!"));
+            valueConverter
+                .Convert(Arg.Any<object?>(), Arg.Any<Type>(), Arg.Any<ITemplateEngineContext>())
+                .Returns(x => Result.Success<object?>(x.Args()[0]));
+            templateEngine
+                .GetParametersAsync(Arg.Any<object>(), Arg.Any<CancellationToken>())
+                .Returns(Result.Error<ITemplateParameter[]>("Kaboom!"));
 
             // Act
             var result = await sut.InitializeAsync(engineContext, CancellationToken.None);
