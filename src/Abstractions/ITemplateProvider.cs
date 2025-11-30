@@ -2,5 +2,5 @@
 
 public interface ITemplateProvider : ITemplateComponentRegistry, ISessionAwareComponent
 {
-    object Create(ITemplateIdentifier identifier);
+    Result<object> Create(ITemplateIdentifier identifier);
 }

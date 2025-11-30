@@ -16,24 +16,21 @@ public class ProviderComponent : ITemplateProviderComponent, ISessionAwareCompon
         _componentRegistrationContext = componentRegistrationContext;
     }
 
-    public bool Supports(ITemplateIdentifier identifier) => identifier is ExpressionStringTemplateIdentifier or FormattableStringTemplateIdentifier;
-
-    public object Create(ITemplateIdentifier identifier)
+    public Result<object> Create(ITemplateIdentifier identifier)
     {
         Guard.IsNotNull(identifier);
 
         if (identifier is ExpressionStringTemplateIdentifier expressionStringTemplateIdentifier)
         {
-            return new ExpressionStringTemplate(expressionStringTemplateIdentifier, _expressionEvaluator, _componentRegistrationContext);
+            return Result.Success<object>(new ExpressionStringTemplate(expressionStringTemplateIdentifier, _expressionEvaluator, _componentRegistrationContext));
         }
-        else if (identifier is FormattableStringTemplateIdentifier formattableStringTemplateIdentifier)
+
+        if (identifier is FormattableStringTemplateIdentifier formattableStringTemplateIdentifier)
         {
-            return new FormattableStringTemplate(formattableStringTemplateIdentifier, _expressionEvaluator, _componentRegistrationContext);
+            return Result.Success<object>(new FormattableStringTemplate(formattableStringTemplateIdentifier, _expressionEvaluator, _componentRegistrationContext));
         }
-        else
-        {
-            throw new NotSupportedException($"Identifier of type {identifier.GetType().FullName} is not supported");
-        }
+
+        return Result.Continue<object>();
     }
 
     public Task<Result> StartSessionAsync(CancellationToken token)

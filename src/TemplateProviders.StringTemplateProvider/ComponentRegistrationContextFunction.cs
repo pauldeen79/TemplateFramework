@@ -52,8 +52,8 @@ public class ComponentRegistrationContextFunction : IDynamicDescriptorsProvider,
 
         foreach (var function in _functions)
         {
-            var result = _memberDescriptorMapper.Map(function, GetType());
-            if (!result.EnsureValue().IsSuccessful())
+            var result = _memberDescriptorMapper.Map(function, GetType()).EnsureNotNull().EnsureValue();
+            if (!result.IsSuccessful())
             {
                 return result;
             }

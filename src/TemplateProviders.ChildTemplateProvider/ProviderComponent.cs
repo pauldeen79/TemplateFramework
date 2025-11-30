@@ -11,9 +11,12 @@ public sealed class ProviderComponent : ITemplateProviderComponent
         _childTemplateCreators = childTemplateCreators;
     }
 
-    public object Create(ITemplateIdentifier identifier)
+    public Result<object> Create(ITemplateIdentifier identifier)
     {
-        Guard.IsNotNull(identifier);
+        if (!_childTemplateCreators.Any())
+        {
+            return Result.Continue<object>();
+        }
 
         if (identifier is TemplateByModelIdentifier templateByModelIdentifier)
         {
@@ -24,31 +27,34 @@ public sealed class ProviderComponent : ITemplateProviderComponent
             return CreateByName(templateByNameIdentifier.Name);
         }
 
-        throw new NotSupportedException($"Unsupported template identifier: {identifier.GetType().FullName}");
+        return Result.Continue<object>();
     }
 
-    private object CreateByModel(object? model)
+    private Result<object> CreateByModel(object? model)
     {
-        var creator = _childTemplateCreators.FirstOrDefault(x => x.SupportsModel(model));
-        if (creator is null)
+        foreach (var creator in _childTemplateCreators)
         {
-            throw new NotSupportedException($"Model of type {model?.GetType()} is not supported");
+            var result = creator.CreateByModel(model).EnsureNotNull("Child template creator returned a null instance");
+            if (result.Status != ResultStatus.Continue)
+            {
+                return result;
+            }
         }
 
-        return creator.CreateByModel(model) ?? throw new InvalidOperationException("Child template creator returned a null instance");
+        return Result.NotSupported<object>($"Model of type {model?.GetType()} is not supported");
     }
 
-    private object CreateByName(string name)
+    private Result<object> CreateByName(string name)
     {
-        var creator = _childTemplateCreators.FirstOrDefault(x => x.SupportsName(name));
-        if (creator is null)
+        foreach (var creator in _childTemplateCreators)
         {
-            throw new NotSupportedException($"Template with name {name} is not supported");
+            var result = creator.CreateByName(name).EnsureNotNull("Child template creator returned a null instance");
+            if (result.Status != ResultStatus.Continue)
+            {
+                return result;
+            }
         }
 
-        return creator.CreateByName(name) ?? throw new InvalidOperationException("Child template creator returned a null instance");
+        return Result.NotSupported<object>($"Template with name {name} is not supported");
     }
-
-    public bool Supports(ITemplateIdentifier identifier)
-        => (identifier is TemplateByModelIdentifier || identifier is TemplateByNameIdentifier) && _childTemplateCreators.Any();
 }

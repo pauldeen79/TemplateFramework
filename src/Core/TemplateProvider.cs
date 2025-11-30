@@ -10,17 +10,26 @@ public class TemplateProvider : ITemplateProvider
         Guard.IsNotNull(components);
 
         _originalComponents = components.ToList();
-        _components = new List<ITemplateProviderComponent>(_originalComponents);
+        _components = [.. _originalComponents];
     }
 
-    public object Create(ITemplateIdentifier identifier)
+    public Result<object> Create(ITemplateIdentifier identifier)
     {
-        Guard.IsNotNull(identifier);
+        if (identifier is null)
+        {
+            return Result.Invalid<object>("Identifier is required");
+        }
 
-        var component = _components.Find(x => x.Supports(identifier))
-            ?? throw new NotSupportedException($"Type of identifier {identifier.GetType().FullName} is not supported");
-
-        return component.Create(identifier);
+        foreach (var component in _components)
+        {
+            var result = component.Create(identifier);
+            if (result.Status != ResultStatus.Continue)
+            {
+                return result;
+            }
+        }
+        
+        return Result.NotSupported<object>($"Type of identifier {identifier.GetType().FullName} is not supported");
     }
 
     public void RegisterComponent(ITemplateProviderComponent component)

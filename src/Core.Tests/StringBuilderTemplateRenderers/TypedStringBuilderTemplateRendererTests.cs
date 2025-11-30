@@ -2,13 +2,13 @@
 
 public class TypedStringBuilderTemplateRendererTests
 {
-    public class TryRender
+    public class RenderAsync
     {
         [Theory, AutoMockData]
         public async Task Returns_Continue_On_Null_Instance(TypedBuilderTemplateRenderer<StringBuilder> sut)
         {
             // Act
-            var result = await sut.TryRenderAsync(instance: null!, new StringBuilder(), CancellationToken.None);
+            var result = await sut.RenderAsync(instance: null!, new StringBuilder(), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
@@ -18,7 +18,7 @@ public class TypedStringBuilderTemplateRendererTests
         public async Task Returns_Continue_On_NonNull_Instance_But_Wrong_Type(TypedBuilderTemplateRenderer<StringBuilder> sut)
         {
             // Act
-            var result = await sut.TryRenderAsync(instance: this, new StringBuilder(), CancellationToken.None);
+            var result = await sut.RenderAsync(instance: this, new StringBuilder(), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
@@ -30,7 +30,7 @@ public class TypedStringBuilderTemplateRendererTests
             TypedBuilderTemplateRenderer<StringBuilder> sut)
         {
             // Act
-            var result = await sut.TryRenderAsync(instance: stringBuilderTemplate, new StringBuilder(), CancellationToken.None);
+            var result = await sut.RenderAsync(instance: stringBuilderTemplate, new StringBuilder(), CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -45,7 +45,7 @@ public class TypedStringBuilderTemplateRendererTests
             var builder = new StringBuilder();
 
             // Act
-            _ = await sut.TryRenderAsync(instance: stringBuilderTemplate, builder, CancellationToken.None);
+            _ = await sut.RenderAsync(instance: stringBuilderTemplate, builder, CancellationToken.None);
 
             // Assert
             await stringBuilderTemplate.Received().RenderAsync(builder, Arg.Any<CancellationToken>());

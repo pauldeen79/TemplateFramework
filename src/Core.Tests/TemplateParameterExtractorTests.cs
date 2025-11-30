@@ -26,7 +26,8 @@ public class TemplateParameterExtractorTests
             TemplateParameterExtractor sut)
         {
             // Arrange
-            templateParameterExtractorComponent.Supports(Arg.Any<object>()).Returns(false);
+            templateParameterExtractorComponent.ExtractAsync(Arg.Any<object>(), Arg.Any<CancellationToken>())
+                                               .Returns(Result.Continue<ITemplateParameter[]>());
 
             // Act
             var result = await sut.ExtractAsync(templateInstance: new object(), CancellationToken.None);
@@ -43,8 +44,8 @@ public class TemplateParameterExtractorTests
             var template = new object();
             var templateParameterExtractorComponent = Substitute.For<ITemplateParameterExtractorComponent>();
             var parametersResult = Result.Success<ITemplateParameter[]>([new TemplateParameter("name", typeof(string))]);
-            templateParameterExtractorComponent.Supports(template).Returns(true);
-            templateParameterExtractorComponent.ExtractAsync(template, Arg.Any<CancellationToken>()).Returns(parametersResult);
+            templateParameterExtractorComponent.ExtractAsync(template, Arg.Any<CancellationToken>())
+                                               .Returns(parametersResult);
             var sut = new TemplateParameterExtractor([templateParameterExtractorComponent]);
 
             // Act

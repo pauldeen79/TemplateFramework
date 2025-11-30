@@ -16,7 +16,7 @@ public partial class TemplateEngineTests
             var sut = CreateSut();
 
             // Act & Assert
-            Task t = sut.RenderAsync(request: null!, CancellationToken.None);
+            Task t = sut.RenderAsync(request: null!);
             (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("request");
         }
 
@@ -29,11 +29,11 @@ public partial class TemplateEngineTests
             IMultipleContentBuilder<StringBuilder>? generationEnvironment = MultipleContentBuilderMock;
             var additionalParameters = new { AdditionalParameter = "Some value" };
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), generationEnvironment, additionalParameters);
-            TemplateProviderMock.Create(Arg.Any<TemplateInstanceIdentifier>()).Returns(template);
+            TemplateProviderMock.Create(Arg.Any<TemplateInstanceIdentifier>()).Returns(Result.Success<object>(template));
             TemplateInitializerMock.InitializeAsync(Arg.Any<ITemplateEngineContext>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
 
             // Act
-            await sut.RenderAsync(request, CancellationToken.None);
+            await sut.RenderAsync(request);
 
             // Assert
             await TemplateInitializerMock.Received().InitializeAsync(Arg.Any<ITemplateEngineContext>(), Arg.Any<CancellationToken>());
@@ -49,11 +49,11 @@ public partial class TemplateEngineTests
             var additionalParameters = new { AdditionalParameter = "Some value" };
             TemplateRendererMock.Supports(Arg.Any<IGenerationEnvironment>()).Returns(true);
             var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), additionalParameters, generationEnvironment);
-            TemplateProviderMock.Create(Arg.Any<TemplateInstanceIdentifier>()).Returns(template);
+            TemplateProviderMock.Create(Arg.Any<TemplateInstanceIdentifier>()).Returns(Result.Success<object>(template));
             TemplateInitializerMock.InitializeAsync(Arg.Any<ITemplateEngineContext>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
 
             // Act
-            await sut.RenderAsync(request, CancellationToken.None);
+            await sut.RenderAsync(request);
 
             // Assert
             await TemplateRendererMock.Received().RenderAsync(Arg.Is<ITemplateEngineContext>(req =>

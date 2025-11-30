@@ -2,7 +2,7 @@
 
 public class TypedBuilderTemplateRenderer<TBuilder> : IBuilderTemplateRenderer<TBuilder>
 {
-    public async Task<Result> TryRenderAsync(object instance, TBuilder builder, CancellationToken token)
+    public async Task<Result> RenderAsync(object instance, TBuilder builder, CancellationToken token)
     {
         Guard.IsNotNull(builder);
 

@@ -17,13 +17,13 @@ public class IntegrationTests : TestBase
             .BuildServiceProvider(true);
         using var scope = provider.CreateScope();
         var templateProvider = scope.ServiceProvider.GetRequiredService<ITemplateProvider>();
-        var template = templateProvider.Create(new TemplateInstanceIdentifier(new MyTemplate()));
+        var template = templateProvider.Create(new TemplateInstanceIdentifier(new MyTemplate())).GetValueOrThrow();
         var templateEngine = scope.ServiceProvider.GetRequiredService<ITemplateEngine>();
         var builder = new StringBuilder();
         var request = new RenderTemplateRequest(new TemplateInstanceIdentifier(template), builder);
 
         // Act
-        await templateEngine.RenderAsync(request, CancellationToken.None);
+        await templateEngine.RenderAsync(request);
 
         // Assert
         builder.ToString().ShouldBe("Hello world!");

@@ -20,26 +20,30 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
         }
 
         [Fact]
-        public void Throws_On_Null_Identifier()
+        public void Returns_Continue_On_Null_Identifier()
         {
             // Arrange
             var sut = CreateSut();
 
-            // Act & Assert
-            Action a = () => sut.Create(identifier: null!);
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("identifier");
+            // Act
+            var result = sut.Create(identifier: null!);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Continue);
         }
 
         [Fact]
-        public void Throws_On_Identifier_Other_Than_CreateCompiledTemplateRequest()
+        public void Returns_Continue_On_Identifier_Other_Than_CreateCompiledTemplateRequest()
         {
             // Arrange
             var templateIdentifier = Fixture.Freeze<ITemplateIdentifier>();
             var sut = CreateSut();
 
-            // Act & Assert
-            Action a = () => sut.Create(identifier: templateIdentifier);
-            a.ShouldThrow<ArgumentException>().ParamName.ShouldBe("identifier");
+            // Act
+            var result = sut.Create(identifier: templateIdentifier);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Continue);
         }
 
         [Fact]
@@ -56,12 +60,12 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
             var instance = sut.Create(new CompiledTemplateIdentifier(GetType().Assembly.FullName!, GetType().FullName!));
 
             // Assert
-            instance.ShouldNotBeNull();
-            instance.ShouldBeOfType<Create>();
+            instance.Status.ShouldBe(ResultStatus.Ok);
+            instance.Value.ShouldBeOfType<Create>();
         }
 
         [Fact]
-        public void Throws_On_Wrong_ClassName()
+        public void Returns_Error_On_Wrong_ClassName()
         {
             // Arrange
             var templateFactory = Fixture.Freeze<ITemplateFactory>();
@@ -70,13 +74,15 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
             templateFactory.Create(Arg.Any<Type>()).Returns(default(object?));
             var sut = CreateSut();
 
-            // Act & Assert
-            Action a = () => sut.Create(new CompiledTemplateIdentifier(GetType().Assembly.FullName!, "WrongName"));
-            a.ShouldThrow<InvalidOperationException>();
+            // Act
+            var result = sut.Create(new CompiledTemplateIdentifier(GetType().Assembly.FullName!, "WrongName"));
+            
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
         }
 
         [Fact]
-        public void Throws_When_Factory_Does_Not_Create_A_Template_Instance()
+        public void Returns_Error_When_Factory_Does_Not_Create_A_Template_Instance()
         {
             // Arrange
             var assemblyService = Fixture.Freeze<IAssemblyService>();
@@ -85,52 +91,12 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
             templateFactory.Create(Arg.Any<Type>()).Returns(default(object));
             var sut = CreateSut();
 
-            // Act & Assert
-            Action a = () => sut.Create(new CompiledTemplateIdentifier(GetType().Assembly.FullName!, GetType().FullName!));
-            a.ShouldThrow<InvalidOperationException>().Message.ShouldBe("Could not create instance of type TemplateFramework.TemplateProviders.CompiledTemplateProvider.Tests.ProviderComponentTests+Create");
-        }
-    }
-
-    public class Supports : ProviderComponentTests
-    {
-        [Fact]
-        public void Returns_False_On_Null_Request()
-        {
-            // Arrange
-            var sut = CreateSut();
-
             // Act
-            var result = sut.Supports(null!);
+            var result = sut.Create(new CompiledTemplateIdentifier(GetType().Assembly.FullName!, GetType().FullName!));
 
             // Assert
-            result.ShouldBeFalse();
-        }
-
-        [Fact]
-        public void Returns_False_On_Request_Other_Than_CreateCompiledTemplateRequest()
-        {
-            // Arrange
-            var templateIdentifier = Fixture.Freeze<ITemplateIdentifier>();
-            var sut = CreateSut();
-
-            // Act
-            var result = sut.Supports(templateIdentifier);
-
-            // Assert
-            result.ShouldBeFalse();
-        }
-
-        [Fact]
-        public void Returns_True_On_CreateCompiledTemplateRequest()
-        {
-            // Arrange
-            var sut = CreateSut();
-
-            // Act
-            var result = sut.Supports(new CompiledTemplateIdentifier(GetType().Assembly.FullName!, GetType().FullName!, string.Empty));
-
-            // Assert
-            result.ShouldBeTrue();
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Could not create instance of type TemplateFramework.TemplateProviders.CompiledTemplateProvider.Tests.ProviderComponentTests+Create");
         }
     }
 }

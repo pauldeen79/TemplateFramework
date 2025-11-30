@@ -2,14 +2,13 @@
 
 public class TemplateTypeIdentifierComponent : ITemplateProviderComponent
 {
-    public object Create(ITemplateIdentifier identifier)
+    public Result<object> Create(ITemplateIdentifier identifier)
     {
-        Guard.IsNotNull(identifier);
-        Guard.IsOfType<TemplateTypeIdentifier>(identifier);
+        if (identifier is not TemplateTypeIdentifier templateTypeIdentifier)
+        {
+            return Result.Continue<object>();
+        }
 
-        var typed = (TemplateTypeIdentifier)identifier;
-        return typed.TemplateFactory.Create(typed.Type);
+        return Result.Success(templateTypeIdentifier.TemplateFactory.Create(templateTypeIdentifier.Type));
     }
-
-    public bool Supports(ITemplateIdentifier identifier) => identifier is TemplateTypeIdentifier;
 }

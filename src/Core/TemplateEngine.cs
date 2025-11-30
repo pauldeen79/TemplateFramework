@@ -38,11 +38,12 @@ public sealed class TemplateEngine : ITemplateEngine
         var template = request.Context?.Template;
         if (template is null || template is IIgnoreThis)
         {
-            template = _provider.Create(request.Identifier);
-            if (template is null)
+            var templateResult = _provider.Create(request.Identifier).EnsureNotNull("TemplateProvider did not create a template instance").EnsureValue("TemplateProvider did not create a template instance");
+            if (!templateResult.IsSuccessful())
             {
-                return Result.Error("TemplateProvider did not create a template instance");
+                return templateResult;
             }
+            template = templateResult.Value!;
         }
 
         var engineContext = new TemplateEngineContext(request, this, _provider, template);

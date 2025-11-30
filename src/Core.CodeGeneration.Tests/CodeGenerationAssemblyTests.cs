@@ -96,7 +96,7 @@ public class CodeGenerationAssemblyTests : TestBase<CodeGenerationAssembly>
             await codeGenerationEngine.DidNotReceive().GenerateAsync(Arg.Any<ICodeGenerationProvider>(), Arg.Any<IGenerationEnvironment>(), Arg.Any<ICodeGenerationSettings>(), Arg.Any<CancellationToken>());
         }
 
-        private void SetupCodeGenerationProviderCreator(ICodeGenerationProviderCreator codeGenerationProviderCreator)
+        private static void SetupCodeGenerationProviderCreator(ICodeGenerationProviderCreator codeGenerationProviderCreator)
         {
             codeGenerationProviderCreator
                 .TryCreateInstance(Arg.Any<Type>())

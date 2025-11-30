@@ -17,61 +17,6 @@ public class ProviderComponentTests
         }
     }
 
-    public class Supports : ProviderComponentTests
-    {
-        [Fact]
-        public void Returns_False_When_Request_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-
-            // Act
-            var result = sut.Supports(null!);
-
-            // Assert
-            result.ShouldBeFalse();
-        }
-
-        [Fact]
-        public void Returns_False_When_Request_Is_Not_ExpressionStringTemplateIdentifier_Or_FormattableStringTemplateIdentifier()
-        {
-            // Arrange
-            var sut = CreateSut();
-
-            // Act
-            var result = sut.Supports(Substitute.For<ITemplateIdentifier>());
-
-            // Assert
-            result.ShouldBeFalse();
-        }
-
-        [Fact]
-        public void Returns_True_When_Request_Is_ExpressionStringTemplateIdentifier()
-        {
-            // Arrange
-            var sut = CreateSut();
-
-            // Act
-            var result = sut.Supports(new ExpressionStringTemplateIdentifier("template", CultureInfo.CurrentCulture));
-
-            // Assert
-            result.ShouldBeTrue();
-        }
-
-        [Fact]
-        public void Returns_True_When_Request_Is_FormattableStringTemplateIdentifier()
-        {
-            // Arrange
-            var sut = CreateSut();
-
-            // Act
-            var result = sut.Supports(new FormattableStringTemplateIdentifier("template", CultureInfo.CurrentCulture));
-
-            // Assert
-            result.ShouldBeTrue();
-        }
-    }
-
     public class Create : ProviderComponentTests
     {
         [Fact]
@@ -86,14 +31,16 @@ public class ProviderComponentTests
         }
 
         [Fact]
-        public void Throws_On_Identifier_Of_Wrong_Type()
+        public void Returns_Continue_On_Identifier_Of_Wrong_Type()
         {
             // Arrange
             var sut = CreateSut();
 
-            // Act & Assert
-            Action a = () => sut.Create(identifier: Substitute.For<ITemplateIdentifier>());
-            a.ShouldThrow<NotSupportedException>();
+            // Act
+            var result =  sut.Create(identifier: Substitute.For<ITemplateIdentifier>());
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Continue);
         }
 
         [Fact]
@@ -107,7 +54,8 @@ public class ProviderComponentTests
             var result = sut.Create(identifier);
 
             // Assert
-            result.ShouldBeOfType<ExpressionStringTemplate>();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeOfType<ExpressionStringTemplate>();
         }
 
         [Fact]
@@ -121,7 +69,8 @@ public class ProviderComponentTests
             var result = sut.Create(identifier);
 
             // Assert
-            result.ShouldBeOfType<FormattableStringTemplate>();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeOfType<FormattableStringTemplate>();
         }
     }
 

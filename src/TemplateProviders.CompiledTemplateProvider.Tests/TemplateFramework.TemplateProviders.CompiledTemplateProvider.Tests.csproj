@@ -50,11 +50,13 @@
   <ItemGroup>
     <Using Include="AutoFixture" />
     <Using Include="AutoFixture.AutoNSubstitute" />
+    <Using Include="CrossCutting.Common.Results" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
     <Using Include="NSubstitute" />
     <Using Include="Shouldly" />
     <Using Include="System.Text" />
     <Using Include="TemplateFramework.Abstractions" />
+    <Using Include="TemplateFramework.Abstractions.Extensions" />
     <Using Include="TemplateFramework.Abstractions.Templates" />
     <Using Include="TemplateFramework.Core" />
     <Using Include="TemplateFramework.Core.Extensions" />

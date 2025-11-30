@@ -2,5 +2,5 @@
 
 public interface IBuilderTemplateRenderer<TBuilder>
 {
-    Task<Result> TryRenderAsync(object instance, TBuilder builder, CancellationToken token);
+    Task<Result> RenderAsync(object instance, TBuilder builder, CancellationToken token);
 }

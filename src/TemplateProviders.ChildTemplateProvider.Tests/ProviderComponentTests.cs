@@ -14,140 +14,66 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
     public class Create : ProviderComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Identifier()
+        public void Returns_Continue_On_Null_Identifier()
         {
             // Arrange
             var sut = CreateSut();
 
-            // Act & Assert
-            Action a = () => sut.Create(identifier: null!);
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("identifier");
+            // Act
+            var result = sut.Create(identifier: null!);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Continue); // note that the caller has already validated this, so we can simply ignore it
         }
 
         [Fact]
-        public void Throws_On_Unsupported_Request()
+        public void Returns_Continue_On_Unsupported_Request()
         {
             // Arrange
             var identifier = Fixture.Create<ITemplateIdentifier>();
             var sut = CreateSut();
 
-            // Act & Assert
-            Action a = () => sut.Create(identifier);
-            a.ShouldThrow<NotSupportedException>();
+            // Act
+            var result = sut.Create(identifier);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Continue);
         }
     }
 
     public class CreateByModel : ProviderComponentTests
     {
         [Fact]
-        public void Does_Not_Throw_On_Null_Argument()
+        public void Returns_NotSupported_When_Model_Is_Not_Supported()
         {
             // Arrange
             var templateCreator = Fixture.Freeze<ITemplateCreator>();
-            templateCreator.SupportsModel(Arg.Any<object?>()).Returns(true);
-            templateCreator.CreateByModel(Arg.Any<object?>()).Returns(new object());
-            var sut = CreateSut();
-
-            // Act & Assert
-            Action a = () => sut.Create(new TemplateByModelIdentifier(null));
-            a.ShouldNotThrow();
-        }
-
-        [Fact]
-        public void Throws_When_Model_Not_Null_Is_Not_Supported()
-        {
-            // Arrange
-            var templateCreator = Fixture.Freeze<ITemplateCreator>();
-            templateCreator.SupportsModel(Arg.Any<object?>()).Returns(false);
-            var sut = CreateSut();
-
-            // Act & Assert
-            Action a = () => sut.Create(new TemplateByModelIdentifier(1));
-            a.ShouldThrow<NotSupportedException>().Message.ShouldBe("Model of type System.Int32 is not supported");
-        }
-
-        [Fact]
-        public void Throws_When_Model_Null_Is_Not_Supported()
-        {
-            // Arrange
-            var templateCreator = Fixture.Freeze<ITemplateCreator>();
-            templateCreator.SupportsModel(Arg.Any<object?>()).Returns(false);
-            var sut = CreateSut();
-
-            // Act & Assert
-            Action a = () => sut.Create(new TemplateByModelIdentifier(null));
-            a.ShouldThrow<NotSupportedException>().Message.ShouldBe("Model of type  is not supported");
-        }
-
-        [Fact]
-        public void Throws_When_TemplateCreator_Returns_Null_Instance()
-        {
-            // Arrange
-            var templateCreator = Fixture.Freeze<ITemplateCreator>();
-            templateCreator.SupportsModel(Arg.Any<object?>()).Returns(true);
-            templateCreator.CreateByModel(Arg.Any<object?>()).Returns(null!);
-            var sut = CreateSut();
-
-            // Act & Assert
-            Action a = () => sut.Create(new TemplateByModelIdentifier(null!));
-            a.ShouldThrow<InvalidOperationException>().Message.ShouldBe("Child template creator returned a null instance");
-        }
-
-        [Fact]
-        public void Returns_Instance_When_Model_Is_Supported()
-        {
-            // Arrange
-            var template = new object();
-            var templateCreator = Fixture.Freeze<ITemplateCreator>();
-            templateCreator.SupportsModel(Arg.Any<object?>()).Returns<object>(x => x.Args()[0] is int);
-            templateCreator.CreateByModel(Arg.Any<object?>()).Returns(template);
+            templateCreator.CreateByName(Arg.Any<string>()).Returns(Result.Continue<object>());
+            templateCreator.CreateByModel(Arg.Any<object?>()).Returns(Result.Continue<object>());
             var sut = CreateSut();
 
             // Act
             var result = sut.Create(new TemplateByModelIdentifier(1));
 
             // Assert
-            result.ShouldBeSameAs(template);
-        }
-    }
-
-    public class CreateByName : ProviderComponentTests
-    {
-        [Fact]
-        public void Throws_On_Null_Argument()
-        {
-            // Arrange
-            var sut = CreateSut();
-            // Act & Assert
-            Action a = () => sut.Create(new TemplateByNameIdentifier(name: null!));
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("name");
+            result.Status.ShouldBe(ResultStatus.NotSupported);
+            result.ErrorMessage.ShouldBe("Model of type System.Int32 is not supported");
         }
 
         [Fact]
-        public void Throws_When_Model_Is_Not_Supported()
+        public void Returns_Error_When_TemplateCreator_Returns_Null_Instance()
         {
             // Arrange
             var templateCreator = Fixture.Freeze<ITemplateCreator>();
-            templateCreator.SupportsName(Arg.Any<string>()).Returns(false);
+            templateCreator.CreateByModel(Arg.Any<object?>()).Returns(default(Result<object>));
             var sut = CreateSut();
 
-            // Act & Assert
-            Action a = () => sut.Create(new TemplateByNameIdentifier("test"));
-            a.ShouldThrow<NotSupportedException>().Message.ShouldBe("Template with name test is not supported");
-        }
+            // Act
+            var result = sut.Create(new TemplateByModelIdentifier(null!));
 
-        [Fact]
-        public void Throws_When_TemplateCreator_Returns_Null_Instance()
-        {
-            // Arrange
-            var templateCreator = Fixture.Freeze<ITemplateCreator>();
-            templateCreator.SupportsName(Arg.Any<string>()).Returns(true);
-            templateCreator.CreateByName(Arg.Any<string>()).Returns(null!);
-            var sut = CreateSut();
-
-            // Act & Assert
-            Action a = () => sut.Create(new TemplateByNameIdentifier("test"));
-            a.ShouldThrow<InvalidOperationException>().Message.ShouldBe("Child template creator returned a null instance");
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Child template creator returned a null instance");
         }
 
         [Fact]
@@ -156,78 +82,67 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
             // Arrange
             var template = new object();
             var templateCreator = Fixture.Freeze<ITemplateCreator>();
-            templateCreator.SupportsName(Arg.Any<string>()).Returns(x => x.ArgAt<string>(0) == "test");
-            templateCreator.CreateByName(Arg.Any<string>()).Returns(template);
+            templateCreator.CreateByModel(Arg.Any<object?>()).Returns(Result.Success(template));
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Create(new TemplateByModelIdentifier(1));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeSameAs(template);
+        }
+    }
+
+    public class CreateByName : ProviderComponentTests
+    {
+        [Fact]
+        public void Returns_NotSupported_When_Model_Is_Not_Supported()
+        {
+            // Arrange
+            var templateCreator = Fixture.Freeze<ITemplateCreator>();
+            templateCreator.CreateByName(Arg.Any<string>()).Returns(Result.Continue<object>());
             var sut = CreateSut();
 
             // Act
             var result = sut.Create(new TemplateByNameIdentifier("test"));
 
             // Assert
-            result.ShouldBeSameAs(template);
-        }
-    }
-
-    public class Supports : ProviderComponentTests
-    {
-        [Fact]
-        public void Returns_False_On_Null_Identifier()
-        {
-            // Arrange
-            var identifier = (ITemplateIdentifier)null!;
-            var sut = CreateSut();
-
-            // Act
-            var result = sut.Supports(identifier);
-
-            // Assert
-            result.ShouldBeFalse();
+            result.Status.ShouldBe(ResultStatus.NotSupported);
+            result.ErrorMessage.ShouldBe("Template with name test is not supported");
         }
 
         [Fact]
-        public void Returns_False_On_Unsupported_Identifier()
+        public void Returns_Error_When_TemplateCreator_Returns_Null_Instance()
         {
             // Arrange
-            var identifier = Fixture.Create<ITemplateIdentifier>();
-            var sut = CreateSut();
-
-            // Act
-            var result = sut.Supports(identifier);
-
-            // Assert
-            result.ShouldBeFalse();
-        }
-
-        [Fact]
-        public void Returns_True_On_CreateTemplateByModelRequest()
-        {
-            // Arrange
-            var identifier = new TemplateByModelIdentifier(this);
             var templateCreator = Fixture.Freeze<ITemplateCreator>();
-            templateCreator.SupportsModel(Arg.Any<object?>()).Returns(true);
+            templateCreator.CreateByName(Arg.Any<string>()).Returns(default(Result<object>));
             var sut = CreateSut();
 
             // Act
-            var result = sut.Supports(identifier);
+            var result = sut.Create(new TemplateByNameIdentifier("test"));
 
             // Assert
-            result.ShouldBeTrue();
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Child template creator returned a null instance");
         }
 
         [Fact]
-        public void Returns_True_On_CreateTemplateByNameRequest()
+        public void Returns_Instance_When_Model_Is_Supported()
         {
             // Arrange
-            var identifier = new TemplateByNameIdentifier(nameof(Returns_True_On_CreateTemplateByNameRequest));
+            var template = new object();
             var templateCreator = Fixture.Freeze<ITemplateCreator>();
-            templateCreator.SupportsName(Arg.Any<string>()).Returns(true);
+            templateCreator.CreateByName(Arg.Any<string>()).Returns(Result.Success(template));
             var sut = CreateSut();
 
             // Act
-            var result = sut.Supports(identifier);
+            var result = sut.Create(new TemplateByNameIdentifier("test"));
 
             // Assert
-            result.ShouldBeTrue();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBeSameAs(template);
         }
     }
 }
