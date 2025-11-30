@@ -11,14 +11,11 @@ public class ViewModelTemplateParameterConverter : ITemplateParameterConverter
         _factory = factory;
     }
 
-    public bool TryConvert(object? value, Type type, ITemplateEngineContext context, out object? convertedValue)
+    public Result<object?> Convert(object? value, Type type, ITemplateEngineContext context)
     {
-        Guard.IsNotNull(context);
-
         if (value is null)
         {
-            convertedValue = null;
-            return false;
+            return Result.Continue<object?>();
         }
 
         var viewModelItem = _factory.Invoke()
@@ -31,8 +28,7 @@ public class ViewModelTemplateParameterConverter : ITemplateParameterConverter
 
         if (viewModelItem is null)
         {
-            convertedValue = null;
-            return false;
+            return Result.Continue<object?>();
         }
 
         // Copy Model to ViewModel
@@ -41,7 +37,6 @@ public class ViewModelTemplateParameterConverter : ITemplateParameterConverter
             viewModelItem.ModelProperty.SetValue(viewModelItem.ViewModel, value);
         }
 
-        convertedValue = viewModelItem.ViewModel;
-        return true;
+        return Result.Success(viewModelItem.ViewModel);
     }
 }

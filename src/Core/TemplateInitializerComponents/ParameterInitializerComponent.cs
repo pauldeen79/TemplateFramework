@@ -42,12 +42,13 @@ public class ParameterInitializerComponent : ITemplateInitializerComponent
             {
                 continue;
             }
-
-            var setParametersResult = await parameterizedTemplate.SetParameterAsync(item.Key, _converter.Convert(item.Value, parameter.Type, context), token).ConfigureAwait(false);
-            if (!setParametersResult.IsSuccessful())
+            var conversionResult = _converter.Convert(item.Value, parameter.Type, context);
+            if (!conversionResult.IsSuccessful())
             {
-                return setParametersResult;
+                return conversionResult;
             }
+
+            return await parameterizedTemplate.SetParameterAsync(item.Key, conversionResult.Value, token).ConfigureAwait(false);
         }
 
         return Result.Success();
@@ -79,7 +80,13 @@ public class ParameterInitializerComponent : ITemplateInitializerComponent
                 continue;
             }
 
-            prop.SetValue(context.Template, _converter.Convert(item.Value, prop.PropertyType, context));
+            var conversionResult = _converter.Convert(item.Value, prop.PropertyType, context);
+            if (!result.IsSuccessful())
+            {
+                return conversionResult;
+            }
+
+            prop.SetValue(context.Template, conversionResult.Value);
         }
 
         return Result.Success();

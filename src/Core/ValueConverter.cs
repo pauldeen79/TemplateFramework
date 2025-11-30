@@ -11,19 +11,20 @@ public class ValueConverter : IValueConverter
         _converters = converters;
     }
 
-    public object? Convert(object? value, Type type, ITemplateEngineContext context)
+    public Result<object?> Convert(object? value, Type type, ITemplateEngineContext context)
     {
         Guard.IsNotNull(type);
         Guard.IsNotNull(context);
 
         foreach (var converter in _converters)
         {
-            if (converter.TryConvert(value, type, context, out var convertedValue))
+            var result = converter.Convert(value, type, context);
+            if (result.Status != ResultStatus.Continue)
             {
-                return convertedValue;
+                return result;
             }
         }
 
-        return value;
+        return Result.Success(value);
     }
 }

@@ -2,5 +2,5 @@
 
 public interface ITemplateParameterConverter
 {
-    bool TryConvert(object? value, Type type, ITemplateEngineContext context, out object? convertedValue);
+    Result<object?> Convert(object? value, Type type, ITemplateEngineContext context);
 }
