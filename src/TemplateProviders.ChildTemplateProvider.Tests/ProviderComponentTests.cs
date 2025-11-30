@@ -61,6 +61,23 @@ public class ProviderComponentTests : TestBase<ProviderComponent>
         }
 
         [Fact]
+        public void Returns_NotSupported_When_Model_Is_Null_And_Not_Supported()
+        {
+            // Arrange
+            var templateCreator = Fixture.Freeze<ITemplateCreator>();
+            templateCreator.CreateByName(Arg.Any<string>()).Returns(Result.Continue<object>());
+            templateCreator.CreateByModel(Arg.Any<object?>()).Returns(Result.Continue<object>());
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.Create(new TemplateByModelIdentifier(null));
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.NotSupported);
+            result.ErrorMessage.ShouldBe("Model of type  is not supported");
+        }
+
+        [Fact]
         public void Returns_Error_When_TemplateCreator_Returns_Null_Instance()
         {
             // Arrange
