@@ -27,7 +27,7 @@ public class ModelInitializerComponent : ITemplateInitializerComponent
             }
 
             var modelProperty = templateType.GetProperty(nameof(IModelContainer<object?>.Model))!;
-            return _converter.Convert(context.Model, modelProperty.PropertyType, context)
+            return (Result)_converter.Convert(context.Model, modelProperty.PropertyType, context)
                 .OnSuccess(result => modelProperty.SetValue(context.Template, result.Value));
         }, token);
 }
