@@ -30,11 +30,11 @@ jobs:
         with:
           dotnet-version: 10.0.x
       - name: Restore
-        run: dotnet restore TemplateFramework.sln
+        run: dotnet restore
       - name: Build
-        run: dotnet build --no-restore TemplateFramework.sln -c Release
+        run: dotnet build --no-restore -c Release
       - name: Test
-        run: dotnet test --no-restore TemplateFramework.sln -c Release
+        run: dotnet test --no-restore -c Release
       - name: Checking for external vulnerabilities
         run: |
           dotnet list package --vulnerable --include-transitive 2>&1 | tee vuln.log
@@ -42,7 +42,7 @@ jobs:
           ! grep -q -i "has the following vulnerable packages" vuln.log
   #    - name: Pack
   #      if: matrix.os == 'ubuntu-latest'
-  #      run: dotnet pack TemplateFramework.sln -v normal -c Release -o ./artifacts --no-restore --include-symbols --include-source -p:PackageVersion=$GITHUB_RUN_ID
+  #      run: dotnet pack -v normal -c Release -o ./artifacts --no-restore --include-symbols --include-source -p:PackageVersion=$GITHUB_RUN_ID
   #    - name: Upload Artifact
   #      if: matrix.os == 'ubuntu-latest'
   #      uses: actions/upload-artifact@v2
@@ -83,7 +83,7 @@ jobs:
           echo Version: $VERSION
           VERSION="${VERSION//v}"
           echo Clean Version: $VERSION
-          dotnet pack TemplateFramework.sln -v normal -c Release --include-symbols --include-source -p:PackageVersion=$VERSION -p:Version=$VERSION -o nupkg
+          dotnet pack -v normal -c Release --include-symbols --include-source -p:PackageVersion=$VERSION -p:Version=$VERSION -o nupkg
       - name: Push to GitHub Feed
         run: |
           for f in ./nupkg/*.nupkg
