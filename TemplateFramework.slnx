@@ -1,0 +1,22 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
+  <Project Path="src/Abstractions.Tests/TemplateFramework.Abstractions.Tests.csproj" />
+  <Project Path="src/Abstractions/TemplateFramework.Abstractions.csproj" />
+  <Project Path="src/Console.Tests/TemplateFramework.Console.Tests.csproj" />
+  <Project Path="src/Console/TemplateFramework.Console.csproj" />
+  <Project Path="src/Core.CodeGeneration.Tests/TemplateFramework.Core.CodeGeneration.Tests.csproj" />
+  <Project Path="src/Core.CodeGeneration/TemplateFramework.Core.CodeGeneration.csproj" />
+  <Project Path="src/Core.Tests/TemplateFramework.Core.Tests.csproj" />
+  <Project Path="src/Core/TemplateFramework.Core.csproj" />
+  <Project Path="src/Runtime.Tests/TemplateFramework.Runtime.Tests.csproj" />
+  <Project Path="src/Runtime/TemplateFramework.Runtime.csproj" />
+  <Project Path="src/TemplateProviders.ChildTemplateProvider.Tests/TemplateFramework.TemplateProviders.ChildTemplateProvider.Tests.csproj" />
+  <Project Path="src/TemplateProviders.ChildTemplateProvider/TemplateFramework.TemplateProviders.ChildTemplateProvider.csproj" />
+  <Project Path="src/TemplateProviders.CompiledTemplateProvider.Tests/TemplateFramework.TemplateProviders.CompiledTemplateProvider.Tests.csproj" />
+  <Project Path="src/TemplateProviders.CompiledTemplateProvider/TemplateFramework.TemplateProviders.CompiledTemplateProvider.csproj" />
+  <Project Path="src/TemplateProviders.StringTemplateProvider.Tests/TemplateFramework.TemplateProviders.StringTemplateProvider.Tests.csproj" />
+  <Project Path="src/TemplateProviders.StringTemplateProvider/TemplateFramework.TemplateProviders.StringTemplateProvider.csproj" />
+  <Project Path="src/Testing/TemplateFramework.Testing.csproj" />
+</Solution>
