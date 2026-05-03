@@ -20,7 +20,7 @@
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.4.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.*" />
-    <PackageReference Include="pauldeen79.CrossCutting.Utilities.ExpressionEvaluator" Version="2.4.2" />
+    <PackageReference Include="pauldeen79.CrossCutting.Utilities.ExpressionEvaluator" Version="2.4.3" />
   </ItemGroup>
 
   <ItemGroup>
